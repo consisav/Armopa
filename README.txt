@@ -16,3 +16,6 @@ Abre la carpeta `ARMOPA_Web` en Visual Studio Code y modifica `index.html`, `sty
 
 ## Nota
 Los formularios y el Área de Clientes funcionan como demostración visual. Para producción deben conectarse a una base de datos/autenticación y a un servicio de envío de formularios.
+
+\nÚLTIMA VERSIÓN: galería con 3 propiedades grandes visibles, navegación hacia una cuarta y siguientes propiedades, flechas doradas circulares con resalte al pasar el cursor y transición horizontal suave.\n
+Ajuste móvil final: la portada ahora reorganiza el contenido para celulares, conserva el logo ARMOPA visible en tamaño reducido y evita que el texto y el logo se superpongan. También se ajusta automáticamente para teléfonos pequeños.

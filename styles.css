@@ -39,4 +39,88 @@
 .carousel-dot{width:8px;height:8px;border:0;border-radius:50%;background:#b8c4d1;padding:0;cursor:pointer;transition:transform .2s ease,background .2s ease}
 .carousel-dot.active{background:var(--gold);transform:scale(1.35)}
 @media(max-width:1050px){.property-carousel .property-card{flex-basis:calc((100% - 18px)/2)}}
-@media(max-width:780px){.property-carousel{gap:7px}.property-arrow{flex-basis:40px;width:40px;height:40px;font-size:30px}.property-carousel .property-card{flex-basis:100%}}
+@media(max-width:780px){
+  .property-carousel{gap:7px}
+  .property-arrow{flex-basis:40px;width:40px;height:40px;font-size:30px}
+  .property-carousel .property-card{flex-basis:100%}
+
+  /* Ajuste móvil de portada y logo */
+  .nav{min-height:72px;gap:8px;padding:0 4px}
+  .brand{flex:0 0 auto}
+  .brand img{width:78px;height:78px;margin-top:2px}
+  .menu-toggle{font-size:24px;margin-left:auto}
+
+  .hero{
+    min-height:620px;
+    background-position:center center;
+  }
+  .hero-overlay{
+    background:linear-gradient(
+      180deg,
+      rgba(4,18,34,.30) 0%,
+      rgba(4,18,34,.48) 38%,
+      rgba(4,18,34,.90) 100%
+    );
+  }
+  .hero-content{
+    min-height:620px;
+    display:block;
+    position:relative;
+    padding:0 18px;
+  }
+  .hero-copy{
+    position:absolute;
+    left:18px;
+    right:18px;
+    bottom:48px;
+    max-width:none;
+    padding:0;
+    z-index:2;
+  }
+  .hero-copy .eyebrow{font-size:9px;letter-spacing:1.1px;margin-bottom:7px}
+  .hero h1{
+    font-size:38px;
+    line-height:1.02;
+    margin-bottom:12px;
+    text-shadow:0 2px 12px rgba(0,0,0,.35);
+  }
+  .hero-copy>p:not(.eyebrow){
+    font-size:14px;
+    line-height:1.42;
+    max-width:330px;
+    margin-bottom:12px;
+  }
+  .hero-actions{
+    flex-direction:row;
+    gap:8px;
+    margin-top:15px;
+  }
+  .hero-actions .btn{
+    padding:9px 13px;
+    font-size:12px;
+  }
+  .hero-badge{
+    display:block;
+    position:absolute;
+    top:24px;
+    right:18px;
+    z-index:3;
+  }
+  .hero-badge img{
+    width:118px;
+    max-width:31vw;
+    height:auto;
+    filter:drop-shadow(0 8px 16px rgba(0,0,0,.55));
+  }
+}
+
+@media(max-width:390px){
+  .brand img{width:70px;height:70px}
+  .hero{min-height:600px}
+  .hero-content{min-height:600px}
+  .hero-badge{top:18px;right:12px}
+  .hero-badge img{width:98px;max-width:27vw}
+  .hero-copy{bottom:38px;left:16px;right:16px}
+  .hero h1{font-size:34px}
+  .hero-copy>p:not(.eyebrow){font-size:13px;max-width:300px}
+}
