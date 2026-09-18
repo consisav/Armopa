@@ -37,3 +37,32 @@ ULTIMA ACTUALIZACION: portada panoramica rediseñada, texto minimizado, sin logo
 - Solo dos botones: “Ver propiedades” y “Nuestros servicios”.
 - Eliminados traslapes, textos duplicados y logo superpuesto.
 - Logo ARMOPA permanece únicamente en el encabezado.
+
+
+PORTADA ACTUALIZADA:
+- Se incorporó la última imagen generada para ARMOPA.
+- Incluye: INVERSIÓN • ADMINISTRACIÓN • DESARROLLO • SEGURIDAD • SERVICIOS.
+- Mantiene el mensaje “Tu patrimonio en las mejores manos”.
+- No se agregan textos, botones ni logos duplicados sobre la portada.
+- Se mantienen el resto de secciones, propiedades, servicios, logo y adaptación móvil.
+
+
+ÚLTIMO CAMBIO:
+- Imagen principal limpia, sin texto integrado.
+- La portada queda preparada para colocar el título y botones únicamente mediante HTML/CSS.
+- Se mantienen todas las demás modificaciones de ARMOPA.
+
+
+CAMBIO ACTUAL:
+- Se revirtió el cambio anterior de contenido de la página.
+- Todos los textos y secciones de la página se conservan.
+- ÚNICAMENTE la imagen principal/inicial queda limpia, sin título, descripción ni botones sobre ella.
+- La fotografía principal permanece como fondo.
+- El resto del sitio no fue eliminado.
+
+
+ÚLTIMO CAMBIO:
+- Se agregaron dos botones en la portada: “Ver propiedades” y “Nuestros servicios”.
+- “Ver propiedades” desplaza suavemente al segmento de propiedades.
+- “Nuestros servicios” desplaza suavemente al segmento de servicios.
+- Los botones son responsive para celular.
