@@ -124,3 +124,6 @@
   .hero h1{font-size:34px}
   .hero-copy>p:not(.eyebrow){font-size:13px;max-width:300px}
 }
+
+/* Final hero: logo is integrated in the redesigned header image; no duplicate overlay logo. */
+.hero-badge{display:none !important;}
