@@ -26,3 +26,14 @@ VERSIÓN FINAL ACTUALIZADA:
 - Eliminado el logo duplicado/resaltado de la portada.
 - Logo ARMOPA conservado de forma única en el encabezado.
 - Se mantienen los ajustes móviles y el carrusel de propiedades.
+
+
+ULTIMA ACTUALIZACION: portada panoramica rediseñada, texto minimizado, sin logo duplicado sobre la fotografia; se conservan ajustes moviles y carrusel de propiedades.
+
+
+ÚLTIMA MODIFICACIÓN DE PORTADA:
+- Una sola imagen hero profesional.
+- Un solo mensaje principal: “Tu patrimonio en las mejores manos”.
+- Solo dos botones: “Ver propiedades” y “Nuestros servicios”.
+- Eliminados traslapes, textos duplicados y logo superpuesto.
+- Logo ARMOPA permanece únicamente en el encabezado.

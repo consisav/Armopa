@@ -127,3 +127,11 @@
 
 /* Final hero: logo is integrated in the redesigned header image; no duplicate overlay logo. */
 .hero-badge{display:none !important;}
+
+/* ULTIMA PORTADA ARMOPA */
+.hero-badge{display:none !important;}
+.hero{background-image:url("assets/hero-guatemala.jpg") !important;}
+
+/* HERO FINAL: composición única, sin elementos duplicados */
+.hero{background-image:url("assets/hero-guatemala.jpg") !important;background-size:cover;background-position:center center;}
+.hero-badge{display:none !important;}
