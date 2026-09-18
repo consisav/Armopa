@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ARMOPA - Administración Inmobiliaria. Compra, venta, alquiler, remodelación, construcción y desarrollo inmobiliario en Guatemala.">
+  <title>ARMOPA | Administración Inmobiliaria</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="header">
+  <div class="container nav">
+    <a class="brand" href="#inicio" aria-label="ARMOPA Inicio">
+      <img src="assets/logo-armopa.png" alt="ARMOPA Administración Inmobiliaria">
+    </a>
+    <button class="menu-toggle" aria-label="Abrir menú">☰</button>
+    <nav class="menu">
+      <a href="#inicio" data-es="Inicio" data-en="Home">Inicio</a>
+      <a href="#nosotros" data-es="Nosotros" data-en="About">Nosotros</a>
+      <a href="#propiedades" data-es="Propiedades" data-en="Properties">Propiedades</a>
+      <a href="#servicios" data-es="Servicios" data-en="Services">Servicios</a>
+      <a href="#proyectos" data-es="Proyectos" data-en="Projects">Proyectos</a>
+      <a href="#contacto" data-es="Contacto" data-en="Contact">Contacto</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="lang active" data-lang="es">ES</button>
+      <button class="lang" data-lang="en">EN</button>
+      <button class="client-btn" onclick="openClient()">Área de Clientes</button>
+    </div>
+  </div>
+</header>
+
+<main id="inicio">
+<section class="hero">
+  <div class="hero-overlay"></div>
+  <div class="container hero-content">
+    <div class="hero-copy">
+      <p class="eyebrow" data-es="INVERSIÓN • ADMINISTRACIÓN • DESARROLLO" data-en="INVESTMENT • MANAGEMENT • DEVELOPMENT">INVERSIÓN • ADMINISTRACIÓN • DESARROLLO</p>
+      <h1><span data-es="Tu patrimonio" data-en="Your assets">Tu patrimonio</span><br><em data-es="en las mejores manos" data-en="in the best hands">en las mejores manos</em></h1>
+      <p data-es="Soluciones inmobiliarias seguras, modernas y personalizadas para proteger, desarrollar y hacer crecer tu patrimonio." data-en="Secure, modern and personalized real estate solutions to protect, develop and grow your assets.">Soluciones inmobiliarias seguras, modernas y personalizadas para proteger, desarrollar y hacer crecer tu patrimonio.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="#propiedades" data-es="Ver propiedades" data-en="View properties">Ver propiedades</a>
+        <a class="btn ghost" href="#servicios" data-es="Nuestros servicios" data-en="Our services">Nuestros servicios</a>
+      </div>
+    </div>
+    <div class="hero-badge">
+      <img src="assets/logo-armopa.png" alt="Logo ARMOPA">
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="container trust-grid">
+    <div><span class="icon">◇</span><strong data-es="Seguridad" data-en="Security">Seguridad</strong><small data-es="en cada proceso" data-en="in every process">en cada proceso</small></div>
+    <div><span class="icon">↗</span><strong data-es="Rentabilidad" data-en="Profitability">Rentabilidad</strong><small data-es="orientada a resultados" data-en="results oriented">orientada a resultados</small></div>
+    <div><span class="icon">⌁</span><strong data-es="Confianza" data-en="Trust">Confianza</strong><small data-es="atención personalizada" data-en="personalized service">atención personalizada</small></div>
+    <div><span class="icon">◎</span><strong data-es="Cobertura" data-en="Coverage">Cobertura</strong><small data-es="en Guatemala" data-en="across Guatemala">en Guatemala</small></div>
+  </div>
+</section>
+
+<section class="section" id="nosotros">
+  <div class="container intro">
+    <div>
+      <p class="eyebrow dark">ARMOPA</p>
+      <h2 data-es="Administración inmobiliaria con visión integral" data-en="Real estate management with an integrated vision">Administración inmobiliaria con visión integral</h2>
+    </div>
+    <p data-es="Integramos administración, compra y venta, alquileres, remodelación, construcción y desarrollo de proyectos para ofrecer una gestión práctica y ordenada de cada propiedad." data-en="We integrate management, buying and selling, rentals, remodeling, construction and project development to provide practical and organized management for every property.">Integramos administración, compra y venta, alquileres, remodelación, construcción y desarrollo de proyectos para ofrecer una gestión práctica y ordenada de cada propiedad.</p>
+  </div>
+</section>
+
+<section class="section light" id="propiedades">
+  <div class="container">
+    <div class="section-head">
+      <div><p class="eyebrow dark" data-es="NUESTRAS PROPIEDADES" data-en="OUR PROPERTIES">NUESTRAS PROPIEDADES</p>
+      <h2 data-es="Propiedades exclusivas en Guatemala" data-en="Exclusive properties in Guatemala">Propiedades exclusivas en Guatemala</h2></div>
+      <a class="text-link" href="#contacto" data-es="Solicitar catálogo →" data-en="Request catalog →">Solicitar catálogo →</a>
+    </div>
+    <div class="property-grid">
+      <article class="property-card"><img src="assets/propiedad-1.jpg" alt="Casa de lujo en Guatemala"><div><span>Casa de lujo</span><h3 data-es="Residencias premium" data-en="Premium residences">Residencias premium</h3><p data-es="Arquitectura, privacidad y espacios de alto nivel." data-en="Architecture, privacy and high-end spaces.">Arquitectura, privacidad y espacios de alto nivel.</p></div></article>
+      <article class="property-card"><img src="assets/propiedad-2.jpg" alt="Propiedad frente al Lago de Atitlán"><div><span>Lago de Atitlán</span><h3 data-es="Residencias con vista" data-en="View residences">Residencias con vista</h3><p data-es="Propiedades seleccionadas en entornos privilegiados." data-en="Selected properties in privileged settings.">Propiedades seleccionadas en entornos privilegiados.</p></div></article>
+      <article class="property-card"><img src="assets/propiedad-3.jpg" alt="Propiedad colonial en Antigua Guatemala"><div><span>Antigua Guatemala</span><h3 data-es="Patrimonio y exclusividad" data-en="Heritage and exclusivity">Patrimonio y exclusividad</h3><p data-es="Opciones residenciales y de inversión." data-en="Residential and investment opportunities.">Opciones residenciales y de inversión.</p></div></article>
+      <article class="property-card"><img src="assets/propiedad-4.jpg" alt="Propiedad de lujo en Petén"><div><span>Petén</span><h3 data-es="Naturaleza y patrimonio" data-en="Nature and heritage">Naturaleza y patrimonio</h3><p data-es="Proyectos y propiedades en destinos únicos." data-en="Projects and properties in unique destinations.">Proyectos y propiedades en destinos únicos.</p></div></article>
+      <article class="property-card"><img src="assets/propiedad-5.jpg" alt="Edificio residencial premium"><div><span>Ciudad de Guatemala</span><h3 data-es="Inversión urbana" data-en="Urban investment">Inversión urbana</h3><p data-es="Apartamentos, edificios y espacios comerciales." data-en="Apartments, buildings and commercial spaces.">Apartamentos, edificios y espacios comerciales.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="section services" id="servicios">
+  <div class="container">
+    <div class="section-head inverse">
+      <div><p class="eyebrow" data-es="SERVICIOS PRINCIPALES" data-en="CORE SERVICES">SERVICIOS PRINCIPALES</p><h2 data-es="Todo lo que necesitas para tu propiedad" data-en="Everything you need for your property">Todo lo que necesitas para tu propiedad</h2></div>
+    </div>
+    <div class="service-grid">
+      <article><span class="service-icon">⌂</span><h3 data-es="Compra y venta" data-en="Buying & selling">Compra y venta</h3><p data-es="Bienes inmuebles en todo el país con desarrollo inmobiliario." data-en="Real estate nationwide with property development.">Bienes inmuebles en todo el país con desarrollo inmobiliario.</p></article>
+      <article><span class="service-icon">◈</span><h3 data-es="Adaptamos tu presupuesto" data-en="We adapt to your budget">Adaptamos tu presupuesto</h3><p data-es="Diseñamos alternativas de acuerdo con tus necesidades y objetivos." data-en="We design alternatives according to your needs and goals.">Diseñamos alternativas de acuerdo con tus necesidades y objetivos.</p></article>
+      <article><span class="service-icon">▱</span><h3 data-es="Compramos tu propiedad" data-en="We buy your property">Compramos tu propiedad</h3><p data-es="Evaluación y acompañamiento durante el proceso de compra." data-en="Evaluation and support throughout the purchase process.">Evaluación y acompañamiento durante el proceso de compra.</p></article>
+      <article><span class="service-icon">⌂</span><h3 data-es="Remodelamos tu propiedad" data-en="We remodel your property">Remodelamos tu propiedad</h3><p data-es="Planificación, coordinación y supervisión de remodelaciones." data-en="Planning, coordination and supervision of remodeling.">Planificación, coordinación y supervisión de remodelaciones.</p></article>
+      <article><span class="service-icon">▦</span><h3 data-es="Construimos en tu terreno" data-en="We build on your land">Construimos en tu terreno</h3><p data-es="Desde el diseño y presupuesto hasta la ejecución." data-en="From design and budgeting to execution.">Desde el diseño y presupuesto hasta la ejecución.</p></article>
+      <article><span class="service-icon">↗</span><h3 data-es="Desarrollamos tu proyecto" data-en="We develop your project">Desarrollamos tu proyecto</h3><p data-es="Evaluación, planificación, construcción y supervisión integral." data-en="Evaluation, planning, construction and comprehensive supervision.">Evaluación, planificación, construcción y supervisión integral.</p></article>
+    </div>
+  </div>
+</section>
+
+<section class="section light" id="proyectos">
+  <div class="container">
+    <div class="section-head"><div><p class="eyebrow dark" data-es="SERVICIOS EXTERNOS COORDINADOS" data-en="COORDINATED EXTERNAL SERVICES">SERVICIOS EXTERNOS COORDINADOS</p><h2 data-es="Especialistas para cada necesidad" data-en="Specialists for every need">Especialistas para cada necesidad</h2></div></div>
+    <div class="external-grid">
+      <div>01 <strong data-es="Alquiler de maquinaria pesada" data-en="Heavy machinery rental">Alquiler de maquinaria pesada</strong></div>
+      <div>02 <strong data-es="Renta de camiones para extracción" data-en="Dump truck rental for hauling">Renta de camiones para extracción</strong></div>
+      <div>03 <strong data-es="Renta de apartamentos y edificios" data-en="Apartment and building rentals">Renta de apartamentos y edificios</strong></div>
+      <div>04 <strong data-es="Mantenimiento de edificios" data-en="Building maintenance">Mantenimiento de edificios</strong></div>
+      <div>05 <strong data-es="Plomería y electricidad" data-en="Plumbing and electrical">Plomería y electricidad</strong></div>
+      <div>06 <strong data-es="Asesoría jurídica" data-en="Legal advisory">Asesoría jurídica</strong></div>
+      <div>07 <strong data-es="Orientación para préstamos con CHN" data-en="Guidance for CHN loans">Orientación para préstamos con CHN</strong></div>
+      <div>08 <strong data-es="Movimiento de tierra" data-en="Earthmoving">Movimiento de tierra</strong></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="container cta-inner">
+    <div><p class="eyebrow">ARMOPA</p><h2 data-es="¿Tienes una propiedad o un proyecto?" data-en="Do you have a property or project?">¿Tienes una propiedad o un proyecto?</h2><p data-es="Conversemos sobre la mejor forma de administrarlo, desarrollarlo o hacerlo crecer." data-en="Let's discuss the best way to manage, develop or grow it.">Conversemos sobre la mejor forma de administrarlo, desarrollarlo o hacerlo crecer.</p></div>
+    <a class="btn primary" href="#contacto" data-es="Contáctanos" data-en="Contact us">Contáctanos</a>
+  </div>
+</section>
+
+<section class="section contact" id="contacto">
+  <div class="container contact-grid">
+    <div>
+      <p class="eyebrow dark" data-es="CONTACTO" data-en="CONTACT">CONTACTO</p>
+      <h2 data-es="Hablemos de tu próximo proyecto" data-en="Let's talk about your next project">Hablemos de tu próximo proyecto</h2>
+      <p data-es="Atención personalizada para propietarios, compradores, inversionistas e inquilinos." data-en="Personalized service for owners, buyers, investors and tenants.">Atención personalizada para propietarios, compradores, inversionistas e inquilinos.</p>
+    </div>
+    <form onsubmit="sendForm(event)">
+      <input required placeholder="Nombre completo" data-placeholder-es="Nombre completo" data-placeholder-en="Full name">
+      <input required type="email" placeholder="Correo electrónico" data-placeholder-es="Correo electrónico" data-placeholder-en="Email address">
+      <input placeholder="Teléfono" data-placeholder-es="Teléfono" data-placeholder-en="Phone">
+      <select><option data-es="Motivo de contacto" data-en="Reason for contact">Motivo de contacto</option><option data-es="Comprar / vender" data-en="Buy / sell">Comprar / vender</option><option data-es="Administrar propiedad" data-en="Property management">Administrar propiedad</option><option data-es="Desarrollo de proyecto" data-en="Project development">Desarrollo de proyecto</option><option data-es="Servicios externos" data-en="External services">Servicios externos</option></select>
+      <textarea rows="4" placeholder="Cuéntanos qué necesitas" data-placeholder-es="Cuéntanos qué necesitas" data-placeholder-en="Tell us what you need"></textarea>
+      <button class="btn primary" type="submit" data-es="Enviar solicitud" data-en="Send request">Enviar solicitud</button>
+    </form>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-grid">
+    <img src="assets/logo-armopa.png" alt="ARMOPA" class="footer-logo">
+    <div><strong>ARMOPA</strong><span>Administración Inmobiliaria</span><span>Guatemala</span></div>
+    <div><strong data-es="Atención" data-en="Contact">Atención</strong><span>+502 5555-5555</span><span>info@armopa.com</span></div>
+    <div><strong data-es="Síguenos" data-en="Follow us">Síguenos</strong><span>Facebook · Instagram · YouTube</span></div>
+  </div>
+  <div class="container copyright">© 2026 ARMOPA. Todos los derechos reservados.</div>
+</footer>
+
+<div class="modal" id="clientModal" aria-hidden="true">
+  <div class="modal-card">
+    <button class="close" onclick="closeClient()">×</button>
+    <img src="assets/logo-armopa.png" alt="ARMOPA">
+    <h2 data-es="Área de Clientes" data-en="Client Area">Área de Clientes</h2>
+    <input placeholder="Usuario" data-placeholder-es="Usuario" data-placeholder-en="Username">
+    <input type="password" placeholder="Clave" data-placeholder-es="Clave" data-placeholder-en="Password">
+    <input placeholder="Código / Propiedad" data-placeholder-es="Código / Propiedad" data-placeholder-en="Property code">
+    <button class="btn primary" onclick="alert('Acceso de demostración. Conecta este formulario a tu sistema de usuarios para producción.')" data-es="Ingresar" data-en="Sign in">Ingresar</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
