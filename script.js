@@ -29,3 +29,6 @@ function sendForm(e){
     : "Solicitud enviada en modo demostración. Conecta este formulario a tu correo, CRM o base de datos para producción.");
   e.target.reset();
 }
+
+/* ARMOPA FINAL CAROUSEL */
+(()=>{const t=document.querySelector(".property-track"),v=document.querySelector(".property-viewport"),p=document.querySelector(".property-arrow.prev"),n=document.querySelector(".property-arrow.next"),d=document.querySelector(".carousel-dots");if(!t||!v||!p||!n||!d)return;const c=[...t.querySelectorAll(".property-card")];let i=0;const count=()=>innerWidth<=780?1:innerWidth<=1050?2:3;const max=()=>Math.max(0,c.length-count());function dots(){d.innerHTML="";for(let x=0;x<=max();x++){let b=document.createElement("button");b.className="carousel-dot"+(x===i?" active":"");b.setAttribute("aria-label","Ir a la posición "+(x+1));b.onclick=()=>{i=x;up()};d.appendChild(b)}}function up(){i=Math.max(0,Math.min(i,max()));let gap=parseFloat(getComputedStyle(t).gap)||0,w=c[0].getBoundingClientRect().width;t.style.transform=`translateX(-${i*(w+gap)}px)`;p.disabled=i===0;n.disabled=i===max();p.style.opacity=p.disabled?".42":"1";n.style.opacity=n.disabled?".42":"1";[...d.children].forEach((b,x)=>b.classList.toggle("active",x===i))}p.onclick=()=>{i--;up()};n.onclick=()=>{i++;up()};addEventListener("resize",()=>{dots();up()});dots();up()})();
