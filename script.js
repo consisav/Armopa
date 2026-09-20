@@ -13,6 +13,14 @@ const T = {
     places: ['Ciudad de Guatemala', 'Lago de Atitlán', 'Antigua Guatemala', 'Petén', 'Zona 10'],
     alts: ['Propiedad de lujo en Ciudad de Guatemala', 'Propiedad de lujo en Lago de Atitlán', 'Propiedad de lujo en Antigua Guatemala', 'Propiedad de lujo en Petén', 'Propiedad premium en Zona 10'],
     goTo: 'Ir a la posición ',
+    openProp: 'Ver ubicaciones de ', noLocs: 'Sin ubicaciones todavía', oneLoc: '1 ubicación', locsWord: 'ubicaciones',
+    addLoc: 'Agregar ubicación', locDefault: 'Ubicación', emptyH: 'Aún no hay ubicaciones', emptyP: 'Agrega la primera para subir sus imágenes y su dirección.',
+    nameL: 'Nombre de la ubicación', sellerH: 'Vendedor', sellerUp: 'Subir foto del vendedor', sellerRm: 'Quitar foto', sellerName: 'Nombre del vendedor', sellerWa: 'WhatsApp del vendedor', waHint: 'Incluye el código de país, por ejemplo +502. Si escribes 8 dígitos se agrega el 502 automáticamente.', sellerLabel: 'Contacto del vendedor', waBtn: 'Contactar por WhatsApp', waMsg: 'Hola, me interesa la propiedad: ', descL: 'Descripción de la propiedad', descPh: 'Características, habitaciones, amenidades, precio y cualquier detalle importante…', descH: 'Descripción', addrL: 'Dirección o enlace de Google Maps', photo: 'Imagen ', photosH: 'Imágenes de la ubicación', upload: 'Subir imágenes',
+    uploadHint: 'Puedes seleccionar varias imágenes (JPG o PNG).', remove: 'Quitar imagen', uploaded: 'Imágenes agregadas.', saved: 'Cambios guardados.',
+    del: 'Eliminar ubicación', delSure: '¿Confirmar eliminación?', view: 'Visualizar', edit: 'Volver a editar', mapOpen: 'Ver en Google Maps',
+    prevImg: 'Imagen anterior', nextImg: 'Imagen siguiente', noImgs: 'Esta ubicación aún no tiene imágenes.',
+    storeNote: 'Los cambios se guardan automáticamente en este navegador. Para mostrarlos a todos los visitantes, la página debe conectarse a un servidor o base de datos.',
+    storeErr: 'No se pudo guardar: el navegador no tiene espacio. Quita algunas imágenes e inténtalo de nuevo.',
     servH: 'Todo lo que necesitas para tu propiedad',
     s1: 'Compra y venta', s1d: 'Bienes inmuebles en todo el país con desarrollo inmobiliario.',
     s2: 'Adaptamos tu presupuesto', s2d: 'Diseñamos alternativas de acuerdo con tus necesidades y objetivos.',
@@ -45,6 +53,14 @@ const T = {
     places: ['Guatemala City', 'Lake Atitlán', 'Antigua Guatemala', 'Petén', 'Zone 10'],
     alts: ['Luxury property in Guatemala City', 'Luxury property at Lake Atitlán', 'Luxury property in Antigua Guatemala', 'Luxury property in Petén', 'Premium property in Zone 10'],
     goTo: 'Go to position ',
+    openProp: 'View locations in ', noLocs: 'No locations yet', oneLoc: '1 location', locsWord: 'locations',
+    addLoc: 'Add location', locDefault: 'Location', emptyH: 'No locations yet', emptyP: 'Add the first one to upload its images and address.',
+    nameL: 'Location name', sellerH: 'Seller', sellerUp: 'Upload seller photo', sellerRm: 'Remove photo', sellerName: 'Seller name', sellerWa: 'Seller WhatsApp', waHint: 'Include the country code, for example +502. If you type 8 digits, 502 is added automatically.', sellerLabel: 'Seller contact', waBtn: 'Contact on WhatsApp', waMsg: 'Hello, I am interested in the property: ', descL: 'Property description', descPh: 'Features, rooms, amenities, price and any important details…', descH: 'Description', addrL: 'Address or Google Maps link', photo: 'Image ', photosH: 'Location images', upload: 'Upload images',
+    uploadHint: 'You can select several images (JPG or PNG).', remove: 'Remove image', uploaded: 'Images added.', saved: 'Changes saved.',
+    del: 'Delete location', delSure: 'Confirm deletion?', view: 'Preview', edit: 'Back to editing', mapOpen: 'View on Google Maps',
+    prevImg: 'Previous image', nextImg: 'Next image', noImgs: 'This location has no images yet.',
+    storeNote: 'Changes are saved automatically in this browser. To show them to every visitor, the site must be connected to a server or database.',
+    storeErr: 'Could not save: the browser is out of space. Remove some images and try again.',
     servH: 'Everything you need for your property',
     s1: 'Buying & selling', s1d: 'Real estate nationwide with property development.',
     s2: 'We adapt to your budget', s2d: 'We design alternatives according to your needs and goals.',
@@ -77,9 +93,11 @@ function setLang(l) {
   document.documentElement.lang = l;
   $$('[data-i18n]').forEach((el) => { el.textContent = t[el.dataset.i18n]; });
   $$('[data-i18n-label]').forEach((el) => el.setAttribute('aria-label', t[el.dataset.i18nLabel]));
+  $$('[data-i18n-ph]').forEach((el) => el.setAttribute('placeholder', t[el.dataset.i18nPh]));
   $$('.pc').forEach((card, i) => {
     card.querySelector('img').alt = t.alts[i];
-    card.querySelector('.pn').textContent = t.places[i];
+    card.querySelector('.pn span').textContent = t.places[i];
+    card.querySelector('.pc-img').setAttribute('aria-label', t.openProp + t.places[i]);
   });
   $$('[data-ext]').forEach((el) => { el.textContent = t.ext[+el.dataset.ext]; });
   $$('.lg').forEach((b) => b.classList.toggle('on', b.dataset.lang === l));
@@ -134,6 +152,262 @@ $('#clientGo').addEventListener('click', () => { $('#clientNote').hidden = false
 
 /* Formulario de contacto (demostración) */
 $('#sendBtn').addEventListener('click', () => { $('#sentNote').hidden = false; });
+
+/* Propiedades: ubicaciones, imágenes y vista (se guardan en este navegador) */
+const STORE = 'armopaProps_v2';
+const BASE = [1, 2, 3, 4, 5].map((n) => 'assets/propiedad-' + n + '.jpg');
+let data = {};
+try { data = (JSON.parse(localStorage.getItem(STORE) || 'null') || {}).data || {}; } catch (e) {}
+let cur = -1, mode = 'edit', sel = -1, vi = 0, confirmDel = false;
+const pModal = $('#propModal');
+
+const list = () => (data[cur] = data[cur] || []);
+function persist() {
+  try { localStorage.setItem(STORE, JSON.stringify({ data })); return true; } catch (e) { return false; }
+}
+function note(msg) {
+  const el = $('#pMsg');
+  el.textContent = msg || '';
+  el.hidden = !msg;
+}
+function mapUrl(c) {
+  const q = (c.addr || '').trim() || [c.name, T[lang].places[cur], 'Guatemala'].join(', ');
+  return /^https?:\/\//i.test(q) ? q : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
+}
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+function pickLoc(i) { sel = i; vi = 0; confirmDel = false; note(''); render(); }
+
+function renderList() {
+  const t = T[lang];
+  const box = $('#pList');
+  box.innerHTML = '';
+  list().forEach((l, i) => {
+    const b = el('button', 'li' + (i === sel ? ' on' : ''));
+    b.type = 'button';
+    b.append(el('span', '', l.name || t.locDefault), el('small', '', String(l.imgs.length)));
+    b.addEventListener('click', () => pickLoc(i));
+    box.appendChild(b);
+  });
+  const add = el('button', 'btn btn-dark', t.addLoc);
+  add.type = 'button';
+  add.addEventListener('click', () => {
+    const l = list();
+    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', desc: '', imgs: [], sPhoto: '', sName: '', sWa: '' });
+    sel = l.length - 1; vi = 0; confirmDel = false;
+    note(persist() ? '' : t.storeErr);
+    render();
+  });
+  box.appendChild(add);
+}
+
+function renderEdit() {
+  const t = T[lang];
+  const l = list();
+  const c = l[sel];
+  renderList();
+  $('#pEmpty').hidden = !!c;
+  $('#pForm').hidden = !c;
+  if (!c) return;
+  $('#p-name').value = c.name;
+  $('#p-addr').value = c.addr;
+  $('#p-desc').value = c.desc || '';
+  $('#p-sname').value = c.sName || '';
+  $('#p-swa').value = c.sWa || '';
+  $('#sAvatar').hidden = !c.sPhoto;
+  $('#sAvatarPh').hidden = !!c.sPhoto;
+  $('#sRm').hidden = !c.sPhoto;
+  if (c.sPhoto) $('#sAvatar').src = c.sPhoto;
+  $('#pMap').href = mapUrl(c);
+  const del = $('#pDel');
+  del.textContent = confirmDel ? t.delSure : t.del;
+  del.classList.toggle('on', confirmDel);
+  const grid = $('#pGrid');
+  grid.innerHTML = '';
+  c.imgs.forEach((src, i) => {
+    const wrap = el('div', 'th');
+    const b = el('button', 'th-b');
+    b.type = 'button';
+    b.setAttribute('aria-label', t.photo + (i + 1));
+    const img = el('img');
+    img.src = src; img.alt = '';
+    b.appendChild(img);
+    b.addEventListener('click', () => { mode = 'view'; vi = i; render(); });
+    const x = el('button', 'th-x', '×');
+    x.type = 'button';
+    x.setAttribute('aria-label', t.remove);
+    x.addEventListener('click', () => {
+      c.imgs.splice(i, 1);
+      note(persist() ? t.saved : t.storeErr);
+      renderEdit();
+    });
+    wrap.append(b, x);
+    grid.appendChild(wrap);
+  });
+}
+
+function renderView() {
+  const t = T[lang];
+  const l = list();
+  const c = l[sel];
+  const imgs = c ? c.imgs : [];
+  vi = imgs.length ? Math.min(vi, imgs.length - 1) : 0;
+  $('#vImg').src = imgs.length ? imgs[vi] : BASE[cur];
+  $('#vImg').alt = c ? c.name : '';
+  $('#vPrev').hidden = $('#vNext').hidden = $('#vCount').hidden = imgs.length < 2;
+  $('#vCount').textContent = (vi + 1) + ' / ' + imgs.length;
+  $('#vNoImg').hidden = imgs.length > 0;
+  const th = $('#vThumbs');
+  th.innerHTML = '';
+  imgs.forEach((src, i) => {
+    const b = el('button', 'vt' + (i === vi ? ' on' : ''));
+    b.type = 'button';
+    b.setAttribute('aria-label', t.photo + (i + 1));
+    const img = el('img');
+    img.src = src; img.alt = '';
+    b.appendChild(img);
+    b.addEventListener('click', () => { vi = i; renderView(); });
+    th.appendChild(b);
+  });
+  $('#vName').textContent = c ? c.name : '';
+  const sd = c ? (c.sWa || '').replace(/\D/g, '') : '';
+  const has = !!(c && (c.sPhoto || (c.sName || '').trim() || sd));
+  $('#vSeller').hidden = !has;
+  $('#vsImg').hidden = !(c && c.sPhoto);
+  if (c && c.sPhoto) $('#vsImg').src = c.sPhoto;
+  $('#vsName').textContent = c ? (c.sName || '').trim() : '';
+  $('#vsNum').textContent = c ? (c.sWa || '').trim() : '';
+  $('#vsWa').hidden = !sd;
+  if (sd) $('#vsWa').href = 'https://wa.me/' + (sd.length === 8 ? '502' + sd : sd) + '?text=' + encodeURIComponent(t.waMsg + c.name);
+  const d = c ? (c.desc || '').trim() : '';
+  $('#vDesc').textContent = d;
+  $('#vDescBox').hidden = !d;
+  const a = c && (c.addr || '').trim();
+  $('#vAddr').textContent = a && !/^https?:\/\//i.test(a) ? a : t.places[cur] + ', Guatemala';
+  if (c) $('#vMap').href = mapUrl(c);
+  const chips = $('#vChips');
+  chips.innerHTML = '';
+  l.forEach((x, i) => {
+    const b = el('button', 'chip' + (i === sel ? ' on' : ''), x.name || t.locDefault);
+    b.type = 'button';
+    b.addEventListener('click', () => pickLoc(i));
+    chips.appendChild(b);
+  });
+}
+
+function render() {
+  const t = T[lang];
+  const l = list();
+  if (sel >= l.length) sel = l.length - 1;
+  $('#pTitle').textContent = t.places[cur];
+  $('#pSub').textContent = l.length === 0 ? t.noLocs : l.length === 1 ? t.oneLoc : l.length + ' ' + t.locsWord;
+  $('#pCard').classList.toggle('vw', mode === 'view');
+  $('#pEdit').hidden = mode !== 'edit';
+  $('#pViewBox').hidden = mode !== 'view';
+  if (mode === 'edit') renderEdit(); else renderView();
+}
+function openProp(i) {
+  cur = i; mode = 'edit'; confirmDel = false;
+  sel = list().length ? 0 : -1; vi = 0;
+  note('');
+  render();
+  pModal.hidden = false;
+}
+function closeProp() { pModal.hidden = true; cur = -1; }
+function shrink(file, max) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const r = Math.min(1, (max || 1200) / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * r);
+        c.height = Math.round(img.height * r);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        resolve(c.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = reject;
+      img.src = fr.result;
+    };
+    fr.onerror = reject;
+    fr.readAsDataURL(file);
+  });
+}
+
+$$('.pc-img').forEach((b) => b.addEventListener('click', () => openProp(+b.dataset.open)));
+$('#pClose').addEventListener('click', closeProp);
+$('#pScrim').addEventListener('click', closeProp);
+$('#p-name').addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.name = $('#p-name').value;
+  note(persist() ? '' : T[lang].storeErr);
+  renderList();
+});
+$('#p-addr').addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.addr = $('#p-addr').value;
+  note(persist() ? '' : T[lang].storeErr);
+  $('#pMap').href = mapUrl(c);
+});
+$('#p-desc').addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.desc = $('#p-desc').value;
+  note(persist() ? '' : T[lang].storeErr);
+});
+$('#p-sname').addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.sName = $('#p-sname').value;
+  note(persist() ? '' : T[lang].storeErr);
+});
+$('#p-swa').addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.sWa = $('#p-swa').value;
+  note(persist() ? '' : T[lang].storeErr);
+});
+$('#p-sphoto').addEventListener('change', async (e) => {
+  const f = (e.target.files || [])[0];
+  e.target.value = '';
+  const c = list()[sel]; if (!c || !f) return;
+  try { c.sPhoto = await shrink(f, 500); } catch (err) { return; }
+  note(persist() ? T[lang].saved : T[lang].storeErr);
+  renderEdit();
+});
+$('#sRm').addEventListener('click', () => {
+  const c = list()[sel]; if (!c) return;
+  c.sPhoto = '';
+  note(persist() ? T[lang].saved : T[lang].storeErr);
+  renderEdit();
+});
+$('#p-files').addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  const c = list()[sel]; if (!c) return;
+  const urls = [];
+  for (const f of files) {
+    try { urls.push(await shrink(f)); } catch (err) {}
+  }
+  if (!urls.length) return;
+  c.imgs = c.imgs.concat(urls);
+  note(persist() ? T[lang].uploaded : T[lang].storeErr);
+  renderEdit();
+});
+$('#pView').addEventListener('click', () => { mode = 'view'; vi = 0; note(''); render(); });
+$('#vEdit').addEventListener('click', () => { mode = 'edit'; render(); });
+$('#pDel').addEventListener('click', () => {
+  if (!confirmDel) { confirmDel = true; renderEdit(); return; }
+  list().splice(sel, 1);
+  sel = Math.max(0, sel - 1); confirmDel = false; vi = 0;
+  note(persist() ? T[lang].saved : T[lang].storeErr);
+  render();
+});
+$('#vPrev').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi <= 0 ? n - 1 : vi - 1; renderView(); });
+$('#vNext').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi >= n - 1 ? 0 : vi + 1; renderView(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeProp(); });
 
 setLang(lang);
 update();

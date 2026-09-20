@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20260920d">
+<link rel="stylesheet" href="styles.css?v=20260920k">
 </head>
 <body>
 
@@ -76,11 +76,11 @@
       <div class="car" id="car" style="--i:0">
         <button class="arr" type="button" id="prev" data-i18n-label="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
         <div class="car-vp"><div class="car-track">
-        <article class="pc"><img src="assets/propiedad-1.jpg" alt=""><div class="pn"></div></article>
-        <article class="pc"><img src="assets/propiedad-2.jpg" alt=""><div class="pn"></div></article>
-        <article class="pc"><img src="assets/propiedad-3.jpg" alt=""><div class="pn"></div></article>
-        <article class="pc"><img src="assets/propiedad-4.jpg" alt=""><div class="pn"></div></article>
-        <article class="pc"><img src="assets/propiedad-5.jpg" alt=""><div class="pn"></div></article>
+        <article class="pc"><button class="pc-img" type="button" data-open="0"><img src="assets/propiedad-1.jpg" alt=""></button><div class="pn"><span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"></path></svg></div></article>
+        <article class="pc"><button class="pc-img" type="button" data-open="1"><img src="assets/propiedad-2.jpg" alt=""></button><div class="pn"><span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"></path></svg></div></article>
+        <article class="pc"><button class="pc-img" type="button" data-open="2"><img src="assets/propiedad-3.jpg" alt=""></button><div class="pn"><span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"></path></svg></div></article>
+        <article class="pc"><button class="pc-img" type="button" data-open="3"><img src="assets/propiedad-4.jpg" alt=""></button><div class="pn"><span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"></path></svg></div></article>
+        <article class="pc"><button class="pc-img" type="button" data-open="4"><img src="assets/propiedad-5.jpg" alt=""></button><div class="pn"><span></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"></path></svg></div></article>
         </div></div>
         <button class="arr" type="button" id="next" data-i18n-label="next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
       </div>
@@ -179,6 +179,82 @@
   </div>
 </div>
 
-<script src="script.js?v=20260920d"></script>
+
+<div class="modal" id="propModal" hidden>
+  <button class="scrim" type="button" id="pScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="pCard" role="dialog" aria-modal="true" aria-labelledby="pTitle">
+    <button class="mx" type="button" id="pClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="pTitle"></h2><p class="ph-sub" id="pSub"></p></div>
+
+    <div class="ed" id="pEdit">
+      <div class="ll" id="pList"></div>
+      <div class="ee">
+        <div id="pEmpty" hidden><h3 data-i18n="emptyH"></h3><p class="hint" data-i18n="emptyP"></p></div>
+        <div id="pForm" hidden>
+          <div class="fld"><label for="p-name" data-i18n="nameL"></label><input id="p-name" type="text"></div>
+          <div class="fld" style="margin-top:16px"><label for="p-addr" data-i18n="addrL"></label><input id="p-addr" type="text"></div>
+          <div class="fld" style="margin-top:16px"><label for="p-desc" data-i18n="descL"></label><textarea id="p-desc" rows="5" data-i18n-ph="descPh"></textarea></div>
+          <div class="up" style="margin-top:20px">
+            <h3 data-i18n="photosH"></h3>
+            <div class="acts">
+              <button class="btn btn-gold" type="button" id="pView" data-i18n="view"></button>
+              <input id="p-files" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold" for="p-files" data-i18n="upload"></label>
+            </div>
+            <p class="hint" data-i18n="uploadHint"></p>
+          </div>
+          <div class="tg" id="pGrid" style="margin-top:16px"></div>
+          <div class="seller" style="margin-top:20px">
+            <h3 data-i18n="sellerH"></h3>
+            <div class="srow">
+              <img class="avatar" id="sAvatar" alt="" hidden>
+              <div class="avatar ph" id="sAvatarPh"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg></div>
+              <div class="acts">
+                <input id="p-sphoto" class="sr" type="file" accept="image/*">
+                <label class="btn btn-gold btn-sm" for="p-sphoto" data-i18n="sellerUp"></label>
+                <button class="btn btn-danger btn-sm" type="button" id="sRm" data-i18n="sellerRm" hidden></button>
+              </div>
+            </div>
+            <div class="fld"><label for="p-sname" data-i18n="sellerName"></label><input id="p-sname" type="text"></div>
+            <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"><p class="hint" data-i18n="waHint"></p></div>
+          </div>
+          <div class="acts" style="margin-top:20px">
+            <a class="btn btn-line-dark" id="pMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
+            <button class="btn btn-danger" type="button" id="pDel"></button>
+          </div>
+        </div>
+        <p class="note" id="pMsg" hidden></p>
+        <p class="hint" data-i18n="storeNote"></p>
+      </div>
+    </div>
+
+    <div id="pViewBox" hidden>
+      <div class="vw-stage">
+        <img class="vw-img" id="vImg" alt="">
+        <button class="arr vw-prev" type="button" id="vPrev" data-i18n-label="prevImg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+        <button class="arr vw-next" type="button" id="vNext" data-i18n-label="nextImg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+        <span class="vw-count" id="vCount"></span>
+      </div>
+      <div class="vw-thumbs" id="vThumbs"></div>
+      <p class="vw-noimg" id="vNoImg" data-i18n="noImgs" hidden></p>
+      <div class="vw-info">
+        <div><h3 class="vw-name" id="vName"></h3><p class="vw-addr" id="vAddr"></p></div>
+        <div class="acts">
+          <a class="btn btn-gold" id="vMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
+          <button class="btn btn-line" type="button" id="vEdit" data-i18n="edit"></button>
+        </div>
+      </div>
+      <div class="vw-desc" id="vDescBox" hidden><h4 data-i18n="descH"></h4><p id="vDesc"></p></div>
+      <div class="vw-seller" id="vSeller" hidden>
+        <img class="vw-avatar" id="vsImg" alt="" hidden>
+        <div class="vw-sinfo"><p class="vw-slabel" data-i18n="sellerLabel"></p><p class="vw-sname" id="vsName"></p><p class="vw-snum" id="vsNum"></p></div>
+        <a class="btn btn-wa" id="vsWa" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="waBtn"></span></a>
+      </div>
+      <div class="chips" id="vChips"></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js?v=20260920k"></script>
 </body>
 </html>
