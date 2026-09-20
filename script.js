@@ -6,126 +6,253 @@ function estimate(i, d, lang) {
   const Qf = (n) => 'Q ' + Math.round(n).toLocaleString('en-US');
   const rng = (a, b) => Qf(a) + ' – ' + Qf(b);
   const rnd = (n) => (n < 1000 ? Math.round(n / 10) * 10 : Math.round(n / 50) * 50);
-  const WORDS = { un: 1, una: 1, uno: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, media: 0.5, medio: 0.5, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, half: 0.5 };
-  const toNum = (s) => { s = String(s).toLowerCase(); return WORDS[s] !== undefined ? WORDS[s] : parseFloat(s.replace(',', '.')); };
-  const need = (d.need || '').toLowerCase();
-  const timeTxt = (d.time || '').toLowerCase();
-  const mDur = timeTxt.match(/(\d+(?:[.,]\d+)?|un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|media|medio|one|two|three|four|five|six|seven|eight|nine|ten|half)\s*(horas?|hrs?|hours?|d[ií]as?|days?|semanas?|weeks?|meses|mes|months?|a[nñ]os?|years?)/);
-  let hours = null, days = null, months = null, durTxt = '';
+  const WORDS = { un: 1, una: 1, uno: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, doce: 12, quince: 15, veinte: 20, treinta: 30, media: 0.5, medio: 0.5, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, twelve: 12, fifteen: 15, twenty: 20, thirty: 30, half: 0.5 };
+  const numOf = (s) => { s = String(s); return /^\d{1,3}(,\d{3})+(\.\d+)?$/.test(s) ? parseFloat(s.replace(/,/g, '')) : parseFloat(s.replace(',', '.')); };
+  const toNum = (s) => { s = String(s).toLowerCase(); return WORDS[s] !== undefined ? WORDS[s] : numOf(s); };
+  const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const nk = norm(d.need);
+  const tk = norm(d.time);
+  const has = (re) => re.test(nk);
+
+  /* --- tiempo estimado --- */
+  const mDur = tk.match(/(\d+(?:[.,]\d+)?|un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|doce|quince|veinte|treinta|media|medio|one|two|three|four|five|six|seven|eight|nine|ten|twelve|fifteen|twenty|thirty|half)\s*(horas?|hrs?|hours?|dias?|days?|semanas?|weeks?|meses|mes|months?|anos?|years?)/);
+  let hours = null, days = null, months = null, durTxt = '', years = null;
   if (mDur) {
     const n = toNum(mDur[1]);
     const u = mDur[2];
     if (/^(hora|hrs?|hour)/.test(u)) { hours = n; days = n / 8; months = n / 176; durTxt = n + L(n === 1 ? ' hora' : ' horas', n === 1 ? ' hour' : ' hours'); }
-    else if (/^(d[ií]a|day)/.test(u)) { days = n; hours = n * 8; months = n / 22; durTxt = n + L(n === 1 ? ' día' : ' días', n === 1 ? ' day' : ' days'); }
+    else if (/^(dia|day)/.test(u)) { days = n; hours = n * 8; months = n / 22; durTxt = n + L(n === 1 ? ' día' : ' días', n === 1 ? ' day' : ' days'); }
     else if (/^(semana|week)/.test(u)) { days = n * 5; hours = days * 8; months = n / 4.3; durTxt = n + L(n === 1 ? ' semana' : ' semanas', n === 1 ? ' week' : ' weeks'); }
     else if (/^(mes|month)/.test(u)) { months = n; days = n * 22; hours = days * 8; durTxt = n + L(n === 1 ? ' mes' : ' meses', n === 1 ? ' month' : ' months'); }
-    else { months = n * 12; days = months * 22; hours = days * 8; durTxt = n + L(n === 1 ? ' año' : ' años', n === 1 ? ' year' : ' years'); }
+    else { years = n; months = n * 12; days = months * 22; hours = days * 8; durTxt = n + L(n === 1 ? ' año' : ' años', n === 1 ? ' year' : ' years'); }
   }
-  const mM3 = need.match(/(\d[\d.,]*)\s*(m3|m³|metros?\s*c[uú]bicos?|cubic\s*met)/);
-  const m3 = mM3 ? parseFloat(mM3[1].replace(/,/g, '')) : null;
-  const mTrips = need.match(/(\d+)\s*(viajes?|trips?)/);
-  const trips = mTrips ? parseInt(mTrips[1], 10) : null;
-  const mAmt = need.match(/(?:\bq|gtq)\s?(\d[\d.,]*)|(\d[\d.,]*)\s*(?:quetzales|gtq)/);
-  const amt = mAmt ? parseFloat((mAmt[1] || mAmt[2]).replace(/,/g, '')) : null;
+
+  /* --- datos de la descripción --- */
+  const g = (re) => { const m = nk.match(re); return m ? numOf(m[1]) : null; };
+  const m3 = g(/(\d[\d.,]*)\s*(?:m3|m³|metros?\s*cubicos?|cubic\s*met)/);
+  const m2 = g(/(\d[\d.,]*)\s*(?:m2|m²|mts?2|metros?\s*cuadrados?|sq\s*m)/);
+  const depth = g(/(?:profundidad|espesor|depth)\s*(?:de|of)?\s*(\d[\d.,]*)\s*(?:m\b|mt|mts|metros?)/) || g(/(\d[\d.,]*)\s*(?:m\b|mt|mts|metros?)\s*de\s*(?:profundidad|espesor|depth)/);
+  const trips = g(/(\d+)\s*(?:viajes?|trips?)/);
+  const points = g(/(\d+)\s*(?:puntos?|tomacorrientes?|tomas?|lamparas?|luminarias?|interruptores?|breakers?|outlets?)/);
+  const bedrooms = g(/(\d+)\s*(?:habitaci|dormitorio|cuarto|bedroom)/);
+  const mAmt = nk.match(/(?:\bq|gtq)\s?(\d[\d.,]*)|(\d[\d.,]*)\s*(?:quetzales|gtq)/);
+  const amt = mAmt ? numOf(mAmt[1] || mAmt[2]) : null;
 
   const lines = [];
   const assumed = [];
   let lo = 0, hi = 0;
-  const machine = () => {
-    const h = hours != null ? Math.max(hours, 4) : 8;
-    if (hours == null) assumed.push(L('Tiempo no indicado: se asumió 1 día de trabajo (8 horas).', 'Time not given: 1 working day (8 hours) assumed.'));
-    lo = 350 * h + 800;
-    hi = 650 * h + 2500;
-    lines.push([L('Tarifa referencial', 'Reference rate'), rng(350, 650) + L(' por hora', ' per hour')]);
-    lines.push([L('Horas consideradas', 'Hours considered'), h + ' h' + (hours != null && hours < 4 ? L(' (mínimo)', ' (minimum)') : '')]);
+  const add = (a, b) => { lo += a; hi += b; };
+  const note = (es, e) => assumed.push(L(es, e));
+
+  /* --- máquinas --- */
+  const MACH = [
+    [/retroexcavadora|backhoe/, 350, 550, L('Retroexcavadora', 'Backhoe loader')],
+    [/excavadora|excavator/, 390, 650, L('Excavadora', 'Excavator')],
+    [/motoniveladora|niveladora|grader/, 500, 850, L('Motoniveladora', 'Motor grader')],
+    [/compactadora|rodillo|vibrocompactador|roller/, 300, 550, L('Compactadora / rodillo', 'Compactor / roller')],
+    [/minicargador|bobcat|skid/, 300, 500, L('Minicargador', 'Skid steer')],
+    [/grua|montacarga|crane|forklift/, 400, 800, L('Grúa / montacargas', 'Crane / forklift')]
+  ];
+  const mach = MACH.find((m) => m[0].test(nk));
+  const mLo = mach ? mach[1] : 350, mHi = mach ? mach[2] : 650;
+  const machineCost = (h) => [mLo * h + 800, mHi * h + 2500];
+  const machineLines = (h, forced) => {
+    lines.push([mach ? L('Equipo detectado', 'Detected equipment') : L('Tarifa referencial', 'Reference rate'), (mach ? mach[3] + ' · ' : '') + rng(mLo, mHi) + L(' por hora', ' per hour')]);
+    lines.push([L('Horas consideradas', 'Hours considered'), h + ' h' + (forced ? L(' (mínimo)', ' (minimum)') : '')]);
     lines.push([L('Movilización de la máquina', 'Machine mobilization'), rng(800, 2500)]);
   };
+  const avg = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+
   switch (i) {
-    case 0:
-      machine();
+    case 0: {
+      let h = hours;
+      if (h == null && m3 != null) { h = Math.max(4, Math.ceil(m3 / 30)); note('Horas estimadas según el volumen (unos 30 m³ por hora).', 'Hours estimated from the volume (about 30 m³ per hour).'); }
+      else if (h == null && m2 != null && has(/nivel/)) { h = Math.max(4, Math.ceil(m2 / 400)); note('Horas estimadas según el área (unos 400 m² por hora de nivelación).', 'Hours estimated from the area (about 400 m² per hour of leveling).'); }
+      else if (h == null) { h = 8; note('Tiempo no indicado: se asumió 1 día de trabajo (8 horas).', 'Time not given: 1 working day (8 hours) assumed.'); }
+      const hh = Math.max(h, 4);
+      const c = machineCost(hh);
+      add(c[0], c[1]);
+      machineLines(hh, h < 4);
       break;
+    }
     case 1: {
+      const interior = has(/interior|departamento|fuera de|xela|quetzaltenango|coban|peten|escuintla|antigua|chimaltenango|huehue|km\b|kilometro/);
+      const tLo = interior ? 800 : 300, tHi = interior ? 3000 : 900;
       let t = trips;
-      if (t == null && m3 != null) t = Math.max(1, Math.ceil(m3 / 7));
-      if (t == null && days != null) t = Math.max(1, Math.ceil(days * 4));
-      if (t == null) { t = 4; assumed.push(L('Cantidad no indicada: se asumieron 4 viajes. Indica viajes o m³ (por ejemplo "20 m³").', 'Quantity not given: 4 trips assumed. Enter trips or m³ (e.g. "20 m³").')); }
-      lo = 300 * t; hi = 900 * t;
-      lines.push([L('Tarifa por viaje (área metropolitana)', 'Rate per trip (metro area)'), rng(300, 900)]);
-      lines.push([L('Viajes considerados', 'Trips considered'), String(t)]);
-      if (m3 != null) lines.push([L('Volumen (camión de 7 m³)', 'Volume (7 m³ truck)'), m3 + ' m³']);
-      lines.push([L('Fuera de la ciudad', 'Outside the city'), L('desde Q 800 por viaje', 'from Q 800 per trip')]);
+      let why = '';
+      if (t == null && m3 != null) { t = Math.max(1, Math.ceil(m3 / 7)); why = L('según el volumen (camión de 7 m³)', 'from the volume (7 m³ truck)'); }
+      if (t == null && days != null) { t = Math.max(1, Math.ceil(days * 4)); why = L('según el tiempo (unos 4 viajes por día)', 'from the time (about 4 trips per day)'); }
+      if (t == null) { t = 4; note('Cantidad no indicada: se asumieron 4 viajes. Indica viajes o m³ (por ejemplo "20 m³").', 'Quantity not given: 4 trips assumed. Enter trips or m³ (e.g. "20 m³").'); }
+      add(tLo * t, tHi * t);
+      lines.push([interior ? L('Tarifa por viaje (interior del país)', 'Rate per trip (outside the city)') : L('Tarifa por viaje (área metropolitana)', 'Rate per trip (metro area)'), rng(tLo, tHi)]);
+      lines.push([L('Viajes considerados', 'Trips considered'), t + (why ? ' · ' + why : '')]);
+      if (has(/escombro|desalojo|demolicion/)) lines.push([L('Material', 'Material'), L('escombro: puede requerir permiso de descarga', 'debris: may require a dumping permit')]);
       break;
     }
     case 2: {
-      let mo = months != null ? Math.max(1, Math.round(months * 10) / 10) : 1;
-      if (months == null) assumed.push(L('Tiempo no indicado: se asumió 1 mes de renta.', 'Time not given: 1 month of rent assumed.'));
-      lo = 2500 * mo; hi = 9000 * mo;
-      lines.push([L('Renta mensual (apartamento de 1 a 2 dormitorios)', 'Monthly rent (1–2 bedroom apartment)'), rng(2500, 9000)]);
+      let rl = 2500, rh = 9000, zoneTxt = '';
+      const z = nk.match(/zona\s*(\d{1,2})/);
+      if (z) {
+        const n = +z[1];
+        if ([10, 14, 15, 16].includes(n)) { rl = 6000; rh = 15000; }
+        else if ([1, 4, 5, 11, 12, 13].includes(n)) { rl = 3000; rh = 7500; }
+        else { rl = 2500; rh = 6500; }
+        zoneTxt = L('Zona ', 'Zone ') + n;
+      } else if (has(/cayala/)) { rl = 7000; rh = 15000; zoneTxt = 'Cayalá'; }
+      else if (has(/mixco|villa nueva|carretera a el salvador|san jose pinula|santa catarina|fraijanes/)) { rl = 2500; rh = 7000; zoneTxt = L('Área metropolitana', 'Metro area'); }
+      if (bedrooms != null) { const f = bedrooms <= 1 ? 0.8 : bedrooms === 2 ? 1 : bedrooms === 3 ? 1.4 : 1.9; rl *= f; rh *= f; }
+      if (has(/amueblad|furnish/)) { rl *= 1.1; rh *= 1.1; }
+      const mo = months != null ? Math.max(1, Math.round(months * 10) / 10) : 1;
+      if (months == null) note('Tiempo no indicado: se asumió 1 mes de renta.', 'Time not given: 1 month of rent assumed.');
+      add(rl * mo, rh * mo);
+      lines.push([L('Renta mensual', 'Monthly rent') + (zoneTxt ? ' · ' + zoneTxt : '') + (bedrooms != null ? ' · ' + bedrooms + L(' hab.', ' bd.') : ''), rng(rl, rh)]);
       lines.push([L('Meses considerados', 'Months considered'), String(mo)]);
       lines.push([L('Depósito habitual', 'Usual deposit'), L('1 a 2 meses de renta', '1 to 2 months of rent')]);
+      if (bedrooms == null && !zoneTxt) note('Indica la zona y las habitaciones (por ejemplo "zona 14, 2 habitaciones") para afinar la renta.', 'Enter the zone and bedrooms (e.g. "zone 14, 2 bedrooms") to refine the rent.');
+      if (has(/edificio|building/)) note('Un edificio completo requiere cotización a la medida; el rango es por apartamento.', 'A whole building needs a custom quote; the range is per apartment.');
       break;
     }
     case 3: {
-      const dd = days != null ? Math.max(1, days) : 1;
-      if (days == null) assumed.push(L('Tiempo no indicado: se asumió 1 día de trabajo.', 'Time not given: 1 working day assumed.'));
-      lo = 450 * dd; hi = 1200 * dd;
-      lines.push([L('Cuadrilla por día (maestro + ayudantes)', 'Crew per day (foreman + helpers)'), rng(450, 1200)]);
-      lines.push([L('Días considerados', 'Days considered'), String(Math.round(dd * 10) / 10)]);
+      const JOBS = [
+        [/impermeabiliz|waterproof/, 40, 90, L('Impermeabilización (mano de obra)', 'Waterproofing (labor)')],
+        [/pintur|pintar|paint/, 25, 60, L('Pintura (mano de obra)', 'Painting (labor)')],
+        [/repello|plaster/, 60, 120, L('Repello', 'Plastering')],
+        [/piso|ceramic|azulejo|tile/, 90, 200, L('Piso o azulejo (colocación)', 'Flooring or tile (installation)')]
+      ];
+      const job = m2 != null ? JOBS.find((j) => j[0].test(nk)) : null;
+      const dd = days != null ? Math.max(1, days) : null;
+      const byCrew = dd != null ? [450 * dd, 1200 * dd] : null;
+      let byArea = null;
+      if (job) { byArea = [job[1] * m2, job[2] * m2]; lines.push([job[3], rng(job[1], job[2]) + L(' por m²', ' per m²')]); lines.push([L('Área considerada', 'Area considered'), m2 + ' m²']); }
+      if (byArea && byCrew) { const c = avg(byArea, byCrew); add(c[0], c[1]); lines.push([L('Cuadrilla por tiempo', 'Crew by time'), rng(byCrew[0], byCrew[1]) + ' · ' + durTxt]); }
+      else if (byArea) add(byArea[0], byArea[1]);
+      else {
+        const d2 = dd != null ? dd : 1;
+        if (dd == null) note('Tiempo no indicado: se asumió 1 día de trabajo.', 'Time not given: 1 working day assumed.');
+        add(450 * d2, 1200 * d2);
+        lines.push([L('Cuadrilla por día (maestro + ayudantes)', 'Crew per day (foreman + helpers)'), rng(450, 1200)]);
+        lines.push([L('Días considerados', 'Days considered'), String(Math.round(d2 * 10) / 10)]);
+        if (m2 != null || !job) note('Indica el trabajo y los m² (por ejemplo "pintar 120 m²") para estimar por área.', 'Enter the job and the m² (e.g. "paint 120 m²") to estimate by area.');
+      }
       lines.push([L('Materiales', 'Materials'), L('aparte (10%–30% de margen si los compra el contratista)', 'not included (10%–30% markup if the contractor buys them)')]);
       break;
     }
     case 4: {
-      const dd = days != null ? Math.max(0.5, days) : 1;
-      if (days == null) assumed.push(L('Tiempo no indicado: se asumió 1 día de trabajo.', 'Time not given: 1 working day assumed.'));
-      lo = Math.max(150, 300 * dd); hi = 800 * dd;
-      lines.push([L('Mano de obra por día', 'Labor per day'), rng(300, 800)]);
-      lines.push([L('Días considerados', 'Days considered'), String(Math.round(dd * 10) / 10)]);
-      lines.push([L('Visita de diagnóstico', 'Diagnostic visit'), rng(100, 300)]);
-      lines.push([L('Referencias', 'References'), L('fuga sencilla Q 200–600 · tablero eléctrico Q 1,500–4,000', 'simple leak Q 200–600 · electrical panel Q 1,500–4,000')]);
+      const pts = points != null ? points : 1;
+      const JOBS = [
+        [/tablero|panel|breaker principal/, 1500, 4000, L('Tablero eléctrico', 'Electrical panel'), 1],
+        [/cableado completo|instalacion electrica completa|rewir/, m2 != null ? 150 * m2 : 15000, m2 != null ? 270 * m2 : 40000, L('Cableado completo', 'Full rewiring'), 1],
+        [/tomacorriente|toma\b|outlet|interruptor|switch|lampara|luminaria|punto/, 100, 300, L('Puntos eléctricos', 'Electrical points'), pts],
+        [/ventilador|fan/, 200, 600, L('Ventilador de techo', 'Ceiling fan'), 1],
+        [/fuga.*pared|pared.*fuga|leak.*wall/, 1000, 3000, L('Fuga en pared (rompe y repara)', 'Wall leak (break and repair)'), 1],
+        [/fuga|gotea|leak/, 200, 600, L('Reparación de fuga sencilla', 'Simple leak repair'), 1],
+        [/drenaje principal|maquina|colector/, 400, 1200, L('Destape de drenaje con máquina', 'Drain cleaning with machine'), 1],
+        [/destap|obstru|clog|drain/, 150, 400, L('Destape', 'Drain unclogging'), 1],
+        [/tinaco|tanque|cisterna|tank/, 800, 2500, L('Instalación de tinaco / tanque', 'Water tank installation'), 1],
+        [/calentador|heater/, 400, 1000, L('Instalación de calentador', 'Water heater installation'), 1]
+      ];
+      const seen = new Set();
+      let hit = 0;
+      JOBS.forEach((j) => {
+        if (!j[0].test(nk)) return;
+        if (j[3] === JOBS[4][3] && seen.has('fuga')) return;
+        if (/fuga|leak/i.test(j[3])) { if (seen.has('fuga')) return; seen.add('fuga'); }
+        hit++;
+        const q = j[4];
+        add(j[1] * q, j[2] * q);
+        lines.push([j[3] + (q > 1 ? ' × ' + q : ''), rng(j[1] * q, j[2] * q)]);
+      });
+      if (!hit) {
+        const dd = days != null ? Math.max(0.5, days) : 1;
+        if (days == null) note('Tiempo no indicado: se asumió 1 día de trabajo.', 'Time not given: 1 working day assumed.');
+        add(Math.max(150, 300 * dd), 800 * dd);
+        lines.push([L('Mano de obra por día', 'Labor per day'), rng(300, 800)]);
+        lines.push([L('Días considerados', 'Days considered'), String(Math.round(dd * 10) / 10)]);
+        lines.push([L('Visita de diagnóstico', 'Diagnostic visit'), rng(100, 300)]);
+        note('Describe el trabajo (por ejemplo "fuga en pared" o "tablero eléctrico") para estimar por servicio.', 'Describe the job (e.g. "wall leak" or "electrical panel") to estimate per service.');
+      } else if (durTxt) {
+        lines.push([L('Tiempo indicado', 'Time entered'), durTxt + L(' (los trabajos por servicio no dependen del tiempo)', ' (per-service jobs do not depend on time)')]);
+      }
+      lines.push([L('Visita de diagnóstico', 'Diagnostic visit'), rng(100, 300) + L(' (suele descontarse al contratar)', ' (usually deducted when hired)')]);
       break;
     }
     case 5: {
-      const h = hours != null ? Math.max(1, hours) : 2;
-      if (hours == null) assumed.push(L('Tiempo no indicado: se asumieron 2 horas de asesoría.', 'Time not given: 2 hours of advice assumed.'));
-      lo = 400 * h; hi = 1000 * h;
-      lines.push([L('Honorarios por hora de asesoría', 'Fees per hour of advice'), rng(400, 1000)]);
-      lines.push([L('Horas consideradas', 'Hours considered'), String(Math.round(h * 10) / 10)]);
-      lines.push([L('Referencias', 'References'), L('consulta inicial Q 200–1,000 · dictamen escrito Q 800–3,000', 'initial consultation Q 200–1,000 · written opinion Q 800–3,000')]);
-      if (/compraventa|escritura|traspaso|purchase|deed/.test(need)) {
-        lines.push([L('Compraventa de inmueble', 'Property purchase'), L('1% – 2.5% del valor', '1% – 2.5% of the value')]);
-        if (amt != null) { lo += amt * 0.01; hi += amt * 0.025; lines.push([L('Valor indicado', 'Value entered'), Qf(amt)]); }
-        else assumed.push(L('Para estimar la compraventa indica el valor, por ejemplo "Q 500,000".', 'To estimate the purchase, enter the value, e.g. "Q 500,000".'));
+      const JOBS = [
+        [/divorcio.*mutuo|mutuo.*divorcio|divorce.*mutual/, 3500, 10000, L('Divorcio por mutuo acuerdo', 'Uncontested divorce')],
+        [/divorcio.*contencios|contencios.*divorcio|contested/, 15000, 50000, L('Divorcio contencioso', 'Contested divorce')],
+        [/divorcio|divorce/, 3500, 15000, L('Divorcio (mutuo Q 3,500–10,000 · contencioso Q 15,000–50,000)', 'Divorce (uncontested Q 3,500–10,000 · contested Q 15,000–50,000)')],
+        [/constitucion|sociedad|srl|s\.a\b|empresa nueva|company/, 3500, 15000, L('Constitución de sociedad', 'Company formation')],
+        [/laboral|despido|labor claim/, 3000, 15000, L('Demanda laboral (más cuota litis 30%–40% si se gana)', 'Labor claim (plus 30%–40% contingency fee if won)')],
+        [/penal|criminal/, 5000, 15000, L('Caso penal sencillo', 'Simple criminal case')],
+        [/contrato|arrendamiento|dictamen|opinion|contract|lease/, 800, 3000, L('Contrato o dictamen escrito', 'Contract or written opinion')]
+      ];
+      let hit = 0;
+      JOBS.forEach((j) => { if (j[0].test(nk) && !(hit && /^divorcio \(|divorce \(/i.test(j[3]))) { hit++; add(j[1], j[2]); lines.push([j[3], rng(j[1], j[2])]); } });
+      if (has(/compraventa|escritura|traspaso|inmueble|purchase|deed/)) {
+        hit++;
+        if (amt != null) { add(amt * 0.01, amt * 0.025); lines.push([L('Compraventa de inmueble (1% – 2.5% del valor)', 'Property purchase (1% – 2.5% of value)'), rng(amt * 0.01, amt * 0.025)]); lines.push([L('Valor indicado', 'Value entered'), Qf(amt)]); }
+        else { add(3000, 15000); lines.push([L('Compraventa de inmueble (1% – 2.5% del valor)', 'Property purchase (1% – 2.5% of value)'), rng(3000, 15000)]); note('Indica el valor del inmueble (por ejemplo "Q 500,000") para afinar los honorarios.', 'Enter the property value (e.g. "Q 500,000") to refine the fees.'); }
       }
+      if (!hit) {
+        const h = hours != null ? Math.max(1, hours) : 2;
+        if (hours == null) note('Tiempo no indicado: se asumieron 2 horas de asesoría.', 'Time not given: 2 hours of advice assumed.');
+        add(400 * h, 1000 * h);
+        lines.push([L('Honorarios por hora de asesoría', 'Fees per hour of advice'), rng(400, 1000)]);
+        lines.push([L('Horas consideradas', 'Hours considered'), String(Math.round(h * 10) / 10)]);
+        lines.push([L('Referencias', 'References'), L('consulta inicial Q 200–1,000 · dictamen escrito Q 800–3,000', 'initial consultation Q 200–1,000 · written opinion Q 800–3,000')]);
+        note('Describe el asunto (por ejemplo "divorcio", "contrato de arrendamiento" o "compraventa") para estimar por trámite.', 'Describe the matter (e.g. "divorce", "lease contract" or "purchase") to estimate per procedure.');
+      } else if (durTxt) lines.push([L('Tiempo indicado', 'Time entered'), durTxt]);
       break;
     }
     case 6: {
-      lo = 0; hi = 500;
+      add(0, 500);
       lines.push([L('Orientación y acompañamiento', 'Guidance and support'), rng(0, 500)]);
       lines.push([L('Tasa hipotecaria de referencia', 'Reference mortgage rate'), L('≈ 7% – 9% anual (varía por programa y banco)', '≈ 7% – 9% per year (varies by program and bank)')]);
+      if (has(/primera casa|fha|vivienda social/)) lines.push([L('Programa', 'Program'), L('Mi Primera Casa / FHA (tasa preferencial)', 'Mi Primera Casa / FHA (preferential rate)')]);
       if (amt != null) {
-        lo += amt * 0.02; hi += amt * 0.05;
+        add(amt * 0.02, amt * 0.05);
         lines.push([L('Monto del crédito', 'Loan amount'), Qf(amt)]);
         lines.push([L('Gastos de gestión (seguro FHA, avalúo, escrituración)', 'Processing costs (FHA insurance, appraisal, deed)'), L('2% – 5% del monto', '2% – 5% of the amount')]);
-      } else assumed.push(L('Para estimar los gastos del crédito indica el monto, por ejemplo "Q 400,000".', 'To estimate loan costs, enter the amount, e.g. "Q 400,000".'));
+        const yrs = years != null ? years : (months != null && months >= 60 ? months / 12 : null);
+        if (yrs) {
+          const pm = (r) => { const m = r / 12, n = Math.round(yrs * 12); return (amt * m) / (1 - Math.pow(1 + m, -n)); };
+          lines.push([L('Cuota mensual aproximada (' + yrs + ' años, 7%–9%)', 'Approx. monthly payment (' + yrs + ' years, 7%–9%)'), rng(pm(0.07), pm(0.09))]);
+        } else note('Indica el plazo (por ejemplo "20 años") para calcular la cuota mensual aproximada.', 'Enter the term (e.g. "20 years") to calculate the approximate monthly payment.');
+      } else note('Indica el monto del crédito (por ejemplo "Q 400,000") para estimar los gastos y la cuota.', 'Enter the loan amount (e.g. "Q 400,000") to estimate costs and payment.');
       break;
     }
     default: {
-      if (m3 != null) {
-        lo = 120 * m3 + 800; hi = 350 * m3 + 2500;
-        lines.push([L('Excavación, carga y relleno por m³', 'Excavation, loading and fill per m³'), rng(120, 350)]);
-        lines.push([L('Volumen considerado', 'Volume considered'), m3 + ' m³']);
-        lines.push([L('Movilización de la máquina', 'Machine mobilization'), rng(800, 2500)]);
-      } else {
-        machine();
-        assumed.push(L('Indica los metros cúbicos (por ejemplo "200 m³") para estimar por volumen.', 'Enter cubic meters (e.g. "200 m³") to estimate by volume.'));
+      let byVol = null, byTime = null;
+      let vol = m3;
+      if (vol == null && m2 != null && !has(/nivel/)) { vol = m2 * (depth != null ? depth : 0.3); note('Volumen calculado con el área' + (depth != null ? ' y la profundidad indicadas' : ' y una profundidad de 0.30 m') + '.', 'Volume calculated from the area' + (depth != null ? ' and depth entered' : ' and a depth of 0.30 m') + '.'); }
+      else if (vol == null && m2 != null && depth != null) vol = m2 * depth;
+      const rock = has(/roca|piedra|rock/);
+      const vLo = rock ? 200 : 90, vHi = rock ? 450 : 250;
+      if (vol != null) {
+        byVol = [vLo * vol + 800, vHi * vol + 2500];
+        lines.push([rock ? L('Excavación en roca por m³', 'Rock excavation per m³') : L('Excavación, carga y relleno por m³', 'Excavation, loading and fill per m³'), rng(vLo, vHi)]);
+        lines.push([L('Volumen considerado', 'Volume considered'), Math.round(vol * 10) / 10 + ' m³']);
+      } else if (m2 != null && has(/nivel/)) {
+        byVol = [15 * m2 + 800, 45 * m2 + 2500];
+        lines.push([L('Nivelación de terreno por m²', 'Land leveling per m²'), rng(15, 45)]);
+        lines.push([L('Área considerada', 'Area considered'), m2 + ' m²']);
       }
+      if (hours != null) {
+        const hh = Math.max(hours, 4);
+        byTime = machineCost(hh);
+        lines.push([mach ? mach[3] : L('Máquina por tiempo', 'Machine by time'), rng(mLo, mHi) + L(' por hora', ' per hour') + ' · ' + hh + ' h']);
+      }
+      if (byVol && byTime) { add(Math.max(byVol[0], byTime[0]), Math.max(byVol[1], byTime[1])); lines.push([L('Movilización de la máquina', 'Machine mobilization'), rng(800, 2500)]); }
+      else if (byVol) { add(byVol[0], byVol[1]); lines.push([L('Movilización de la máquina', 'Machine mobilization'), rng(800, 2500)]); }
+      else if (byTime) { add(byTime[0], byTime[1]); lines.push([L('Movilización de la máquina', 'Machine mobilization'), rng(800, 2500)]); note('Indica los m³ o los m² (por ejemplo "200 m³" o "500 m² de nivelación") para estimar por volumen.', 'Enter the m³ or m² (e.g. "200 m³" or "500 m² leveling") to estimate by volume.'); }
+      else { const c = machineCost(8); add(c[0], c[1]); machineLines(8, false); note('Indica los m³ o el tiempo para afinar el cálculo. Se asumió 1 día de máquina.', 'Enter the m³ or time to refine the estimate. 1 machine day assumed.'); }
     }
   }
   const f = { alta: [1.1, 1.25], baja: [0.95, 1] }[d.prio] || [1, 1];
   lo *= f[0]; hi *= f[1];
   if (d.prio === 'alta') lines.push([L('Recargo por urgencia (prioridad alta)', 'Urgency surcharge (high priority)'), '+10% – +25%']);
   else if (d.prio === 'baja') lines.push([L('Programación flexible (prioridad baja)', 'Flexible scheduling (low priority)'), L('hasta −5%', 'up to −5%')]);
-  else if (!d.prio) assumed.push(L('Prioridad no indicada: se asumió media.', 'Priority not given: medium assumed.'));
+  else if (!d.prio) note('Prioridad no indicada: se asumió media.', 'Priority not given: medium assumed.');
   lo = rnd(lo); hi = rnd(hi);
   if (hi < lo) hi = lo;
   return {
@@ -133,7 +260,7 @@ function estimate(i, d, lang) {
     lines: lines.map(([k, v]) => ({ k, v })),
     assumed: assumed.join(' '),
     notes: L('Estimación referencial con precios de mercado en Guatemala (2026), en quetzales y sin IVA (12%). No incluye materiales, combustible extra ni permisos. El monto final se confirma con una visita técnica.',
-             'Reference estimate using Guatemala market prices (2026), in quetzales and before VAT (12%). It does not include materials, extra fuel or permits. The final amount is confirmed after a site visit.')
+             'Reference estimate using Guatemala market prices (2026), in quetzals and before VAT (12%). It does not include materials, extra fuel or permits. The final amount is confirmed after a site visit.')
   };
 }
 
@@ -145,7 +272,7 @@ const T = {
     tag: 'Inversiones * desarrollo * administración * servicios * lealtad', lede: 'Soluciones inmobiliarias seguras, modernas, personalizadas y ajustadas a tus necesidades para proteger tu inversión, así como hacer crecer tu patrimonio.', heroL1: 'Tu patrimonio', heroL2: 'en las mejores manos', btnProps: 'Ver propiedades', btnServ: 'Nuestros servicios',
     t1: 'Seguridad', t1s: 'en cada proceso', t2: 'Rentabilidad', t2s: 'orientada a resultados',
     t3: 'Confianza', t3s: 'atención personalizada', t4: 'Cobertura', t4s: 'en Guatemala',
-    aboutT1: "En ARMOPA transformamos la búsqueda de propiedades en una experiencia estratégica y personalizada. Somos una firma de consultoría inmobiliaria y de Servicios Profesionales Integrados dedicada a conectar a nuestros clientes con espacios excepcionales que elevan su estilo de vida y aseguran su patrimonio. Nuestro compromiso se fundamenta en la Lealtad, transparencia, integridad usando la innovación de mercado y una profunda experiencia sectorial, garantizando decisiones de inversión sólidas, transparentes y de alto valor a largo plazo.", aboutT2: "Te orientamos para encontrar el espacio ideal, de forma inteligente, el punto donde la tecnología inmobiliaria y el trato humano se encuentran. Nos especializamos en simplificar el proceso de compra, venta y alquiler de propiedades mediante un ecosistema digital avanzado y un equipo de expertos siempre a tu disposición. Nos apasiona optimizar tu tiempo y maximizar tus oportunidades de inversión, ofreciendo un servicio ágil, transparente y diseñado a la medida de las demandas del mercado actual.", aboutT3: "Entendemos que una propiedad es mucho más que cuatro paredes: es el escenario de tus próximos grandes recuerdos y el pilar de tu estabilidad familiar. Con años de trayectoria en el sector, nos enorgullece ser los aliados de confianza de cientos de familias en la búsqueda de su hogar ideal. Nos distingue un servicio de asesoría honesto, empático y profesional, diseñado para acompañarte con absoluta seguridad en cada paso del camino.", quoteH: "Solicitar cotización", quoteSub: "Completa tus datos y elige cómo enviarlos: por WhatsApp o por correo. Se abrirá con la información lista para enviarnos.", qName: "Nombre del contacto / cliente", qNamePh: "Nombre completo", qPhone: "Teléfono de contacto", qPhonePh: "+502 0000 0000", qAddr: "Dirección del servicio", qAddrPh: "Zona, colonia, calle o referencia", qDate: "Fecha estimada del servicio", qBtn: "Solicitar cotización", qErr: "Completa todos los campos para solicitar la cotización.", qMsgH: "Hola, deseo solicitar una cotización.", qMsgName: "Nombre: ", qMsgPhone: "Teléfono: ", qMsgAddr: "Dirección del servicio: ", qMsgDate: "Fecha estimada del servicio: ", xNeed: "Describe tu necesidad", xNeedPh: "Cuéntanos qué necesitas: medidas, materiales, urgencia u otros detalles…", xTime: "Tiempo estimado", xTimePh: "Ej. 2 semanas, 1 mes o una fecha aproximada", xImgs: "Subir y visualizar imágenes", xHint: "Puedes seleccionar varias imágenes (JPG o PNG). Se guardan en este navegador; adjúntalas en WhatsApp al enviar la cotización.", qMsgSvc: "Servicios solicitados:", qMsgTime: "Tiempo estimado: ", qMsgImgs: "Imágenes: {n} (las adjunto en este chat)", qEmail: "Correo electrónico", qEmailPh: "nombre@correo.com", qMsgEmail: "Correo: ", qBtnMail: "Enviar por correo", qErrEmail: "Escribe un correo electrónico válido.", qMailSubj: "Solicitud de cotización", xStart: "Fecha estimada de inicio", qMsgStart: "Fecha estimada de inicio: ", xPrio: "Prioridad", xPrioAlta: "Alta", xPrioMedia: "Media", xPrioBaja: "Baja", qMsgPrio: "Prioridad: ", xEstBtn: "Presupuesto estimado", xEstHide: "Ocultar presupuesto", xEstTitle: "Presupuesto estimado (referencial, Guatemala)", qMsgEst: "Presupuesto estimado: ", aboutH1: 'Administración inmobiliaria con visión profesional e inteligente,', aboutH2: 'en forma segura, leal, responsable e íntegra,', aboutH3: 'haciendo que tu inversión crezca a niveles inimaginables.',
+    aboutT1: "En ARMOPA transformamos la búsqueda de propiedades en una experiencia estratégica y personalizada. Somos una firma de consultoría inmobiliaria y de Servicios Profesionales Integrados dedicada a conectar a nuestros clientes con espacios excepcionales que elevan su estilo de vida y aseguran su patrimonio. Nuestro compromiso se fundamenta en la Lealtad, transparencia, integridad usando la innovación de mercado y una profunda experiencia sectorial, garantizando decisiones de inversión sólidas, transparentes y de alto valor a largo plazo.", aboutT2: "Te orientamos para encontrar el espacio ideal, de forma inteligente, el punto donde la tecnología inmobiliaria y el trato humano se encuentran. Nos especializamos en simplificar el proceso de compra, venta y alquiler de propiedades mediante un ecosistema digital avanzado y un equipo de expertos siempre a tu disposición. Nos apasiona optimizar tu tiempo y maximizar tus oportunidades de inversión, ofreciendo un servicio ágil, transparente y diseñado a la medida de las demandas del mercado actual.", aboutT3: "Entendemos que una propiedad es mucho más que cuatro paredes: es el escenario de tus próximos grandes recuerdos y el pilar de tu estabilidad familiar. Con años de trayectoria en el sector, nos enorgullece ser los aliados de confianza de cientos de familias en la búsqueda de su hogar ideal. Nos distingue un servicio de asesoría honesto, empático y profesional, diseñado para acompañarte con absoluta seguridad en cada paso del camino.", quoteH: "Solicitar cotización", quoteSub: "Completa tus datos y elige cómo enviarlos: por WhatsApp o por correo. Se abrirá con la información lista para enviarnos.", qName: "Nombre del contacto / cliente", qNamePh: "Nombre completo", qPhone: "Teléfono de contacto", qPhonePh: "+502 0000 0000", qAddr: "Dirección del servicio", qAddrPh: "Zona, colonia, calle o referencia", qDate: "Fecha estimada del servicio", qBtn: "Solicitar cotización", qErr: "Completa todos los campos para solicitar la cotización.", qMsgH: "Hola, deseo solicitar una cotización.", qMsgName: "Nombre: ", qMsgPhone: "Teléfono: ", qMsgAddr: "Dirección del servicio: ", qMsgDate: "Fecha estimada del servicio: ", xNeed: "Describe tu necesidad", xNeedPh: "Cuéntanos qué necesitas: medidas, materiales, urgencia u otros detalles…", xTime: "Tiempo estimado", xTimePh: "Ej. 2 semanas, 1 mes o una fecha aproximada", xImgs: "Subir y visualizar imágenes", xHint: "Puedes seleccionar varias imágenes (JPG o PNG). Se guardan en este navegador; adjúntalas en WhatsApp al enviar la cotización.", qMsgSvc: "Servicios solicitados:", qMsgTime: "Tiempo estimado: ", qMsgImgs: "Imágenes: {n} (las adjunto en este chat)", qEmail: "Correo electrónico", qEmailPh: "nombre@correo.com", qMsgEmail: "Correo: ", qBtnMail: "Enviar por correo", qErrEmail: "Escribe un correo electrónico válido.", qMailSubj: "Solicitud de cotización", xStart: "Fecha estimada de inicio", qMsgStart: "Fecha estimada de inicio: ", xPrio: "Prioridad", xPrioAlta: "Alta", xPrioMedia: "Media", xPrioBaja: "Baja", qMsgPrio: "Prioridad: ", xEstBtn: "Calcular Presupuesto Estimado", xEstHide: "Ocultar presupuesto", xEstTitle: "Presupuesto estimado (referencial, Guatemala)", qMsgEst: "Presupuesto estimado: ", ctImgAlt: "ARMOPA: compra y venta de propiedades en todo el país. Nosotros somos la solución.", aiAlt: "Inteligencia artificial y tecnología inmobiliaria", homeAlt: "Hogar ideal: una casa en manos protectoras", xEstStale: "Calculado con la descripción de la necesidad y el tiempo estimado que ingresaste. Si cambias algo, presiona \"Calcular Presupuesto Estimado\" otra vez.", mkBtn: "Costos alrededor", mkTitle: "Valores de propiedades similares en la zona (referencial)", mkHide: "Ocultar", mkSimilar: "Propiedades similares (referencia)", mkAround: "Zonas alrededor (referencia)", mkUse: "Usar estos valores en los campos de valor", salonAlt: "Rentamos o vendemos: una mano sostiene casas con símbolos de dólar", budgetAlt: "Presupuesto e inversión inmobiliaria: monedas apiladas y una casa", buyAlt: "Compra de propiedad: unas llaves y una casa en las manos", remodelAlt: "Hogar inteligente: tecnología y remodelación de una propiedad", landAlt: "Construcción en tu terreno: un hombre frente a un campo con el plano de su futura casa dibujado", projAlt: "Desarrollo de tu proyecto: vista aérea de un desarrollo urbano con plaza, edificios y áreas verdes", aboutH1: 'Administración inmobiliaria con visión profesional e inteligente,', aboutH2: 'Segura, Transparente, Íntegra, Responsable, Leal a la Vanguardia con Honradez', aboutH3: 'haciendo que tu inversión crezca a niveles inimaginables.',
     invH: 'Tu Inversión:', invSub: 'Inversión Garantizada:', invItems: ['Compra y venta', 'Alquileres Diversos', 'Integramos administración', 'Remodelación', 'Construcción / Remodelación', 'Desarrollo de proyectos con gestión practica de rentabilidad'], aboutP: 'Integramos administración, compra y venta, alquileres, remodelación, construcción y desarrollo de proyectos para ofrecer una gestión práctica y ordenada de cada propiedad.',
     svH: 'Tus Servicios:', svA: 'Servicios Profesionales coordinados', svItems: ['Alquiler de maquinaria pesada', 'Renta de Camiones para extracción', 'Renta de apartamentos y Edificio', 'Mantenimiento de Edificios', 'Plomería y electricidad', 'Asesoría Jurídica', 'Prestamos con CHN', 'Movimiento de Tierra'],
     propH: 'Propiedades exclusivas en Guatemala', catalog: 'Solicitar catálogo', prev: 'Propiedad anterior', next: 'Siguiente propiedad',
@@ -170,7 +297,7 @@ const T = {
     extH: 'Especialistas para cada necesidad', extSub: 'Servicios externos coordinados por ARMOPA.',
     ext: ['Alquiler de maquinaria pesada', 'Renta de camiones para extracción', 'Renta de apartamentos y edificios', 'Mantenimiento de edificios', 'Plomería y electricidad', 'Asesoría jurídica', 'Orientación para préstamos con CHN', 'Movimiento de tierra'],
     ctaH: '¿Tienes una propiedad o un proyecto?', ctaP: 'Conversemos sobre la mejor forma de administrarlo, desarrollarlo o hacerlo crecer.', ctaBtn: 'Contáctanos',
-    ctH: 'Hablemos de tu próximo proyecto', ctP: 'Atención personalizada para propietarios, compradores, inversionistas e inquilinos.',
+    ctH: 'Hablemos de tu próximo proyecto', ctP: 'Atención personalizada para propietarios, compradores, inversionistas e inquilinos o clientes especiales. Contáctanos y te responderemos lo antes posible.',
     phoneL: 'Teléfono', mailL: 'Correo',
     fName: 'Nombre completo', fMail: 'Correo electrónico', fPhone: 'Teléfono', fReason: 'Motivo de contacto', fMsg: 'Cuéntanos qué necesitas',
     r1: 'Comprar / vender', r2: 'Administrar propiedad', r3: 'Desarrollo de proyecto', r4: 'Servicios externos',
@@ -186,7 +313,7 @@ const T = {
     tag: 'Investments * development * management * services * loyalty', lede: 'Secure, modern, personalized real estate solutions tailored to your needs to protect your investment as well as grow your wealth.', heroL1: 'Your wealth', heroL2: 'in the best hands', btnProps: 'View properties', btnServ: 'Our services',
     t1: 'Security', t1s: 'in every process', t2: 'Profitability', t2s: 'results oriented',
     t3: 'Trust', t3s: 'personalized service', t4: 'Coverage', t4s: 'across Guatemala',
-    aboutT1: "At ARMOPA we turn the search for properties into a strategic, personalized experience. We are a real estate consulting firm and an Integrated Professional Services firm dedicated to connecting our clients with exceptional spaces that elevate their lifestyle and secure their wealth. Our commitment is grounded in Loyalty, transparency and integrity, using market innovation and deep industry expertise, ensuring sound, transparent, high long-term value investment decisions.", aboutT2: "We guide you to find the ideal space, intelligently: the point where real estate technology and the human touch meet. We specialize in simplifying the process of buying, selling and renting properties through an advanced digital ecosystem and a team of experts always at your disposal. We are passionate about optimizing your time and maximizing your investment opportunities, offering an agile, transparent service tailored to the demands of today's market.", aboutT3: "We understand that a property is much more than four walls: it is the stage for your next great memories and the pillar of your family's stability. With years of experience in the sector, we are proud to be the trusted allies of hundreds of families in their search for the ideal home. We stand out for honest, empathetic and professional advice, designed to accompany you with absolute security every step of the way.", quoteH: "Request a quote", quoteSub: "Fill in your details and choose how to send them: by WhatsApp or by email. It will open with your information ready to send to us.", qName: "Contact / client name", qNamePh: "Full name", qPhone: "Contact phone", qPhonePh: "+502 0000 0000", qAddr: "Service address", qAddrPh: "Zone, neighborhood, street or landmark", qDate: "Estimated service date", qBtn: "Request a quote", qErr: "Please complete all fields to request the quote.", qMsgH: "Hello, I would like to request a quote.", qMsgName: "Name: ", qMsgPhone: "Phone: ", qMsgAddr: "Service address: ", qMsgDate: "Estimated service date: ", xNeed: "Describe your need", xNeedPh: "Tell us what you need: measurements, materials, urgency or other details…", xTime: "Estimated time", xTimePh: "E.g. 2 weeks, 1 month or an approximate date", xImgs: "Upload and view images", xHint: "You can select several images (JPG or PNG). They are saved in this browser; attach them in WhatsApp when you send the quote.", qMsgSvc: "Requested services:", qMsgTime: "Estimated time: ", qMsgImgs: "Images: {n} (I will attach them in this chat)", qEmail: "Email address", qEmailPh: "name@email.com", qMsgEmail: "Email: ", qBtnMail: "Send by email", qErrEmail: "Please enter a valid email address.", qMailSubj: "Quote request", xStart: "Estimated start date", qMsgStart: "Estimated start date: ", xPrio: "Priority", xPrioAlta: "High", xPrioMedia: "Medium", xPrioBaja: "Low", qMsgPrio: "Priority: ", xEstBtn: "Estimated budget", xEstHide: "Hide estimate", xEstTitle: "Estimated budget (reference, Guatemala)", qMsgEst: "Estimated budget: ", aboutH1: 'Real estate management with a professional and intelligent vision,', aboutH2: 'in a secure, loyal, responsible and honest way,', aboutH3: 'making your investment grow to unimaginable levels.',
+    aboutT1: "At ARMOPA we turn the search for properties into a strategic, personalized experience. We are a real estate consulting firm and an Integrated Professional Services firm dedicated to connecting our clients with exceptional spaces that elevate their lifestyle and secure their wealth. Our commitment is grounded in Loyalty, transparency and integrity, using market innovation and deep industry expertise, ensuring sound, transparent, high long-term value investment decisions.", aboutT2: "We guide you to find the ideal space, intelligently: the point where real estate technology and the human touch meet. We specialize in simplifying the process of buying, selling and renting properties through an advanced digital ecosystem and a team of experts always at your disposal. We are passionate about optimizing your time and maximizing your investment opportunities, offering an agile, transparent service tailored to the demands of today's market.", aboutT3: "We understand that a property is much more than four walls: it is the stage for your next great memories and the pillar of your family's stability. With years of experience in the sector, we are proud to be the trusted allies of hundreds of families in their search for the ideal home. We stand out for honest, empathetic and professional advice, designed to accompany you with absolute security every step of the way.", quoteH: "Request a quote", quoteSub: "Fill in your details and choose how to send them: by WhatsApp or by email. It will open with your information ready to send to us.", qName: "Contact / client name", qNamePh: "Full name", qPhone: "Contact phone", qPhonePh: "+502 0000 0000", qAddr: "Service address", qAddrPh: "Zone, neighborhood, street or landmark", qDate: "Estimated service date", qBtn: "Request a quote", qErr: "Please complete all fields to request the quote.", qMsgH: "Hello, I would like to request a quote.", qMsgName: "Name: ", qMsgPhone: "Phone: ", qMsgAddr: "Service address: ", qMsgDate: "Estimated service date: ", xNeed: "Describe your need", xNeedPh: "Tell us what you need: measurements, materials, urgency or other details…", xTime: "Estimated time", xTimePh: "E.g. 2 weeks, 1 month or an approximate date", xImgs: "Upload and view images", xHint: "You can select several images (JPG or PNG). They are saved in this browser; attach them in WhatsApp when you send the quote.", qMsgSvc: "Requested services:", qMsgTime: "Estimated time: ", qMsgImgs: "Images: {n} (I will attach them in this chat)", qEmail: "Email address", qEmailPh: "name@email.com", qMsgEmail: "Email: ", qBtnMail: "Send by email", qErrEmail: "Please enter a valid email address.", qMailSubj: "Quote request", xStart: "Estimated start date", qMsgStart: "Estimated start date: ", xPrio: "Priority", xPrioAlta: "High", xPrioMedia: "Medium", xPrioBaja: "Low", qMsgPrio: "Priority: ", xEstBtn: "Calculate Estimated Budget", xEstHide: "Hide estimate", xEstTitle: "Estimated budget (reference, Guatemala)", qMsgEst: "Estimated budget: ", ctImgAlt: "ARMOPA: buying and selling properties nationwide. We are the solution.", aiAlt: "Artificial intelligence and real estate technology", homeAlt: "Ideal home: a house in protective hands", xEstStale: "Calculated from the need description and estimated time you entered. If you change anything, press \"Calculate Estimated Budget\" again.", mkBtn: "Nearby costs", mkTitle: "Values of similar properties in the area (reference)", mkHide: "Hide", mkSimilar: "Similar properties (reference)", mkAround: "Nearby areas (reference)", mkUse: "Use these values in the value fields", salonAlt: "We rent or sell: a hand holding houses with dollar symbols", budgetAlt: "Budget and real estate investment: stacked coins and a house", buyAlt: "Property purchase: keys and a house in hand", remodelAlt: "Smart home: technology and property remodeling", landAlt: "Building on your land: a man in a field looking at the outline of his future house", projAlt: "Your project development: aerial view of an urban development with a plaza, buildings and green areas", aboutH1: 'Real estate management with a professional and intelligent vision,', aboutH2: 'Secure, Transparent, Upright, Responsible, Loyal, at the Forefront with Honesty', aboutH3: 'making your investment grow to unimaginable levels.',
     invH: 'Your Investment:', invSub: 'Guaranteed Investment:', invItems: ['Buying and selling', 'Diverse rentals', 'We integrate management', 'Remodeling', 'Construction / Remodeling', 'Project development with practical profitability management'], aboutP: 'We integrate management, buying and selling, rentals, remodeling, construction and project development to provide practical and organized management for every property.',
     svH: 'Your Services:', svA: 'Coordinated professional services', svItems: ['Heavy machinery rental', 'Dump truck rental for hauling', 'Apartment and building rentals', 'Building maintenance', 'Plumbing and electrical', 'Legal advisory', 'CHN loans', 'Earthmoving'],
     propH: 'Exclusive properties in Guatemala', catalog: 'Request catalog', prev: 'Previous property', next: 'Next property',
@@ -211,7 +338,7 @@ const T = {
     extH: 'Specialists for every need', extSub: 'External services coordinated by ARMOPA.',
     ext: ['Heavy machinery rental', 'Dump truck rental for hauling', 'Apartment and building rentals', 'Building maintenance', 'Plumbing and electrical', 'Legal advisory', 'Guidance for CHN loans', 'Earthmoving'],
     ctaH: 'Do you have a property or project?', ctaP: "Let's discuss the best way to manage, develop or grow it.", ctaBtn: 'Contact us',
-    ctH: "Let's talk about your next project", ctP: 'Personalized service for owners, buyers, investors and tenants.',
+    ctH: "Let's talk about your next project", ctP: 'Personalized service for owners, buyers, investors and tenants or special clients. Contact us and we will reply as soon as possible.',
     phoneL: 'Phone', mailL: 'Email',
     fName: 'Full name', fMail: 'Email address', fPhone: 'Phone', fReason: 'Reason for contact', fMsg: 'Tell us what you need',
     r1: 'Buy / sell', r2: 'Property management', r3: 'Project development', r4: 'External services',
@@ -233,6 +360,7 @@ function setLang(l) {
   document.documentElement.lang = l;
   $$('[data-i18n]').forEach((el) => { el.textContent = t[el.dataset.i18n]; });
   $$('[data-i18n-label]').forEach((el) => el.setAttribute('aria-label', t[el.dataset.i18nLabel]));
+  $$('[data-i18n-alt]').forEach((el) => el.setAttribute('alt', t[el.dataset.i18nAlt]));
   $$('[data-i18n-ph]').forEach((el) => el.setAttribute('placeholder', t[el.dataset.i18nPh]));
   $$('.pc').forEach((card, i) => {
     card.querySelector('img').alt = t.alts[i];
@@ -297,6 +425,134 @@ $('#clientGo').addEventListener('click', () => { $('#clientNote').hidden = false
 $('#sendBtn').addEventListener('click', () => { $('#sentNote').hidden = false; });
 
 /* Propiedades: ubicaciones, imágenes y vista (se guardan en este navegador) */
+/* Costos alrededor: valores de referencia de renta y venta de propiedades similares en Guatemala (2026). Son precios pedidos publicados en portales inmobiliarios, no precios de cierre. */
+const MK_FX = 7.7;
+const MKZ = {
+  1: ['Zona 1', [300, 550], [1200, 1900], 'media'],
+  4: ['Zona 4', [500, 800], [1800, 2600], 'media'],
+  5: ['Zona 5', [400, 800], [1300, 2000], 'baja'],
+  9: ['Zona 9', [700, 1300], [1800, 2600], 'baja'],
+  10: ['Zona 10', [750, 1500], [2200, 3000], 'alta'],
+  11: ['Zona 11', [500, 900], [1300, 2000], 'baja'],
+  13: ['Zona 13', [700, 1300], [1700, 2500], 'baja'],
+  14: ['Zona 14', [900, 1700], [2300, 3200], 'alta'],
+  15: ['Zona 15', [900, 1600], [2100, 3000], 'media'],
+  16: ['Zona 16 / Cayalá', [1100, 1800], [2200, 3100], 'media'],
+  21: ['Zona 21', [400, 800], [1300, 2000], 'baja']
+};
+const MKADJ = { 1: [4, 5], 4: [1, 9, 10], 5: [1, 4, 11], 9: [4, 10, 13], 10: [14, 9, 15, 4], 11: [5, 13], 13: [9, 10, 14], 14: [10, 15, 16, 13], 15: [10, 14, 16], 16: [14, 15], 21: [13, 5] };
+const MKR = [
+  [/antigua|sacatepequez|ciudad vieja|jocotenango|san pedro las huertas/, ['Antigua Guatemala', [700, 1500], [1700, 2300], 'media']],
+  [/atitlan|panajachel|santiago atitlan|san pedro la laguna|san marcos|santa catarina palopo|solola/, ['Lago de Atitlán', [350, 1000], [1100, 2200], 'baja']],
+  [/peten|flores|el remate|santa elena|tikal/, ['Petén / Flores', [250, 700], [700, 1400], 'baja']],
+  [/mixco|villa nueva|santa catarina pinula|carretera a el salvador|san jose pinula|fraijanes|san cristobal|villa canales|muxbal/, ['Área metropolitana', [500, 1300], [1200, 2000], 'media']]
+];
+const MKD = ['Ciudad de Guatemala (referencia general)', [850, 1600], [1500, 2700], 'baja'];
+const MKREG = [null, MKR[1][1], MKR[0][1], MKR[2][1], null];
+
+function marketEstimate(reg, inp, lang) {
+  const en = lang === 'en';
+  const L = (es, e) => (en ? e : es);
+  const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const nk = norm([inp.name, inp.addr, inp.desc].join(' '));
+  const op = inp.op || '';
+  const wantRent = op === 'renta' || op === 'ambos' || !op;
+  const wantSale = op === 'venta' || op === 'ambos' || !op;
+  const Qf = (n) => 'Q ' + Math.round(n).toLocaleString('en-US');
+  const Uf = (n) => 'US$ ' + Math.round(n).toLocaleString('en-US');
+  const rnd = (n) => (n < 10000 ? Math.round(n / 50) * 50 : n < 1000000 ? Math.round(n / 500) * 500 : Math.round(n / 5000) * 5000);
+  const rq = (a, b) => Qf(rnd(a * MK_FX)) + ' – ' + Qf(rnd(b * MK_FX));
+  const ru = (a, b) => Uf(rnd(a)) + ' – ' + Uf(rnd(b));
+
+  /* --- zona o región de referencia --- */
+  let ref = null, zoneNo = null;
+  const z = nk.match(/zona\s*(\d{1,2})/);
+  if (z && MKZ[+z[1]]) { zoneNo = +z[1]; const m = MKZ[zoneNo]; ref = { name: m[0], rent: m[1], sqm: m[2], conf: m[3] }; }
+  if (!ref) { const r = MKR.find((x) => x[0].test(nk)); if (r) ref = { name: r[1][0], rent: r[1][1], sqm: r[1][2], conf: r[1][3] }; }
+  if (!ref && reg === 4) { zoneNo = 10; const m = MKZ[10]; ref = { name: m[0], rent: m[1], sqm: m[2], conf: m[3] }; }
+  if (!ref && MKREG[reg]) { const m = MKREG[reg]; ref = { name: m[0], rent: m[1], sqm: m[2], conf: m[3] }; }
+  if (!ref) ref = { name: MKD[0], rent: MKD[1], sqm: MKD[2], conf: MKD[3] };
+
+  /* --- datos de la descripción --- */
+  const isHouse = /\b(casa|house|residencia|chalet|villa)\b/.test(nk);
+  const isLand = /\b(terreno|lote|land)\b/.test(nk);
+  const brM = nk.match(/(\d+)\s*(?:habitaci|dormitorio|cuarto|bedroom)/);
+  const br = brM ? Math.min(6, Math.max(1, parseInt(brM[1], 10))) : 2;
+  const m2M = nk.match(/(\d[\d.,]*)\s*(?:m2|m²|mts?2|metros?\s*cuadrados?)/);
+  const defM2 = (b) => (isHouse ? [150, 200, 260, 320][Math.min(b, 4) - 1] : [55, 85, 125, 170][Math.min(b, 4) - 1]);
+  const area = m2M ? parseFloat(m2M[1].replace(/,/g, '')) : defM2(br);
+  const brF = (b) => ({ 1: 0.8, 2: 1, 3: 1.4 }[b] || 1.9);
+  let af = 1;
+  const amen = (nk.match(/piscina|pool|gimnasio|gym|amenidades|seguridad 24|concierge|salon social/g) || []).length;
+  af += Math.min(0.1, amen * 0.05);
+  if (/lujo|premium|nuevo|estrenar|remodelad|luxury/.test(nk)) af += 0.08;
+  if (/penthouse/.test(nk)) af += 0.2;
+  if (/vista|volcan|view/.test(nk)) af += 0.05;
+  af = Math.min(1.3, af);
+  const furn = /amueblad|furnish/.test(nk) ? 1.1 : 1;
+  const typeF = isHouse ? 1.3 : 1;
+  const rentOf = (r, b) => [r.rent[0] * brF(b) * typeF * af * furn, r.rent[1] * brF(b) * typeF * af * furn];
+  const saleOf = (r, ar) => [r.sqm[0] * ar * (isHouse ? 0.55 : 1) * af, r.sqm[1] * ar * (isHouse ? 0.55 : 1) * af];
+
+  const blocks = [], lines = [], similar = [], around = [];
+  const fill = { rent: '', sale: '' };
+  const rr = rentOf(ref, br), ss = saleOf(ref, area);
+  if (isLand) lines.push([L('Tipo de propiedad', 'Property type'), L('Terreno: el valor depende de la ubicación exacta, el área y los servicios; la mediana publicada ronda US$ 335,000 con dispersión enorme. Se recomienda valuación.', 'Land: value depends on the exact location, size and utilities; the published median is around US$ 335,000 with huge dispersion. A valuation is recommended.')]);
+  if (wantRent && !isLand) {
+    blocks.push({ label: L('Renta mensual estimada', 'Estimated monthly rent'), range: rq(rr[0], rr[1]), usd: ru(rr[0], rr[1]) });
+    fill.rent = Qf(rnd(((rr[0] + rr[1]) / 2) * MK_FX)) + L(' al mes', ' per month');
+  }
+  if (wantSale && !isLand) {
+    blocks.push({ label: L('Valor de venta estimado', 'Estimated sale value'), range: rq(ss[0], ss[1]), usd: ru(ss[0], ss[1]) });
+    fill.sale = Qf(rnd(((ss[0] + ss[1]) / 2) * MK_FX));
+  }
+  lines.push([L('Zona de referencia', 'Reference area'), ref.name]);
+  if (!isLand) lines.push([L('Propiedad considerada', 'Property considered'), (isHouse ? L('Casa', 'House') : L('Apartamento', 'Apartment')) + ' · ' + br + L(' hab.', ' bd.') + ' · ' + Math.round(area) + ' m²' + (m2M ? '' : L(' (típico)', ' (typical)'))]);
+  if (wantSale && !isLand) lines.push([L('Precio por m² de referencia', 'Reference price per m²'), rq(ref.sqm[0] * (isHouse ? 0.55 : 1) * af, ref.sqm[1] * (isHouse ? 0.55 : 1) * af)]);
+  if (wantRent && wantSale && !isLand) {
+    const ym = (((rr[0] + rr[1]) / 2) * 12) / ((ss[0] + ss[1]) / 2) * 100;
+    lines.push([L('Rentabilidad bruta anual aprox.', 'Approx. gross annual yield'), (Math.round(ym * 0.85 * 10) / 10) + '% – ' + (Math.round(ym * 1.15 * 10) / 10) + '%']);
+  }
+  if (af > 1.001 || furn > 1) lines.push([L('Ajustes por la descripción', 'Adjustments from the description'), '+' + Math.round((af * furn - 1) * 100) + '% ' + L('(amenidades, acabados, vista o amueblado)', '(amenities, finishes, view or furnished)')]);
+
+  /* --- propiedades similares --- */
+  if (!isLand) {
+    (isHouse ? [2, 3, 4] : [1, 2, 3]).forEach((b) => {
+      const ar = defM2(b);
+      const a = rentOf(ref, b), s = saleOf(ref, ar);
+      const parts = [];
+      if (wantRent) parts.push(L('renta ', 'rent ') + rq(a[0], a[1]));
+      if (wantSale) parts.push(L('venta ', 'sale ') + rq(s[0], s[1]));
+      similar.push([b + L(' hab. · ~', ' bd. · ~') + ar + ' m²', parts.join(' · ')]);
+    });
+    /* --- alrededor --- */
+    let near = zoneNo && MKADJ[zoneNo] ? MKADJ[zoneNo].slice(0, 3).map((n) => ({ name: MKZ[n][0], rent: MKZ[n][1], sqm: MKZ[n][2] })) : [];
+    if (!near.length) near = [{ name: MKZ[10][0], rent: MKZ[10][1], sqm: MKZ[10][2] }, { name: MKZ[14][0], rent: MKZ[14][1], sqm: MKZ[14][2] }, { name: MKR[3][1][0], rent: MKR[3][1][1], sqm: MKR[3][1][2] }].filter((x) => x.name !== ref.name);
+    near.forEach((r) => {
+      const a = rentOf(r, br), s = saleOf(r, area);
+      const parts = [];
+      if (wantRent) parts.push(L('renta ', 'rent ') + rq(a[0], a[1]));
+      if (wantSale) parts.push(L('venta ', 'sale ') + rq(s[0], s[1]));
+      around.push([r.name, parts.join(' · ')]);
+    });
+  }
+  const confTxt = { alta: L('alta', 'high'), media: L('media', 'medium'), baja: L('baja', 'low') }[ref.conf];
+  return {
+    blocks,
+    lines: lines.map(([k, v]) => ({ k, v })),
+    similar: similar.map(([k, v]) => ({ k, v })),
+    around: around.map(([k, v]) => ({ k, v })),
+    conf: L('Confianza de la referencia: ', 'Reference confidence: ') + confTxt + L(' (según los datos publicados para esa zona).', ' (based on the data published for that area).'),
+    hasFill: !!(fill.rent || fill.sale),
+    hasBlocks: blocks.length > 0,
+    hasSimilar: similar.length > 0,
+    hasAround: around.length > 0,
+    fill,
+    notes: L('Referencia basada en precios pedidos publicados en portales inmobiliarios de Guatemala (2026), convertidos a quetzales (US$ 1 ≈ Q 7.70). No son precios de cierre: en Guatemala lo que se paga suele ser 5% a 15% menor. No usa anuncios en vivo ni sustituye un avalúo profesional.',
+             'Reference based on asking prices published on Guatemalan real estate portals (2026), converted to quetzals (US$ 1 ≈ Q 7.70). These are not closing prices: in Guatemala the price paid is usually 5% to 15% lower. It does not use live listings and does not replace a professional appraisal.')
+  };
+}
+
 const STORE = 'armopaProps_v2';
 const BASE = [1, 2, 3, 4, 5].map((n) => 'assets/propiedad-' + n + '.jpg');
 let data = {};
@@ -323,7 +579,7 @@ function el(tag, cls, text) {
   if (text !== undefined) e.textContent = text;
   return e;
 }
-function pickLoc(i) { sel = i; vi = 0; confirmDel = false; note(''); render(); }
+function pickLoc(i) { sel = i; vi = 0; confirmDel = false; mk = null; note(''); render(); }
 
 function renderList() {
   const t = T[lang];
@@ -473,9 +729,10 @@ function render() {
   $('#pEdit').hidden = mode !== 'edit';
   $('#pViewBox').hidden = mode !== 'view';
   if (mode === 'edit') renderEdit(); else renderView();
+  renderMk();
 }
 function openProp(i) {
-  cur = i; mode = 'edit'; confirmDel = false;
+  cur = i; mode = 'edit'; confirmDel = false; mk = null;
   sel = list().length ? 0 : -1; vi = 0;
   note('');
   render();
@@ -576,6 +833,51 @@ $('#p-files').addEventListener('change', async (e) => {
   note(persist() ? T[lang].uploaded : T[lang].storeErr);
   renderEdit();
 });
+
+/* Costos alrededor: valores de propiedades similares (referencia) */
+let mk = null;
+function mkList(id, items) {
+  const ul = $(id);
+  ul.innerHTML = '';
+  items.forEach((x) => { const li = el('li'); li.append(el('span', '', x.k), el('strong', '', x.v)); ul.appendChild(li); });
+}
+function renderMk() {
+  const box = $('#pMk');
+  const c = cur >= 0 ? list()[sel] : null;
+  if (!mk || !c || mk.key !== cur + '-' + sel || mode !== 'edit') { box.hidden = true; return; }
+  const e = marketEstimate(cur, mk.in, lang);
+  box.hidden = false;
+  const bl = $('#pMkBlocks');
+  bl.innerHTML = '';
+  e.blocks.forEach((b) => {
+    const row = el('div', 'mk-b');
+    row.append(el('span', 'mk-l', b.label), el('span', 'amt', b.range), el('span', 'mk-u', b.usd));
+    bl.appendChild(row);
+  });
+  mkList('#pMkLines', e.lines);
+  mkList('#pMkSim', e.similar);
+  mkList('#pMkAro', e.around);
+  $('#pMkSimH').hidden = $('#pMkSim').hidden = !e.hasSimilar;
+  $('#pMkAroH').hidden = $('#pMkAro').hidden = !e.hasAround;
+  $('#pMkConf').textContent = e.conf;
+  $('#pMkUseRow').hidden = !e.hasFill;
+  $('#pMkNotes').textContent = e.notes;
+}
+$('#pMkBtn').addEventListener('click', () => {
+  const c = list()[sel]; if (!c) return;
+  mk = { key: cur + '-' + sel, in: { op: c.op || '', name: c.name || '', addr: c.addr || '', desc: c.desc || '' } };
+  renderMk();
+});
+$('#pMkHide').addEventListener('click', () => { mk = null; renderMk(); });
+$('#pMkUse').addEventListener('click', () => {
+  const c = list()[sel]; if (!c || !mk) return;
+  const e = marketEstimate(cur, mk.in, lang);
+  if (e.fill.rent) c.pRent = e.fill.rent;
+  if (e.fill.sale) c.pSale = e.fill.sale;
+  note(persist() ? T[lang].saved : T[lang].storeErr);
+  renderEdit();
+  renderMk();
+});
 $('#pView').addEventListener('click', () => { mode = 'view'; vi = 0; note(''); render(); });
 $('#vEdit').addEventListener('click', () => { mode = 'edit'; render(); });
 $('#pDel').addEventListener('click', () => {
@@ -612,7 +914,7 @@ let xo = -1;
 const xget = (i) => (xd[i] = xd[i] || { need: '', time: '', start: '', prio: '', imgs: [], main: 0 });
 const fmtDate = (iso) => { if (!iso) return ''; const [y, m, dd] = iso.split('-').map(Number); return new Date(y, m - 1, dd).toLocaleDateString(lang === 'en' ? 'en-US' : 'es-GT', { day: 'numeric', month: 'long', year: 'numeric' }); };
 (() => { const dn = new Date(); const min = dn.getFullYear() + '-' + String(dn.getMonth() + 1).padStart(2, '0') + '-' + String(dn.getDate()).padStart(2, '0'); $$('.xs').forEach((x) => { x.min = min; }); })();
-const xsave = () => { try { localStorage.setItem(XKEY, JSON.stringify(xd)); return true; } catch (e) { return false; } };
+const xsave = () => { try { localStorage.setItem(XKEY, JSON.stringify(xd, (k, v) => (k === 'estIn' || k === 'est' ? undefined : v))); return true; } catch (e) { return false; } };
 const xfilled = (i) => { const d = xd[i]; return !!(d && ((d.need || '').trim() || (d.time || '').trim() || d.start || d.prio || (d.imgs || []).length)); };
 function xImgs(i) {
   const c = $$('.ex-c')[i];
@@ -644,11 +946,11 @@ function xEst(i) {
   const c = $$('.ex-c')[i];
   const d = xget(i);
   const t = T[lang];
-  c.querySelector('.x-estbtn span').textContent = d.est ? t.xEstHide : t.xEstBtn;
+  c.querySelector('.x-estbtn span').textContent = t.xEstBtn;
   const box = c.querySelector('.x-est');
-  box.hidden = !d.est;
-  if (!d.est) return;
-  const e = estimate(i, d, lang);
+  box.hidden = !d.estIn;
+  if (!d.estIn) return;
+  const e = estimate(i, d.estIn, lang);
   box.querySelector('.amt').textContent = e.range;
   const ul = box.querySelector('.x-est-l');
   ul.innerHTML = '';
@@ -687,15 +989,16 @@ $$('.ex-c').forEach((c, i) => {
     if (prev >= 0) xRender(prev);
     xRender(i);
   });
-  c.querySelector('textarea').addEventListener('input', (e) => { xget(i).need = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); if (xget(i).est) xEst(i); });
-  c.querySelector('input[type=text]').addEventListener('input', (e) => { xget(i).time = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); if (xget(i).est) xEst(i); });
+  c.querySelector('textarea').addEventListener('input', (e) => { xget(i).need = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); });
+  c.querySelector('input[type=text]').addEventListener('input', (e) => { xget(i).time = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); });
   c.querySelectorAll('.seg').forEach((b) => b.addEventListener('click', () => {
     const d = xget(i);
     d.prio = d.prio === b.dataset.prio ? '' : b.dataset.prio;
     xsave();
     xRender(i);
   }));
-  c.querySelector('.x-estbtn').addEventListener('click', () => { const d = xget(i); d.est = !d.est; xsave(); xEst(i); });
+  c.querySelector('.x-estbtn').addEventListener('click', () => { const d = xget(i); d.estIn = { need: d.need || '', time: d.time || '', prio: d.prio || '' }; xEst(i); });
+  c.querySelector('.x-est-x').addEventListener('click', () => { xget(i).estIn = null; xEst(i); });
   c.querySelector('.xs').addEventListener('input', (e) => { xget(i).start = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); });
   c.querySelector('input[type=file]').addEventListener('change', async (e) => {
     const files = Array.from(e.target.files || []);
@@ -716,13 +1019,13 @@ function xLines(t) {
   t.ext.forEach((name, i) => {
     const d = xd[i] || {};
     const need = (d.need || '').trim(), time = (d.time || '').trim(), start = d.start || '', prio = d.prio || '', n = (d.imgs || []).length;
-    if (!need && !time && !start && !prio && !n && !d.est) return;
+    if (!need && !time && !start && !prio && !n && !d.estIn) return;
     const parts = [];
     if (need) parts.push(need);
     if (prio) parts.push(t.qMsgPrio + { alta: t.xPrioAlta, media: t.xPrioMedia, baja: t.xPrioBaja }[prio]);
     if (time) parts.push(t.qMsgTime + time);
     if (start) parts.push(t.qMsgStart + fmtDate(start));
-    if (d.est) parts.push(t.qMsgEst + estimate(i, d, lang).range);
+    if (d.estIn) parts.push(t.qMsgEst + estimate(i, d.estIn, lang).range);
     if (n) parts.push(t.qMsgImgs.replace('{n}', n));
     lines.push('- ' + name + ': ' + parts.join(' | '));
   });
