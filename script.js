@@ -7,15 +7,16 @@ const T = {
     tag: 'Inversiones * desarrollo * administración * servicios * lealtad', lede: 'Soluciones inmobiliarias seguras, modernas, personalizadas y ajustadas a tus necesidades para proteger tu inversión, así como hacer crecer tu patrimonio.', heroL1: 'Tu patrimonio', heroL2: 'en las mejores manos', btnProps: 'Ver propiedades', btnServ: 'Nuestros servicios',
     t1: 'Seguridad', t1s: 'en cada proceso', t2: 'Rentabilidad', t2s: 'orientada a resultados',
     t3: 'Confianza', t3s: 'atención personalizada', t4: 'Cobertura', t4s: 'en Guatemala',
-    aboutH: 'Administración inmobiliaria con visión integral',
-    aboutP: 'Integramos administración, compra y venta, alquileres, remodelación, construcción y desarrollo de proyectos para ofrecer una gestión práctica y ordenada de cada propiedad.',
+    aboutT1: "En ARMOPA transformamos la búsqueda de propiedades en una experiencia estratégica y personalizada. Somos una firma de consultoría inmobiliaria y de Servicios Profesionales Integrados dedicada a conectar a nuestros clientes con espacios excepcionales que elevan su estilo de vida y aseguran su patrimonio. Nuestro compromiso se fundamenta en la Lealtad, transparencia, integridad usando la innovación de mercado y una profunda experiencia sectorial, garantizando decisiones de inversión sólidas, transparentes y de alto valor a largo plazo.", aboutT2: "Te orientamos para encontrar el espacio ideal, de forma inteligente, el punto donde la tecnología inmobiliaria y el trato humano se encuentran. Nos especializamos en simplificar el proceso de compra, venta y alquiler de propiedades mediante un ecosistema digital avanzado y un equipo de expertos siempre a tu disposición. Nos apasiona optimizar tu tiempo y maximizar tus oportunidades de inversión, ofreciendo un servicio ágil, transparente y diseñado a la medida de las demandas del mercado actual.", aboutT3: "Entendemos que una propiedad es mucho más que cuatro paredes: es el escenario de tus próximos grandes recuerdos y el pilar de tu estabilidad familiar. Con años de trayectoria en el sector, nos enorgullece ser los aliados de confianza de cientos de familias en la búsqueda de su hogar ideal. Nos distingue un servicio de asesoría honesto, empático y profesional, diseñado para acompañarte con absoluta seguridad en cada paso del camino.", aboutH1: 'Administración inmobiliaria con visión profesional e inteligente,', aboutH2: 'en forma segura, leal, responsable e íntegra,', aboutH3: 'haciendo que tu inversión crezca a niveles inimaginables.',
+    invH: 'Tu Inversión:', invSub: 'Inversión Garantizada:', invItems: ['Compra y venta', 'Alquileres Diversos', 'Integramos administración', 'Remodelación', 'Construcción / Remodelación', 'Desarrollo de proyectos con gestión practica de rentabilidad'], aboutP: 'Integramos administración, compra y venta, alquileres, remodelación, construcción y desarrollo de proyectos para ofrecer una gestión práctica y ordenada de cada propiedad.',
+    svH: 'Tus Servicios:', svA: 'Servicios Profesionales coordinados', svItems: ['Alquiler de maquinaria pesada', 'Renta de Camiones para extracción', 'Renta de apartamentos y Edificio', 'Mantenimiento de Edificios', 'Plomería y electricidad', 'Asesoría Jurídica', 'Prestamos con CHN', 'Movimiento de Tierra'],
     propH: 'Propiedades exclusivas en Guatemala', catalog: 'Solicitar catálogo', prev: 'Propiedad anterior', next: 'Siguiente propiedad',
     places: ['Ciudad de Guatemala', 'Lago de Atitlán', 'Antigua Guatemala', 'Petén', 'Zona 10'],
     alts: ['Propiedad de lujo en Ciudad de Guatemala', 'Propiedad de lujo en Lago de Atitlán', 'Propiedad de lujo en Antigua Guatemala', 'Propiedad de lujo en Petén', 'Propiedad premium en Zona 10'],
     goTo: 'Ir a la posición ',
     openProp: 'Ver ubicaciones de ', noLocs: 'Sin ubicaciones todavía', oneLoc: '1 ubicación', locsWord: 'ubicaciones',
     addLoc: 'Agregar ubicación', locDefault: 'Ubicación', emptyH: 'Aún no hay ubicaciones', emptyP: 'Agrega la primera para subir sus imágenes y su dirección.',
-    nameL: 'Nombre de la ubicación', sellerH: 'Vendedor', sellerUp: 'Subir foto del vendedor', sellerRm: 'Quitar foto', sellerName: 'Nombre del vendedor', sellerWa: 'WhatsApp del vendedor', waHint: 'Incluye el código de país, por ejemplo +502. Si escribes 8 dígitos se agrega el 502 automáticamente.', sellerLabel: 'Contacto del vendedor', waBtn: 'Contactar por WhatsApp', waMsg: 'Hola, me interesa la propiedad: ', descL: 'Descripción de la propiedad', descPh: 'Características, habitaciones, amenidades, precio y cualquier detalle importante…', descH: 'Descripción', addrL: 'Dirección o enlace de Google Maps', photo: 'Imagen ', photosH: 'Imágenes de la ubicación', upload: 'Subir imágenes',
+    nameL: 'Nombre de la ubicación', zoom: 'Ver foto del vendedor en tamaño original', zoomToggle: 'Alternar entre ajustar a la pantalla y tamaño real', opL: 'Tipo de operación', opRent: 'Renta', opSale: 'Venta', opBoth: 'Renta o venta', rentL: 'Valor de renta', saleL: 'Valor de la propiedad (venta)', rentPh: 'Ej. Q 4,500 al mes', salePh: 'Ej. Q 850,000', opHint: 'Elige el tipo de operación para indicar los valores.', viewOpRent: 'En renta', viewOpSale: 'En venta', viewOpBoth: 'En renta o venta', rentView: 'Renta', saleView: 'Precio de venta', sellerH: 'Vendedor', sellerUp: 'Subir foto del vendedor', sellerRm: 'Quitar foto', sellerName: 'Nombre del vendedor', sellerWa: 'WhatsApp del vendedor', waHint: 'Incluye el código de país, por ejemplo +502. Si escribes 8 dígitos se agrega el 502 automáticamente.', sellerLabel: 'Contacto del vendedor', waBtn: 'Contactar por WhatsApp', waMsg: 'Hola, me interesa la propiedad: ', descL: 'Descripción de la propiedad', descPh: 'Características, habitaciones, amenidades, precio y cualquier detalle importante…', descH: 'Descripción', addrL: 'Dirección o enlace de Google Maps', photo: 'Imagen ', photosH: 'Imágenes de la ubicación', upload: 'Subir imágenes',
     uploadHint: 'Puedes seleccionar varias imágenes (JPG o PNG).', remove: 'Quitar imagen', uploaded: 'Imágenes agregadas.', saved: 'Cambios guardados.',
     del: 'Eliminar ubicación', delSure: '¿Confirmar eliminación?', view: 'Visualizar', edit: 'Volver a editar', mapOpen: 'Ver en Google Maps',
     prevImg: 'Imagen anterior', nextImg: 'Imagen siguiente', noImgs: 'Esta ubicación aún no tiene imágenes.',
@@ -47,15 +48,16 @@ const T = {
     tag: 'Investments * development * management * services * loyalty', lede: 'Secure, modern, personalized real estate solutions tailored to your needs to protect your investment as well as grow your wealth.', heroL1: 'Your wealth', heroL2: 'in the best hands', btnProps: 'View properties', btnServ: 'Our services',
     t1: 'Security', t1s: 'in every process', t2: 'Profitability', t2s: 'results oriented',
     t3: 'Trust', t3s: 'personalized service', t4: 'Coverage', t4s: 'across Guatemala',
-    aboutH: 'Real estate management with an integrated vision',
-    aboutP: 'We integrate management, buying and selling, rentals, remodeling, construction and project development to provide practical and organized management for every property.',
+    aboutT1: "At ARMOPA we turn the search for properties into a strategic, personalized experience. We are a real estate consulting firm and an Integrated Professional Services firm dedicated to connecting our clients with exceptional spaces that elevate their lifestyle and secure their wealth. Our commitment is grounded in Loyalty, transparency and integrity, using market innovation and deep industry expertise, ensuring sound, transparent, high long-term value investment decisions.", aboutT2: "We guide you to find the ideal space, intelligently: the point where real estate technology and the human touch meet. We specialize in simplifying the process of buying, selling and renting properties through an advanced digital ecosystem and a team of experts always at your disposal. We are passionate about optimizing your time and maximizing your investment opportunities, offering an agile, transparent service tailored to the demands of today's market.", aboutT3: "We understand that a property is much more than four walls: it is the stage for your next great memories and the pillar of your family's stability. With years of experience in the sector, we are proud to be the trusted allies of hundreds of families in their search for the ideal home. We stand out for honest, empathetic and professional advice, designed to accompany you with absolute security every step of the way.", aboutH1: 'Real estate management with a professional and intelligent vision,', aboutH2: 'in a secure, loyal, responsible and honest way,', aboutH3: 'making your investment grow to unimaginable levels.',
+    invH: 'Your Investment:', invSub: 'Guaranteed Investment:', invItems: ['Buying and selling', 'Diverse rentals', 'We integrate management', 'Remodeling', 'Construction / Remodeling', 'Project development with practical profitability management'], aboutP: 'We integrate management, buying and selling, rentals, remodeling, construction and project development to provide practical and organized management for every property.',
+    svH: 'Your Services:', svA: 'Coordinated professional services', svItems: ['Heavy machinery rental', 'Dump truck rental for hauling', 'Apartment and building rentals', 'Building maintenance', 'Plumbing and electrical', 'Legal advisory', 'CHN loans', 'Earthmoving'],
     propH: 'Exclusive properties in Guatemala', catalog: 'Request catalog', prev: 'Previous property', next: 'Next property',
     places: ['Guatemala City', 'Lake Atitlán', 'Antigua Guatemala', 'Petén', 'Zone 10'],
     alts: ['Luxury property in Guatemala City', 'Luxury property at Lake Atitlán', 'Luxury property in Antigua Guatemala', 'Luxury property in Petén', 'Premium property in Zone 10'],
     goTo: 'Go to position ',
     openProp: 'View locations in ', noLocs: 'No locations yet', oneLoc: '1 location', locsWord: 'locations',
     addLoc: 'Add location', locDefault: 'Location', emptyH: 'No locations yet', emptyP: 'Add the first one to upload its images and address.',
-    nameL: 'Location name', sellerH: 'Seller', sellerUp: 'Upload seller photo', sellerRm: 'Remove photo', sellerName: 'Seller name', sellerWa: 'Seller WhatsApp', waHint: 'Include the country code, for example +502. If you type 8 digits, 502 is added automatically.', sellerLabel: 'Seller contact', waBtn: 'Contact on WhatsApp', waMsg: 'Hello, I am interested in the property: ', descL: 'Property description', descPh: 'Features, rooms, amenities, price and any important details…', descH: 'Description', addrL: 'Address or Google Maps link', photo: 'Image ', photosH: 'Location images', upload: 'Upload images',
+    nameL: 'Location name', zoom: 'View seller photo at original size', zoomToggle: 'Toggle between fit to screen and actual size', opL: 'Type of listing', opRent: 'Rent', opSale: 'Sale', opBoth: 'Rent or sale', rentL: 'Rent value', saleL: 'Property value (sale)', rentPh: 'e.g. Q 4,500 per month', salePh: 'e.g. Q 850,000', opHint: 'Choose the listing type to enter the values.', viewOpRent: 'For rent', viewOpSale: 'For sale', viewOpBoth: 'For rent or sale', rentView: 'Rent', saleView: 'Sale price', sellerH: 'Seller', sellerUp: 'Upload seller photo', sellerRm: 'Remove photo', sellerName: 'Seller name', sellerWa: 'Seller WhatsApp', waHint: 'Include the country code, for example +502. If you type 8 digits, 502 is added automatically.', sellerLabel: 'Seller contact', waBtn: 'Contact on WhatsApp', waMsg: 'Hello, I am interested in the property: ', descL: 'Property description', descPh: 'Features, rooms, amenities, price and any important details…', descH: 'Description', addrL: 'Address or Google Maps link', photo: 'Image ', photosH: 'Location images', upload: 'Upload images',
     uploadHint: 'You can select several images (JPG or PNG).', remove: 'Remove image', uploaded: 'Images added.', saved: 'Changes saved.',
     del: 'Delete location', delSure: 'Confirm deletion?', view: 'Preview', edit: 'Back to editing', mapOpen: 'View on Google Maps',
     prevImg: 'Previous image', nextImg: 'Next image', noImgs: 'This location has no images yet.',
@@ -100,6 +102,8 @@ function setLang(l) {
     card.querySelector('.pc-img').setAttribute('aria-label', t.openProp + t.places[i]);
   });
   $$('[data-ext]').forEach((el) => { el.textContent = t.ext[+el.dataset.ext]; });
+  $$('[data-sv]').forEach((el) => { el.textContent = t.svItems[+el.dataset.sv]; });
+  $$('[data-inv]').forEach((el) => { el.textContent = t.invItems[+el.dataset.inv]; });
   $$('.lg').forEach((b) => b.classList.toggle('on', b.dataset.lang === l));
   try { localStorage.setItem('armopaLang', l); } catch (e) {}
   buildDots();
@@ -197,7 +201,7 @@ function renderList() {
   add.type = 'button';
   add.addEventListener('click', () => {
     const l = list();
-    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', desc: '', imgs: [], sPhoto: '', sName: '', sWa: '' });
+    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '' });
     sel = l.length - 1; vi = 0; confirmDel = false;
     note(persist() ? '' : t.storeErr);
     render();
@@ -216,9 +220,20 @@ function renderEdit() {
   $('#p-name').value = c.name;
   $('#p-addr').value = c.addr;
   $('#p-desc').value = c.desc || '';
+  const op = c.op || '';
+  $$('#pOps .seg').forEach((b) => {
+    b.classList.toggle('on', b.dataset.op === op);
+    b.setAttribute('aria-pressed', b.dataset.op === op);
+  });
+  $('#opHint').hidden = !!op;
+  $('#pPrices').hidden = !op;
+  $('#fRent').hidden = !(op === 'renta' || op === 'ambos');
+  $('#fSale').hidden = !(op === 'venta' || op === 'ambos');
+  $('#p-rent').value = c.pRent || '';
+  $('#p-sale').value = c.pSale || '';
   $('#p-sname').value = c.sName || '';
   $('#p-swa').value = c.sWa || '';
-  $('#sAvatar').hidden = !c.sPhoto;
+  $('#sAvBtn').hidden = !c.sPhoto;
   $('#sAvatarPh').hidden = !!c.sPhoto;
   $('#sRm').hidden = !c.sPhoto;
   if (c.sPhoto) $('#sAvatar').src = c.sPhoto;
@@ -274,10 +289,20 @@ function renderView() {
     th.appendChild(b);
   });
   $('#vName').textContent = c ? c.name : '';
+  const vop = c ? (c.op || '') : '';
+  const showR = !!(c && (vop === 'renta' || vop === 'ambos') && (c.pRent || '').trim());
+  const showS = !!(c && (vop === 'venta' || vop === 'ambos') && (c.pSale || '').trim());
+  $('#vOp').hidden = !vop;
+  $('#vOp').textContent = vop === 'renta' ? t.viewOpRent : vop === 'venta' ? t.viewOpSale : vop === 'ambos' ? t.viewOpBoth : '';
+  $('#vRentBox').hidden = !showR;
+  $('#vRent').textContent = showR ? c.pRent.trim() : '';
+  $('#vSaleBox').hidden = !showS;
+  $('#vSale').textContent = showS ? c.pSale.trim() : '';
+  $('#vPrices').hidden = !(showR || showS);
   const sd = c ? (c.sWa || '').replace(/\D/g, '') : '';
   const has = !!(c && (c.sPhoto || (c.sName || '').trim() || sd));
   $('#vSeller').hidden = !has;
-  $('#vsImg').hidden = !(c && c.sPhoto);
+  $('#vsBtn').hidden = !(c && c.sPhoto);
   if (c && c.sPhoto) $('#vsImg').src = c.sPhoto;
   $('#vsName').textContent = c ? (c.sName || '').trim() : '';
   $('#vsNum').textContent = c ? (c.sWa || '').trim() : '';
@@ -317,7 +342,7 @@ function openProp(i) {
   render();
   pModal.hidden = false;
 }
-function closeProp() { pModal.hidden = true; cur = -1; }
+function closeProp() { pModal.hidden = true; $('#lbModal').hidden = true; cur = -1; }
 function shrink(file, max) {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();
@@ -373,7 +398,7 @@ $('#p-sphoto').addEventListener('change', async (e) => {
   const f = (e.target.files || [])[0];
   e.target.value = '';
   const c = list()[sel]; if (!c || !f) return;
-  try { c.sPhoto = await shrink(f, 500); } catch (err) { return; }
+  try { c.sPhoto = await shrink(f, 1600); } catch (err) { return; }
   note(persist() ? T[lang].saved : T[lang].storeErr);
   renderEdit();
 });
@@ -382,6 +407,22 @@ $('#sRm').addEventListener('click', () => {
   c.sPhoto = '';
   note(persist() ? T[lang].saved : T[lang].storeErr);
   renderEdit();
+});
+$$('#pOps .seg').forEach((b) => b.addEventListener('click', () => {
+  const c = list()[sel]; if (!c) return;
+  c.op = b.dataset.op;
+  note(persist() ? '' : T[lang].storeErr);
+  renderEdit();
+}));
+$('#p-rent').addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.pRent = $('#p-rent').value;
+  note(persist() ? '' : T[lang].storeErr);
+});
+$('#p-sale').addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.pSale = $('#p-sale').value;
+  note(persist() ? '' : T[lang].storeErr);
 });
 $('#p-files').addEventListener('change', async (e) => {
   const files = Array.from(e.target.files || []);
@@ -407,7 +448,22 @@ $('#pDel').addEventListener('click', () => {
 });
 $('#vPrev').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi <= 0 ? n - 1 : vi - 1; renderView(); });
 $('#vNext').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi >= n - 1 ? 0 : vi + 1; renderView(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeProp(); });
+/* Foto del vendedor en tamaño original */
+const lbModal = $('#lbModal');
+function openZoom(src) {
+  $('#lbImg').src = src;
+  $('#lb').classList.remove('full');
+  lbModal.hidden = false;
+}
+$('#sAvBtn').addEventListener('click', () => { const c = list()[sel]; if (c && c.sPhoto) openZoom(c.sPhoto); });
+$('#vsBtn').addEventListener('click', () => { const c = list()[sel]; if (c && c.sPhoto) openZoom(c.sPhoto); });
+$('#lbBtn').addEventListener('click', () => $('#lb').classList.toggle('full'));
+$('#lbClose').addEventListener('click', () => { lbModal.hidden = true; });
+$('#lbScrim').addEventListener('click', () => { lbModal.hidden = true; });
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (!lbModal.hidden) lbModal.hidden = true; else closeProp();
+});
 
 setLang(lang);
 update();
