@@ -130,15 +130,15 @@
 
 /* ULTIMA PORTADA ARMOPA */
 .hero-badge{display:none !important;}
-.hero{background-image:url("assets/hero-guatemala.jpg") !important;}
+.hero{background-image:url("assets/hero-armopa-solo-imagen.png") !important;}
 
 /* HERO FINAL: composición única, sin elementos duplicados */
-.hero{background-image:url("assets/hero-guatemala.jpg") !important;background-size:cover;background-position:center center;}
+.hero{background-image:url("assets/hero-armopa-solo-imagen.png") !important;background-size:cover;background-position:center center;}
 .hero-badge{display:none !important;}
 
 /* PORTADA ACTUALIZADA */
 .hero{
-  background-image:url("assets/hero-guatemala.jpg") !important;
+  background-image:url("assets/hero-armopa-solo-imagen.png") !important;
   background-size:cover;
   background-position:center center;
 }
@@ -146,7 +146,7 @@
 
 /* PORTADA FINAL LIMPIA */
 .hero{
-  background-image:url("assets/hero-guatemala.jpg") !important;
+  background-image:url("assets/hero-armopa-solo-imagen.png") !important;
   background-size:cover;
   background-position:center center;
 }
@@ -159,7 +159,7 @@
 }
 .hero-badge{display:none !important;}
 .hero{
-  background-image:url("assets/hero-guatemala.jpg") !important;
+  background-image:url("assets/hero-armopa-solo-imagen.png") !important;
   background-size:cover;
   background-position:center center;
 }
@@ -232,4 +232,285 @@ html{scroll-behavior:smooth}
 @media(max-width:390px){
   .hero-navigation-buttons{bottom:22px}
   .hero-nav-btn{font-size:11px;padding:10px 7px}
+}
+
+/* PORTADA: imagen limpia sin textos ni elementos integrados */
+.hero{
+  background-image:url("assets/hero-armopa-solo-imagen.png") !important;
+  background-size:cover;
+  background-position:center center;
+}
+
+/* TÍTULO DE PORTADA */
+.hero-title{
+  position:absolute;
+  left:clamp(28px,7vw,110px);
+  bottom:clamp(125px,18vh,190px);
+  z-index:5;
+  max-width:min(620px,70vw);
+  line-height:1.02;
+  text-shadow:0 3px 12px rgba(0,0,0,.55);
+}
+.hero-title span,
+.hero-title strong{
+  display:block;
+}
+.hero-title span{
+  color:#fff;
+  font-family:Georgia, "Times New Roman", serif;
+  font-size:clamp(34px,4.5vw,64px);
+  font-weight:700;
+}
+.hero-title strong{
+  color:#e6b84d;
+  font-family:Georgia, "Times New Roman", serif;
+  font-size:clamp(30px,4vw,58px);
+  font-style:italic;
+  font-weight:700;
+}
+@media(max-width:780px){
+  .hero-title{
+    left:20px;
+    right:20px;
+    bottom:120px;
+    max-width:calc(100% - 40px);
+  }
+  .hero-title span{font-size:clamp(28px,8vw,42px);}
+  .hero-title strong{font-size:clamp(25px,7vw,38px);}
+}
+@media(max-width:390px){
+  .hero-title{bottom:112px;}
+  .hero-title span{font-size:28px;}
+  .hero-title strong{font-size:25px;}
+}
+
+/* AJUSTE FINAL DEL TITULO DE PORTADA */
+.hero-title{
+  max-width:520px;
+  bottom:clamp(120px,17vh,175px);
+  line-height:1.05;
+}
+.hero-title span{
+  font-size:clamp(28px,3.5vw,50px);
+}
+.hero-title strong{
+  font-size:clamp(26px,3.2vw,46px);
+  white-space:nowrap;
+}
+@media(max-width:780px){
+  .hero-title{
+    max-width:calc(100% - 40px);
+    bottom:118px;
+  }
+  .hero-title span{font-size:30px;}
+  .hero-title strong{
+    font-size:27px;
+    white-space:nowrap;
+  }
+}
+@media(max-width:390px){
+  .hero-title{bottom:110px;}
+  .hero-title span{font-size:27px;}
+  .hero-title strong{font-size:24px;}
+}
+
+/* SEGUNDO TEXTO DE PORTADA */
+.hero-subtitle{
+  position:absolute;
+  left:clamp(28px,7vw,110px);
+  bottom:clamp(95px,13vh,135px);
+  z-index:5;
+  color:#fff;
+  font-family:Arial, Helvetica, sans-serif;
+  font-size:clamp(13px,1.35vw,19px);
+  font-weight:600;
+  letter-spacing:.8px;
+  text-shadow:0 2px 8px rgba(0,0,0,.65);
+}
+@media(max-width:780px){
+  .hero-subtitle{
+    left:20px;
+    right:20px;
+    bottom:91px;
+    font-size:13px;
+    line-height:1.35;
+  }
+}
+@media(max-width:390px){
+  .hero-subtitle{
+    bottom:86px;
+    font-size:11.5px;
+  }
+}
+
+/* IMAGEN DE PORTADA SELECCIONADA */
+.hero{
+  background-image:url("assets/hero-armopa-solo-imagen.png") !important;
+  background-size:cover;
+  background-position:center center;
+}
+
+/* PORTADA FINAL */
+.hero{
+  background-image:url("assets/hero-armopa-solo-imagen.png") !important;
+  background-size:cover;
+  background-position:center center;
+}
+
+/* PORTADA: SOLO IMAGEN DE FONDO */
+.hero{
+  background-image:url("assets/hero-armopa-solo-imagen.png") !important;
+  background-size:cover;
+  background-position:center center;
+}
+.hero-category,
+.hero-title,
+.hero-subtitle,
+.hero-content,
+.hero-text,
+.hero-actions,
+.hero-buttons,
+.hero-navigation-buttons{
+  display:none !important;
+}
+
+/* PORTADA ARMOPA — composición solicitada */
+.hero{
+  position:relative;
+  overflow:hidden;
+}
+.hero-overlay-armopa{
+  position:absolute;
+  left:clamp(28px,5vw,72px);
+  top:50%;
+  transform:translateY(-50%);
+  z-index:10;
+  max-width:min(760px,70vw);
+  color:#fff;
+  text-shadow:0 2px 8px rgba(0,0,0,.45);
+}
+.hero-main-title{
+  line-height:.98;
+  margin-bottom:18px;
+}
+.hero-main-title span,
+.hero-main-title strong{
+  display:block;
+  font-family:Georgia,"Times New Roman",serif;
+}
+.hero-main-title span{
+  font-size:clamp(38px,4.5vw,66px);
+  font-weight:700;
+}
+.hero-main-title strong{
+  color:#f0c65b;
+  font-size:clamp(34px,4.05vw,60px);
+  font-style:italic;
+  font-weight:700;
+}
+.hero-services-title{
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:clamp(13px,1.25vw,19px);
+  font-weight:700;
+  letter-spacing:2px;
+  line-height:1.6;
+  margin-bottom:24px;
+}
+.hero-services-title b{
+  color:#f0c65b;
+  font-weight:700;
+}
+.hero-action-buttons{
+  display:flex;
+  gap:22px;
+  flex-wrap:wrap;
+}
+.hero-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:13px;
+  min-width:310px;
+  min-height:66px;
+  padding:12px 25px;
+  border-radius:38px;
+  text-decoration:none;
+  font-family:Arial,Helvetica,sans-serif;
+  font-size:clamp(15px,1.25vw,20px);
+  font-weight:700;
+  box-sizing:border-box;
+  transition:transform .2s ease,opacity .2s ease;
+}
+.hero-btn:hover{
+  transform:translateY(-2px);
+  opacity:.95;
+}
+.hero-btn-properties{
+  background:#0a3158;
+  border:2px solid rgba(255,255,255,.9);
+  color:#fff;
+}
+.hero-btn-services{
+  background:linear-gradient(135deg,#d8a91e,#f0c34b);
+  border:2px solid rgba(255,255,255,.75);
+  color:#fff;
+}
+.hero-btn-icon{
+  font-size:29px;
+  line-height:1;
+}
+.hero-arrow{
+  font-size:28px;
+  margin-left:auto;
+}
+@media(max-width:780px){
+  .hero-overlay-armopa{
+    left:20px;
+    right:20px;
+    top:52%;
+    transform:translateY(-50%);
+    max-width:none;
+  }
+  .hero-main-title{margin-bottom:12px;}
+  .hero-main-title span{font-size:clamp(29px,8vw,43px);}
+  .hero-main-title strong{font-size:clamp(26px,7.2vw,39px);}
+  .hero-services-title{
+    font-size:11px;
+    letter-spacing:1.1px;
+    line-height:1.5;
+    margin-bottom:16px;
+  }
+  .hero-action-buttons{
+    gap:10px;
+    flex-wrap:nowrap;
+  }
+  .hero-btn{
+    min-width:0;
+    width:50%;
+    min-height:50px;
+    padding:8px 10px;
+    gap:7px;
+    font-size:12px;
+    border-radius:28px;
+  }
+  .hero-btn-icon{font-size:21px;}
+  .hero-arrow{font-size:20px;}
+}
+@media(max-width:390px){
+  .hero-overlay-armopa{top:50%;}
+  .hero-main-title span{font-size:28px;}
+  .hero-main-title strong{font-size:25px;}
+  .hero-services-title{font-size:9px;letter-spacing:.7px;}
+  .hero-btn{font-size:10.5px;min-height:46px;}
+}
+
+.hero-category,
+.hero-title,
+.hero-subtitle,
+.hero-content,
+.hero-text,
+.hero-actions,
+.hero-buttons,
+.hero-navigation-buttons{
+  display:none !important;
 }
