@@ -134,14 +134,10 @@ section[id]{scroll-margin-top:92px}
 @media (max-width:760px){
   .ex{grid-template-columns:minmax(0,1fr)}
 }
-@media (max-width:640px){
+@media (max-width:820px){
   .nav{min-height:64px}
   .hero{height:clamp(190px,56vw,240px);background-position:42% center;border-bottom-width:2px}
   .brand img{width:52px;height:52px}
-  .car{--n:1;gap:8px}
-  .arr{width:40px;height:40px}
-  .pc img{height:250px}
-  .sec{padding:64px 0}
   .stmt{padding:28px 0 28px}
   .tag{font-size:12.5px;letter-spacing:.02em;margin-bottom:12px;text-wrap:balance}
   .stmt h1{font-size:28px}
@@ -153,6 +149,12 @@ section[id]{scroll-margin-top:92px}
   .tr svg{width:24px;height:24px}
   .tr strong{font-size:17px}
   .tr span{font-size:13px}
+}
+@media (max-width:640px){
+  .car{--n:1;gap:8px}
+  .arr{width:40px;height:40px}
+  .pc img{height:250px}
+  .sec{padding:64px 0}
   .sv-grid{grid-template-columns:minmax(0,1fr)}
   .sec-h{flex-direction:column;align-items:flex-start;gap:14px}
   .frm{grid-template-columns:minmax(0,1fr)}
