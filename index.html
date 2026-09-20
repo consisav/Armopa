@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20260921s">
+<link rel="stylesheet" href="styles.css?v=20260921y">
 </head>
 <body>
 
@@ -139,14 +139,270 @@
         <p class="ex-sub" data-i18n="extSub"></p>
       </div>
       <div class="ex">
-        <div class="ex-i"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="17" width="12" height="4" rx="2"></rect><path d="M3.5 17v-4.5a1 1 0 0 1 1-1H10l1.5 5.5"></path><path d="M10 12l4-8 6 4"></path><path d="M20 8l-1.5 5h-4"></path></svg></span><span data-ext="0"></span></div>
-        <div class="ex-i"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6.5h11V15H2z"></path><path d="M13 9h4l3.5 3.5V15H13z"></path><circle cx="6" cy="17.5" r="2"></circle><circle cx="17" cy="17.5" r="2"></circle></svg></span><span data-ext="1"></span></div>
-        <div class="ex-i"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4h9v17"></path><path d="M14 9h5v12"></path><path d="M3 21h18"></path><path d="M8 8h2M8 12h2M8 16h2M16 13h1M16 17h1"></path></svg></span><span data-ext="2"></span></div>
-        <div class="ex-i"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span><span data-ext="3"></span></div>
-        <div class="ex-i"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3L4 13h5l-2 8 7-11H9l1-7z"></path><path d="M17.5 10c-2.2 2.8-3.2 4.3-3.2 5.7a3.2 3.2 0 0 0 6.4 0c0-1.4-1-2.9-3.2-5.7z"></path></svg></span><span data-ext="4"></span></div>
-        <div class="ex-i"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M8 20h8M5 7h14"></path><path d="M5 7l-3 7a3 3 0 0 0 6 0L5 7z"></path><path d="M19 7l-3 7a3 3 0 0 0 6 0l-3-7z"></path></svg></span><span data-ext="5"></span></div>
-        <div class="ex-i"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-6 9 6"></path><path d="M4 10h16"></path><path d="M6 10v8M10 10v8M14 10v8M18 10v8"></path><path d="M3 20h18"></path></svg></span><span data-ext="6"></span></div>
-        <div class="ex-i"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="16" width="12" height="4" rx="2"></rect><path d="M8 16v-5h6l2 5"></path><path d="M3 7v11"></path><path d="M3 13h5"></path><path d="M13 11V8h2"></path></svg></span><span data-ext="7"></span></div>
+        <div class="ex-c">
+          <button class="ex-i" type="button" aria-expanded="false" data-xbtn="0"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="17" width="12" height="4" rx="2"></rect><path d="M3.5 17v-4.5a1 1 0 0 1 1-1H10l1.5 5.5"></path><path d="M10 12l4-8 6 4"></path><path d="M20 8l-1.5 5h-4"></path></svg></span><span class="ex-t" data-ext="0"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="ex-p" hidden>
+            <div class="fld"><label for="xn-0" data-i18n="xNeed"></label><textarea id="xn-0" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
+            <div class="x-row">
+              <div class="fld"><label for="xt-0" data-i18n="xTime"></label><input id="xt-0" type="text" data-i18n-ph="xTimePh"></div>
+              <div class="fld"><label for="xs-0" data-i18n="xStart"></label><input id="xs-0" class="xs" type="date"></div>
+            </div>
+            <div class="fld">
+              <span class="lbl" data-i18n="xPrio"></span>
+              <div class="seg-g">
+                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
+                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
+                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
+              </div>
+            </div>
+            <div class="up2">
+              <span class="lbl" data-i18n="xImgs"></span>
+              <input id="xf-0" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold btn-sm" for="xf-0" data-i18n="upload"></label>
+              <span class="hint" data-i18n="xHint"></span>
+            </div>
+            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
+            <div class="x-estbar"><button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"></path></svg><span></span></button></div>
+            <div class="x-est" hidden>
+              <p class="x-est-h" data-i18n="xEstTitle"></p>
+              <p class="amt"></p>
+              <ul class="x-est-l"></ul>
+              <p class="assum" hidden></p>
+              <p class="hint x-estnote"></p>
+            </div>
+          </div>
+        </div>
+        <div class="ex-c">
+          <button class="ex-i" type="button" aria-expanded="false" data-xbtn="1"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6.5h11V15H2z"></path><path d="M13 9h4l3.5 3.5V15H13z"></path><circle cx="6" cy="17.5" r="2"></circle><circle cx="17" cy="17.5" r="2"></circle></svg></span><span class="ex-t" data-ext="1"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="ex-p" hidden>
+            <div class="fld"><label for="xn-1" data-i18n="xNeed"></label><textarea id="xn-1" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
+            <div class="x-row">
+              <div class="fld"><label for="xt-1" data-i18n="xTime"></label><input id="xt-1" type="text" data-i18n-ph="xTimePh"></div>
+              <div class="fld"><label for="xs-1" data-i18n="xStart"></label><input id="xs-1" class="xs" type="date"></div>
+            </div>
+            <div class="fld">
+              <span class="lbl" data-i18n="xPrio"></span>
+              <div class="seg-g">
+                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
+                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
+                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
+              </div>
+            </div>
+            <div class="up2">
+              <span class="lbl" data-i18n="xImgs"></span>
+              <input id="xf-1" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold btn-sm" for="xf-1" data-i18n="upload"></label>
+              <span class="hint" data-i18n="xHint"></span>
+            </div>
+            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
+            <div class="x-estbar"><button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"></path></svg><span></span></button></div>
+            <div class="x-est" hidden>
+              <p class="x-est-h" data-i18n="xEstTitle"></p>
+              <p class="amt"></p>
+              <ul class="x-est-l"></ul>
+              <p class="assum" hidden></p>
+              <p class="hint x-estnote"></p>
+            </div>
+          </div>
+        </div>
+        <div class="ex-c">
+          <button class="ex-i" type="button" aria-expanded="false" data-xbtn="2"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4h9v17"></path><path d="M14 9h5v12"></path><path d="M3 21h18"></path><path d="M8 8h2M8 12h2M8 16h2M16 13h1M16 17h1"></path></svg></span><span class="ex-t" data-ext="2"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="ex-p" hidden>
+            <div class="fld"><label for="xn-2" data-i18n="xNeed"></label><textarea id="xn-2" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
+            <div class="x-row">
+              <div class="fld"><label for="xt-2" data-i18n="xTime"></label><input id="xt-2" type="text" data-i18n-ph="xTimePh"></div>
+              <div class="fld"><label for="xs-2" data-i18n="xStart"></label><input id="xs-2" class="xs" type="date"></div>
+            </div>
+            <div class="fld">
+              <span class="lbl" data-i18n="xPrio"></span>
+              <div class="seg-g">
+                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
+                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
+                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
+              </div>
+            </div>
+            <div class="up2">
+              <span class="lbl" data-i18n="xImgs"></span>
+              <input id="xf-2" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold btn-sm" for="xf-2" data-i18n="upload"></label>
+              <span class="hint" data-i18n="xHint"></span>
+            </div>
+            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
+            <div class="x-estbar"><button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"></path></svg><span></span></button></div>
+            <div class="x-est" hidden>
+              <p class="x-est-h" data-i18n="xEstTitle"></p>
+              <p class="amt"></p>
+              <ul class="x-est-l"></ul>
+              <p class="assum" hidden></p>
+              <p class="hint x-estnote"></p>
+            </div>
+          </div>
+        </div>
+        <div class="ex-c">
+          <button class="ex-i" type="button" aria-expanded="false" data-xbtn="3"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg></span><span class="ex-t" data-ext="3"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="ex-p" hidden>
+            <div class="fld"><label for="xn-3" data-i18n="xNeed"></label><textarea id="xn-3" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
+            <div class="x-row">
+              <div class="fld"><label for="xt-3" data-i18n="xTime"></label><input id="xt-3" type="text" data-i18n-ph="xTimePh"></div>
+              <div class="fld"><label for="xs-3" data-i18n="xStart"></label><input id="xs-3" class="xs" type="date"></div>
+            </div>
+            <div class="fld">
+              <span class="lbl" data-i18n="xPrio"></span>
+              <div class="seg-g">
+                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
+                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
+                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
+              </div>
+            </div>
+            <div class="up2">
+              <span class="lbl" data-i18n="xImgs"></span>
+              <input id="xf-3" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold btn-sm" for="xf-3" data-i18n="upload"></label>
+              <span class="hint" data-i18n="xHint"></span>
+            </div>
+            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
+            <div class="x-estbar"><button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"></path></svg><span></span></button></div>
+            <div class="x-est" hidden>
+              <p class="x-est-h" data-i18n="xEstTitle"></p>
+              <p class="amt"></p>
+              <ul class="x-est-l"></ul>
+              <p class="assum" hidden></p>
+              <p class="hint x-estnote"></p>
+            </div>
+          </div>
+        </div>
+        <div class="ex-c">
+          <button class="ex-i" type="button" aria-expanded="false" data-xbtn="4"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 3L4 13h5l-2 8 7-11H9l1-7z"></path><path d="M17.5 10c-2.2 2.8-3.2 4.3-3.2 5.7a3.2 3.2 0 0 0 6.4 0c0-1.4-1-2.9-3.2-5.7z"></path></svg></span><span class="ex-t" data-ext="4"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="ex-p" hidden>
+            <div class="fld"><label for="xn-4" data-i18n="xNeed"></label><textarea id="xn-4" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
+            <div class="x-row">
+              <div class="fld"><label for="xt-4" data-i18n="xTime"></label><input id="xt-4" type="text" data-i18n-ph="xTimePh"></div>
+              <div class="fld"><label for="xs-4" data-i18n="xStart"></label><input id="xs-4" class="xs" type="date"></div>
+            </div>
+            <div class="fld">
+              <span class="lbl" data-i18n="xPrio"></span>
+              <div class="seg-g">
+                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
+                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
+                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
+              </div>
+            </div>
+            <div class="up2">
+              <span class="lbl" data-i18n="xImgs"></span>
+              <input id="xf-4" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold btn-sm" for="xf-4" data-i18n="upload"></label>
+              <span class="hint" data-i18n="xHint"></span>
+            </div>
+            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
+            <div class="x-estbar"><button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"></path></svg><span></span></button></div>
+            <div class="x-est" hidden>
+              <p class="x-est-h" data-i18n="xEstTitle"></p>
+              <p class="amt"></p>
+              <ul class="x-est-l"></ul>
+              <p class="assum" hidden></p>
+              <p class="hint x-estnote"></p>
+            </div>
+          </div>
+        </div>
+        <div class="ex-c">
+          <button class="ex-i" type="button" aria-expanded="false" data-xbtn="5"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M8 20h8M5 7h14"></path><path d="M5 7l-3 7a3 3 0 0 0 6 0L5 7z"></path><path d="M19 7l-3 7a3 3 0 0 0 6 0l-3-7z"></path></svg></span><span class="ex-t" data-ext="5"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="ex-p" hidden>
+            <div class="fld"><label for="xn-5" data-i18n="xNeed"></label><textarea id="xn-5" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
+            <div class="x-row">
+              <div class="fld"><label for="xt-5" data-i18n="xTime"></label><input id="xt-5" type="text" data-i18n-ph="xTimePh"></div>
+              <div class="fld"><label for="xs-5" data-i18n="xStart"></label><input id="xs-5" class="xs" type="date"></div>
+            </div>
+            <div class="fld">
+              <span class="lbl" data-i18n="xPrio"></span>
+              <div class="seg-g">
+                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
+                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
+                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
+              </div>
+            </div>
+            <div class="up2">
+              <span class="lbl" data-i18n="xImgs"></span>
+              <input id="xf-5" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold btn-sm" for="xf-5" data-i18n="upload"></label>
+              <span class="hint" data-i18n="xHint"></span>
+            </div>
+            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
+            <div class="x-estbar"><button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"></path></svg><span></span></button></div>
+            <div class="x-est" hidden>
+              <p class="x-est-h" data-i18n="xEstTitle"></p>
+              <p class="amt"></p>
+              <ul class="x-est-l"></ul>
+              <p class="assum" hidden></p>
+              <p class="hint x-estnote"></p>
+            </div>
+          </div>
+        </div>
+        <div class="ex-c">
+          <button class="ex-i" type="button" aria-expanded="false" data-xbtn="6"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-6 9 6"></path><path d="M4 10h16"></path><path d="M6 10v8M10 10v8M14 10v8M18 10v8"></path><path d="M3 20h18"></path></svg></span><span class="ex-t" data-ext="6"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="ex-p" hidden>
+            <div class="fld"><label for="xn-6" data-i18n="xNeed"></label><textarea id="xn-6" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
+            <div class="x-row">
+              <div class="fld"><label for="xt-6" data-i18n="xTime"></label><input id="xt-6" type="text" data-i18n-ph="xTimePh"></div>
+              <div class="fld"><label for="xs-6" data-i18n="xStart"></label><input id="xs-6" class="xs" type="date"></div>
+            </div>
+            <div class="fld">
+              <span class="lbl" data-i18n="xPrio"></span>
+              <div class="seg-g">
+                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
+                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
+                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
+              </div>
+            </div>
+            <div class="up2">
+              <span class="lbl" data-i18n="xImgs"></span>
+              <input id="xf-6" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold btn-sm" for="xf-6" data-i18n="upload"></label>
+              <span class="hint" data-i18n="xHint"></span>
+            </div>
+            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
+            <div class="x-estbar"><button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"></path></svg><span></span></button></div>
+            <div class="x-est" hidden>
+              <p class="x-est-h" data-i18n="xEstTitle"></p>
+              <p class="amt"></p>
+              <ul class="x-est-l"></ul>
+              <p class="assum" hidden></p>
+              <p class="hint x-estnote"></p>
+            </div>
+          </div>
+        </div>
+        <div class="ex-c">
+          <button class="ex-i" type="button" aria-expanded="false" data-xbtn="7"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="16" width="12" height="4" rx="2"></rect><path d="M8 16v-5h6l2 5"></path><path d="M3 7v11"></path><path d="M3 13h5"></path><path d="M13 11V8h2"></path></svg></span><span class="ex-t" data-ext="7"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="ex-p" hidden>
+            <div class="fld"><label for="xn-7" data-i18n="xNeed"></label><textarea id="xn-7" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
+            <div class="x-row">
+              <div class="fld"><label for="xt-7" data-i18n="xTime"></label><input id="xt-7" type="text" data-i18n-ph="xTimePh"></div>
+              <div class="fld"><label for="xs-7" data-i18n="xStart"></label><input id="xs-7" class="xs" type="date"></div>
+            </div>
+            <div class="fld">
+              <span class="lbl" data-i18n="xPrio"></span>
+              <div class="seg-g">
+                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
+                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
+                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
+              </div>
+            </div>
+            <div class="up2">
+              <span class="lbl" data-i18n="xImgs"></span>
+              <input id="xf-7" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold btn-sm" for="xf-7" data-i18n="upload"></label>
+              <span class="hint" data-i18n="xHint"></span>
+            </div>
+            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
+            <div class="x-estbar"><button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8.5 7h7M8.5 12h.01M12 12h.01M15.5 12h.01M8.5 16h.01M12 16h.01M15.5 16h.01"></path></svg><span></span></button></div>
+            <div class="x-est" hidden>
+              <p class="x-est-h" data-i18n="xEstTitle"></p>
+              <p class="amt"></p>
+              <ul class="x-est-l"></ul>
+              <p class="assum" hidden></p>
+              <p class="hint x-estnote"></p>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="quote" id="quote">
         <div class="quote-h"><span class="ic-h"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path><path d="M8 9.5h8M8 12.5h5"></path></svg></span><h3 data-i18n="quoteH"></h3></div>
@@ -154,11 +410,13 @@
         <div class="q-grid">
           <div class="fld"><label for="q-name" data-i18n="qName"></label><input id="q-name" type="text" autocomplete="name" data-i18n-ph="qNamePh"></div>
           <div class="fld"><label for="q-phone" data-i18n="qPhone"></label><input id="q-phone" type="tel" autocomplete="tel" data-i18n-ph="qPhonePh"></div>
-          <div class="fld"><label for="q-addr" data-i18n="qAddr"></label><input id="q-addr" type="text" autocomplete="street-address" data-i18n-ph="qAddrPh"></div>
+          <div class="fld"><label for="q-email" data-i18n="qEmail"></label><input id="q-email" type="email" autocomplete="email" data-i18n-ph="qEmailPh"></div>
           <div class="fld"><label for="q-date" data-i18n="qDate"></label><input id="q-date" type="date"></div>
+          <div class="fld full"><label for="q-addr" data-i18n="qAddr"></label><input id="q-addr" type="text" autocomplete="street-address" data-i18n-ph="qAddrPh"></div>
         </div>
         <div class="q-act">
           <a class="btn btn-wa" id="qBtn" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="qBtn"></span></a>
+          <a class="btn btn-line-dark" id="qMail" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3.5 7l8.5 6 8.5-6"></path></svg><span data-i18n="qBtnMail"></span></a>
           <span class="q-err" id="qErr" data-i18n="qErr" hidden></span>
         </div>
       </div>
@@ -321,6 +579,6 @@
   <div class="lb" id="lb"><button class="lb-img-b" type="button" id="lbBtn" data-i18n-label="zoomToggle"><img id="lbImg" alt=""></button></div>
 </div>
 
-<script src="script.js?v=20260921s"></script>
+<script src="script.js?v=20260921y"></script>
 </body>
 </html>

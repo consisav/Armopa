@@ -1,4 +1,142 @@
 /* ARMOPA — comportamiento de la página: idioma ES/EN, menú, carrusel, Área de Clientes y formulario (demostración). */
+/* Presupuesto estimado: precios de referencia de mercado en Guatemala (2026), en quetzales y sin IVA (12%). Son rangos orientativos. */
+function estimate(i, d, lang) {
+  const en = lang === 'en';
+  const L = (es, e) => (en ? e : es);
+  const Qf = (n) => 'Q ' + Math.round(n).toLocaleString('en-US');
+  const rng = (a, b) => Qf(a) + ' – ' + Qf(b);
+  const rnd = (n) => (n < 1000 ? Math.round(n / 10) * 10 : Math.round(n / 50) * 50);
+  const WORDS = { un: 1, una: 1, uno: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, media: 0.5, medio: 0.5, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, half: 0.5 };
+  const toNum = (s) => { s = String(s).toLowerCase(); return WORDS[s] !== undefined ? WORDS[s] : parseFloat(s.replace(',', '.')); };
+  const need = (d.need || '').toLowerCase();
+  const timeTxt = (d.time || '').toLowerCase();
+  const mDur = timeTxt.match(/(\d+(?:[.,]\d+)?|un|una|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|media|medio|one|two|three|four|five|six|seven|eight|nine|ten|half)\s*(horas?|hrs?|hours?|d[ií]as?|days?|semanas?|weeks?|meses|mes|months?|a[nñ]os?|years?)/);
+  let hours = null, days = null, months = null, durTxt = '';
+  if (mDur) {
+    const n = toNum(mDur[1]);
+    const u = mDur[2];
+    if (/^(hora|hrs?|hour)/.test(u)) { hours = n; days = n / 8; months = n / 176; durTxt = n + L(n === 1 ? ' hora' : ' horas', n === 1 ? ' hour' : ' hours'); }
+    else if (/^(d[ií]a|day)/.test(u)) { days = n; hours = n * 8; months = n / 22; durTxt = n + L(n === 1 ? ' día' : ' días', n === 1 ? ' day' : ' days'); }
+    else if (/^(semana|week)/.test(u)) { days = n * 5; hours = days * 8; months = n / 4.3; durTxt = n + L(n === 1 ? ' semana' : ' semanas', n === 1 ? ' week' : ' weeks'); }
+    else if (/^(mes|month)/.test(u)) { months = n; days = n * 22; hours = days * 8; durTxt = n + L(n === 1 ? ' mes' : ' meses', n === 1 ? ' month' : ' months'); }
+    else { months = n * 12; days = months * 22; hours = days * 8; durTxt = n + L(n === 1 ? ' año' : ' años', n === 1 ? ' year' : ' years'); }
+  }
+  const mM3 = need.match(/(\d[\d.,]*)\s*(m3|m³|metros?\s*c[uú]bicos?|cubic\s*met)/);
+  const m3 = mM3 ? parseFloat(mM3[1].replace(/,/g, '')) : null;
+  const mTrips = need.match(/(\d+)\s*(viajes?|trips?)/);
+  const trips = mTrips ? parseInt(mTrips[1], 10) : null;
+  const mAmt = need.match(/(?:\bq|gtq)\s?(\d[\d.,]*)|(\d[\d.,]*)\s*(?:quetzales|gtq)/);
+  const amt = mAmt ? parseFloat((mAmt[1] || mAmt[2]).replace(/,/g, '')) : null;
+
+  const lines = [];
+  const assumed = [];
+  let lo = 0, hi = 0;
+  const machine = () => {
+    const h = hours != null ? Math.max(hours, 4) : 8;
+    if (hours == null) assumed.push(L('Tiempo no indicado: se asumió 1 día de trabajo (8 horas).', 'Time not given: 1 working day (8 hours) assumed.'));
+    lo = 350 * h + 800;
+    hi = 650 * h + 2500;
+    lines.push([L('Tarifa referencial', 'Reference rate'), rng(350, 650) + L(' por hora', ' per hour')]);
+    lines.push([L('Horas consideradas', 'Hours considered'), h + ' h' + (hours != null && hours < 4 ? L(' (mínimo)', ' (minimum)') : '')]);
+    lines.push([L('Movilización de la máquina', 'Machine mobilization'), rng(800, 2500)]);
+  };
+  switch (i) {
+    case 0:
+      machine();
+      break;
+    case 1: {
+      let t = trips;
+      if (t == null && m3 != null) t = Math.max(1, Math.ceil(m3 / 7));
+      if (t == null && days != null) t = Math.max(1, Math.ceil(days * 4));
+      if (t == null) { t = 4; assumed.push(L('Cantidad no indicada: se asumieron 4 viajes. Indica viajes o m³ (por ejemplo "20 m³").', 'Quantity not given: 4 trips assumed. Enter trips or m³ (e.g. "20 m³").')); }
+      lo = 300 * t; hi = 900 * t;
+      lines.push([L('Tarifa por viaje (área metropolitana)', 'Rate per trip (metro area)'), rng(300, 900)]);
+      lines.push([L('Viajes considerados', 'Trips considered'), String(t)]);
+      if (m3 != null) lines.push([L('Volumen (camión de 7 m³)', 'Volume (7 m³ truck)'), m3 + ' m³']);
+      lines.push([L('Fuera de la ciudad', 'Outside the city'), L('desde Q 800 por viaje', 'from Q 800 per trip')]);
+      break;
+    }
+    case 2: {
+      let mo = months != null ? Math.max(1, Math.round(months * 10) / 10) : 1;
+      if (months == null) assumed.push(L('Tiempo no indicado: se asumió 1 mes de renta.', 'Time not given: 1 month of rent assumed.'));
+      lo = 2500 * mo; hi = 9000 * mo;
+      lines.push([L('Renta mensual (apartamento de 1 a 2 dormitorios)', 'Monthly rent (1–2 bedroom apartment)'), rng(2500, 9000)]);
+      lines.push([L('Meses considerados', 'Months considered'), String(mo)]);
+      lines.push([L('Depósito habitual', 'Usual deposit'), L('1 a 2 meses de renta', '1 to 2 months of rent')]);
+      break;
+    }
+    case 3: {
+      const dd = days != null ? Math.max(1, days) : 1;
+      if (days == null) assumed.push(L('Tiempo no indicado: se asumió 1 día de trabajo.', 'Time not given: 1 working day assumed.'));
+      lo = 450 * dd; hi = 1200 * dd;
+      lines.push([L('Cuadrilla por día (maestro + ayudantes)', 'Crew per day (foreman + helpers)'), rng(450, 1200)]);
+      lines.push([L('Días considerados', 'Days considered'), String(Math.round(dd * 10) / 10)]);
+      lines.push([L('Materiales', 'Materials'), L('aparte (10%–30% de margen si los compra el contratista)', 'not included (10%–30% markup if the contractor buys them)')]);
+      break;
+    }
+    case 4: {
+      const dd = days != null ? Math.max(0.5, days) : 1;
+      if (days == null) assumed.push(L('Tiempo no indicado: se asumió 1 día de trabajo.', 'Time not given: 1 working day assumed.'));
+      lo = Math.max(150, 300 * dd); hi = 800 * dd;
+      lines.push([L('Mano de obra por día', 'Labor per day'), rng(300, 800)]);
+      lines.push([L('Días considerados', 'Days considered'), String(Math.round(dd * 10) / 10)]);
+      lines.push([L('Visita de diagnóstico', 'Diagnostic visit'), rng(100, 300)]);
+      lines.push([L('Referencias', 'References'), L('fuga sencilla Q 200–600 · tablero eléctrico Q 1,500–4,000', 'simple leak Q 200–600 · electrical panel Q 1,500–4,000')]);
+      break;
+    }
+    case 5: {
+      const h = hours != null ? Math.max(1, hours) : 2;
+      if (hours == null) assumed.push(L('Tiempo no indicado: se asumieron 2 horas de asesoría.', 'Time not given: 2 hours of advice assumed.'));
+      lo = 400 * h; hi = 1000 * h;
+      lines.push([L('Honorarios por hora de asesoría', 'Fees per hour of advice'), rng(400, 1000)]);
+      lines.push([L('Horas consideradas', 'Hours considered'), String(Math.round(h * 10) / 10)]);
+      lines.push([L('Referencias', 'References'), L('consulta inicial Q 200–1,000 · dictamen escrito Q 800–3,000', 'initial consultation Q 200–1,000 · written opinion Q 800–3,000')]);
+      if (/compraventa|escritura|traspaso|purchase|deed/.test(need)) {
+        lines.push([L('Compraventa de inmueble', 'Property purchase'), L('1% – 2.5% del valor', '1% – 2.5% of the value')]);
+        if (amt != null) { lo += amt * 0.01; hi += amt * 0.025; lines.push([L('Valor indicado', 'Value entered'), Qf(amt)]); }
+        else assumed.push(L('Para estimar la compraventa indica el valor, por ejemplo "Q 500,000".', 'To estimate the purchase, enter the value, e.g. "Q 500,000".'));
+      }
+      break;
+    }
+    case 6: {
+      lo = 0; hi = 500;
+      lines.push([L('Orientación y acompañamiento', 'Guidance and support'), rng(0, 500)]);
+      lines.push([L('Tasa hipotecaria de referencia', 'Reference mortgage rate'), L('≈ 7% – 9% anual (varía por programa y banco)', '≈ 7% – 9% per year (varies by program and bank)')]);
+      if (amt != null) {
+        lo += amt * 0.02; hi += amt * 0.05;
+        lines.push([L('Monto del crédito', 'Loan amount'), Qf(amt)]);
+        lines.push([L('Gastos de gestión (seguro FHA, avalúo, escrituración)', 'Processing costs (FHA insurance, appraisal, deed)'), L('2% – 5% del monto', '2% – 5% of the amount')]);
+      } else assumed.push(L('Para estimar los gastos del crédito indica el monto, por ejemplo "Q 400,000".', 'To estimate loan costs, enter the amount, e.g. "Q 400,000".'));
+      break;
+    }
+    default: {
+      if (m3 != null) {
+        lo = 120 * m3 + 800; hi = 350 * m3 + 2500;
+        lines.push([L('Excavación, carga y relleno por m³', 'Excavation, loading and fill per m³'), rng(120, 350)]);
+        lines.push([L('Volumen considerado', 'Volume considered'), m3 + ' m³']);
+        lines.push([L('Movilización de la máquina', 'Machine mobilization'), rng(800, 2500)]);
+      } else {
+        machine();
+        assumed.push(L('Indica los metros cúbicos (por ejemplo "200 m³") para estimar por volumen.', 'Enter cubic meters (e.g. "200 m³") to estimate by volume.'));
+      }
+    }
+  }
+  const f = { alta: [1.1, 1.25], baja: [0.95, 1] }[d.prio] || [1, 1];
+  lo *= f[0]; hi *= f[1];
+  if (d.prio === 'alta') lines.push([L('Recargo por urgencia (prioridad alta)', 'Urgency surcharge (high priority)'), '+10% – +25%']);
+  else if (d.prio === 'baja') lines.push([L('Programación flexible (prioridad baja)', 'Flexible scheduling (low priority)'), L('hasta −5%', 'up to −5%')]);
+  else if (!d.prio) assumed.push(L('Prioridad no indicada: se asumió media.', 'Priority not given: medium assumed.'));
+  lo = rnd(lo); hi = rnd(hi);
+  if (hi < lo) hi = lo;
+  return {
+    range: rng(lo, hi),
+    lines: lines.map(([k, v]) => ({ k, v })),
+    assumed: assumed.join(' '),
+    notes: L('Estimación referencial con precios de mercado en Guatemala (2026), en quetzales y sin IVA (12%). No incluye materiales, combustible extra ni permisos. El monto final se confirma con una visita técnica.',
+             'Reference estimate using Guatemala market prices (2026), in quetzales and before VAT (12%). It does not include materials, extra fuel or permits. The final amount is confirmed after a site visit.')
+  };
+}
+
 const T = {
   es: {
     menu: 'Menú', nInicio: 'Inicio', nNosotros: 'Nosotros', nPropiedades: 'Propiedades', nServicios: 'Servicios', nProyectos: 'Proyectos', nContacto: 'Contacto',
@@ -7,7 +145,7 @@ const T = {
     tag: 'Inversiones * desarrollo * administración * servicios * lealtad', lede: 'Soluciones inmobiliarias seguras, modernas, personalizadas y ajustadas a tus necesidades para proteger tu inversión, así como hacer crecer tu patrimonio.', heroL1: 'Tu patrimonio', heroL2: 'en las mejores manos', btnProps: 'Ver propiedades', btnServ: 'Nuestros servicios',
     t1: 'Seguridad', t1s: 'en cada proceso', t2: 'Rentabilidad', t2s: 'orientada a resultados',
     t3: 'Confianza', t3s: 'atención personalizada', t4: 'Cobertura', t4s: 'en Guatemala',
-    aboutT1: "En ARMOPA transformamos la búsqueda de propiedades en una experiencia estratégica y personalizada. Somos una firma de consultoría inmobiliaria y de Servicios Profesionales Integrados dedicada a conectar a nuestros clientes con espacios excepcionales que elevan su estilo de vida y aseguran su patrimonio. Nuestro compromiso se fundamenta en la Lealtad, transparencia, integridad usando la innovación de mercado y una profunda experiencia sectorial, garantizando decisiones de inversión sólidas, transparentes y de alto valor a largo plazo.", aboutT2: "Te orientamos para encontrar el espacio ideal, de forma inteligente, el punto donde la tecnología inmobiliaria y el trato humano se encuentran. Nos especializamos en simplificar el proceso de compra, venta y alquiler de propiedades mediante un ecosistema digital avanzado y un equipo de expertos siempre a tu disposición. Nos apasiona optimizar tu tiempo y maximizar tus oportunidades de inversión, ofreciendo un servicio ágil, transparente y diseñado a la medida de las demandas del mercado actual.", aboutT3: "Entendemos que una propiedad es mucho más que cuatro paredes: es el escenario de tus próximos grandes recuerdos y el pilar de tu estabilidad familiar. Con años de trayectoria en el sector, nos enorgullece ser los aliados de confianza de cientos de familias en la búsqueda de su hogar ideal. Nos distingue un servicio de asesoría honesto, empático y profesional, diseñado para acompañarte con absoluta seguridad en cada paso del camino.", quoteH: "Solicitar cotización", quoteSub: "Completa tus datos y presiona el botón: se abrirá WhatsApp con la información lista para enviarnos.", qName: "Nombre del contacto / cliente", qNamePh: "Nombre completo", qPhone: "Teléfono de contacto", qPhonePh: "+502 0000 0000", qAddr: "Dirección del servicio", qAddrPh: "Zona, colonia, calle o referencia", qDate: "Fecha estimada del servicio", qBtn: "Solicitar cotización", qErr: "Completa todos los campos para solicitar la cotización.", qMsgH: "Hola, deseo solicitar una cotización.", qMsgName: "Nombre: ", qMsgPhone: "Teléfono: ", qMsgAddr: "Dirección del servicio: ", qMsgDate: "Fecha estimada del servicio: ", aboutH1: 'Administración inmobiliaria con visión profesional e inteligente,', aboutH2: 'en forma segura, leal, responsable e íntegra,', aboutH3: 'haciendo que tu inversión crezca a niveles inimaginables.',
+    aboutT1: "En ARMOPA transformamos la búsqueda de propiedades en una experiencia estratégica y personalizada. Somos una firma de consultoría inmobiliaria y de Servicios Profesionales Integrados dedicada a conectar a nuestros clientes con espacios excepcionales que elevan su estilo de vida y aseguran su patrimonio. Nuestro compromiso se fundamenta en la Lealtad, transparencia, integridad usando la innovación de mercado y una profunda experiencia sectorial, garantizando decisiones de inversión sólidas, transparentes y de alto valor a largo plazo.", aboutT2: "Te orientamos para encontrar el espacio ideal, de forma inteligente, el punto donde la tecnología inmobiliaria y el trato humano se encuentran. Nos especializamos en simplificar el proceso de compra, venta y alquiler de propiedades mediante un ecosistema digital avanzado y un equipo de expertos siempre a tu disposición. Nos apasiona optimizar tu tiempo y maximizar tus oportunidades de inversión, ofreciendo un servicio ágil, transparente y diseñado a la medida de las demandas del mercado actual.", aboutT3: "Entendemos que una propiedad es mucho más que cuatro paredes: es el escenario de tus próximos grandes recuerdos y el pilar de tu estabilidad familiar. Con años de trayectoria en el sector, nos enorgullece ser los aliados de confianza de cientos de familias en la búsqueda de su hogar ideal. Nos distingue un servicio de asesoría honesto, empático y profesional, diseñado para acompañarte con absoluta seguridad en cada paso del camino.", quoteH: "Solicitar cotización", quoteSub: "Completa tus datos y elige cómo enviarlos: por WhatsApp o por correo. Se abrirá con la información lista para enviarnos.", qName: "Nombre del contacto / cliente", qNamePh: "Nombre completo", qPhone: "Teléfono de contacto", qPhonePh: "+502 0000 0000", qAddr: "Dirección del servicio", qAddrPh: "Zona, colonia, calle o referencia", qDate: "Fecha estimada del servicio", qBtn: "Solicitar cotización", qErr: "Completa todos los campos para solicitar la cotización.", qMsgH: "Hola, deseo solicitar una cotización.", qMsgName: "Nombre: ", qMsgPhone: "Teléfono: ", qMsgAddr: "Dirección del servicio: ", qMsgDate: "Fecha estimada del servicio: ", xNeed: "Describe tu necesidad", xNeedPh: "Cuéntanos qué necesitas: medidas, materiales, urgencia u otros detalles…", xTime: "Tiempo estimado", xTimePh: "Ej. 2 semanas, 1 mes o una fecha aproximada", xImgs: "Subir y visualizar imágenes", xHint: "Puedes seleccionar varias imágenes (JPG o PNG). Se guardan en este navegador; adjúntalas en WhatsApp al enviar la cotización.", qMsgSvc: "Servicios solicitados:", qMsgTime: "Tiempo estimado: ", qMsgImgs: "Imágenes: {n} (las adjunto en este chat)", qEmail: "Correo electrónico", qEmailPh: "nombre@correo.com", qMsgEmail: "Correo: ", qBtnMail: "Enviar por correo", qErrEmail: "Escribe un correo electrónico válido.", qMailSubj: "Solicitud de cotización", xStart: "Fecha estimada de inicio", qMsgStart: "Fecha estimada de inicio: ", xPrio: "Prioridad", xPrioAlta: "Alta", xPrioMedia: "Media", xPrioBaja: "Baja", qMsgPrio: "Prioridad: ", xEstBtn: "Presupuesto estimado", xEstHide: "Ocultar presupuesto", xEstTitle: "Presupuesto estimado (referencial, Guatemala)", qMsgEst: "Presupuesto estimado: ", aboutH1: 'Administración inmobiliaria con visión profesional e inteligente,', aboutH2: 'en forma segura, leal, responsable e íntegra,', aboutH3: 'haciendo que tu inversión crezca a niveles inimaginables.',
     invH: 'Tu Inversión:', invSub: 'Inversión Garantizada:', invItems: ['Compra y venta', 'Alquileres Diversos', 'Integramos administración', 'Remodelación', 'Construcción / Remodelación', 'Desarrollo de proyectos con gestión practica de rentabilidad'], aboutP: 'Integramos administración, compra y venta, alquileres, remodelación, construcción y desarrollo de proyectos para ofrecer una gestión práctica y ordenada de cada propiedad.',
     svH: 'Tus Servicios:', svA: 'Servicios Profesionales coordinados', svItems: ['Alquiler de maquinaria pesada', 'Renta de Camiones para extracción', 'Renta de apartamentos y Edificio', 'Mantenimiento de Edificios', 'Plomería y electricidad', 'Asesoría Jurídica', 'Prestamos con CHN', 'Movimiento de Tierra'],
     propH: 'Propiedades exclusivas en Guatemala', catalog: 'Solicitar catálogo', prev: 'Propiedad anterior', next: 'Siguiente propiedad',
@@ -48,7 +186,7 @@ const T = {
     tag: 'Investments * development * management * services * loyalty', lede: 'Secure, modern, personalized real estate solutions tailored to your needs to protect your investment as well as grow your wealth.', heroL1: 'Your wealth', heroL2: 'in the best hands', btnProps: 'View properties', btnServ: 'Our services',
     t1: 'Security', t1s: 'in every process', t2: 'Profitability', t2s: 'results oriented',
     t3: 'Trust', t3s: 'personalized service', t4: 'Coverage', t4s: 'across Guatemala',
-    aboutT1: "At ARMOPA we turn the search for properties into a strategic, personalized experience. We are a real estate consulting firm and an Integrated Professional Services firm dedicated to connecting our clients with exceptional spaces that elevate their lifestyle and secure their wealth. Our commitment is grounded in Loyalty, transparency and integrity, using market innovation and deep industry expertise, ensuring sound, transparent, high long-term value investment decisions.", aboutT2: "We guide you to find the ideal space, intelligently: the point where real estate technology and the human touch meet. We specialize in simplifying the process of buying, selling and renting properties through an advanced digital ecosystem and a team of experts always at your disposal. We are passionate about optimizing your time and maximizing your investment opportunities, offering an agile, transparent service tailored to the demands of today's market.", aboutT3: "We understand that a property is much more than four walls: it is the stage for your next great memories and the pillar of your family's stability. With years of experience in the sector, we are proud to be the trusted allies of hundreds of families in their search for the ideal home. We stand out for honest, empathetic and professional advice, designed to accompany you with absolute security every step of the way.", quoteH: "Request a quote", quoteSub: "Fill in your details and press the button: WhatsApp will open with your information ready to send to us.", qName: "Contact / client name", qNamePh: "Full name", qPhone: "Contact phone", qPhonePh: "+502 0000 0000", qAddr: "Service address", qAddrPh: "Zone, neighborhood, street or landmark", qDate: "Estimated service date", qBtn: "Request a quote", qErr: "Please complete all fields to request the quote.", qMsgH: "Hello, I would like to request a quote.", qMsgName: "Name: ", qMsgPhone: "Phone: ", qMsgAddr: "Service address: ", qMsgDate: "Estimated service date: ", aboutH1: 'Real estate management with a professional and intelligent vision,', aboutH2: 'in a secure, loyal, responsible and honest way,', aboutH3: 'making your investment grow to unimaginable levels.',
+    aboutT1: "At ARMOPA we turn the search for properties into a strategic, personalized experience. We are a real estate consulting firm and an Integrated Professional Services firm dedicated to connecting our clients with exceptional spaces that elevate their lifestyle and secure their wealth. Our commitment is grounded in Loyalty, transparency and integrity, using market innovation and deep industry expertise, ensuring sound, transparent, high long-term value investment decisions.", aboutT2: "We guide you to find the ideal space, intelligently: the point where real estate technology and the human touch meet. We specialize in simplifying the process of buying, selling and renting properties through an advanced digital ecosystem and a team of experts always at your disposal. We are passionate about optimizing your time and maximizing your investment opportunities, offering an agile, transparent service tailored to the demands of today's market.", aboutT3: "We understand that a property is much more than four walls: it is the stage for your next great memories and the pillar of your family's stability. With years of experience in the sector, we are proud to be the trusted allies of hundreds of families in their search for the ideal home. We stand out for honest, empathetic and professional advice, designed to accompany you with absolute security every step of the way.", quoteH: "Request a quote", quoteSub: "Fill in your details and choose how to send them: by WhatsApp or by email. It will open with your information ready to send to us.", qName: "Contact / client name", qNamePh: "Full name", qPhone: "Contact phone", qPhonePh: "+502 0000 0000", qAddr: "Service address", qAddrPh: "Zone, neighborhood, street or landmark", qDate: "Estimated service date", qBtn: "Request a quote", qErr: "Please complete all fields to request the quote.", qMsgH: "Hello, I would like to request a quote.", qMsgName: "Name: ", qMsgPhone: "Phone: ", qMsgAddr: "Service address: ", qMsgDate: "Estimated service date: ", xNeed: "Describe your need", xNeedPh: "Tell us what you need: measurements, materials, urgency or other details…", xTime: "Estimated time", xTimePh: "E.g. 2 weeks, 1 month or an approximate date", xImgs: "Upload and view images", xHint: "You can select several images (JPG or PNG). They are saved in this browser; attach them in WhatsApp when you send the quote.", qMsgSvc: "Requested services:", qMsgTime: "Estimated time: ", qMsgImgs: "Images: {n} (I will attach them in this chat)", qEmail: "Email address", qEmailPh: "name@email.com", qMsgEmail: "Email: ", qBtnMail: "Send by email", qErrEmail: "Please enter a valid email address.", qMailSubj: "Quote request", xStart: "Estimated start date", qMsgStart: "Estimated start date: ", xPrio: "Priority", xPrioAlta: "High", xPrioMedia: "Medium", xPrioBaja: "Low", qMsgPrio: "Priority: ", xEstBtn: "Estimated budget", xEstHide: "Hide estimate", xEstTitle: "Estimated budget (reference, Guatemala)", qMsgEst: "Estimated budget: ", aboutH1: 'Real estate management with a professional and intelligent vision,', aboutH2: 'in a secure, loyal, responsible and honest way,', aboutH3: 'making your investment grow to unimaginable levels.',
     invH: 'Your Investment:', invSub: 'Guaranteed Investment:', invItems: ['Buying and selling', 'Diverse rentals', 'We integrate management', 'Remodeling', 'Construction / Remodeling', 'Project development with practical profitability management'], aboutP: 'We integrate management, buying and selling, rentals, remodeling, construction and project development to provide practical and organized management for every property.',
     svH: 'Your Services:', svA: 'Coordinated professional services', svItems: ['Heavy machinery rental', 'Dump truck rental for hauling', 'Apartment and building rentals', 'Building maintenance', 'Plumbing and electrical', 'Legal advisory', 'CHN loans', 'Earthmoving'],
     propH: 'Exclusive properties in Guatemala', catalog: 'Request catalog', prev: 'Previous property', next: 'Next property',
@@ -107,6 +245,7 @@ function setLang(l) {
   $$('.lg').forEach((b) => b.classList.toggle('on', b.dataset.lang === l));
   try { localStorage.setItem('armopaLang', l); } catch (e) {}
   buildDots();
+  if (typeof xo !== 'undefined' && xo >= 0) xRender(xo);
 }
 $$('.lg').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
 
@@ -465,27 +604,163 @@ document.addEventListener('keydown', (e) => {
   if (!lbModal.hidden) lbModal.hidden = true; else closeProp();
 });
 
+/* Especialistas: datos por servicio (se guardan en este navegador) */
+const XKEY = 'armopaSvc_v1';
+let xd = {};
+try { xd = JSON.parse(localStorage.getItem(XKEY) || 'null') || {}; } catch (e) {}
+let xo = -1;
+const xget = (i) => (xd[i] = xd[i] || { need: '', time: '', start: '', prio: '', imgs: [], main: 0 });
+const fmtDate = (iso) => { if (!iso) return ''; const [y, m, dd] = iso.split('-').map(Number); return new Date(y, m - 1, dd).toLocaleDateString(lang === 'en' ? 'en-US' : 'es-GT', { day: 'numeric', month: 'long', year: 'numeric' }); };
+(() => { const dn = new Date(); const min = dn.getFullYear() + '-' + String(dn.getMonth() + 1).padStart(2, '0') + '-' + String(dn.getDate()).padStart(2, '0'); $$('.xs').forEach((x) => { x.min = min; }); })();
+const xsave = () => { try { localStorage.setItem(XKEY, JSON.stringify(xd)); return true; } catch (e) { return false; } };
+const xfilled = (i) => { const d = xd[i]; return !!(d && ((d.need || '').trim() || (d.time || '').trim() || d.start || d.prio || (d.imgs || []).length)); };
+function xImgs(i) {
+  const c = $$('.ex-c')[i];
+  const d = xget(i);
+  const prev = c.querySelector('.x-prev');
+  prev.hidden = !d.imgs.length;
+  const box = c.querySelector('.x-thumbs');
+  box.innerHTML = '';
+  if (!d.imgs.length) return;
+  d.main = Math.min(d.main || 0, d.imgs.length - 1);
+  c.querySelector('.x-main').src = d.imgs[d.main];
+  d.imgs.forEach((src, k) => {
+    const wrap = el('div', 'th');
+    const b = el('button', 'th-b' + (k === d.main ? ' on' : ''));
+    b.type = 'button';
+    b.setAttribute('aria-label', T[lang].photo + (k + 1));
+    const img = el('img'); img.src = src; img.alt = '';
+    b.appendChild(img);
+    b.addEventListener('click', () => { d.main = k; xsave(); xImgs(i); });
+    const x = el('button', 'th-x', '×');
+    x.type = 'button';
+    x.setAttribute('aria-label', T[lang].remove);
+    x.addEventListener('click', () => { d.imgs.splice(k, 1); d.main = 0; xsave(); xImgs(i); c.querySelector('.ex-dot').hidden = !xfilled(i); });
+    wrap.append(b, x);
+    box.appendChild(wrap);
+  });
+}
+function xEst(i) {
+  const c = $$('.ex-c')[i];
+  const d = xget(i);
+  const t = T[lang];
+  c.querySelector('.x-estbtn span').textContent = d.est ? t.xEstHide : t.xEstBtn;
+  const box = c.querySelector('.x-est');
+  box.hidden = !d.est;
+  if (!d.est) return;
+  const e = estimate(i, d, lang);
+  box.querySelector('.amt').textContent = e.range;
+  const ul = box.querySelector('.x-est-l');
+  ul.innerHTML = '';
+  e.lines.forEach((ln) => {
+    const li = el('li');
+    li.append(el('span', '', ln.k), el('strong', '', ln.v));
+    ul.appendChild(li);
+  });
+  const as = box.querySelector('.assum');
+  as.textContent = e.assumed;
+  as.hidden = !e.assumed;
+  box.querySelector('.x-estnote').textContent = e.notes;
+}
+function xRender(i) {
+  const c = $$('.ex-c')[i];
+  const open = xo === i;
+  const btn = c.querySelector('.ex-i');
+  btn.classList.toggle('open', open);
+  btn.setAttribute('aria-expanded', open);
+  c.querySelector('.ex-p').hidden = !open;
+  c.querySelector('.ex-dot').hidden = !xfilled(i);
+  if (open) {
+    const d = xget(i);
+    c.querySelector('textarea').value = d.need || '';
+    c.querySelector('input[type=text]').value = d.time || '';
+    c.querySelector('.xs').value = d.start || '';
+    c.querySelectorAll('.seg').forEach((b) => { const on = (d.prio || '') === b.dataset.prio; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+    xImgs(i);
+    xEst(i);
+  }
+}
+$$('.ex-c').forEach((c, i) => {
+  c.querySelector('.ex-i').addEventListener('click', () => {
+    const prev = xo;
+    xo = xo === i ? -1 : i;
+    if (prev >= 0) xRender(prev);
+    xRender(i);
+  });
+  c.querySelector('textarea').addEventListener('input', (e) => { xget(i).need = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); if (xget(i).est) xEst(i); });
+  c.querySelector('input[type=text]').addEventListener('input', (e) => { xget(i).time = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); if (xget(i).est) xEst(i); });
+  c.querySelectorAll('.seg').forEach((b) => b.addEventListener('click', () => {
+    const d = xget(i);
+    d.prio = d.prio === b.dataset.prio ? '' : b.dataset.prio;
+    xsave();
+    xRender(i);
+  }));
+  c.querySelector('.x-estbtn').addEventListener('click', () => { const d = xget(i); d.est = !d.est; xsave(); xEst(i); });
+  c.querySelector('.xs').addEventListener('input', (e) => { xget(i).start = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); });
+  c.querySelector('input[type=file]').addEventListener('change', async (e) => {
+    const files = Array.from(e.target.files || []);
+    e.target.value = '';
+    const urls = [];
+    for (const f of files) { try { urls.push(await shrink(f, 1200)); } catch (err) {} }
+    if (!urls.length) return;
+    const d = xget(i);
+    d.imgs = d.imgs.concat(urls);
+    d.main = d.imgs.length - 1;
+    xsave();
+    xImgs(i);
+    c.querySelector('.ex-dot').hidden = false;
+  });
+});
+function xLines(t) {
+  const lines = [];
+  t.ext.forEach((name, i) => {
+    const d = xd[i] || {};
+    const need = (d.need || '').trim(), time = (d.time || '').trim(), start = d.start || '', prio = d.prio || '', n = (d.imgs || []).length;
+    if (!need && !time && !start && !prio && !n && !d.est) return;
+    const parts = [];
+    if (need) parts.push(need);
+    if (prio) parts.push(t.qMsgPrio + { alta: t.xPrioAlta, media: t.xPrioMedia, baja: t.xPrioBaja }[prio]);
+    if (time) parts.push(t.qMsgTime + time);
+    if (start) parts.push(t.qMsgStart + fmtDate(start));
+    if (d.est) parts.push(t.qMsgEst + estimate(i, d, lang).range);
+    if (n) parts.push(t.qMsgImgs.replace('{n}', n));
+    lines.push('- ' + name + ': ' + parts.join(' | '));
+  });
+  return lines.length ? '\n\n' + t.qMsgSvc + '\n' + lines.join('\n') : '';
+}
+
 /* Solicitar cotización por WhatsApp */
 const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código de país + número, solo dígitos)
 (function () {
   const d = new Date();
   $('#q-date').min = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-  const btn = $('#qBtn');
-  btn.addEventListener('click', (e) => {
+  const MAIL_TO = 'servicios@armopa.com'; // correo de la página
+  const btn = $('#qBtn'), mail = $('#qMail');
+  function build(e) {
     const t = T[lang];
-    const name = $('#q-name').value.trim(), phone = $('#q-phone').value.trim(), addr = $('#q-addr').value.trim(), date = $('#q-date').value;
-    if (!name || !phone || !addr || !date) {
+    const name = $('#q-name').value.trim(), phone = $('#q-phone').value.trim(), email = $('#q-email').value.trim(), addr = $('#q-addr').value.trim(), date = $('#q-date').value;
+    const emailOk = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!name || !phone || !addr || !date || !emailOk) {
       e.preventDefault();
-      $('#qErr').hidden = false;
-      return;
+      const er = $('#qErr');
+      er.textContent = email && !emailOk ? t.qErrEmail : t.qErr;
+      er.hidden = false;
+      return null;
     }
     $('#qErr').hidden = true;
     const [y, m, dd] = date.split('-').map(Number);
     const dateTxt = new Date(y, m - 1, dd).toLocaleDateString(lang === 'en' ? 'en-US' : 'es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
-    const msg = [t.qMsgH, t.qMsgName + name, t.qMsgPhone + phone, t.qMsgAddr + addr, t.qMsgDate + dateTxt].join('\n');
-    btn.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
+    return [t.qMsgH, t.qMsgName + name, t.qMsgPhone + phone].concat(email ? [t.qMsgEmail + email] : [], [t.qMsgAddr + addr, t.qMsgDate + dateTxt]).join('\n') + xLines(t);
+  }
+  btn.addEventListener('click', (e) => {
+    const msg = build(e);
+    if (msg) btn.href = 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
   });
-  ['#q-name', '#q-phone', '#q-addr', '#q-date'].forEach((s) => $(s).addEventListener('input', () => { $('#qErr').hidden = true; }));
+  mail.addEventListener('click', (e) => {
+    const msg = build(e);
+    if (msg) mail.href = 'mailto:' + MAIL_TO + '?subject=' + encodeURIComponent(T[lang].qMailSubj) + '&body=' + encodeURIComponent(msg);
+  });
+  ['#q-name', '#q-phone', '#q-email', '#q-addr', '#q-date'].forEach((s) => $(s).addEventListener('input', () => { $('#qErr').hidden = true; }));
 })();
 
 setLang(lang);
