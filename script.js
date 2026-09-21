@@ -422,7 +422,35 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeClien
 $('#clientGo').addEventListener('click', () => { $('#clientNote').hidden = false; });
 
 /* Formulario de contacto (demostración) */
-$('#sendBtn').addEventListener('click', () => { $('#sentNote').hidden = false; });
+$('#sendBtn').addEventListener('click', async () => {
+  const nombre = $('#f-nombre')?.value.trim();
+  const correo = $('#f-correo')?.value.trim();
+  const telefono = $('#f-tel')?.value.trim();
+  const motivo = $('#f-motivo')?.value.trim();
+  const mensaje = $('#f-msg')?.value.trim();
+
+  if (!nombre || !mensaje) {
+    alert('Por favor escribe tu nombre y cuéntanos qué necesitas.');
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from('contactos')
+    .insert({
+      nombre,
+      telefono: telefono || null,
+      correo: correo || null,
+      mensaje: motivo ? `[${motivo}] ${mensaje}` : mensaje
+    });
+
+  if (error) {
+    console.error('Error al guardar contacto:', error);
+    alert('No pudimos enviar tu solicitud. Intenta de nuevo.');
+    return;
+  }
+
+  $('#sentNote').hidden = false;
+});
 
 /* Propiedades: ubicaciones, imágenes y vista (se guardan en este navegador) */
 /* Costos alrededor: valores de referencia de renta y venta de propiedades similares en Guatemala (2026). Son precios pedidos publicados en portales inmobiliarios, no precios de cierre. */
@@ -1068,3 +1096,81 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
 
 setLang(lang);
 update();
+// ============================================
+// PRUEBA DE CONEXIÓN CON SUPABASE
+// ============================================
+
+async function probarSupabase() {
+    console.log("Probando conexión con Supabase...");
+
+    const { data, error } = await supabaseClient
+        .from("servicios")
+        .select("*");
+
+    if (error) {
+        console.error("Error de Supabase:", error);
+        alert("ERROR DE SUPABASE:\n" + error.message);
+        return;
+    }
+
+    console.log("Conexión correcta.");
+    console.log("Servicios encontrados:", data);
+
+    alert(
+        "CONEXIÓN CORRECTA\n\n" +
+        "ARMOPA encontró " + data.length + " servicios en Supabase."
+    );
+}
+// ===== Servicios desde Supabase =====
+function escaparTexto(texto) {
+  const d = document.createElement('div');
+  d.textContent = texto ?? '';
+  return d.innerHTML;
+}
+
+async function cargarServiciosArmopa() {
+  const contenedor = document.getElementById('servicios-contenedor');
+  if (!contenedor) return;
+
+  const { data, error } = await supabaseClient
+    .from('servicios')
+    .select('id, nombre, descripcion, categoria')
+    .eq('activo', true)
+    .order('categoria', { ascending: true })
+    .order('id', { ascending: true });
+
+  if (error) {
+    console.error('Error cargando servicios:', error);
+    contenedor.innerHTML = '<p class="servicios-estado">No pudimos cargar los servicios en este momento.</p>';
+    return;
+  }
+
+  if (!data.length) {
+    contenedor.innerHTML = '<p class="servicios-estado">Próximamente.</p>';
+    return;
+  }
+
+  // Agrupar por categoría
+  const grupos = {};
+  data.forEach(s => {
+    const cat = s.categoria || 'Otros servicios';
+    (grupos[cat] = grupos[cat] || []).push(s);
+  });
+
+  contenedor.innerHTML = Object.entries(grupos).map(([cat, items]) => `
+    <div class="servicios-grupo">
+      <h3 class="servicios-categoria">${escaparTexto(cat)}</h3>
+      <div class="servicios-grid">
+        ${items.map(s => `
+          <article class="servicio-card">
+            <h4>${escaparTexto(s.nombre)}</h4>
+            <p>${escaparTexto(s.descripcion)}</p>
+          </article>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+document.addEventListener('DOMContentLoaded', cargarServiciosArmopa);
+window.cargarServiciosArmopa = cargarServiciosArmopa;

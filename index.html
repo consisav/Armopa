@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20260923d">
+<link rel="stylesheet" href="styles.css?v=20260923f">
 </head>
 <body>
 
@@ -479,7 +479,12 @@
     </div>
   </section>
 </main>
-
+<section id="servicios" class="servicios">
+  <h2>Nuestros servicios</h2>
+  <div id="servicios-contenedor">
+    <p class="servicios-estado">Cargando servicios...</p>
+  </div>
+</section>
 <footer class="ftr">
   <div class="wrap">
     <div class="ftr-grid">
@@ -617,6 +622,8 @@
   <div class="lb" id="lb"><button class="lb-img-b" type="button" id="lbBtn" data-i18n-label="zoomToggle"><img id="lbImg" alt=""></button></div>
 </div>
 
-<script src="script.js?v=20260923d"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js?v=20260923h"></script>
+<script src="script.js?v=20260923h"></script>
 </body>
 </html>
