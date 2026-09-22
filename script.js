@@ -581,16 +581,23 @@ function marketEstimate(reg, inp, lang) {
   };
 }
 
-const STORE = 'armopaProps_v2';
+const STORE = 'armopaProps_v3';
 const BASE = [1, 2, 3, 4, 5].map((n) => 'assets/propiedad-' + n + '.jpg');
 let data = {};
 try { data = (JSON.parse(localStorage.getItem(STORE) || 'null') || {}).data || {}; } catch (e) {}
-let cur = -1, mode = 'edit', sel = -1, vi = 0, confirmDel = false;
+let cur = null;           // nombre de la ciudad activa (texto), o null si no hay ninguna elegida
+let panelView = 'cities'; // 'cities' = viendo ciudades | 'locs' = viendo ubicaciones de una ciudad
+let mode = 'edit', sel = -1, vi = 0, confirmDel = false;
 const pModal = $('#propModal');
 
-const list = () => (data[cur] = data[cur] || []);
-function persist() {
+const cityNames = () => Object.keys(data);
+const list = () => { if (cur === null) return []; data[cur] = data[cur] || []; return data[cur]; };
+function persistLocalOnly() {
   try { localStorage.setItem(STORE, JSON.stringify({ data })); return true; } catch (e) { return false; }
+}
+function persist() {
+  syncLoc();
+  return persistLocalOnly();
 }
 function note(msg) {
   const el = $('#pMsg');
@@ -598,7 +605,7 @@ function note(msg) {
   el.hidden = !msg;
 }
 function mapUrl(c) {
-  const q = (c.addr || '').trim() || [c.name, T[lang].places[cur], 'Guatemala'].join(', ');
+  const q = (c.addr || '').trim() || [c.name, cur, 'Guatemala'].join(', ');
   return /^https?:\/\//i.test(q) ? q : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
 }
 function el(tag, cls, text) {
@@ -613,6 +620,37 @@ function renderList() {
   const t = T[lang];
   const box = $('#pList');
   box.innerHTML = '';
+
+  if (panelView === 'cities') {
+    cityNames().forEach((name) => {
+      const b = el('button', 'li' + (name === cur ? ' on' : ''));
+      b.type = 'button';
+      b.append(el('span', '', name), el('small', '', String((data[name] || []).length)));
+      b.addEventListener('click', () => {
+        cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
+        note(''); render();
+      });
+      box.appendChild(b);
+    });
+    const add = el('button', 'btn btn-dark', '+ Nueva ciudad');
+    add.type = 'button';
+    add.addEventListener('click', () => {
+      const name = (prompt('Nombre de la ciudad:') || '').trim();
+      if (!name) return;
+      if (!data[name]) data[name] = [];
+      cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
+      note(persist() ? '' : t.storeErr);
+      render();
+    });
+    box.appendChild(add);
+    return;
+  }
+
+  const back = el('button', 'btn btn-line-dark', '← Ciudades');
+  back.type = 'button';
+  back.addEventListener('click', () => { panelView = 'cities'; cur = null; sel = -1; note(''); render(); });
+  box.appendChild(back);
+
   list().forEach((l, i) => {
     const b = el('button', 'li' + (i === sel ? ' on' : ''));
     b.type = 'button';
@@ -735,7 +773,7 @@ function renderView() {
   $('#vDesc').textContent = d;
   $('#vDescBox').hidden = !d;
   const a = c && (c.addr || '').trim();
-  $('#vAddr').textContent = a && !/^https?:\/\//i.test(a) ? a : t.places[cur] + ', Guatemala';
+  $('#vAddr').textContent = a && !/^https?:\/\//i.test(a) ? a : cur + ', Guatemala';
   if (c) $('#vMap').href = mapUrl(c);
   const chips = $('#vChips');
   chips.innerHTML = '';
@@ -749,9 +787,21 @@ function renderView() {
 
 function render() {
   const t = T[lang];
+  if (panelView === 'cities') {
+    $('#pTitle').textContent = 'Ciudades';
+    $('#pSub').textContent = cityNames().length ? cityNames().length + ' ciudad(es)' : 'Agrega tu primera ciudad';
+    $('#pEdit').hidden = false;
+    $('#pForm').hidden = true;
+    $('#pEmpty').hidden = true;
+    $('#pCard').classList.remove('vw');
+    $('#pViewBox').hidden = true;
+    renderList();
+    renderMk();
+    return;
+  }
   const l = list();
   if (sel >= l.length) sel = l.length - 1;
-  $('#pTitle').textContent = t.places[cur];
+  $('#pTitle').textContent = cur;
   $('#pSub').textContent = l.length === 0 ? t.noLocs : l.length === 1 ? t.oneLoc : l.length + ' ' + t.locsWord;
   $('#pCard').classList.toggle('vw', mode === 'view');
   $('#pEdit').hidden = mode !== 'edit';
@@ -759,14 +809,13 @@ function render() {
   if (mode === 'edit') renderEdit(); else renderView();
   renderMk();
 }
-function openProp(i) {
-  cur = i; mode = 'edit'; confirmDel = false; mk = null;
-  sel = list().length ? 0 : -1; vi = 0;
+function openProp() {
+  panelView = 'cities'; cur = null; mode = 'edit'; confirmDel = false; mk = null; sel = -1; vi = 0;
   note('');
   render();
   pModal.hidden = false;
 }
-function closeProp() { pModal.hidden = true; $('#lbModal').hidden = true; cur = -1; }
+function closeProp() { pModal.hidden = true; $('#lbModal').hidden = true; }
 function shrink(file, max) {
   return new Promise((resolve, reject) => {
     const fr = new FileReader();
@@ -788,7 +837,7 @@ function shrink(file, max) {
   });
 }
 
-$$('.pc-img').forEach((b) => b.addEventListener('click', () => openProp(+b.dataset.open)));
+$$('.pc-img').forEach((b) => b.addEventListener('click', () => openProp()));
 $('#pClose').addEventListener('click', closeProp);
 $('#pScrim').addEventListener('click', closeProp);
 $('#p-name').addEventListener('input', () => {
@@ -822,7 +871,7 @@ $('#p-sphoto').addEventListener('change', async (e) => {
   const f = (e.target.files || [])[0];
   e.target.value = '';
   const c = list()[sel]; if (!c || !f) return;
-  try { c.sPhoto = await shrink(f, 1600); } catch (err) { return; }
+  try { c.sPhoto = await uploadPropFile(f, 1600); } catch (err) { return; }
   note(persist() ? T[lang].saved : T[lang].storeErr);
   renderEdit();
 });
@@ -854,7 +903,7 @@ $('#p-files').addEventListener('change', async (e) => {
   const c = list()[sel]; if (!c) return;
   const urls = [];
   for (const f of files) {
-    try { urls.push(await shrink(f)); } catch (err) {}
+    try { urls.push(await uploadPropFile(f, 1600)); } catch (err) {}
   }
   if (!urls.length) return;
   c.imgs = c.imgs.concat(urls);
@@ -910,10 +959,16 @@ $('#pView').addEventListener('click', () => { mode = 'view'; vi = 0; note(''); r
 $('#vEdit').addEventListener('click', () => { mode = 'edit'; render(); });
 $('#pDel').addEventListener('click', () => {
   if (!confirmDel) { confirmDel = true; renderEdit(); return; }
+  const removed = list()[sel];
+  const cityAtDelete = cur;
   list().splice(sel, 1);
   sel = Math.max(0, sel - 1); confirmDel = false; vi = 0;
   note(persist() ? T[lang].saved : T[lang].storeErr);
   render();
+  if (removed && cityAtDelete) {
+    supabaseClient.from('propiedades').delete().eq('ciudad', cityAtDelete).eq('local_id', removed.id)
+      .then(({ error }) => { if (error) console.error('Error al borrar en Supabase:', error); });
+  }
 });
 $('#vPrev').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi <= 0 ? n - 1 : vi - 1; renderView(); });
 $('#vNext').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi >= n - 1 ? 0 : vi + 1; renderView(); });
@@ -1174,3 +1229,101 @@ async function cargarServiciosArmopa() {
 
 document.addEventListener('DOMContentLoaded', cargarServiciosArmopa);
 window.cargarServiciosArmopa = cargarServiciosArmopa;
+// ===== Propiedades: sincronización con Supabase =====
+const PROPS_BUCKET = 'propiedades';
+
+function uploadPropFile(file, max) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const r = Math.min(1, (max || 1600) / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * r);
+        c.height = Math.round(img.height * r);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(async (blob) => {
+          try {
+            const path = Date.now() + '-' + Math.random().toString(36).slice(2) + '.jpg';
+            const { error } = await supabaseClient.storage.from(PROPS_BUCKET).upload(path, blob, { contentType: 'image/jpeg' });
+            if (error) { reject(error); return; }
+            const pub = supabaseClient.storage.from(PROPS_BUCKET).getPublicUrl(path);
+            resolve(pub.data.publicUrl);
+          } catch (err) { reject(err); }
+        }, 'image/jpeg', 0.82);
+      };
+      img.onerror = reject;
+      img.src = fr.result;
+    };
+    fr.onerror = reject;
+    fr.readAsDataURL(file);
+  });
+}
+
+function toSupaRow(cityName, l) {
+  return {
+    local_id: l.id,
+    ciudad: cityName,
+    nombre: l.name || '',
+    descripcion: l.desc || '',
+    direccion: l.addr || '',
+    tipo_operacion: l.op || 'renta',
+    valor_renta: l.pRent || '',
+    valor_venta: l.pSale || '',
+    fotos: l.imgs || [],
+    vendedor_nombre: l.sName || '',
+    vendedor_whatsapp: l.sWa || '',
+    vendedor_foto: l.sPhoto || '',
+    activo: true
+  };
+}
+
+let syncTimer = null;
+function syncLoc() {
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(async () => {
+    if (cur === null || sel < 0) return;
+    const l = list()[sel];
+    if (!l) return;
+    const row = toSupaRow(cur, l);
+    const { error } = await supabaseClient.from('propiedades').upsert(row, { onConflict: 'ciudad,local_id' });
+    if (error) console.error('Error al sincronizar propiedad:', error);
+  }, 600);
+}
+
+async function cargarPropiedadesArmopa() {
+  try {
+    const { data: rows, error } = await supabaseClient
+      .from('propiedades')
+      .select('*')
+      .eq('activo', true)
+      .order('ciudad', { ascending: true })
+      .order('creado_en', { ascending: true });
+    if (error) { console.error('Error cargando propiedades:', error); return; }
+    const nuevo = {};
+    (rows || []).forEach((row) => {
+      if (!nuevo[row.ciudad]) nuevo[row.ciudad] = [];
+      nuevo[row.ciudad].push({
+        id: row.local_id,
+        name: row.nombre || '',
+        addr: row.direccion || '',
+        desc: row.descripcion || '',
+        op: row.tipo_operacion || 'renta',
+        pRent: row.valor_renta || '',
+        pSale: row.valor_venta || '',
+        imgs: row.fotos || [],
+        sPhoto: row.vendedor_foto || '',
+        sName: row.vendedor_nombre || '',
+        sWa: row.vendedor_whatsapp || ''
+      });
+    });
+    data = nuevo;
+    persistLocalOnly();
+    if (!pModal.hidden) render();
+  } catch (err) {
+    console.error('Error cargando propiedades:', err);
+  }
+}
+document.addEventListener('DOMContentLoaded', cargarPropiedadesArmopa);
+window.cargarPropiedadesArmopa = cargarPropiedadesArmopa;
