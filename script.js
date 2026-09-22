@@ -283,7 +283,7 @@ const T = {
     addLoc: 'Agregar ubicación', locDefault: 'Ubicación', emptyH: 'Aún no hay ubicaciones', emptyP: 'Agrega la primera para subir sus imágenes y su dirección.',
     nameL: 'Nombre de la ubicación', zoom: 'Ver foto del vendedor en tamaño original', zoomToggle: 'Alternar entre ajustar a la pantalla y tamaño real', opL: 'Tipo de operación', opRent: 'Renta', opSale: 'Venta', opBoth: 'Renta o venta', rentL: 'Valor de renta', saleL: 'Valor de la propiedad (venta)', rentPh: 'Ej. Q 4,500 al mes', salePh: 'Ej. Q 850,000', opHint: 'Elige el tipo de operación para indicar los valores.', viewOpRent: 'En renta', viewOpSale: 'En venta', viewOpBoth: 'En renta o venta', rentView: 'Renta', saleView: 'Precio de venta', sellerH: 'Vendedor', sellerUp: 'Subir foto del vendedor', sellerRm: 'Quitar foto', sellerName: 'Nombre del vendedor', sellerWa: 'WhatsApp del vendedor', waHint: 'Incluye el código de país, por ejemplo +502. Si escribes 8 dígitos se agrega el 502 automáticamente.', sellerLabel: 'Contacto del vendedor', waBtn: 'Contactar por WhatsApp', waMsg: 'Hola, me interesa la propiedad: ', descL: 'Descripción de la propiedad', descPh: 'Características, habitaciones, amenidades, precio y cualquier detalle importante…', descH: 'Descripción', addrL: 'Dirección o enlace de Google Maps', photo: 'Imagen ', photosH: 'Imágenes de la ubicación', upload: 'Subir imágenes',
     uploadHint: 'Puedes seleccionar varias imágenes (JPG o PNG).', remove: 'Quitar imagen', uploaded: 'Imágenes agregadas.', saved: 'Cambios guardados.',
-    del: 'Eliminar ubicación', delSure: '¿Confirmar eliminación?', view: 'Visualizar', edit: 'Volver a editar', mapOpen: 'Ver en Google Maps',
+    del: 'Eliminar ubicación', delSure: '¿Confirmar eliminación?', view: 'Ver fotografías', edit: 'Volver a editar', mapOpen: 'Ver en Google Maps',
     prevImg: 'Imagen anterior', nextImg: 'Imagen siguiente', noImgs: 'Esta ubicación aún no tiene imágenes.',
     storeNote: 'Los cambios se guardan automáticamente en este navegador. Para mostrarlos a todos los visitantes, la página debe conectarse a un servidor o base de datos.',
     storeErr: 'No se pudo guardar: el navegador no tiene espacio. Quita algunas imágenes e inténtalo de nuevo.',
@@ -891,9 +891,6 @@ function renderEdit() {
   const del = $('#pDel');
   del.textContent = confirmDel ? t.delSure : t.del;
   del.classList.toggle('on', confirmDel);
-  const delTop = $('#pDelTop');
-  delTop.textContent = confirmDel ? '⚠️ ' + t.delSure : '🗑️ Eliminar';
-  delTop.classList.toggle('on', confirmDel);
   const grid = $('#pGrid');
   grid.innerHTML = '';
   c.imgs.forEach((src, i) => {
@@ -1294,7 +1291,6 @@ $('#pDel').addEventListener('click', () => {
 });
 $('#pSaveTop').addEventListener('click', () => saveLocNow('Ubicación guardada con éxito.'));
 $('#pUpdateTop').addEventListener('click', () => saveLocNow('Ubicación actualizada con éxito.'));
-$('#pDelTop').addEventListener('click', () => $('#pDel').click());
 $('#vPrev').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi <= 0 ? n - 1 : vi - 1; renderView(); });
 $('#vNext').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi >= n - 1 ? 0 : vi + 1; renderView(); });
 /* Foto del vendedor en tamaño original */
