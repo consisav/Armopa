@@ -891,6 +891,9 @@ function renderEdit() {
   const del = $('#pDel');
   del.textContent = confirmDel ? t.delSure : t.del;
   del.classList.toggle('on', confirmDel);
+  const delTop = $('#pDelTop');
+  delTop.textContent = confirmDel ? '⚠️ ' + t.delSure : '🗑️ Eliminar';
+  delTop.classList.toggle('on', confirmDel);
   const grid = $('#pGrid');
   grid.innerHTML = '';
   c.imgs.forEach((src, i) => {
@@ -1033,6 +1036,13 @@ $('#addCityBtn').addEventListener('click', () => openProp());
 const catalogBtn = $('#catalogBtn');
 const cityQuickMenu = $('#cityQuickMenu');
 function closeCityQuickMenu() { cityQuickMenu.hidden = true; }
+function extractNumber(str) {
+  if (!str) return null;
+  const cleaned = String(str).replace(/[^\d.,]/g, '').replace(/,/g, '');
+  if (!cleaned) return null;
+  const num = parseFloat(cleaned);
+  return isNaN(num) ? null : num;
+}
 function buildSearchMenu() {
   cityQuickMenu.innerHTML = '';
   const names = cityNames();
@@ -1063,12 +1073,27 @@ function buildSearchMenu() {
   zonaInput.placeholder = 'Ej. Zona 10, Antigua...';
   form.appendChild(zonaInput);
 
-  form.appendChild(el('label', 'cq-label', 'Área'));
-  const areaInput = document.createElement('input');
-  areaInput.type = 'text';
-  areaInput.className = 'cq-input';
-  areaInput.placeholder = 'Ej. 150 m², 3 habitaciones...';
-  form.appendChild(areaInput);
+  form.appendChild(el('label', 'cq-label', 'Sector'));
+  const sectorInput = document.createElement('input');
+  sectorInput.type = 'text';
+  sectorInput.className = 'cq-input';
+  sectorInput.placeholder = 'Ej. Cayalá, Vista Hermosa...';
+  form.appendChild(sectorInput);
+
+  form.appendChild(el('label', 'cq-label', 'Especificaciones de propiedad'));
+  const specsInput = document.createElement('input');
+  specsInput.type = 'text';
+  specsInput.className = 'cq-input';
+  specsInput.placeholder = 'Ej. 150 m², 3 habitaciones, piscina...';
+  form.appendChild(specsInput);
+
+  form.appendChild(el('label', 'cq-label', 'Presupuesto estimado (Q)'));
+  const budgetInput = document.createElement('input');
+  budgetInput.type = 'text';
+  budgetInput.className = 'cq-input';
+  budgetInput.placeholder = 'Ej. 500,000';
+  budgetInput.inputMode = 'decimal';
+  form.appendChild(budgetInput);
 
   const searchBtn = el('button', 'btn btn-dark cq-search-btn', 'Buscar');
   searchBtn.type = 'button';
@@ -1082,13 +1107,24 @@ function buildSearchMenu() {
     const city = citySelect.value;
     if (!city) return;
     const zonaQ = zonaInput.value.trim().toLowerCase();
-    const areaQ = areaInput.value.trim().toLowerCase();
+    const sectorQ = sectorInput.value.trim().toLowerCase();
+    const specsQ = specsInput.value.trim().toLowerCase();
+    const budgetNum = extractNumber(budgetInput.value);
     const matches = (data[city] || [])
       .map((l, i) => ({ l, i }))
       .filter(({ l }) => {
-        const okZona = !zonaQ || (l.addr || '').toLowerCase().includes(zonaQ);
-        const okArea = !areaQ || (l.desc || '').toLowerCase().includes(areaQ);
-        return okZona && okArea;
+        const addrTxt = (l.addr || '').toLowerCase();
+        const okZona = !zonaQ || addrTxt.includes(zonaQ);
+        const okSector = !sectorQ || addrTxt.includes(sectorQ);
+        const okSpecs = !specsQ || (l.desc || '').toLowerCase().includes(specsQ);
+        let okBudget = true;
+        if (budgetNum != null) {
+          const prices = [];
+          if (l.op === 'renta' || l.op === 'ambos' || !l.op) { const r = extractNumber(l.pRent); if (r != null) prices.push(r); }
+          if (l.op === 'venta' || l.op === 'ambos' || !l.op) { const s = extractNumber(l.pSale); if (s != null) prices.push(s); }
+          okBudget = prices.length > 0 && prices.some((p) => p <= budgetNum);
+        }
+        return okZona && okSector && okSpecs && okBudget;
       });
     if (!matches.length) {
       results.appendChild(el('div', 'cq-empty', 'No se encontraron ubicaciones con esos criterios.'));
@@ -1256,6 +1292,9 @@ $('#pDel').addEventListener('click', () => {
       .then(({ error }) => { if (error) console.error('Error al borrar en Supabase:', error); });
   }
 });
+$('#pSaveTop').addEventListener('click', () => saveLocNow('Ubicación guardada con éxito.'));
+$('#pUpdateTop').addEventListener('click', () => saveLocNow('Ubicación actualizada con éxito.'));
+$('#pDelTop').addEventListener('click', () => $('#pDel').click());
 $('#vPrev').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi <= 0 ? n - 1 : vi - 1; renderView(); });
 $('#vNext').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi >= n - 1 ? 0 : vi + 1; renderView(); });
 /* Foto del vendedor en tamaño original */
@@ -1576,6 +1615,19 @@ function syncLoc() {
     const { error } = await supabaseClient.from('propiedades').upsert(row, { onConflict: 'ciudad,local_id' });
     if (error) console.error('Error al sincronizar propiedad:', error);
   }, 600);
+}
+async function saveLocNow(successMsg) {
+  if (cur === null || sel < 0 || !list()[sel]) { note('Selecciona o agrega una ubicación primero.'); return; }
+  clearTimeout(syncTimer);
+  persistLocalOnly();
+  const row = toSupaRow(cur, list()[sel]);
+  try {
+    const { error } = await supabaseClient.from('propiedades').upsert(row, { onConflict: 'ciudad,local_id' });
+    if (error) { note('Error al guardar: ' + error.message); return; }
+    note(successMsg);
+  } catch (err) {
+    note('Error al guardar la ubicación.');
+  }
 }
 
 async function cargarPropiedadesArmopa() {
