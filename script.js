@@ -275,7 +275,7 @@ const T = {
     aboutT1: "En ARMOPA transformamos la búsqueda de propiedades en una experiencia estratégica y personalizada. Somos una firma de consultoría inmobiliaria y de Servicios Profesionales Integrados dedicada a conectar a nuestros clientes con espacios excepcionales que elevan su estilo de vida y aseguran su patrimonio. Nuestro compromiso se fundamenta en la Lealtad, transparencia, integridad usando la innovación de mercado y una profunda experiencia sectorial, garantizando decisiones de inversión sólidas, transparentes y de alto valor a largo plazo.", aboutT2: "Te orientamos para encontrar el espacio ideal, de forma inteligente, el punto donde la tecnología inmobiliaria y el trato humano se encuentran. Nos especializamos en simplificar el proceso de compra, venta y alquiler de propiedades mediante un ecosistema digital avanzado y un equipo de expertos siempre a tu disposición. Nos apasiona optimizar tu tiempo y maximizar tus oportunidades de inversión, ofreciendo un servicio ágil, transparente y diseñado a la medida de las demandas del mercado actual.", aboutT3: "Entendemos que una propiedad es mucho más que cuatro paredes: es el escenario de tus próximos grandes recuerdos y el pilar de tu estabilidad familiar. Con años de trayectoria en el sector, nos enorgullece ser los aliados de confianza de cientos de familias en la búsqueda de su hogar ideal. Nos distingue un servicio de asesoría honesto, empático y profesional, diseñado para acompañarte con absoluta seguridad en cada paso del camino.", quoteH: "Solicitar cotización", quoteSub: "Completa tus datos y elige cómo enviarlos: por WhatsApp o por correo. Se abrirá con la información lista para enviarnos.", qName: "Nombre del contacto / cliente", qNamePh: "Nombre completo", qPhone: "Teléfono de contacto", qPhonePh: "+502 0000 0000", qAddr: "Dirección del servicio", qAddrPh: "Zona, colonia, calle o referencia", qDate: "Fecha estimada del servicio", qBtn: "Solicitar cotización", qErr: "Completa todos los campos para solicitar la cotización.", qMsgH: "Hola, deseo solicitar una cotización.", qMsgName: "Nombre: ", qMsgPhone: "Teléfono: ", qMsgAddr: "Dirección del servicio: ", qMsgDate: "Fecha estimada del servicio: ", xNeed: "Describe tu necesidad", xNeedPh: "Cuéntanos qué necesitas: medidas, materiales, urgencia u otros detalles…", xTime: "Tiempo estimado", xTimePh: "Ej. 2 semanas, 1 mes o una fecha aproximada", xImgs: "Subir y visualizar imágenes", xHint: "Puedes seleccionar varias imágenes (JPG o PNG). Se guardan en este navegador; adjúntalas en WhatsApp al enviar la cotización.", qMsgSvc: "Servicios solicitados:", qMsgTime: "Tiempo estimado: ", qMsgImgs: "Imágenes: {n} (las adjunto en este chat)", qEmail: "Correo electrónico", qEmailPh: "nombre@correo.com", qMsgEmail: "Correo: ", qBtnMail: "Enviar por correo", qErrEmail: "Escribe un correo electrónico válido.", qMailSubj: "Solicitud de cotización", xStart: "Fecha estimada de inicio", qMsgStart: "Fecha estimada de inicio: ", xPrio: "Prioridad", xPrioAlta: "Alta", xPrioMedia: "Media", xPrioBaja: "Baja", qMsgPrio: "Prioridad: ", xEstBtn: "Calcular Presupuesto Estimado", xEstHide: "Ocultar presupuesto", xEstTitle: "Presupuesto estimado (referencial, Guatemala)", qMsgEst: "Presupuesto estimado: ", ctImgAlt: "ARMOPA: compra y venta de propiedades en todo el país. Nosotros somos la solución.", aiAlt: "Inteligencia artificial y tecnología inmobiliaria", homeAlt: "Hogar ideal: una casa en manos protectoras", xEstStale: "Calculado con la descripción de la necesidad y el tiempo estimado que ingresaste. Si cambias algo, presiona \"Calcular Presupuesto Estimado\" otra vez.", mkBtn: "Costos alrededor", mkTitle: "Valores de propiedades similares en la zona (referencial)", mkHide: "Ocultar", mkSimilar: "Propiedades similares (referencia)", mkAround: "Zonas alrededor (referencia)", mkUse: "Usar estos valores en los campos de valor", salonAlt: "Rentamos o vendemos: una mano sostiene casas con símbolos de dólar", budgetAlt: "Presupuesto e inversión inmobiliaria: monedas apiladas y una casa", buyAlt: "Compra de propiedad: unas llaves y una casa en las manos", remodelAlt: "Hogar inteligente: tecnología y remodelación de una propiedad", landAlt: "Construcción en tu terreno: un hombre frente a un campo con el plano de su futura casa dibujado", projAlt: "Desarrollo de tu proyecto: vista aérea de un desarrollo urbano con plaza, edificios y áreas verdes", aboutH1: 'Administración inmobiliaria con visión profesional e inteligente,', aboutH2: 'Segura, Transparente, Íntegra, Responsable, Leal a la Vanguardia con Honradez', aboutH3: 'haciendo que tu inversión crezca a niveles inimaginables.',
     invH: 'Tu Inversión:', invSub: 'Inversión Garantizada:', invItems: ['Compra y venta', 'Alquileres Diversos', 'Integramos administración', 'Remodelación', 'Construcción / Remodelación', 'Desarrollo de proyectos con gestión practica de rentabilidad'], aboutP: 'Integramos administración, compra y venta, alquileres, remodelación, construcción y desarrollo de proyectos para ofrecer una gestión práctica y ordenada de cada propiedad.',
     svH: 'Tus Servicios:', svA: 'Servicios Profesionales coordinados', svItems: ['Alquiler de maquinaria pesada', 'Renta de Camiones para extracción', 'Renta de apartamentos y Edificio', 'Mantenimiento de Edificios', 'Plomería y electricidad', 'Asesoría Jurídica', 'Prestamos con CHN', 'Movimiento de Tierra'],
-    propH: 'Propiedades exclusivas en Guatemala', catalog: 'Solicitar catálogo', prev: 'Propiedad anterior', next: 'Siguiente propiedad',
+    propH: 'Propiedades exclusivas en Guatemala', catalog: 'Ver Propiedades', prev: 'Propiedad anterior', next: 'Siguiente propiedad',
     places: ['Ciudad de Guatemala', 'Lago de Atitlán', 'Antigua Guatemala', 'Petén', 'Zona 10'],
     alts: ['Propiedad de lujo en Ciudad de Guatemala', 'Propiedad de lujo en Lago de Atitlán', 'Propiedad de lujo en Antigua Guatemala', 'Propiedad de lujo en Petén', 'Propiedad premium en Zona 10'],
     goTo: 'Ir a la posición ',
@@ -615,6 +615,7 @@ try { data = (JSON.parse(localStorage.getItem(STORE) || 'null') || {}).data || {
 let cur = null;           // nombre de la ciudad activa (texto), o null si no hay ninguna elegida
 let panelView = 'cities'; // 'cities' = viendo ciudades | 'locs' = viendo ubicaciones de una ciudad
 let mode = 'edit', sel = -1, vi = 0, confirmDel = false;
+let citySearch = '';      // texto de búsqueda de ciudad en el modal
 const pModal = $('#propModal');
 
 const cityNames = () => Object.keys(data).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
@@ -642,21 +643,72 @@ function el(tag, cls, text) {
   return e;
 }
 function pickLoc(i) { sel = i; vi = 0; confirmDel = false; mk = null; note(''); render(); }
+function openCityFromList(name) {
+  cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
+  note(''); render();
+}
 
 function renderList() {
   const t = T[lang];
   const box = $('#pList');
+  const wasSearchFocused = document.activeElement && document.activeElement.id === 'citySearchInput';
+  const prevSelStart = wasSearchFocused ? document.activeElement.selectionStart : null;
+  const prevSelEnd = wasSearchFocused ? document.activeElement.selectionEnd : null;
   box.innerHTML = '';
 
   if (panelView === 'cities') {
-    cityNames().forEach((name) => {
+    const searchWrap = el('div', 'city-search-wrap');
+    searchWrap.style.marginBottom = '10px';
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.id = 'citySearchInput';
+    searchInput.placeholder = 'Buscar ciudad...';
+    searchInput.autocomplete = 'off';
+    searchInput.value = citySearch;
+    searchInput.style.width = '100%';
+    searchInput.style.boxSizing = 'border-box';
+    searchInput.style.padding = '10px 12px';
+    searchInput.style.border = '1px solid var(--line)';
+    searchInput.style.borderRadius = '10px';
+    searchInput.style.fontSize = '14px';
+    searchInput.addEventListener('input', () => {
+      citySearch = searchInput.value;
+      renderList();
+    });
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      e.preventDefault();
+      const q = citySearch.trim().toLowerCase();
+      if (!q) return;
+      const matches = cityNames().filter((n) => n.toLowerCase().includes(q));
+      if (matches.length) openCityFromList(matches[0]);
+    });
+    searchWrap.appendChild(searchInput);
+    box.appendChild(searchWrap);
+
+    if (wasSearchFocused) {
+      requestAnimationFrame(() => {
+        searchInput.focus();
+        if (prevSelStart != null) searchInput.setSelectionRange(prevSelStart, prevSelEnd);
+      });
+    }
+
+    const q = citySearch.trim().toLowerCase();
+    const namesToShow = q ? cityNames().filter((n) => n.toLowerCase().includes(q)) : cityNames();
+
+    if (q && !namesToShow.length) {
+      const noRes = el('p', '', 'No se encontraron ciudades.');
+      noRes.style.color = 'var(--muted)';
+      noRes.style.fontSize = '13px';
+      noRes.style.margin = '4px 0 10px';
+      box.appendChild(noRes);
+    }
+
+    namesToShow.forEach((name) => {
       const b = el('button', 'li' + (name === cur ? ' on' : ''));
       b.type = 'button';
       b.append(el('span', '', name), el('small', '', String((data[name] || []).length)));
-         b.addEventListener('click', () => {
-        cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
-        note(''); render();
-      });
+      b.addEventListener('click', () => openCityFromList(name));
       box.appendChild(b);
       const cam = el('button', 'btn btn-line-dark btn-sm', '📷');
       cam.type = 'button';
@@ -941,6 +993,7 @@ function render() {
 }
 function openProp() {
   panelView = 'cities'; cur = null; mode = 'edit'; confirmDel = false; mk = null; sel = -1; vi = 0;
+  citySearch = '';
   note('');
   render();
   pModal.hidden = false;

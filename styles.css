@@ -50,8 +50,8 @@ section[id]{scroll-margin-top:148px}
 
 .sec{padding:96px 0}
 .sec.paper{background:var(--paper)}
-.sec h2{font-size:clamp(32px,3.9vw,52px);line-height:1.1}
-.sec-h{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:46px}
+.sec h2{font-size:clamp(32px,3.9vw,52px);line-height:1.1;white-space:nowrap}
+.sec-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:46px}
 .lnk{color:var(--goldtx);font-weight:700;border-bottom:2px solid var(--gold);padding-bottom:2px;white-space:nowrap}
 .lnk:hover{color:var(--ink)}
 
@@ -239,6 +239,7 @@ section[id]{scroll-margin-top:148px}
   .sec{padding:64px 0}
   .sv-grid{grid-template-columns:minmax(0,1fr)}
   .sec-h{flex-direction:column;align-items:flex-start;gap:14px}
+  .sec h2{white-space:normal}
   .frm{grid-template-columns:minmax(0,1fr)}
   .ftr-grid{grid-template-columns:minmax(0,1fr)}
   .cta .btn{width:100%}
