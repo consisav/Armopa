@@ -837,7 +837,7 @@ function shrink(file, max) {
   });
 }
 
-$$('.pc-img').forEach((b) => b.addEventListener('click', () => openProp()));
+$('#addCityBtn').addEventListener('click', () => openProp());
 $('#pClose').addEventListener('click', closeProp);
 $('#pScrim').addEventListener('click', closeProp);
 $('#p-name').addEventListener('input', () => {
