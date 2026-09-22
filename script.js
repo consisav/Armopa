@@ -362,11 +362,6 @@ function setLang(l) {
   $$('[data-i18n-label]').forEach((el) => el.setAttribute('aria-label', t[el.dataset.i18nLabel]));
   $$('[data-i18n-alt]').forEach((el) => el.setAttribute('alt', t[el.dataset.i18nAlt]));
   $$('[data-i18n-ph]').forEach((el) => el.setAttribute('placeholder', t[el.dataset.i18nPh]));
-  $$('.pc').forEach((card, i) => {
-    card.querySelector('img').alt = t.alts[i];
-    card.querySelector('.pn span').textContent = t.places[i];
-    card.querySelector('.pc-img').setAttribute('aria-label', t.openProp + t.places[i]);
-  });
   $$('[data-ext]').forEach((el) => { el.textContent = t.ext[+el.dataset.ext]; });
   $$('[data-sv]').forEach((el) => { el.textContent = t.svItems[+el.dataset.sv]; });
   $$('[data-inv]').forEach((el) => { el.textContent = t.invItems[+el.dataset.inv]; });
@@ -388,7 +383,7 @@ $$('.links a').forEach((a) => a.addEventListener('click', () => navwrap.classLis
 /* Carrusel de propiedades */
 const car = $('#car');
 let idx = 0;
-const total = 5;
+let total = 0;
 const visible = () => (window.innerWidth <= 640 ? 1 : window.innerWidth <= 1000 ? 2 : 3);
 const maxIdx = () => total - visible();
 function buildDots() {
@@ -407,6 +402,38 @@ function update() {
   idx = Math.max(0, Math.min(idx, maxIdx()));
   car.style.setProperty('--i', idx);
   $$('.dot').forEach((d, i) => d.classList.toggle('on', i === idx));
+}
+let cityCovers = {};
+function openCity(name) {
+  cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null;
+  sel = (data[name] || []).length ? 0 : -1; vi = 0;
+  note('');
+  render();
+  pModal.hidden = false;
+}
+function buildCityCards() {
+  const track = $('#carTrack');
+  track.innerHTML = '';
+  const names = cityNames();
+  names.forEach((name) => {
+    const article = el('article', 'pc');
+    const btn = el('button', 'pc-img');
+    btn.type = 'button';
+    btn.setAttribute('aria-label', name);
+    const img = el('img');
+    img.src = cityCovers[name] || 'assets/propiedad-1.jpg';
+    img.alt = name;
+    btn.appendChild(img);
+    btn.addEventListener('click', () => openCity(name));
+    const pn = el('div', 'pn');
+    pn.append(el('span', '', name));
+    article.append(btn, pn);
+    track.appendChild(article);
+  });
+  total = names.length;
+  idx = Math.min(idx, maxIdx());
+  buildDots();
+  update();
 }
 $('#prev').addEventListener('click', () => { idx = idx <= 0 ? maxIdx() : idx - 1; update(); });
 $('#next').addEventListener('click', () => { idx = idx >= maxIdx() ? 0 : idx + 1; update(); });
@@ -590,7 +617,7 @@ let panelView = 'cities'; // 'cities' = viendo ciudades | 'locs' = viendo ubicac
 let mode = 'edit', sel = -1, vi = 0, confirmDel = false;
 const pModal = $('#propModal');
 
-const cityNames = () => Object.keys(data);
+const cityNames = () => Object.keys(data).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
 const list = () => { if (cur === null) return []; data[cur] = data[cur] || []; return data[cur]; };
 function persistLocalOnly() {
   try { localStorage.setItem(STORE, JSON.stringify({ data })); return true; } catch (e) { return false; }
@@ -626,24 +653,127 @@ function renderList() {
       const b = el('button', 'li' + (name === cur ? ' on' : ''));
       b.type = 'button';
       b.append(el('span', '', name), el('small', '', String((data[name] || []).length)));
-      b.addEventListener('click', () => {
+         b.addEventListener('click', () => {
         cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
         note(''); render();
       });
       box.appendChild(b);
+      const cam = el('button', 'btn btn-line-dark btn-sm', '📷');
+      cam.type = 'button';
+      cam.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const input = document.createElement('input');
+        input.type = 'file'; input.accept = 'image/*';
+        input.addEventListener('change', async () => {
+          const f = input.files && input.files[0];
+          if (!f) return;
+          try {
+            const url = await uploadPropFile(f, 1200);
+            cityCovers[name] = url;
+            const { error } = await supabaseClient.from('ciudades_portada').upsert({ ciudad: name, foto: url });
+            if (error) console.error('Error al guardar portada:', error);
+            buildCityCards();
+            renderList();
+          } catch (err) { console.error('Error al subir portada:', err); }
+        });
+        input.click();
+      });
+      cam.title = 'Foto de portada';
+      cam.setAttribute('aria-label', 'Foto de portada');
+
+      const btnUpdate = el('button', 'btn btn-line-dark btn-sm', '✏️');
+      btnUpdate.type = 'button';
+      btnUpdate.title = 'Actualizar';
+      btnUpdate.setAttribute('aria-label', 'Actualizar');
+      btnUpdate.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        const newName = (prompt('Nuevo nombre para la ciudad:', name) || '').trim();
+        if (!newName || newName === name) return;
+        try {
+          const { error } = await supabaseClient.from('ciudades_portada').update({ ciudad: newName }).eq('ciudad', name);
+          if (error) { note('Error al actualizar la ciudad: ' + error.message); return; }
+          data[newName] = data[name] || [];
+          delete data[name];
+          cityCovers[newName] = cityCovers[name];
+          delete cityCovers[name];
+          if (cur === name) cur = newName;
+          persistLocalOnly();
+          note('Ciudad actualizada con éxito.');
+          buildCityCards();
+          renderList();
+        } catch (err) { note('Error al actualizar la ciudad.'); }
+      });
+
+      const btnDelete = el('button', 'btn btn-line-dark btn-sm', '🗑️');
+      btnDelete.type = 'button';
+      btnDelete.title = 'Eliminar';
+      btnDelete.setAttribute('aria-label', 'Eliminar');
+      btnDelete.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        if (!confirm('¿Eliminar la ciudad "' + name + '"? Esta acción no se puede deshacer.')) return;
+        try {
+          const { error } = await supabaseClient.from('ciudades_portada').delete().eq('ciudad', name);
+          if (error) { note('Error al eliminar la ciudad: ' + error.message); return; }
+          delete data[name];
+          delete cityCovers[name];
+          if (cur === name) { cur = null; panelView = 'cities'; }
+          persistLocalOnly();
+          note('Ciudad eliminada con éxito.');
+          buildCityCards();
+          renderList();
+        } catch (err) { note('Error al eliminar la ciudad.'); }
+      });
+
+      const rowActions = el('div', 'city-row-actions');
+      rowActions.style.display = 'flex';
+      rowActions.style.gap = '6px';
+      rowActions.style.flexWrap = 'nowrap';
+      rowActions.style.width = '100%';
+      [cam, btnUpdate, btnDelete].forEach((btn) => {
+        btn.style.flex = '1 1 0';
+        btn.style.minWidth = '0';
+        btn.style.padding = '0 6px';
+        btn.style.fontSize = '13px';
+        btn.style.minHeight = '36px';
+      });
+      rowActions.appendChild(cam);
+      rowActions.appendChild(btnUpdate);
+      rowActions.appendChild(btnDelete);
+      box.appendChild(rowActions);
     });
-    const add = el('button', 'btn btn-dark', '+ Nueva ciudad');
-    add.type = 'button';
-    add.addEventListener('click', () => {
-      const name = (prompt('Nombre de la ciudad:') || '').trim();
-      if (!name) return;
-      if (!data[name]) data[name] = [];
-      cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
-      note(persist() ? '' : t.storeErr);
-      render();
-    });
-    box.appendChild(add);
-    return;
+   const add = el('button', 'btn btn-dark', '+ Nueva ciudad');
+add.type = 'button';
+add.addEventListener('click', () => {
+  const name = (prompt('Nombre de la ciudad:') || '').trim();
+  if (!name) return;
+  if (!data[name]) data[name] = [];
+
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.addEventListener('change', async () => {
+    const f = input.files && input.files[0];
+    let photoUrl = '';
+    try {
+      if (f) {
+        photoUrl = await uploadPropFile(f, 1200);
+        cityCovers[name] = photoUrl;
+      }
+      const { error } = await supabaseClient.from('ciudades_portada').upsert({ ciudad: name, foto: photoUrl || null });
+      if (error) { note('Error al guardar la ciudad: ' + error.message); return; }
+      note('Ciudad agregada con éxito.');
+    } catch (err) {
+      note('Error al guardar la ciudad.');
+    }
+    cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
+    persistLocalOnly();
+    buildCityCards();
+    render();
+  });
+  input.click();
+});
+box.appendChild(add);
+return;
   }
 
   const back = el('button', 'btn btn-line-dark', '← Ciudades');
@@ -1319,7 +1449,14 @@ async function cargarPropiedadesArmopa() {
       });
     });
     data = nuevo;
-    persistLocalOnly();
+  persistLocalOnly();
+const { data: covers } = await supabaseClient.from('ciudades_portada').select('*');
+cityCovers = {};
+(covers || []).forEach(c => {
+  cityCovers[c.ciudad] = c.foto;
+  if (!data[c.ciudad]) data[c.ciudad] = [];
+});
+buildCityCards();
     if (!pModal.hidden) render();
   } catch (err) {
     console.error('Error cargando propiedades:', err);
