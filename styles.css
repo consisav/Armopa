@@ -52,8 +52,21 @@ section[id]{scroll-margin-top:148px}
 .sec.paper{background:var(--paper)}
 .sec h2{font-size:clamp(32px,3.9vw,52px);line-height:1.1;white-space:nowrap}
 .sec-h{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:46px}
-.lnk{color:var(--goldtx);font-weight:700;border-bottom:2px solid var(--gold);padding-bottom:2px;white-space:nowrap}
+.lnk{color:var(--goldtx);font-weight:700;border-bottom:2px solid var(--gold);padding-bottom:2px;white-space:nowrap;background:none;cursor:pointer}
 .lnk:hover{color:var(--ink)}
+.city-quick-wrap{position:relative;display:inline-block}
+.city-quick-menu{position:absolute;top:calc(100% + 8px);left:0;min-width:270px;max-width:calc(100vw - 40px);max-height:440px;overflow-y:auto;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.16);padding:12px;z-index:20}
+.city-quick-menu button{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:8px;background:none;color:var(--ink);font-size:14px;font-weight:600;text-align:left;cursor:pointer}
+.city-quick-menu button:hover{background:#f3ece0}
+.city-quick-menu button small{color:var(--muted);font-weight:500;font-size:12px;white-space:nowrap}
+.city-quick-menu .cq-empty{padding:10px 12px;color:var(--muted);font-size:13px}
+.cq-form{display:flex;flex-direction:column;gap:4px}
+.cq-label{font-size:12px;font-weight:700;color:var(--muted);margin-top:8px}
+.cq-label:first-child{margin-top:0}
+.cq-select,.cq-input{width:100%;box-sizing:border-box;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;color:var(--ink);font-family:inherit}
+.city-quick-menu .cq-search-btn{background:var(--navy);color:#fff;justify-content:center;text-align:center;margin:10px 0 2px}
+.city-quick-menu .cq-search-btn:hover{background:var(--navy2)}
+.cq-results{display:flex;flex-direction:column;gap:2px;margin-top:6px;max-height:180px;overflow-y:auto;border-top:1px solid var(--line);padding-top:6px}
 
 .about-in{display:grid;grid-template-columns:minmax(0,1fr);gap:44px;align-items:start}
 .about-in p{font-size:19px;color:var(--muted);max-width:56ch}
