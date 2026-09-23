@@ -802,48 +802,7 @@ function renderList() {
     });
    const add = el('button', 'btn btn-dark', '+ Nueva ciudad');
 add.type = 'button';
-add.addEventListener('click', () => {
-  const name = (prompt('Nombre de la ciudad:') || '').trim();
-  if (!name) return;
-  if (!data[name]) data[name] = [];
-
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.style.display = 'none';
-  document.body.appendChild(input);
-
-  let settled = false;
-  async function finishSave(file) {
-    if (settled) return;
-    settled = true;
-    let photoUrl = '';
-    try {
-      if (file) {
-        photoUrl = await uploadPropFile(file, 1200);
-        cityCovers[name] = photoUrl;
-      }
-      const { error } = await supabaseClient.from('ciudades_portada').upsert({ ciudad: name, foto: photoUrl || null });
-      if (error) { note('Error al guardar la ciudad: ' + error.message); }
-      else { note(file ? 'Ciudad y foto guardadas con éxito.' : 'Ciudad agregada con éxito.'); }
-    } catch (err) {
-      note('Error al guardar la ciudad.');
-    }
-    cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
-    persistLocalOnly();
-    buildCityCards();
-    render();
-    input.remove();
-  }
-
-  input.addEventListener('change', () => finishSave(input.files && input.files[0]));
-  input.addEventListener('cancel', () => finishSave(null));
-  window.addEventListener('focus', function onFocusBack() {
-    window.removeEventListener('focus', onFocusBack);
-    setTimeout(() => finishSave(null), 300);
-  });
-  input.click();
-});
+add.addEventListener('click', () => openNewCityDialog());
 box.appendChild(add);
 return;
   }
@@ -1046,6 +1005,104 @@ $('#addCityBtn').addEventListener('click', () => openProp());
 const catalogBtn = $('#catalogBtn');
 const cityQuickMenu = $('#cityQuickMenu');
 function closeCityQuickMenu() { cityQuickMenu.hidden = true; }
+function openNewCityDialog() {
+  const overlay = el('div', 'ncw-overlay');
+  Object.assign(overlay.style, {
+    position: 'fixed', inset: '0', background: 'rgba(3,12,22,.6)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: '200', padding: '20px'
+  });
+
+  const card = el('div', 'ncw-card');
+  Object.assign(card.style, {
+    background: '#fff', borderRadius: '16px', padding: '26px', width: 'min(420px, 100%)',
+    boxShadow: '0 24px 70px rgba(0,0,0,.4)', display: 'flex', flexDirection: 'column', gap: '14px'
+  });
+
+  const title = el('h3', '', 'Nueva ciudad');
+  title.style.margin = '0';
+  card.appendChild(title);
+
+  const nameLabel = el('label', 'cq-label', 'Nombre de la ciudad');
+  card.appendChild(nameLabel);
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.className = 'cq-input';
+  nameInput.placeholder = 'Ej. Cobán';
+  card.appendChild(nameInput);
+
+  const photoLabel = el('label', 'cq-label', 'Foto de portada (opcional)');
+  card.appendChild(photoLabel);
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file';
+  fileInput.accept = 'image/*';
+  fileInput.id = 'ncw-file-' + Date.now();
+  fileInput.style.display = 'none';
+  const photoBtnLabel = document.createElement('label');
+  photoBtnLabel.setAttribute('for', fileInput.id);
+  photoBtnLabel.className = 'btn btn-line-dark btn-sm';
+  photoBtnLabel.style.cursor = 'pointer';
+  photoBtnLabel.style.display = 'inline-block';
+  photoBtnLabel.textContent = '📷 Elegir foto';
+  const fileNameNote = el('span', '', '');
+  fileNameNote.style.cssText = 'display:block;margin-top:6px;font-size:13px;color:var(--muted)';
+  fileInput.addEventListener('change', () => {
+    const f = fileInput.files && fileInput.files[0];
+    fileNameNote.textContent = f ? f.name : '';
+  });
+  card.appendChild(fileInput);
+  card.appendChild(photoBtnLabel);
+  card.appendChild(fileNameNote);
+
+  const errMsg = el('p', '', '');
+  errMsg.style.cssText = 'color:#b3261e;font-size:13px;margin:0;min-height:1em';
+  card.appendChild(errMsg);
+
+  const btnRow = el('div', '');
+  btnRow.style.cssText = 'display:flex;gap:10px;justify-content:flex-end;margin-top:4px';
+  const cancelBtn = el('button', 'btn btn-line-dark', 'Cancelar');
+  cancelBtn.type = 'button';
+  const saveBtn = el('button', 'btn btn-dark', 'Guardar');
+  saveBtn.type = 'button';
+  btnRow.append(cancelBtn, saveBtn);
+  card.appendChild(btnRow);
+
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+  nameInput.focus();
+
+  function closeDialog() { overlay.remove(); }
+  cancelBtn.addEventListener('click', closeDialog);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeDialog(); });
+
+  saveBtn.addEventListener('click', async () => {
+    const name = nameInput.value.trim();
+    if (!name) { errMsg.textContent = 'Escribe el nombre de la ciudad.'; nameInput.focus(); return; }
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Guardando…';
+    if (!data[name]) data[name] = [];
+    const file = fileInput.files && fileInput.files[0];
+    let photoUrl = '';
+    try {
+      if (file) {
+        photoUrl = await uploadPropFile(file, 1200);
+        cityCovers[name] = photoUrl;
+      }
+      const { error } = await supabaseClient.from('ciudades_portada').upsert({ ciudad: name, foto: photoUrl || null });
+      if (error) { errMsg.textContent = 'Error al guardar: ' + error.message; saveBtn.disabled = false; saveBtn.textContent = 'Guardar'; return; }
+      note(file ? 'Ciudad y foto guardadas con éxito.' : 'Ciudad agregada con éxito.');
+    } catch (err) {
+      errMsg.textContent = 'Error al guardar la ciudad.';
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Guardar';
+      return;
+    }
+    cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
+    persistLocalOnly();
+    buildCityCards();
+    closeDialog();
+    render();
+  });
+}
 function extractNumber(str) {
   if (!str) return null;
   const cleaned = String(str).replace(/[^\d.,]/g, '').replace(/,/g, '');
