@@ -1,0 +1,33 @@
+ARMOPA — Archivos actualizados
+================================
+
+Este ZIP contiene SOLO estos 3 archivos, con todos los cambios hechos en esta conversación:
+- index.html
+- script.js
+- styles.css
+
+NO incluye (porque nunca se compartieron en este chat, y deben mantenerse tal cual ya están en tu repositorio):
+- carpeta assets/ (logo, fotos)
+- supabase-config.js
+- README.txt
+- Logo_ARMOPA_Oficial.png
+
+CÓMO USARLO:
+1. Copia estos 3 archivos dentro de tu carpeta D:\PAGINAS WEB\Armopa\Armopa-repo,
+   reemplazando los que ya existen ahí.
+2. NO borres ni toques la carpeta assets/ ni supabase-config.js que ya tienes.
+3. Sube los cambios con git:
+   git add .
+   git commit -m "Actualizacion completa del sitio"
+   git push
+
+Cambios incluidos en esta versión:
+- Panel "Ciudades": agregar, actualizar y eliminar ciudades (sincronizado con Supabase, tabla ciudades_portada)
+- Buscador de ciudades dentro del panel de administración
+- Botón "Buscar Propiedades": panel de búsqueda por Ciudad, Zona, Sector, Especificaciones de propiedad y Presupuesto estimado
+- Panel de Ubicaciones: botones Guardar, Actualizar y Eliminar (sincronizados con Supabase, tabla propiedades)
+- Texto del botón "Visualizar" cambiado a "Ver fotografías"
+- Corrección de superposición del título en la sección de Contacto
+- Alineación del formulario de contacto con la fotografía
+- Título "Propiedades exclusivas en Guatemala" en una sola línea
+- Cambio de versión de caché en script.js (?v=20260923-0008) para forzar que el navegador cargue la última versión
