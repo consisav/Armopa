@@ -406,14 +406,14 @@ function update() {
 let cityCovers = {};
 function openCity(name) {
   cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null;
-  sel = (data[name] || []).length ? 0 : -1; vi = 0; showThumbs = false;
+  sel = (data[name] || []).length ? 0 : -1; vi = 0;
   note('');
   render();
   pModal.hidden = false;
 }
 function openLocationDirect(name, locIndex) {
   cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null;
-  sel = locIndex; vi = 0; showThumbs = false;
+  sel = locIndex; vi = 0;
   note('');
   render();
   pModal.hidden = false;
@@ -623,7 +623,6 @@ let cur = null;           // nombre de la ciudad activa (texto), o null si no ha
 let panelView = 'cities'; // 'cities' = viendo ciudades | 'locs' = viendo ubicaciones de una ciudad
 let mode = 'edit', sel = -1, vi = 0, confirmDel = false;
 let citySearch = '';      // texto de búsqueda de ciudad en el modal
-let showThumbs = false;   // si se muestra la cuadrícula de miniaturas en el formulario de edición
 const pModal = $('#propModal');
 
 const cityNames = () => Object.keys(data).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
@@ -650,7 +649,7 @@ function el(tag, cls, text) {
   if (text !== undefined) e.textContent = text;
   return e;
 }
-function pickLoc(i) { sel = i; vi = 0; confirmDel = false; mk = null; showThumbs = false; note(''); render(); }
+function pickLoc(i) { sel = i; vi = 0; confirmDel = false; mk = null; note(''); render(); }
 function openCityFromList(name) {
   cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
   note(''); render();
@@ -825,7 +824,7 @@ return;
   add.addEventListener('click', () => {
     const l = list();
     l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '' });
-    sel = l.length - 1; vi = 0; confirmDel = false; showThumbs = false;
+    sel = l.length - 1; vi = 0; confirmDel = false;
     note(persist() ? '' : t.storeErr);
     render();
   });
@@ -865,9 +864,6 @@ function renderEdit() {
   del.textContent = confirmDel ? t.delSure : t.del;
   del.classList.toggle('on', confirmDel);
   const grid = $('#pGrid');
-  grid.hidden = !showThumbs;
-  const viewBtn = $('#pView');
-  viewBtn.textContent = showThumbs ? 'Ocultar fotografías' : ('Ver fotografías (' + c.imgs.length + ')');
   grid.innerHTML = '';
   c.imgs.forEach((src, i) => {
     const wrap = el('div', 'th');
@@ -1348,7 +1344,7 @@ $('#pMkUse').addEventListener('click', () => {
   renderEdit();
   renderMk();
 });
-$('#pView').addEventListener('click', () => { showThumbs = !showThumbs; render(); });
+$('#pView').addEventListener('click', () => { mode = 'view'; vi = 0; note(''); render(); });
 $('#vEdit').addEventListener('click', () => { mode = 'edit'; render(); });
 $('#pDel').addEventListener('click', () => {
   if (!confirmDel) { confirmDel = true; renderEdit(); return; }
