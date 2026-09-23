@@ -398,12 +398,16 @@ section[id]{scroll-margin-top:148px}
 .quote{margin-top:44px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:30px 32px}
 .quote-h{display:flex;align-items:center;gap:14px}
 .quote-h h3{font-family:'Marcellus',Georgia,serif;font-weight:400;font-size:28px;line-height:1.2;margin:0}
-.quote-sub{color:var(--muted);font-size:15px;margin:12px 0 22px;max-width:70ch}
+.quote-sub{color:var(--muted);font-size:15px;margin:12px 0 22px;white-space:nowrap}
+.q-summary{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:grid;gap:8px;font-size:14px}
+.q-summary div{display:flex;justify-content:flex-start;gap:6px}
+.q-summary span{color:var(--muted)}
+.q-summary strong{font-weight:600;text-align:left}
 .q-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .q-grid .full{grid-column:1/-1}
 .q-act{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:24px}
 .q-err{color:#9b2c2c;font-weight:600;font-size:15px}
-@media (max-width:640px){.quote{padding:22px 18px}.quote-h h3{font-size:24px}.q-grid{grid-template-columns:minmax(0,1fr)}.q-act .btn{width:100%}}
+@media (max-width:640px){.quote{padding:22px 18px}.quote-h h3{font-size:24px}.q-grid{grid-template-columns:minmax(0,1fr)}.q-act .btn{width:100%}.quote-sub{white-space:normal}.q-summary div{flex-direction:column;gap:2px}.q-summary strong{text-align:left}}
 .q-act .btn-line-dark{gap:10px}
 .btn-line-dark svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .ct-photo{margin:28px 0 0;max-width:440px}

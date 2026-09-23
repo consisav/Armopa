@@ -5,9 +5,15 @@ Este ZIP contiene:
 - index.html
 - script.js
 - styles.css
-- precalificacion.sql               (ejecutar 1ro en Supabase)
-- migracion_persona_juridica.sql    (ejecutar 2do en Supabase)
-- migracion_escolaridad.sql         (ejecutar 3ro en Supabase)
+- carpeta sql/ con 8 archivos, EN ORDEN NUMERICO DE EJECUCION:
+  1. precalificacion.sql
+  2. migracion_persona_juridica.sql
+  3. migracion_escolaridad.sql
+  4. migracion_sector_zona.sql
+  5. solicitudes_servicio.sql
+  6. migracion_fecha_cotizacion.sql
+  7. migracion_cotizaciones.sql
+  8. migracion_cotizacion_campos.sql
 
 NO incluye (porque nunca se compartieron en este chat, y deben mantenerse tal cual ya estan en tu repositorio):
 - carpeta assets/ (logo, fotos)
@@ -26,54 +32,60 @@ COMO USAR LOS 3 ARCHIVOS DEL SITIO (index.html, script.js, styles.css):
    git push
 
 COMO USAR LOS ARCHIVOS .sql:
-Copia y pega el contenido de cada uno, EN ESTE ORDEN, en el SQL Editor de Supabase:
-1. precalificacion.sql              -> crea las tablas base
-2. migracion_persona_juridica.sql   -> agrega soporte para Persona Juridica (Empresa)
-3. migracion_escolaridad.sql        -> agrega escolaridad y profesion
+Copia y pega el contenido de cada uno, EN EL ORDEN NUMERADO ARRIBA, en el
+SQL Editor de Supabase. Si algun archivo ya lo habias corrido antes, Supabase
+puede marcar "already exists" en tablas/columnas ya creadas — eso es normal,
+simplemente pasa al siguiente archivo.
 
-Recuerda tambien:
-- Crear el bucket de Storage llamado "expedientes" en Supabase, marcado como PRIVADO
-  (a diferencia del bucket "propiedades", que es publico).
-- Configurar las politicas de RLS (Row Level Security) de las tablas
-  expedientes_precalificacion y documentos_expediente, y del bucket "expedientes",
-  para permitir INSERT/UPDATE/SELECT/DELETE al rol anon (publico).
+Recuerda tambien configurar en Supabase (fuera de estos scripts SQL):
+- Bucket de Storage "expedientes" (PRIVADO) — para documentos de precalificacion bancaria
+- Bucket de Storage "cotizaciones" (PRIVADO) — para PDFs de cotizacion adjuntos
+- Politicas de RLS (Row Level Security) para el rol anon en todas las tablas
+  nuevas: expedientes_precalificacion, documentos_expediente, propiedades,
+  solicitudes_servicio, cotizaciones — y en ambos buckets de Storage.
 
 RESUMEN DE TODOS LOS CAMBIOS INCLUIDOS EN ESTA VERSION:
 
 Panel de administracion (Ciudades / Ubicaciones):
-- Agregar, actualizar y eliminar ciudades, sincronizado con Supabase (tabla ciudades_portada)
-- Buscador de ciudades dentro del panel
-- Formulario propio para "Nueva ciudad" con nombre + foto de portada (evita el bloqueo del
-  selector de archivos del navegador; la ciudad se guarda aunque no elijas foto)
-- Botones Guardar, Actualizar y Eliminar en el formulario de cada ubicacion/propiedad,
-  sincronizados con Supabase (tabla propiedades)
-- Texto "Visualizar" cambiado a "Ver fotografias"
+- Agregar, actualizar y eliminar ciudades, sincronizado con Supabase
+- Buscador de ciudades; formulario propio para "Nueva ciudad" con foto
+- Botones Guardar, Actualizar y Eliminar por ubicacion/propiedad
+- Campos Sector y Zona en cada ubicacion
 
 Buscador publico de propiedades:
-- Boton "Buscar Propiedades" con panel de busqueda: Ciudad, Zona, Sector,
-  Especificaciones de propiedad y Presupuesto estimado
+- Boton "Buscar Propiedades": Ciudad, Zona, Sector, Especificaciones,
+  Presupuesto estimado
 
-Diseno y contenido:
-- Titulo "Propiedades exclusivas en Guatemala" siempre en una sola linea
-- Formulario de Contacto alineado con la fotografia
-- Iconos de "Calcular Presupuesto Estimado" y "Solicitar cotizacion" rediseñados
-- Campo "Presupuesto asignado" en el formulario de Solicitar cotizacion
-- "Prestamos con CHN" cambiado a "Gestion de Prestamos Bancarios"
+Diseno general:
+- Titulo de Propiedades en una linea; Contacto alineado con la foto
+- Iconos de Presupuesto Estimado y Solicitar cotizacion rediseñados
+- "Prestamos con CHN" -> "Gestion de Prestamos Bancarios"
 
-Precalificacion bancaria (dentro de "Gestion de Prestamos Bancarios"):
-- Boton "Datos para precalificar un prestamo" con bloque de requisitos
-- Separado en dos segmentos: Persona Individual y Persona Juridica (Empresa),
-  cada uno con sus propios campos y requisitos de documentos
-- Banco de preferencia: lista desplegable con los bancos oficiales de Guatemala
-- Persona Individual: campos de Grado de escolaridad (lista) y Profesion (texto)
-- Persona Juridica: requisito "Patente de Comercio y Sociedad" en Representante legal
-- Cada requisito tiene su propio boton para subir el PDF correspondiente,
-  guardado en Supabase Storage (bucket "expedientes") y en la tabla documentos_expediente
-- Botones Guardar, Actualizar y Eliminar del expediente completo
-- Boton "Descargar documentos en PDF": genera un PDF descargable con el listado
-  de requisitos del segmento activo (usa la libreria jsPDF, cargada por CDN)
+Precalificacion bancaria (Gestion de Prestamos Bancarios):
+- Separado en Persona Individual y Persona Juridica (Empresa)
+- Banco de preferencia: lista de bancos de Guatemala
+- Escolaridad y profesion (Persona Individual)
+- Patente de Comercio y Sociedad (Representante legal, Persona Juridica)
+- Cada requisito con su propio boton de subir PDF (Supabase Storage)
+- Guardar / Actualizar / Eliminar del expediente
+- Descargar PDF con el listado de requisitos del segmento activo
+
+Especialistas para cada necesidad (las 8 tarjetas de servicio):
+- Direccion del lugar, y "Describe tu necesidad" a todo el ancho
+- Adjuntar cotizacion (PDF), Fecha de la cotizacion y boton
+  "Ir a Solicitar cotizacion" (lleva al bloque real del formulario)
+- Layout de 3 columnas para esos tres elementos
+
+Solicitar cotizacion (formulario principal):
+- Texto introductorio en una sola linea
+- Resumen: Tipo de servicio, No. de cotizacion (correlativo real desde
+  Supabase, no editable), Fecha de cotizacion — alineados a la izquierda
+- Botones WhatsApp / Enviar por correo: SOLO abren el mensaje, ya NO guardan
+  nada en la base de datos
+- Botones nuevos Guardar / Modificar / Eliminar: son el UNICO lugar donde
+  se guarda, actualiza o borra la cotizacion completa en Supabase
+  (tablas cotizaciones y solicitudes_servicio)
 
 Tecnico:
-- Version de cache de script.js actualizada para forzar que el navegador cargue
-  siempre la ultima version (evita ver una version vieja guardada en cache)
-- Libreria jsPDF agregada via CDN para la generacion de PDFs
+- Version de cache de script.js actualizada para forzar la ultima version
+- Libreria jsPDF agregada via CDN
