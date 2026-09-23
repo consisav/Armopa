@@ -275,7 +275,7 @@ const T = {
     aboutT1: "En ARMOPA transformamos la búsqueda de propiedades en una experiencia estratégica y personalizada. Somos una firma de consultoría inmobiliaria y de Servicios Profesionales Integrados dedicada a conectar a nuestros clientes con espacios excepcionales que elevan su estilo de vida y aseguran su patrimonio. Nuestro compromiso se fundamenta en la Lealtad, transparencia, integridad usando la innovación de mercado y una profunda experiencia sectorial, garantizando decisiones de inversión sólidas, transparentes y de alto valor a largo plazo.", aboutT2: "Te orientamos para encontrar el espacio ideal, de forma inteligente, el punto donde la tecnología inmobiliaria y el trato humano se encuentran. Nos especializamos en simplificar el proceso de compra, venta y alquiler de propiedades mediante un ecosistema digital avanzado y un equipo de expertos siempre a tu disposición. Nos apasiona optimizar tu tiempo y maximizar tus oportunidades de inversión, ofreciendo un servicio ágil, transparente y diseñado a la medida de las demandas del mercado actual.", aboutT3: "Entendemos que una propiedad es mucho más que cuatro paredes: es el escenario de tus próximos grandes recuerdos y el pilar de tu estabilidad familiar. Con años de trayectoria en el sector, nos enorgullece ser los aliados de confianza de cientos de familias en la búsqueda de su hogar ideal. Nos distingue un servicio de asesoría honesto, empático y profesional, diseñado para acompañarte con absoluta seguridad en cada paso del camino.", quoteH: "Solicitar cotización", quoteSub: "Completa tus datos y elige cómo enviarlos: por WhatsApp o por correo. Se abrirá con la información lista para enviarnos.", qName: "Nombre del contacto / cliente", qNamePh: "Nombre completo", qPhone: "Teléfono de contacto", qPhonePh: "+502 0000 0000", qAddr: "Dirección del servicio", qAddrPh: "Zona, colonia, calle o referencia", qDate: "Fecha estimada del servicio", qBtn: "Solicitar cotización", qErr: "Completa todos los campos para solicitar la cotización.", qMsgH: "Hola, deseo solicitar una cotización.", qMsgName: "Nombre: ", qMsgPhone: "Teléfono: ", qMsgAddr: "Dirección del servicio: ", qMsgDate: "Fecha estimada del servicio: ", xNeed: "Describe tu necesidad", xNeedPh: "Cuéntanos qué necesitas: medidas, materiales, urgencia u otros detalles…", xTime: "Tiempo estimado", xTimePh: "Ej. 2 semanas, 1 mes o una fecha aproximada", xImgs: "Subir y visualizar imágenes", xHint: "Puedes seleccionar varias imágenes (JPG o PNG). Se guardan en este navegador; adjúntalas en WhatsApp al enviar la cotización.", qMsgSvc: "Servicios solicitados:", qMsgTime: "Tiempo estimado: ", qMsgImgs: "Imágenes: {n} (las adjunto en este chat)", qEmail: "Correo electrónico", qEmailPh: "nombre@correo.com", qMsgEmail: "Correo: ", qBtnMail: "Enviar por correo", qErrEmail: "Escribe un correo electrónico válido.", qMailSubj: "Solicitud de cotización", xStart: "Fecha estimada de inicio", qMsgStart: "Fecha estimada de inicio: ", xPrio: "Prioridad", xPrioAlta: "Alta", xPrioMedia: "Media", xPrioBaja: "Baja", qMsgPrio: "Prioridad: ", xEstBtn: "Calcular Presupuesto Estimado", xEstHide: "Ocultar presupuesto", xEstTitle: "Presupuesto estimado (referencial, Guatemala)", qMsgEst: "Presupuesto estimado: ", ctImgAlt: "ARMOPA: compra y venta de propiedades en todo el país. Nosotros somos la solución.", aiAlt: "Inteligencia artificial y tecnología inmobiliaria", homeAlt: "Hogar ideal: una casa en manos protectoras", xEstStale: "Calculado con la descripción de la necesidad y el tiempo estimado que ingresaste. Si cambias algo, presiona \"Calcular Presupuesto Estimado\" otra vez.", mkBtn: "Costos alrededor", mkTitle: "Valores de propiedades similares en la zona (referencial)", mkHide: "Ocultar", mkSimilar: "Propiedades similares (referencia)", mkAround: "Zonas alrededor (referencia)", mkUse: "Usar estos valores en los campos de valor", salonAlt: "Rentamos o vendemos: una mano sostiene casas con símbolos de dólar", budgetAlt: "Presupuesto e inversión inmobiliaria: monedas apiladas y una casa", buyAlt: "Compra de propiedad: unas llaves y una casa en las manos", remodelAlt: "Hogar inteligente: tecnología y remodelación de una propiedad", landAlt: "Construcción en tu terreno: un hombre frente a un campo con el plano de su futura casa dibujado", projAlt: "Desarrollo de tu proyecto: vista aérea de un desarrollo urbano con plaza, edificios y áreas verdes", aboutH1: 'Administración inmobiliaria con visión profesional e inteligente,', aboutH2: 'Segura, Transparente, Íntegra, Responsable, Leal a la Vanguardia con Honradez', aboutH3: 'haciendo que tu inversión crezca a niveles inimaginables.',
     invH: 'Tu Inversión:', invSub: 'Inversión Garantizada:', invItems: ['Compra y venta', 'Alquileres Diversos', 'Integramos administración', 'Remodelación', 'Construcción / Remodelación', 'Desarrollo de proyectos con gestión practica de rentabilidad'], aboutP: 'Integramos administración, compra y venta, alquileres, remodelación, construcción y desarrollo de proyectos para ofrecer una gestión práctica y ordenada de cada propiedad.',
     svH: 'Tus Servicios:', svA: 'Servicios Profesionales coordinados', svItems: ['Alquiler de maquinaria pesada', 'Renta de Camiones para extracción', 'Renta de apartamentos y Edificio', 'Mantenimiento de Edificios', 'Plomería y electricidad', 'Asesoría Jurídica', 'Prestamos con CHN', 'Movimiento de Tierra'],
-    propH: 'Propiedades exclusivas en Guatemala', catalog: 'Buscar Propiedades', prev: 'Propiedad anterior', next: 'Siguiente propiedad',
+    propH: 'Propiedades exclusivas en Guatemala', catalog: 'Ver Propiedades', prev: 'Propiedad anterior', next: 'Siguiente propiedad',
     places: ['Ciudad de Guatemala', 'Lago de Atitlán', 'Antigua Guatemala', 'Petén', 'Zona 10'],
     alts: ['Propiedad de lujo en Ciudad de Guatemala', 'Propiedad de lujo en Lago de Atitlán', 'Propiedad de lujo en Antigua Guatemala', 'Propiedad de lujo en Petén', 'Propiedad premium en Zona 10'],
     goTo: 'Ir a la posición ',
@@ -283,7 +283,7 @@ const T = {
     addLoc: 'Agregar ubicación', locDefault: 'Ubicación', emptyH: 'Aún no hay ubicaciones', emptyP: 'Agrega la primera para subir sus imágenes y su dirección.',
     nameL: 'Nombre de la ubicación', zoom: 'Ver foto del vendedor en tamaño original', zoomToggle: 'Alternar entre ajustar a la pantalla y tamaño real', opL: 'Tipo de operación', opRent: 'Renta', opSale: 'Venta', opBoth: 'Renta o venta', rentL: 'Valor de renta', saleL: 'Valor de la propiedad (venta)', rentPh: 'Ej. Q 4,500 al mes', salePh: 'Ej. Q 850,000', opHint: 'Elige el tipo de operación para indicar los valores.', viewOpRent: 'En renta', viewOpSale: 'En venta', viewOpBoth: 'En renta o venta', rentView: 'Renta', saleView: 'Precio de venta', sellerH: 'Vendedor', sellerUp: 'Subir foto del vendedor', sellerRm: 'Quitar foto', sellerName: 'Nombre del vendedor', sellerWa: 'WhatsApp del vendedor', waHint: 'Incluye el código de país, por ejemplo +502. Si escribes 8 dígitos se agrega el 502 automáticamente.', sellerLabel: 'Contacto del vendedor', waBtn: 'Contactar por WhatsApp', waMsg: 'Hola, me interesa la propiedad: ', descL: 'Descripción de la propiedad', descPh: 'Características, habitaciones, amenidades, precio y cualquier detalle importante…', descH: 'Descripción', addrL: 'Dirección o enlace de Google Maps', photo: 'Imagen ', photosH: 'Imágenes de la ubicación', upload: 'Subir imágenes',
     uploadHint: 'Puedes seleccionar varias imágenes (JPG o PNG).', remove: 'Quitar imagen', uploaded: 'Imágenes agregadas.', saved: 'Cambios guardados.',
-    del: 'Eliminar ubicación', delSure: '¿Confirmar eliminación?', view: 'Ver fotografías', edit: 'Volver a editar', mapOpen: 'Ver en Google Maps',
+    del: 'Eliminar ubicación', delSure: '¿Confirmar eliminación?', view: 'Visualizar', edit: 'Volver a editar', mapOpen: 'Ver en Google Maps',
     prevImg: 'Imagen anterior', nextImg: 'Imagen siguiente', noImgs: 'Esta ubicación aún no tiene imágenes.',
     storeNote: 'Los cambios se guardan automáticamente en este navegador. Para mostrarlos a todos los visitantes, la página debe conectarse a un servidor o base de datos.',
     storeErr: 'No se pudo guardar: el navegador no tiene espacio. Quita algunas imágenes e inténtalo de nuevo.',
@@ -407,13 +407,6 @@ let cityCovers = {};
 function openCity(name) {
   cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null;
   sel = (data[name] || []).length ? 0 : -1; vi = 0;
-  note('');
-  render();
-  pModal.hidden = false;
-}
-function openLocationDirect(name, locIndex) {
-  cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null;
-  sel = locIndex; vi = 0;
   note('');
   render();
   pModal.hidden = false;
@@ -1028,135 +1021,6 @@ function shrink(file, max) {
 }
 
 $('#addCityBtn').addEventListener('click', () => openProp());
-
-/* Menú rápido: buscar propiedades por Ciudad, Zona y Área */
-const catalogBtn = $('#catalogBtn');
-const cityQuickMenu = $('#cityQuickMenu');
-function closeCityQuickMenu() { cityQuickMenu.hidden = true; }
-function extractNumber(str) {
-  if (!str) return null;
-  const cleaned = String(str).replace(/[^\d.,]/g, '').replace(/,/g, '');
-  if (!cleaned) return null;
-  const num = parseFloat(cleaned);
-  return isNaN(num) ? null : num;
-}
-function buildSearchMenu() {
-  cityQuickMenu.innerHTML = '';
-  const names = cityNames();
-  const form = el('div', 'cq-form');
-
-  form.appendChild(el('label', 'cq-label', 'Ciudad'));
-  const citySelect = document.createElement('select');
-  citySelect.className = 'cq-select';
-  if (!names.length) {
-    const opt = document.createElement('option');
-    opt.textContent = 'No hay ciudades cargadas';
-    opt.disabled = true; opt.selected = true;
-    citySelect.appendChild(opt);
-    citySelect.disabled = true;
-  } else {
-    names.forEach((name) => {
-      const opt = document.createElement('option');
-      opt.value = name; opt.textContent = name;
-      citySelect.appendChild(opt);
-    });
-  }
-  form.appendChild(citySelect);
-
-  form.appendChild(el('label', 'cq-label', 'Zona'));
-  const zonaInput = document.createElement('input');
-  zonaInput.type = 'text';
-  zonaInput.className = 'cq-input';
-  zonaInput.placeholder = 'Ej. Zona 10, Antigua...';
-  form.appendChild(zonaInput);
-
-  form.appendChild(el('label', 'cq-label', 'Sector'));
-  const sectorInput = document.createElement('input');
-  sectorInput.type = 'text';
-  sectorInput.className = 'cq-input';
-  sectorInput.placeholder = 'Ej. Cayalá, Vista Hermosa...';
-  form.appendChild(sectorInput);
-
-  form.appendChild(el('label', 'cq-label', 'Especificaciones de propiedad'));
-  const specsInput = document.createElement('input');
-  specsInput.type = 'text';
-  specsInput.className = 'cq-input';
-  specsInput.placeholder = 'Ej. 150 m², 3 habitaciones, piscina...';
-  form.appendChild(specsInput);
-
-  form.appendChild(el('label', 'cq-label', 'Presupuesto estimado (Q)'));
-  const budgetInput = document.createElement('input');
-  budgetInput.type = 'text';
-  budgetInput.className = 'cq-input';
-  budgetInput.placeholder = 'Ej. 500,000';
-  budgetInput.inputMode = 'decimal';
-  form.appendChild(budgetInput);
-
-  const searchBtn = el('button', 'btn btn-dark cq-search-btn', 'Buscar');
-  searchBtn.type = 'button';
-  form.appendChild(searchBtn);
-
-  const results = el('div', 'cq-results');
-  form.appendChild(results);
-
-  searchBtn.addEventListener('click', () => {
-    results.innerHTML = '';
-    const city = citySelect.value;
-    if (!city) return;
-    const zonaQ = zonaInput.value.trim().toLowerCase();
-    const sectorQ = sectorInput.value.trim().toLowerCase();
-    const specsQ = specsInput.value.trim().toLowerCase();
-    const budgetNum = extractNumber(budgetInput.value);
-    const matches = (data[city] || [])
-      .map((l, i) => ({ l, i }))
-      .filter(({ l }) => {
-        const addrTxt = (l.addr || '').toLowerCase();
-        const okZona = !zonaQ || addrTxt.includes(zonaQ);
-        const okSector = !sectorQ || addrTxt.includes(sectorQ);
-        const okSpecs = !specsQ || (l.desc || '').toLowerCase().includes(specsQ);
-        let okBudget = true;
-        if (budgetNum != null) {
-          const prices = [];
-          if (l.op === 'renta' || l.op === 'ambos' || !l.op) { const r = extractNumber(l.pRent); if (r != null) prices.push(r); }
-          if (l.op === 'venta' || l.op === 'ambos' || !l.op) { const s = extractNumber(l.pSale); if (s != null) prices.push(s); }
-          okBudget = prices.length > 0 && prices.some((p) => p <= budgetNum);
-        }
-        return okZona && okSector && okSpecs && okBudget;
-      });
-    if (!matches.length) {
-      results.appendChild(el('div', 'cq-empty', 'No se encontraron ubicaciones con esos criterios.'));
-      return;
-    }
-    matches.forEach(({ l, i }) => {
-      const r = el('button', '', l.name || 'Ubicación ' + (i + 1));
-      r.type = 'button';
-      r.append(el('small', '', l.addr || ''));
-      r.addEventListener('click', () => {
-        closeCityQuickMenu();
-        openLocationDirect(city, i);
-      });
-      results.appendChild(r);
-    });
-  });
-
-  cityQuickMenu.appendChild(form);
-}
-if (catalogBtn && cityQuickMenu) {
-  catalogBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const willOpen = cityQuickMenu.hidden;
-    if (willOpen) buildSearchMenu();
-    cityQuickMenu.hidden = !willOpen;
-  });
-  document.addEventListener('click', (e) => {
-    if (!cityQuickMenu.hidden && !cityQuickMenu.contains(e.target) && e.target !== catalogBtn) {
-      closeCityQuickMenu();
-    }
-  });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCityQuickMenu(); });
-}
-
 $('#pClose').addEventListener('click', closeProp);
 $('#pScrim').addEventListener('click', closeProp);
 $('#p-name').addEventListener('input', () => {
@@ -1289,8 +1153,6 @@ $('#pDel').addEventListener('click', () => {
       .then(({ error }) => { if (error) console.error('Error al borrar en Supabase:', error); });
   }
 });
-$('#pSaveTop').addEventListener('click', () => saveLocNow('Ubicación guardada con éxito.'));
-$('#pUpdateTop').addEventListener('click', () => saveLocNow('Ubicación actualizada con éxito.'));
 $('#vPrev').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi <= 0 ? n - 1 : vi - 1; renderView(); });
 $('#vNext').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi >= n - 1 ? 0 : vi + 1; renderView(); });
 /* Foto del vendedor en tamaño original */
@@ -1611,19 +1473,6 @@ function syncLoc() {
     const { error } = await supabaseClient.from('propiedades').upsert(row, { onConflict: 'ciudad,local_id' });
     if (error) console.error('Error al sincronizar propiedad:', error);
   }, 600);
-}
-async function saveLocNow(successMsg) {
-  if (cur === null || sel < 0 || !list()[sel]) { note('Selecciona o agrega una ubicación primero.'); return; }
-  clearTimeout(syncTimer);
-  persistLocalOnly();
-  const row = toSupaRow(cur, list()[sel]);
-  try {
-    const { error } = await supabaseClient.from('propiedades').upsert(row, { onConflict: 'ciudad,local_id' });
-    if (error) { note('Error al guardar: ' + error.message); return; }
-    note(successMsg);
-  } catch (err) {
-    note('Error al guardar la ubicación.');
-  }
 }
 
 async function cargarPropiedadesArmopa() {
