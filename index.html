@@ -357,6 +357,36 @@
           <button class="ex-i" type="button" aria-expanded="false" data-xbtn="6"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-6 9 6"></path><path d="M4 10h16"></path><path d="M6 10v8M10 10v8M14 10v8M18 10v8"></path><path d="M3 20h18"></path></svg></span><span class="ex-t" data-ext="6"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
           <div class="ex-p" hidden>
             <div class="fld"><label for="xn-6" data-i18n="xNeed"></label><textarea id="xn-6" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
+            <div class="x-row" style="margin-top:16px">
+              <div class="fld"><label for="xt-6" data-i18n="xTime"></label><input id="xt-6" type="text" data-i18n-ph="xTimePh"></div>
+              <div class="fld"><label for="xs-6" data-i18n="xStart"></label><input id="xs-6" class="xs" type="date"></div>
+            </div>
+            <div class="fld">
+              <span class="lbl" data-i18n="xPrio"></span>
+              <div class="seg-g">
+                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
+                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
+                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
+              </div>
+            </div>
+            <div class="up2">
+              <span class="lbl" data-i18n="xImgs"></span>
+              <div class="up-row">
+                <input id="xf-6" class="sr" type="file" accept="image/*" multiple>
+                <label class="btn btn-gold btn-sm" for="xf-6" data-i18n="upload"></label>
+                <button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="3"></rect><path d="M4 17h16"></path><circle cx="12" cy="19.3" r="0.9"></circle><rect x="7" y="5.5" width="2" height="2" rx="0.4"></rect><path d="M11.5 6.5h5"></path><rect x="7" y="9.5" width="2" height="2" rx="0.4"></rect><path d="M11.5 10.5h5"></path><rect x="7" y="13.5" width="2" height="2" rx="0.4"></rect><path d="M11.5 14.5h3.5"></path></svg><span></span></button>
+              </div>
+              <span class="hint" data-i18n="xHint"></span>
+            </div>
+            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
+            <div class="x-est" hidden>
+              <div class="x-est-top"><p class="x-est-h" data-i18n="xEstTitle"></p><button class="x-est-x" type="button" data-i18n="xEstHide"></button></div>
+              <p class="amt"></p>
+              <ul class="x-est-l"></ul>
+              <p class="assum" hidden></p>
+              <p class="hint" data-i18n="xEstStale"></p>
+              <p class="hint x-estnote"></p>
+            </div>
             <button class="btn btn-line-dark btn-sm" type="button" id="preqBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg><span>Datos para precalificar un préstamo</span></button>
             <div class="x-est" id="preqBox" hidden>
               <div class="x-est-top"><p class="x-est-h">Requisitos generales para precalificación bancaria en Guatemala</p><button class="x-est-x" type="button" id="preqHide">Ocultar</button></div>
@@ -546,36 +576,6 @@
                 <button class="btn btn-line-dark" type="button" id="pqDownloadPdf" style="margin-left:auto;gap:10px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg><span>Descargar documentos en PDF</span></button>
               </div>
               <p class="hint" id="pqMsg" style="margin-top:8px"></p>
-            </div>
-            <div class="x-row" style="margin-top:16px">
-              <div class="fld"><label for="xt-6" data-i18n="xTime"></label><input id="xt-6" type="text" data-i18n-ph="xTimePh"></div>
-              <div class="fld"><label for="xs-6" data-i18n="xStart"></label><input id="xs-6" class="xs" type="date"></div>
-            </div>
-            <div class="fld">
-              <span class="lbl" data-i18n="xPrio"></span>
-              <div class="seg-g">
-                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
-                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
-                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
-              </div>
-            </div>
-            <div class="up2">
-              <span class="lbl" data-i18n="xImgs"></span>
-              <div class="up-row">
-                <input id="xf-6" class="sr" type="file" accept="image/*" multiple>
-                <label class="btn btn-gold btn-sm" for="xf-6" data-i18n="upload"></label>
-                <button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="3"></rect><path d="M4 17h16"></path><circle cx="12" cy="19.3" r="0.9"></circle><rect x="7" y="5.5" width="2" height="2" rx="0.4"></rect><path d="M11.5 6.5h5"></path><rect x="7" y="9.5" width="2" height="2" rx="0.4"></rect><path d="M11.5 10.5h5"></path><rect x="7" y="13.5" width="2" height="2" rx="0.4"></rect><path d="M11.5 14.5h3.5"></path></svg><span></span></button>
-              </div>
-              <span class="hint" data-i18n="xHint"></span>
-            </div>
-            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
-            <div class="x-est" hidden>
-              <div class="x-est-top"><p class="x-est-h" data-i18n="xEstTitle"></p><button class="x-est-x" type="button" data-i18n="xEstHide"></button></div>
-              <p class="amt"></p>
-              <ul class="x-est-l"></ul>
-              <p class="assum" hidden></p>
-              <p class="hint" data-i18n="xEstStale"></p>
-              <p class="hint x-estnote"></p>
             </div>
           </div>
         </div>
