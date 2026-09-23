@@ -1538,7 +1538,7 @@ $$('.ex-c').forEach((c, i) => {
   $('#xs-' + i).addEventListener('input', (e) => { xget(i).start = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); });
   $('#xqd-' + i).addEventListener('input', (e) => { xget(i).cotDate = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); });
   $('#xqGoto-' + i).addEventListener('click', () => {
-    const dest = document.getElementById('contactForm');
+    const dest = document.getElementById('quote');
     if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
   c.querySelector('#xf-' + i).addEventListener('change', async (e) => {
