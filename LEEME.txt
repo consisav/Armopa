@@ -1,33 +1,55 @@
-ARMOPA — Archivos actualizados
-================================
+ARMOPA — Archivos actualizados (version mas reciente)
+========================================================
 
-Este ZIP contiene SOLO estos 3 archivos, con todos los cambios hechos en esta conversación:
+Este ZIP contiene SOLO estos 3 archivos, con TODOS los cambios hechos en esta conversacion:
 - index.html
 - script.js
 - styles.css
 
-NO incluye (porque nunca se compartieron en este chat, y deben mantenerse tal cual ya están en tu repositorio):
+NO incluye (porque nunca se compartieron en este chat, y deben mantenerse tal cual ya estan en tu repositorio):
 - carpeta assets/ (logo, fotos)
 - supabase-config.js
 - README.txt
 - Logo_ARMOPA_Oficial.png
 
-CÓMO USARLO:
+COMO USARLO:
 1. Copia estos 3 archivos dentro de tu carpeta D:\PAGINAS WEB\Armopa\Armopa-repo,
-   reemplazando los que ya existen ahí.
+   reemplazando los que ya existen ahi.
 2. NO borres ni toques la carpeta assets/ ni supabase-config.js que ya tienes.
-3. Sube los cambios con git:
+3. En VS Code, confirma con git status que aparecen como "modified".
+4. Sube los cambios:
+   git pull   (si pide "fetch first" antes del push)
    git add .
    git commit -m "Actualizacion completa del sitio"
    git push
 
-Cambios incluidos en esta versión:
-- Panel "Ciudades": agregar, actualizar y eliminar ciudades (sincronizado con Supabase, tabla ciudades_portada)
-- Buscador de ciudades dentro del panel de administración
-- Botón "Buscar Propiedades": panel de búsqueda por Ciudad, Zona, Sector, Especificaciones de propiedad y Presupuesto estimado
-- Panel de Ubicaciones: botones Guardar, Actualizar y Eliminar (sincronizados con Supabase, tabla propiedades)
-- Texto del botón "Visualizar" cambiado a "Ver fotografías"
-- Corrección de superposición del título en la sección de Contacto
-- Alineación del formulario de contacto con la fotografía
-- Título "Propiedades exclusivas en Guatemala" en una sola línea
-- Cambio de versión de caché en script.js (?v=20260923-0008) para forzar que el navegador cargue la última versión
+RESUMEN DE TODOS LOS CAMBIOS INCLUIDOS EN ESTA VERSION:
+
+Panel de administracion (Ciudades / Ubicaciones):
+- Agregar, actualizar y eliminar ciudades, sincronizado con Supabase (tabla ciudades_portada)
+- Buscador de ciudades dentro del panel
+- Formulario propio para "Nueva ciudad" con nombre + foto de portada (evita el bloqueo del
+  selector de archivos del navegador; la ciudad se guarda aunque no elijas foto)
+- Botones Guardar, Actualizar y Eliminar en el formulario de cada ubicacion/propiedad,
+  sincronizados con Supabase (tabla propiedades)
+- Texto "Visualizar" cambiado a "Ver fotografias"
+
+Buscador publico de propiedades:
+- Boton "Buscar Propiedades" (antes "Ver Propiedades" / "Solicitar catalogo")
+- Panel de busqueda con: Ciudad, Zona, Sector, Especificaciones de propiedad y
+  Presupuesto estimado, con boton Buscar y resultados que llevan directo a la ubicacion
+
+Diseno y contenido:
+- Titulo "Propiedades exclusivas en Guatemala" siempre en una sola linea (sin afectar
+  el titulo de la seccion de Contacto, que se corrigio por separado)
+- Formulario de Contacto alineado con la fotografia
+- Icono de "Calcular Presupuesto Estimado" rediseñado (tablet con lista de casillas)
+- Icono de "Solicitar cotizacion" rediseñado (documentos apilados con tabla)
+- Campo nuevo "Presupuesto asignado" en el formulario de Solicitar cotizacion
+  (opcional, se incluye en el mensaje de WhatsApp/correo si se llena)
+- "Prestamos con CHN" / "Orientacion para prestamos con CHN" cambiado a
+  "Gestion de Prestamos Bancarios" (español e ingles)
+
+Tecnico:
+- Version de cache de script.js actualizada para forzar que el navegador cargue
+  siempre la ultima version (evita ver una version vieja guardada en cache)
