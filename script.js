@@ -802,46 +802,45 @@ function renderList() {
     });
    const add = el('button', 'btn btn-dark', '+ Nueva ciudad');
 add.type = 'button';
-add.addEventListener('click', async () => {
+add.addEventListener('click', () => {
   const name = (prompt('Nombre de la ciudad:') || '').trim();
   if (!name) return;
   if (!data[name]) data[name] = [];
 
-  try {
-    const { error } = await supabaseClient.from('ciudades_portada').upsert({ ciudad: name });
-    if (error) { note('Error al guardar la ciudad: ' + error.message); return; }
-    note('Ciudad agregada con éxito.');
-  } catch (err) {
-    note('Error al guardar la ciudad.');
-    return;
-  }
-  cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
-  persistLocalOnly();
-  buildCityCards();
-  render();
-
-  if (!confirm('Ciudad guardada. ¿Deseas agregar una foto de portada ahora?')) return;
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = 'image/*';
   input.style.display = 'none';
   document.body.appendChild(input);
-  input.addEventListener('change', async () => {
-    const f = input.files && input.files[0];
-    if (f) {
-      try {
-        const photoUrl = await uploadPropFile(f, 1200);
+
+  let settled = false;
+  async function finishSave(file) {
+    if (settled) return;
+    settled = true;
+    let photoUrl = '';
+    try {
+      if (file) {
+        photoUrl = await uploadPropFile(file, 1200);
         cityCovers[name] = photoUrl;
-        const { error } = await supabaseClient.from('ciudades_portada').upsert({ ciudad: name, foto: photoUrl });
-        if (error) { note('Error al guardar la foto: ' + error.message); }
-        else { note('Foto de portada guardada con éxito.'); }
-        buildCityCards();
-        renderList();
-      } catch (err) {
-        note('Error al subir la foto.');
       }
+      const { error } = await supabaseClient.from('ciudades_portada').upsert({ ciudad: name, foto: photoUrl || null });
+      if (error) { note('Error al guardar la ciudad: ' + error.message); }
+      else { note(file ? 'Ciudad y foto guardadas con éxito.' : 'Ciudad agregada con éxito.'); }
+    } catch (err) {
+      note('Error al guardar la ciudad.');
     }
+    cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
+    persistLocalOnly();
+    buildCityCards();
+    render();
     input.remove();
+  }
+
+  input.addEventListener('change', () => finishSave(input.files && input.files[0]));
+  input.addEventListener('cancel', () => finishSave(null));
+  window.addEventListener('focus', function onFocusBack() {
+    window.removeEventListener('focus', onFocusBack);
+    setTimeout(() => finishSave(null), 300);
   });
   input.click();
 });
