@@ -99,9 +99,12 @@
 
   <section class="sec paper" id="propiedades">
     <div class="wrap">
-      <div class="sec-h">
+      <div class="sec-h sec-h-tight">
         <h2 data-i18n="propH"></h2>
-       <a class="lnk" href="#contacto" data-i18n="catalog"></a>
+        <div class="city-quick-wrap">
+          <button type="button" class="lnk" id="catalogBtn" data-i18n="catalog"></button>
+          <div class="city-quick-menu" id="cityQuickMenu" hidden></div>
+        </div>
 <button class="btn btn-dark" type="button" id="addCityBtn" style="margin-left:12px">+ Agregar ciudad</button>
       </div>
       <div class="car" id="car" style="--i:0">
@@ -571,6 +574,8 @@
             <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"><p class="hint" data-i18n="waHint"></p></div>
           </div>
           <div class="acts" style="margin-top:20px">
+            <button class="btn btn-dark" type="button" id="pSaveTop">💾 Guardar</button>
+            <button class="btn btn-line-dark" type="button" id="pUpdateTop">🔄 Actualizar</button>
             <a class="btn btn-line-dark" id="pMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
             <button class="btn btn-danger" type="button" id="pDel"></button>
           </div>
@@ -619,6 +624,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20260923k"></script>
+<script src="script.js?v=20260923-0008"></script>
 </body>
 </html>
