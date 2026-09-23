@@ -5,7 +5,9 @@ Este ZIP contiene:
 - index.html
 - script.js
 - styles.css
-- precalificacion.sql  (script SQL para Supabase, tablas de precalificacion bancaria)
+- precalificacion.sql               (ejecutar 1ro en Supabase)
+- migracion_persona_juridica.sql    (ejecutar 2do en Supabase)
+- migracion_escolaridad.sql         (ejecutar 3ro en Supabase)
 
 NO incluye (porque nunca se compartieron en este chat, y deben mantenerse tal cual ya estan en tu repositorio):
 - carpeta assets/ (logo, fotos)
@@ -23,11 +25,18 @@ COMO USAR LOS 3 ARCHIVOS DEL SITIO (index.html, script.js, styles.css):
    git commit -m "Actualizacion completa del sitio"
    git push
 
-COMO USAR precalificacion.sql:
-Copia y pega su contenido completo en el SQL Editor de Supabase y ejecutalo.
-Crea las tablas expedientes_precalificacion y documentos_expediente, ya corregidas
-para PostgreSQL (no para MySQL). Recuerda configurar las politicas de RLS
-(Row Level Security) para esas tablas antes de insertar datos desde el sitio publico.
+COMO USAR LOS ARCHIVOS .sql:
+Copia y pega el contenido de cada uno, EN ESTE ORDEN, en el SQL Editor de Supabase:
+1. precalificacion.sql              -> crea las tablas base
+2. migracion_persona_juridica.sql   -> agrega soporte para Persona Juridica (Empresa)
+3. migracion_escolaridad.sql        -> agrega escolaridad y profesion
+
+Recuerda tambien:
+- Crear el bucket de Storage llamado "expedientes" en Supabase, marcado como PRIVADO
+  (a diferencia del bucket "propiedades", que es publico).
+- Configurar las politicas de RLS (Row Level Security) de las tablas
+  expedientes_precalificacion y documentos_expediente, y del bucket "expedientes",
+  para permitir INSERT/UPDATE/SELECT/DELETE al rol anon (publico).
 
 RESUMEN DE TODOS LOS CAMBIOS INCLUIDOS EN ESTA VERSION:
 
@@ -41,29 +50,30 @@ Panel de administracion (Ciudades / Ubicaciones):
 - Texto "Visualizar" cambiado a "Ver fotografias"
 
 Buscador publico de propiedades:
-- Boton "Buscar Propiedades" (antes "Ver Propiedades" / "Solicitar catalogo")
-- Panel de busqueda con: Ciudad, Zona, Sector, Especificaciones de propiedad y
-  Presupuesto estimado, con boton Buscar y resultados que llevan directo a la ubicacion
+- Boton "Buscar Propiedades" con panel de busqueda: Ciudad, Zona, Sector,
+  Especificaciones de propiedad y Presupuesto estimado
 
 Diseno y contenido:
-- Titulo "Propiedades exclusivas en Guatemala" siempre en una sola linea (sin afectar
-  el titulo de la seccion de Contacto, que se corrigio por separado)
+- Titulo "Propiedades exclusivas en Guatemala" siempre en una sola linea
 - Formulario de Contacto alineado con la fotografia
-- Icono de "Calcular Presupuesto Estimado" rediseñado (tablet con lista de casillas)
-- Icono de "Solicitar cotizacion" rediseñado (documentos apilados con tabla)
-- Campo nuevo "Presupuesto asignado" en el formulario de Solicitar cotizacion
-  (opcional, se incluye en el mensaje de WhatsApp/correo si se llena)
-- "Prestamos con CHN" / "Orientacion para prestamos con CHN" cambiado a
-  "Gestion de Prestamos Bancarios" (español e ingles)
-- Nuevo bloque "Datos para precalificar un prestamo" dentro de la tarjeta
-  "Gestion de Prestamos Bancarios": requisitos de identidad, ingresos y
-  estabilidad laboral para precalificacion bancaria en Guatemala
+- Iconos de "Calcular Presupuesto Estimado" y "Solicitar cotizacion" rediseñados
+- Campo "Presupuesto asignado" en el formulario de Solicitar cotizacion
+- "Prestamos con CHN" cambiado a "Gestion de Prestamos Bancarios"
 
-Base de datos:
-- precalificacion.sql: tablas expedientes_precalificacion y documentos_expediente,
-  corregidas de MySQL a PostgreSQL (SERIAL, CHECK en vez de ENUM, trigger para
-  fecha_actualizacion, sintaxis correcta de UNIQUE)
+Precalificacion bancaria (dentro de "Gestion de Prestamos Bancarios"):
+- Boton "Datos para precalificar un prestamo" con bloque de requisitos
+- Separado en dos segmentos: Persona Individual y Persona Juridica (Empresa),
+  cada uno con sus propios campos y requisitos de documentos
+- Banco de preferencia: lista desplegable con los bancos oficiales de Guatemala
+- Persona Individual: campos de Grado de escolaridad (lista) y Profesion (texto)
+- Persona Juridica: requisito "Patente de Comercio y Sociedad" en Representante legal
+- Cada requisito tiene su propio boton para subir el PDF correspondiente,
+  guardado en Supabase Storage (bucket "expedientes") y en la tabla documentos_expediente
+- Botones Guardar, Actualizar y Eliminar del expediente completo
+- Boton "Descargar documentos en PDF": genera un PDF descargable con el listado
+  de requisitos del segmento activo (usa la libreria jsPDF, cargada por CDN)
 
 Tecnico:
 - Version de cache de script.js actualizada para forzar que el navegador cargue
   siempre la ultima version (evita ver una version vieja guardada en cache)
+- Libreria jsPDF agregada via CDN para la generacion de PDFs

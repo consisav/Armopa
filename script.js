@@ -1660,6 +1660,243 @@ function uploadPropFile(file, max) {
   });
 }
 
+/* ===== Precalificación bancaria: expediente + documentos PDF ===== */
+const DOCS_BUCKET = 'expedientes'; // bucket de Supabase Storage — debe crearse como PRIVADO
+let pqExpedienteId = null;
+let pqTipo = 'individual'; // 'individual' | 'juridica'
+
+const PQ_DOC_TYPES_INDIVIDUAL = ['req-dpi', 'req-nit', 'req-boletas', 'req-estados-cuenta', 'req-patente-isr', 'req-carta-trabajo', 'req-antiguedad', 'req-historial'];
+const PQ_DOC_TYPES_JURIDICA = ['req-patente-comercio-empresa', 'req-patente-sociedad', 'req-escritura-constitucion', 'req-rtu', 'req-dpi-representante', 'req-nombramiento-representante', 'req-patente-comercio-sociedad-rep', 'req-estados-financieros'];
+const PQ_DOC_TYPES_ALL = PQ_DOC_TYPES_INDIVIDUAL.concat(PQ_DOC_TYPES_JURIDICA);
+
+function pqMsg(text, isError) {
+  const el = $('#pqMsg');
+  if (!el) return;
+  el.textContent = text || '';
+  el.style.color = isError ? '#b3261e' : '';
+}
+function pqCurrentDocTypes() {
+  return pqTipo === 'juridica' ? PQ_DOC_TYPES_JURIDICA : PQ_DOC_TYPES_INDIVIDUAL;
+}
+function pqResetStatuses(types) {
+  types.forEach((doc) => {
+    const st = $('#pqs-' + doc);
+    if (st) st.textContent = 'Sin guardar aún';
+  });
+}
+function pqSwitchTipo(tipo) {
+  pqTipo = tipo;
+  $$('#pqTipoSeg .seg').forEach((b) => b.classList.toggle('on', b.dataset.tipo === tipo));
+  $('#pq-block-individual').hidden = tipo !== 'individual';
+  $('#pq-block-juridica').hidden = tipo !== 'juridica';
+  pqExpedienteId = null;
+  pqMsg('');
+  pqResetStatuses(PQ_DOC_TYPES_ALL);
+}
+$$('#pqTipoSeg .seg').forEach((b) => b.addEventListener('click', () => pqSwitchTipo(b.dataset.tipo)));
+
+function pqCollectFields() {
+  if (pqTipo === 'juridica') {
+    return {
+      tipo_solicitante: 'juridica',
+      banco_preferencia: $('#pqj-banco').value.trim(),
+      monto_solicitado: $('#pqj-monto').value.trim(),
+      destino_credito: $('#pqj-destino').value,
+      razon_social: $('#pqj-razon').value.trim(),
+      nit_empresa: $('#pqj-nit').value.trim(),
+      rep_legal_nombre: $('#pqj-rep-nombre').value.trim(),
+      rep_legal_dpi: $('#pqj-rep-dpi').value.trim(),
+      telefono_celular: $('#pqj-tel').value.trim(),
+      correo_electronico: $('#pqj-correo').value.trim()
+    };
+  }
+  return {
+    tipo_solicitante: 'individual',
+    banco_preferencia: $('#pq-banco').value.trim(),
+    monto_solicitado: $('#pq-monto').value.trim(),
+    destino_credito: $('#pq-destino').value,
+    cui_dpi: $('#pq-dpi').value.trim(),
+    nit_sat: $('#pq-nit').value.trim(),
+    telefono_celular: $('#pq-tel').value.trim(),
+    correo_electronico: $('#pq-correo').value.trim(),
+    tipo_perfil: $('#pq-perfil').value,
+    grado_escolaridad: $('#pq-escolaridad').value,
+    profesion: $('#pq-profesion').value.trim()
+  };
+}
+function pqValidate(f) {
+  if (f.tipo_solicitante === 'juridica') {
+    if (!f.banco_preferencia || !f.monto_solicitado || !f.destino_credito || !f.razon_social || !f.nit_empresa || !f.rep_legal_nombre || !f.rep_legal_dpi || !f.telefono_celular || !f.correo_electronico) {
+      return 'Completa todos los campos de "Datos de la empresa" antes de guardar.';
+    }
+    if (f.rep_legal_dpi.length !== 13) return 'El DPI del representante legal debe tener 13 dígitos.';
+    return null;
+  }
+  if (!f.banco_preferencia || !f.monto_solicitado || !f.destino_credito || !f.cui_dpi || !f.nit_sat || !f.telefono_celular || !f.correo_electronico || !f.tipo_perfil || !f.grado_escolaridad || !f.profesion) {
+    return 'Completa todos los campos de "Tus datos" antes de guardar.';
+  }
+  if (f.cui_dpi.length !== 13) return 'El DPI debe tener 13 dígitos.';
+  return null;
+}
+async function pqSaveOrUpdate(isUpdate) {
+  const fields = pqCollectFields();
+  const err = pqValidate(fields);
+  if (err) { pqMsg(err, true); return; }
+  pqMsg('Guardando…');
+  try {
+    if (isUpdate && pqExpedienteId) {
+      const { error } = await supabaseClient.from('expedientes_precalificacion').update(fields).eq('id_expediente', pqExpedienteId);
+      if (error) { pqMsg('Error al actualizar: ' + error.message, true); return; }
+      pqMsg('Expediente actualizado con éxito.');
+    } else {
+      const { data, error } = await supabaseClient.from('expedientes_precalificacion').insert(fields).select('id_expediente').single();
+      if (error) { pqMsg('Error al guardar: ' + error.message, true); return; }
+      pqExpedienteId = data.id_expediente;
+      pqMsg('Expediente guardado con éxito. Ya puedes subir tus documentos en PDF.');
+      pqRefreshDocStatuses();
+    }
+  } catch (e) {
+    pqMsg('Error al guardar el expediente.', true);
+  }
+}
+async function pqDeleteExpediente() {
+  if (!pqExpedienteId) { pqMsg('No hay ningún expediente guardado todavía.', true); return; }
+  if (!confirm('¿Eliminar este expediente y todos sus documentos adjuntos? Esta acción no se puede deshacer.')) return;
+  try {
+    const { error } = await supabaseClient.from('expedientes_precalificacion').delete().eq('id_expediente', pqExpedienteId);
+    if (error) { pqMsg('Error al eliminar: ' + error.message, true); return; }
+    pqExpedienteId = null;
+    pqMsg('Expediente eliminado con éxito.');
+    pqResetStatuses(pqCurrentDocTypes());
+  } catch (e) {
+    pqMsg('Error al eliminar el expediente.', true);
+  }
+}
+function uploadPdfFile(file, idExpediente, tipoDocumento) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const path = idExpediente + '/' + tipoDocumento + '-' + Date.now() + '.pdf';
+      const { error } = await supabaseClient.storage.from(DOCS_BUCKET).upload(path, file, { contentType: 'application/pdf', upsert: true });
+      if (error) { reject(error); return; }
+      resolve(path);
+    } catch (err) { reject(err); }
+  });
+}
+async function pqRefreshDocStatuses() {
+  if (!pqExpedienteId) return;
+  try {
+    const { data, error } = await supabaseClient.from('documentos_expediente').select('tipo_documento, ruta_archivo_pdf').eq('id_expediente', pqExpedienteId);
+    if (error || !data) return;
+    data.forEach((row) => {
+      const st = $('#pqs-' + row.tipo_documento);
+      if (st) st.textContent = '✅ Subido';
+    });
+  } catch (e) {}
+}
+PQ_DOC_TYPES_ALL.forEach((doc) => {
+  const input = $('#pqf-' + doc);
+  if (!input) return;
+  input.addEventListener('change', async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    if (!pqExpedienteId) {
+      pqMsg('Primero guarda tus datos (botón "Guardar") antes de subir documentos.', true);
+      input.value = '';
+      return;
+    }
+    if (file.type !== 'application/pdf') {
+      pqMsg('Solo se permiten archivos PDF.', true);
+      input.value = '';
+      return;
+    }
+    const st = $('#pqs-' + doc);
+    if (st) st.textContent = 'Subiendo…';
+    try {
+      const path = await uploadPdfFile(file, pqExpedienteId, doc);
+      const { error } = await supabaseClient.from('documentos_expediente').upsert({
+        id_expediente: pqExpedienteId,
+        tipo_documento: doc,
+        ruta_archivo_pdf: path,
+        tamano_bytes: file.size
+      }, { onConflict: 'id_expediente,tipo_documento' });
+      if (error) { if (st) st.textContent = 'Error al guardar'; pqMsg('Error al guardar el documento: ' + error.message, true); return; }
+      if (st) st.textContent = '✅ Subido: ' + file.name;
+      pqMsg('Documento subido con éxito.');
+    } catch (err) {
+      if (st) st.textContent = 'Error al subir';
+      pqMsg('Error al subir el PDF.', true);
+    }
+  });
+});
+function pqBuildRequirementsSections() {
+  const blockId = pqTipo === 'juridica' ? '#pq-block-juridica' : '#pq-block-individual';
+  const block = $(blockId);
+  const sections = [];
+  let current = null;
+  Array.from(block.children).forEach((child) => {
+    if (child.classList && child.classList.contains('x-est-h')) {
+      current = { title: child.textContent.trim(), items: [] };
+      sections.push(current);
+    } else if (child.tagName === 'UL' && current) {
+      Array.from(child.querySelectorAll('.pq-item > span:first-child')).forEach((span) => {
+        current.items.push(span.textContent.trim());
+      });
+    }
+  });
+  return sections.filter((s) => s.items.length > 0);
+}
+function pqDownloadRequirementsPdf() {
+  if (!window.jspdf) { pqMsg('No se pudo generar el PDF. Recarga la página e inténtalo de nuevo.', true); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  const marginX = 15;
+  let y = 20;
+  const titulo = pqTipo === 'juridica'
+    ? 'Requisitos para precalificación bancaria — Persona Jurídica (Empresa)'
+    : 'Requisitos para precalificación bancaria — Persona Individual';
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(15);
+  const tituloLines = doc.splitTextToSize(titulo, 180);
+  doc.text(tituloLines, marginX, y);
+  y += tituloLines.length * 7 + 3;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(10);
+  doc.text('ARMOPA — Administración Inmobiliaria', marginX, y);
+  y += 10;
+
+  pqBuildRequirementsSections().forEach((sec) => {
+    if (y > 270) { doc.addPage(); y = 20; }
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(12);
+    doc.text(sec.title, marginX, y);
+    y += 7;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(10.5);
+    sec.items.forEach((item) => {
+      if (y > 275) { doc.addPage(); y = 20; }
+      const lines = doc.splitTextToSize('☐  ' + item, 175);
+      doc.text(lines, marginX, y);
+      y += lines.length * 6 + 2;
+    });
+    y += 4;
+  });
+
+  if (y > 280) { doc.addPage(); y = 20; }
+  const fecha = new Date().toLocaleDateString('es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
+  doc.setFontSize(9);
+  doc.setTextColor(120);
+  doc.text('Generado el ' + fecha + ' — Este listado es de carácter general y orientativo.', marginX, Math.max(y, 285));
+
+  const nombreArchivo = pqTipo === 'juridica' ? 'requisitos-precalificacion-empresa.pdf' : 'requisitos-precalificacion-individual.pdf';
+  doc.save(nombreArchivo);
+}
+const pqSaveBtn = $('#pqSave'), pqUpdateBtn = $('#pqUpdate'), pqDeleteBtn = $('#pqDelete'), pqDownloadBtn = $('#pqDownloadPdf');
+if (pqSaveBtn) pqSaveBtn.addEventListener('click', () => pqSaveOrUpdate(false));
+if (pqUpdateBtn) pqUpdateBtn.addEventListener('click', () => pqSaveOrUpdate(true));
+if (pqDeleteBtn) pqDeleteBtn.addEventListener('click', pqDeleteExpediente);
+if (pqDownloadBtn) pqDownloadBtn.addEventListener('click', pqDownloadRequirementsPdf);
+
+
 function toSupaRow(cityName, l) {
   return {
     local_id: l.id,

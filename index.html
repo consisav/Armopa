@@ -360,25 +360,192 @@
             <button class="btn btn-line-dark btn-sm" type="button" id="preqBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg><span>Datos para precalificar un préstamo</span></button>
             <div class="x-est" id="preqBox" hidden>
               <div class="x-est-top"><p class="x-est-h">Requisitos generales para precalificación bancaria en Guatemala</p><button class="x-est-x" type="button" id="preqHide">Ocultar</button></div>
-              <p class="hint" style="margin-top:0">Estos son los datos básicos que la mayoría de bancos en Guatemala solicitan como punto de partida. Los requisitos exactos varían según cada banco y el tipo de préstamo.</p>
-              <p class="x-est-h" style="margin-top:14px">Identidad</p>
-              <ul class="x-est-l">
-                <li>DPI (Documento Personal de Identificación) vigente</li>
-                <li>Número de NIT</li>
-              </ul>
-              <p class="x-est-h" style="margin-top:14px">Ingresos</p>
-              <ul class="x-est-l">
-                <li>Si eres asalariado: boletas o constancia de salario de los últimos 3 meses</li>
-                <li>Estados de cuenta bancarios recientes (usualmente los últimos 3 a 6 meses)</li>
-                <li>Si eres independiente: patente de comercio y declaraciones de ISR</li>
-              </ul>
-              <p class="x-est-h" style="margin-top:14px">Estabilidad laboral</p>
-              <ul class="x-est-l">
-                <li>Carta de trabajo que indique el tiempo laborado en la empresa</li>
-                <li>Antigüedad laboral (muchos bancos piden al menos 1 año en el empleo actual)</li>
-                <li>Historial crediticio favorable (consulta en buró de crédito)</li>
-              </ul>
+              <p class="hint" style="margin-top:0">Elige el tipo de solicitante, completa los datos, adjunta los documentos en PDF que ya tengas y guarda tu expediente. Puedes volver después a actualizarlo o completar los documentos que falten.</p>
+
+              <div class="fld" style="margin-top:14px">
+                <span class="lbl">Tipo de solicitante</span>
+                <div class="seg-g" id="pqTipoSeg">
+                  <button class="seg on" type="button" data-tipo="individual">Persona Individual</button>
+                  <button class="seg" type="button" data-tipo="juridica">Persona Jurídica (Empresa)</button>
+                </div>
+              </div>
+
+              <!-- ===== Persona Individual ===== -->
+              <div id="pq-block-individual">
+                <p class="x-est-h" style="margin-top:18px">Tus datos</p>
+                <div class="x-row">
+                  <div class="fld"><label for="pq-banco">Banco de preferencia</label>
+                  <select id="pq-banco">
+                    <option value="">Selecciona…</option>
+                    <option value="Crédito Hipotecario Nacional de Guatemala (CHN)">Crédito Hipotecario Nacional de Guatemala (CHN)</option>
+                    <option value="Banco de los Trabajadores (Bantrab)">Banco de los Trabajadores (Bantrab)</option>
+                    <option value="Banco Cuscatlán Guatemala">Banco Cuscatlán Guatemala</option>
+                    <option value="Banco Industrial">Banco Industrial</option>
+                    <option value="Banco de Desarrollo Rural (Banrural)">Banco de Desarrollo Rural (Banrural)</option>
+                    <option value="Banco Internacional">Banco Internacional</option>
+                    <option value="Citibank, N.A. Sucursal Guatemala">Citibank, N.A. Sucursal Guatemala</option>
+                    <option value="Vivibanco">Vivibanco</option>
+                    <option value="Banco Ficohsa Guatemala">Banco Ficohsa Guatemala</option>
+                    <option value="Banco Promerica">Banco Promerica</option>
+                    <option value="Banco de Antigua">Banco de Antigua</option>
+                    <option value="Banco de América Central (BAC)">Banco de América Central (BAC)</option>
+                    <option value="Banco Agromercantil de Guatemala (BAM)">Banco Agromercantil de Guatemala (BAM)</option>
+                    <option value="Banco G&amp;T Continental">Banco G&amp;T Continental</option>
+                    <option value="Banco Azteca de Guatemala">Banco Azteca de Guatemala</option>
+                    <option value="Banco INV">Banco INV</option>
+                    <option value="Banco Credicorp">Banco Credicorp</option>
+                    <option value="Banco Nexa">Banco Nexa</option>
+                    <option value="Banco Multimoney">Banco Multimoney</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+                  <div class="fld"><label for="pq-monto">Monto solicitado (Q)</label><input id="pq-monto" type="text" inputmode="decimal" placeholder="Ej. 250,000"></div>
+                </div>
+                <div class="x-row">
+                  <div class="fld"><label for="pq-destino">Destino del crédito</label>
+                    <select id="pq-destino">
+                      <option value="">Selecciona…</option>
+                      <option value="Vivienda">Vivienda</option>
+                      <option value="Vehículo">Vehículo</option>
+                      <option value="Consumo Personal">Consumo Personal</option>
+                    </select>
+                  </div>
+                  <div class="fld"><label for="pq-perfil">Tipo de perfil</label>
+                    <select id="pq-perfil">
+                      <option value="">Selecciona…</option>
+                      <option value="asalariado">Asalariado</option>
+                      <option value="independiente">Independiente</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="x-row">
+                  <div class="fld"><label for="pq-dpi">DPI (13 dígitos)</label><input id="pq-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
+                  <div class="fld"><label for="pq-nit">NIT</label><input id="pq-nit" type="text" placeholder="Ej. 1234567-8"></div>
+                </div>
+                <div class="x-row">
+                  <div class="fld"><label for="pq-tel">Teléfono celular</label><input id="pq-tel" type="tel" placeholder="+502 0000 0000"></div>
+                  <div class="fld"><label for="pq-correo">Correo electrónico</label><input id="pq-correo" type="email" placeholder="nombre@correo.com"></div>
+                </div>
+                <div class="x-row">
+                  <div class="fld"><label for="pq-escolaridad">Grado de escolaridad</label>
+                    <select id="pq-escolaridad">
+                      <option value="">Selecciona…</option>
+                      <option value="Sin estudios">Sin estudios</option>
+                      <option value="Primaria">Primaria</option>
+                      <option value="Básicos">Básicos</option>
+                      <option value="Diversificado">Diversificado</option>
+                      <option value="Técnico">Técnico</option>
+                      <option value="Universitario">Universitario</option>
+                      <option value="Postgrado">Postgrado (Maestría / Doctorado)</option>
+                      <option value="Otro">Otro</option>
+                    </select>
+                  </div>
+                  <div class="fld"><label for="pq-profesion">Profesión / Ocupación</label><input id="pq-profesion" type="text" placeholder="Ej. Maestro, comerciante, ingeniero…"></div>
+                </div>
+
+                <p class="x-est-h" style="margin-top:18px">Identidad</p>
+                <ul class="x-est-l">
+                  <li class="pq-item" data-doc="req-dpi"><span>DPI (Documento Personal de Identificación) vigente</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi">📎 Subir PDF</label><span class="pq-status" id="pqs-req-dpi">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-nit"><span>Número de NIT</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nit"><label class="btn btn-line-dark btn-sm" for="pqf-req-nit">📎 Subir PDF</label><span class="pq-status" id="pqs-req-nit">Sin guardar aún</span></span></li>
+                </ul>
+
+                <p class="x-est-h" style="margin-top:14px">Ingresos</p>
+                <ul class="x-est-l">
+                  <li class="pq-item" data-doc="req-boletas"><span>Si eres asalariado: boletas o constancia de salario de los últimos 3 meses</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-boletas"><label class="btn btn-line-dark btn-sm" for="pqf-req-boletas">📎 Subir PDF</label><span class="pq-status" id="pqs-req-boletas">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-estados-cuenta"><span>Estados de cuenta bancarios recientes (usualmente los últimos 3 a 6 meses)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-cuenta"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-cuenta">📎 Subir PDF</label><span class="pq-status" id="pqs-req-estados-cuenta">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-patente-isr"><span>Si eres independiente: patente de comercio y declaraciones de ISR</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-isr"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-isr">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-isr">Sin guardar aún</span></span></li>
+                </ul>
+
+                <p class="x-est-h" style="margin-top:14px">Estabilidad laboral</p>
+                <ul class="x-est-l">
+                  <li class="pq-item" data-doc="req-carta-trabajo"><span>Carta de trabajo que indique el tiempo laborado en la empresa</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-carta-trabajo"><label class="btn btn-line-dark btn-sm" for="pqf-req-carta-trabajo">📎 Subir PDF</label><span class="pq-status" id="pqs-req-carta-trabajo">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-antiguedad"><span>Antigüedad laboral (muchos bancos piden al menos 1 año en el empleo actual)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-antiguedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-antiguedad">📎 Subir PDF</label><span class="pq-status" id="pqs-req-antiguedad">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-historial"><span>Historial crediticio favorable (consulta en buró de crédito)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-historial"><label class="btn btn-line-dark btn-sm" for="pqf-req-historial">📎 Subir PDF</label><span class="pq-status" id="pqs-req-historial">Sin guardar aún</span></span></li>
+                </ul>
+              </div>
+
+              <!-- ===== Persona Jurídica (Empresa) ===== -->
+              <div id="pq-block-juridica" hidden>
+                <p class="x-est-h" style="margin-top:18px">Datos de la empresa</p>
+                <div class="x-row">
+                  <div class="fld"><label for="pqj-banco">Banco de preferencia</label>
+                  <select id="pqj-banco">
+                    <option value="">Selecciona…</option>
+                    <option value="Crédito Hipotecario Nacional de Guatemala (CHN)">Crédito Hipotecario Nacional de Guatemala (CHN)</option>
+                    <option value="Banco de los Trabajadores (Bantrab)">Banco de los Trabajadores (Bantrab)</option>
+                    <option value="Banco Cuscatlán Guatemala">Banco Cuscatlán Guatemala</option>
+                    <option value="Banco Industrial">Banco Industrial</option>
+                    <option value="Banco de Desarrollo Rural (Banrural)">Banco de Desarrollo Rural (Banrural)</option>
+                    <option value="Banco Internacional">Banco Internacional</option>
+                    <option value="Citibank, N.A. Sucursal Guatemala">Citibank, N.A. Sucursal Guatemala</option>
+                    <option value="Vivibanco">Vivibanco</option>
+                    <option value="Banco Ficohsa Guatemala">Banco Ficohsa Guatemala</option>
+                    <option value="Banco Promerica">Banco Promerica</option>
+                    <option value="Banco de Antigua">Banco de Antigua</option>
+                    <option value="Banco de América Central (BAC)">Banco de América Central (BAC)</option>
+                    <option value="Banco Agromercantil de Guatemala (BAM)">Banco Agromercantil de Guatemala (BAM)</option>
+                    <option value="Banco G&amp;T Continental">Banco G&amp;T Continental</option>
+                    <option value="Banco Azteca de Guatemala">Banco Azteca de Guatemala</option>
+                    <option value="Banco INV">Banco INV</option>
+                    <option value="Banco Credicorp">Banco Credicorp</option>
+                    <option value="Banco Nexa">Banco Nexa</option>
+                    <option value="Banco Multimoney">Banco Multimoney</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+                  <div class="fld"><label for="pqj-monto">Monto solicitado (Q)</label><input id="pqj-monto" type="text" inputmode="decimal" placeholder="Ej. 500,000"></div>
+                </div>
+                <div class="x-row">
+                  <div class="fld"><label for="pqj-destino">Destino del crédito</label>
+                    <select id="pqj-destino">
+                      <option value="">Selecciona…</option>
+                      <option value="Capital de trabajo">Capital de trabajo</option>
+                      <option value="Compra de equipo">Compra de equipo</option>
+                      <option value="Expansión del negocio">Expansión del negocio</option>
+                      <option value="Vivienda">Vivienda</option>
+                      <option value="Vehículo">Vehículo</option>
+                    </select>
+                  </div>
+                  <div class="fld"><label for="pqj-razon">Razón social / Nombre de la empresa</label><input id="pqj-razon" type="text" placeholder="Ej. Inversiones ABC, S.A."></div>
+                </div>
+                <div class="x-row">
+                  <div class="fld"><label for="pqj-nit">NIT de la empresa</label><input id="pqj-nit" type="text" placeholder="Ej. 1234567-8"></div>
+                  <div class="fld"><label for="pqj-rep-nombre">Nombre del representante legal</label><input id="pqj-rep-nombre" type="text" placeholder="Nombre completo"></div>
+                </div>
+                <div class="x-row">
+                  <div class="fld"><label for="pqj-rep-dpi">DPI del representante legal (13 dígitos)</label><input id="pqj-rep-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
+                  <div class="fld"><label for="pqj-tel">Teléfono celular</label><input id="pqj-tel" type="tel" placeholder="+502 0000 0000"></div>
+                </div>
+                <div class="x-row">
+                  <div class="fld"><label for="pqj-correo">Correo electrónico</label><input id="pqj-correo" type="email" placeholder="nombre@empresa.com"></div>
+                </div>
+
+                <p class="x-est-h" style="margin-top:18px">Documentos legales de la empresa</p>
+                <ul class="x-est-l">
+                  <li class="pq-item" data-doc="req-patente-comercio-empresa"><span>Patente de Comercio de Empresa</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-empresa"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-empresa">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-comercio-empresa">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-patente-sociedad"><span>Patente de Comercio de Sociedad (si aplica)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-sociedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-sociedad">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-sociedad">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-escritura-constitucion"><span>Escritura de Constitución de la Sociedad</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-escritura-constitucion"><label class="btn btn-line-dark btn-sm" for="pqf-req-escritura-constitucion">📎 Subir PDF</label><span class="pq-status" id="pqs-req-escritura-constitucion">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-rtu"><span>RTU (Registro Tributario Unificado) de la empresa</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-rtu"><label class="btn btn-line-dark btn-sm" for="pqf-req-rtu">📎 Subir PDF</label><span class="pq-status" id="pqs-req-rtu">Sin guardar aún</span></span></li>
+                </ul>
+
+                <p class="x-est-h" style="margin-top:14px">Representante legal y finanzas</p>
+                <ul class="x-est-l">
+                  <li class="pq-item" data-doc="req-dpi-representante"><span>DPI del Representante Legal vigente</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi-representante">📎 Subir PDF</label><span class="pq-status" id="pqs-req-dpi-representante">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-nombramiento-representante"><span>Nombramiento del Representante Legal (vigente)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nombramiento-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-nombramiento-representante">📎 Subir PDF</label><span class="pq-status" id="pqs-req-nombramiento-representante">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-patente-comercio-sociedad-rep"><span>Patente de Comercio y Sociedad</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-sociedad-rep"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-sociedad-rep">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-comercio-sociedad-rep">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-estados-financieros"><span>Estados Financieros de la empresa (último periodo)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-financieros"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-financieros">📎 Subir PDF</label><span class="pq-status" id="pqs-req-estados-financieros">Sin guardar aún</span></span></li>
+                </ul>
+              </div>
+
               <p class="hint" style="margin-top:14px">Esta información es de carácter general y orientativo; no sustituye la evaluación oficial de cada banco. Con gusto te ayudamos a reunir y organizar estos documentos.</p>
+
+              <div class="acts" style="margin-top:16px">
+                <button class="btn btn-dark" type="button" id="pqSave">💾 Guardar</button>
+                <button class="btn btn-line-dark" type="button" id="pqUpdate">🔄 Actualizar</button>
+                <button class="btn btn-danger" type="button" id="pqDelete">🗑️ Eliminar</button>
+                <button class="btn btn-line-dark" type="button" id="pqDownloadPdf" style="margin-left:auto;gap:10px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg><span>Descargar documentos en PDF</span></button>
+              </div>
+              <p class="hint" id="pqMsg" style="margin-top:8px"></p>
             </div>
             <div class="x-row" style="margin-top:16px">
               <div class="fld"><label for="xt-6" data-i18n="xTime"></label><input id="xt-6" type="text" data-i18n-ph="xTimePh"></div>
@@ -647,6 +814,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
 <script src="script.js?v=20260923-0008"></script>
 </body>
