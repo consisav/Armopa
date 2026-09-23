@@ -357,7 +357,30 @@
           <button class="ex-i" type="button" aria-expanded="false" data-xbtn="6"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10l9-6 9 6"></path><path d="M4 10h16"></path><path d="M6 10v8M10 10v8M14 10v8M18 10v8"></path><path d="M3 20h18"></path></svg></span><span class="ex-t" data-ext="6"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
           <div class="ex-p" hidden>
             <div class="fld"><label for="xn-6" data-i18n="xNeed"></label><textarea id="xn-6" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
-            <div class="x-row">
+            <button class="btn btn-line-dark btn-sm" type="button" id="preqBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg><span>Datos para precalificar un préstamo</span></button>
+            <div class="x-est" id="preqBox" hidden>
+              <div class="x-est-top"><p class="x-est-h">Requisitos generales para precalificación bancaria en Guatemala</p><button class="x-est-x" type="button" id="preqHide">Ocultar</button></div>
+              <p class="hint" style="margin-top:0">Estos son los datos básicos que la mayoría de bancos en Guatemala solicitan como punto de partida. Los requisitos exactos varían según cada banco y el tipo de préstamo.</p>
+              <p class="x-est-h" style="margin-top:14px">Identidad</p>
+              <ul class="x-est-l">
+                <li>DPI (Documento Personal de Identificación) vigente</li>
+                <li>Número de NIT</li>
+              </ul>
+              <p class="x-est-h" style="margin-top:14px">Ingresos</p>
+              <ul class="x-est-l">
+                <li>Si eres asalariado: boletas o constancia de salario de los últimos 3 meses</li>
+                <li>Estados de cuenta bancarios recientes (usualmente los últimos 3 a 6 meses)</li>
+                <li>Si eres independiente: patente de comercio y declaraciones de ISR</li>
+              </ul>
+              <p class="x-est-h" style="margin-top:14px">Estabilidad laboral</p>
+              <ul class="x-est-l">
+                <li>Carta de trabajo que indique el tiempo laborado en la empresa</li>
+                <li>Antigüedad laboral (muchos bancos piden al menos 1 año en el empleo actual)</li>
+                <li>Historial crediticio favorable (consulta en buró de crédito)</li>
+              </ul>
+              <p class="hint" style="margin-top:14px">Esta información es de carácter general y orientativo; no sustituye la evaluación oficial de cada banco. Con gusto te ayudamos a reunir y organizar estos documentos.</p>
+            </div>
+            <div class="x-row" style="margin-top:16px">
               <div class="fld"><label for="xt-6" data-i18n="xTime"></label><input id="xt-6" type="text" data-i18n-ph="xTimePh"></div>
               <div class="fld"><label for="xs-6" data-i18n="xStart"></label><input id="xs-6" class="xs" type="date"></div>
             </div>

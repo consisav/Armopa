@@ -1,10 +1,11 @@
 ARMOPA — Archivos actualizados (version mas reciente)
 ========================================================
 
-Este ZIP contiene SOLO estos 3 archivos, con TODOS los cambios hechos en esta conversacion:
+Este ZIP contiene:
 - index.html
 - script.js
 - styles.css
+- precalificacion.sql  (script SQL para Supabase, tablas de precalificacion bancaria)
 
 NO incluye (porque nunca se compartieron en este chat, y deben mantenerse tal cual ya estan en tu repositorio):
 - carpeta assets/ (logo, fotos)
@@ -12,16 +13,21 @@ NO incluye (porque nunca se compartieron en este chat, y deben mantenerse tal cu
 - README.txt
 - Logo_ARMOPA_Oficial.png
 
-COMO USARLO:
-1. Copia estos 3 archivos dentro de tu carpeta D:\PAGINAS WEB\Armopa\Armopa-repo,
-   reemplazando los que ya existen ahi.
-2. NO borres ni toques la carpeta assets/ ni supabase-config.js que ya tienes.
+COMO USAR LOS 3 ARCHIVOS DEL SITIO (index.html, script.js, styles.css):
+1. Copialos dentro de D:\PAGINAS WEB\Armopa\Armopa-repo, reemplazando los existentes.
+2. NO borres assets/ ni supabase-config.js.
 3. En VS Code, confirma con git status que aparecen como "modified".
 4. Sube los cambios:
    git pull   (si pide "fetch first" antes del push)
    git add .
    git commit -m "Actualizacion completa del sitio"
    git push
+
+COMO USAR precalificacion.sql:
+Copia y pega su contenido completo en el SQL Editor de Supabase y ejecutalo.
+Crea las tablas expedientes_precalificacion y documentos_expediente, ya corregidas
+para PostgreSQL (no para MySQL). Recuerda configurar las politicas de RLS
+(Row Level Security) para esas tablas antes de insertar datos desde el sitio publico.
 
 RESUMEN DE TODOS LOS CAMBIOS INCLUIDOS EN ESTA VERSION:
 
@@ -49,6 +55,14 @@ Diseno y contenido:
   (opcional, se incluye en el mensaje de WhatsApp/correo si se llena)
 - "Prestamos con CHN" / "Orientacion para prestamos con CHN" cambiado a
   "Gestion de Prestamos Bancarios" (español e ingles)
+- Nuevo bloque "Datos para precalificar un prestamo" dentro de la tarjeta
+  "Gestion de Prestamos Bancarios": requisitos de identidad, ingresos y
+  estabilidad laboral para precalificacion bancaria en Guatemala
+
+Base de datos:
+- precalificacion.sql: tablas expedientes_precalificacion y documentos_expediente,
+  corregidas de MySQL a PostgreSQL (SERIAL, CHECK en vez de ENUM, trigger para
+  fecha_actualizacion, sintaxis correcta de UNIQUE)
 
 Tecnico:
 - Version de cache de script.js actualizada para forzar que el navegador cargue

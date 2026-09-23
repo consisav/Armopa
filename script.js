@@ -1001,6 +1001,14 @@ function shrink(file, max) {
 
 $('#addCityBtn').addEventListener('click', () => openProp());
 
+/* Datos para precalificar un préstamo (Gestión de Préstamos Bancarios) */
+(function () {
+  const btn = $('#preqBtn'), box = $('#preqBox'), hide = $('#preqHide');
+  if (!btn || !box || !hide) return;
+  btn.addEventListener('click', () => { box.hidden = !box.hidden; });
+  hide.addEventListener('click', () => { box.hidden = true; });
+})();
+
 /* Menú rápido: buscar propiedades por Ciudad, Zona y Área */
 const catalogBtn = $('#catalogBtn');
 const cityQuickMenu = $('#cityQuickMenu');
