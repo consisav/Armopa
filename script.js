@@ -1486,12 +1486,6 @@ function xEst(i) {
   as.hidden = !e.assumed;
   box.querySelector('.x-estnote').textContent = e.notes;
 }
-function xQuoteStatus(i) {
-  const d = xget(i);
-  const st = $('#xqs-' + i);
-  if (!st) return;
-  st.textContent = d.cotPdf ? '✅ ' + (d.cotName || 'Adjuntado') : T[lang].xQuoteNone;
-}
 function xRender(i) {
   const c = $$('.ex-c')[i];
   const open = xo === i;
@@ -1506,22 +1500,10 @@ function xRender(i) {
     $('#xn-' + i).value = d.need || '';
     $('#xt-' + i).value = d.time || '';
     $('#xs-' + i).value = d.start || '';
-    $('#xqd-' + i).value = d.cotDate || '';
     c.querySelectorAll('.seg').forEach((b) => { const on = (d.prio || '') === b.dataset.prio; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
     xImgs(i);
     xEst(i);
-    xQuoteStatus(i);
   }
-}
-function uploadQuotePdf(file, i) {
-  return new Promise(async (resolve, reject) => {
-    try {
-      const path = 'svc-' + i + '/' + Date.now() + '.pdf';
-      const { error } = await supabaseClient.storage.from(QUOTES_BUCKET).upload(path, file, { contentType: 'application/pdf', upsert: true });
-      if (error) { reject(error); return; }
-      resolve(path);
-    } catch (err) { reject(err); }
-  });
 }
 $$('.ex-c').forEach((c, i) => {
   c.querySelector('.ex-i').addEventListener('click', () => {
@@ -1533,26 +1515,6 @@ $$('.ex-c').forEach((c, i) => {
   $('#xa-' + i).addEventListener('input', (e) => { xget(i).addr = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); refreshQuoteSummary(); });
   $('#xn-' + i).addEventListener('input', (e) => { xget(i).need = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); refreshQuoteSummary(); });
   $('#xt-' + i).addEventListener('input', (e) => { xget(i).time = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); refreshQuoteSummary(); });
-  $('#xq-' + i).addEventListener('change', async (e) => {
-    const file = e.target.files && e.target.files[0];
-    e.target.value = '';
-    if (!file) return;
-    if (file.type !== 'application/pdf') { note('Solo se permiten archivos PDF.'); return; }
-    const st = $('#xqs-' + i);
-    if (st) st.textContent = 'Subiendo…';
-    try {
-      const path = await uploadQuotePdf(file, i);
-      const d = xget(i);
-      d.cotPdf = path;
-      d.cotName = file.name;
-      xsave();
-      xQuoteStatus(i);
-      c.querySelector('.ex-dot').hidden = !xfilled(i);
-      refreshQuoteSummary();
-    } catch (err) {
-      if (st) st.textContent = 'Error al subir el PDF';
-    }
-  });
   c.querySelectorAll('.seg').forEach((b) => b.addEventListener('click', () => {
     const d = xget(i);
     d.prio = d.prio === b.dataset.prio ? '' : b.dataset.prio;
@@ -1563,7 +1525,6 @@ $$('.ex-c').forEach((c, i) => {
   c.querySelector('.x-estbtn').addEventListener('click', () => { const d = xget(i); d.estIn = { need: d.need || '', time: d.time || '', prio: d.prio || '' }; xEst(i); });
   c.querySelector('.x-est-x').addEventListener('click', () => { xget(i).estIn = null; xEst(i); });
   $('#xs-' + i).addEventListener('input', (e) => { xget(i).start = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); refreshQuoteSummary(); });
-  $('#xqd-' + i).addEventListener('input', (e) => { xget(i).cotDate = e.target.value; xsave(); c.querySelector('.ex-dot').hidden = !xfilled(i); refreshQuoteSummary(); });
   $('#xqGoto-' + i).addEventListener('click', () => {
     const dest = document.getElementById('quote');
     if (dest) dest.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1609,6 +1570,26 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
   $('#q-date').min = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const MAIL_TO = 'servicios@armopa.com'; // correo de la página
   const btn = $('#qBtn'), mail = $('#qMail');
+  let qCotPdfPath = '';
+  const qCotFileEl = $('#qCotFile'), qCotStatusEl = $('#qCotStatus');
+  if (qCotFileEl) {
+    qCotFileEl.addEventListener('change', async () => {
+      const file = qCotFileEl.files && qCotFileEl.files[0];
+      qCotFileEl.value = '';
+      if (!file) return;
+      if (file.type !== 'application/pdf') { if (qCotStatusEl) qCotStatusEl.textContent = 'Solo se permiten archivos PDF.'; return; }
+      if (qCotStatusEl) qCotStatusEl.textContent = 'Subiendo…';
+      try {
+        const path = 'general/' + Date.now() + '.pdf';
+        const { error } = await supabaseClient.storage.from(QUOTES_BUCKET).upload(path, file, { contentType: 'application/pdf', upsert: true });
+        if (error) { if (qCotStatusEl) qCotStatusEl.textContent = 'Error al subir el PDF'; return; }
+        qCotPdfPath = path;
+        if (qCotStatusEl) qCotStatusEl.textContent = '✅ ' + file.name;
+      } catch (err) {
+        if (qCotStatusEl) qCotStatusEl.textContent = 'Error al subir el PDF';
+      }
+    });
+  }
   function saveServiceRequestsSupabase(t, contact) {
     const rows = [];
     t.ext.forEach((name, i) => {
@@ -1645,6 +1626,8 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
       direccion_general: addr || null,
       presupuesto_asignado: budget || null,
       tipo_servicio_resumen: names.length ? names.join(', ') : null,
+      fecha_cotizacion_general: ($('#qCotDate') && $('#qCotDate').value) || null,
+      cotizacion_pdf_general: qCotPdfPath || null,
       enviada: true
     };
     if (currentCotizacionId) {
