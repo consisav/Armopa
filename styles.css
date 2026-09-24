@@ -132,7 +132,7 @@ section[id]{scroll-margin-top:148px}
 .ex-p .fld textarea{min-height:104px}
 .up2{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
 .up-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;width:100%}
-.up-row .x-estbtn{margin-left:auto;gap:10px}
+.up-row .x-estbtn{gap:10px}
 .up-row .x-estbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .x-prev{display:flex;flex-direction:column;gap:10px}
 .x-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}

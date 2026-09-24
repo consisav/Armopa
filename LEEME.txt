@@ -5,15 +5,7 @@ Este ZIP contiene:
 - index.html
 - script.js
 - styles.css
-- carpeta sql/ con 8 archivos, EN ORDEN NUMERICO DE EJECUCION:
-  1. precalificacion.sql
-  2. migracion_persona_juridica.sql
-  3. migracion_escolaridad.sql
-  4. migracion_sector_zona.sql
-  5. solicitudes_servicio.sql
-  6. migracion_fecha_cotizacion.sql
-  7. migracion_cotizaciones.sql
-  8. migracion_cotizacion_campos.sql
+- carpeta sql/ con 9 archivos, numerados EN ORDEN DE EJECUCION (1 a 9)
 
 NO incluye (porque nunca se compartieron en este chat, y deben mantenerse tal cual ya estan en tu repositorio):
 - carpeta assets/ (logo, fotos)
@@ -32,16 +24,16 @@ COMO USAR LOS 3 ARCHIVOS DEL SITIO (index.html, script.js, styles.css):
    git push
 
 COMO USAR LOS ARCHIVOS .sql:
-Copia y pega el contenido de cada uno, EN EL ORDEN NUMERADO ARRIBA, en el
-SQL Editor de Supabase. Si algun archivo ya lo habias corrido antes, Supabase
-puede marcar "already exists" en tablas/columnas ya creadas — eso es normal,
-simplemente pasa al siguiente archivo.
+Copia y pega el contenido de cada uno, EN EL ORDEN NUMERADO (1, 2, 3... 9), en
+el SQL Editor de Supabase. Si algun archivo ya lo habias corrido antes, Supabase
+puede marcar "already exists" en tablas/columnas ya creadas — es normal, solo
+pasa al siguiente.
 
 Recuerda tambien configurar en Supabase (fuera de estos scripts SQL):
-- Bucket de Storage "expedientes" (PRIVADO) — para documentos de precalificacion bancaria
-- Bucket de Storage "cotizaciones" (PRIVADO) — para PDFs de cotizacion adjuntos
-- Politicas de RLS (Row Level Security) para el rol anon en todas las tablas
-  nuevas: expedientes_precalificacion, documentos_expediente, propiedades,
+- Bucket de Storage "expedientes" (PRIVADO) — documentos de precalificacion bancaria
+- Bucket de Storage "cotizaciones" (PRIVADO) — PDFs de cotizacion adjuntos
+- Politicas de RLS (Row Level Security) para el rol anon en las tablas:
+  expedientes_precalificacion, documentos_expediente, propiedades,
   solicitudes_servicio, cotizaciones — y en ambos buckets de Storage.
 
 RESUMEN DE TODOS LOS CAMBIOS INCLUIDOS EN ESTA VERSION:
@@ -72,19 +64,21 @@ Precalificacion bancaria (Gestion de Prestamos Bancarios):
 
 Especialistas para cada necesidad (las 8 tarjetas de servicio):
 - Direccion del lugar, y "Describe tu necesidad" a todo el ancho
-- Adjuntar cotizacion (PDF), Fecha de la cotizacion y boton
-  "Ir a Solicitar cotizacion" (lleva al bloque real del formulario)
-- Layout de 3 columnas para esos tres elementos
+- Subir imagenes / Calcular Presupuesto Estimado / Ir a Solicitar cotizacion,
+  en una sola fila (el boton de presupuesto centrado)
+- "Adjuntar cotizacion (PDF)" ya NO esta aqui; vive unicamente en el bloque
+  principal "Solicitar cotizacion"
 
 Solicitar cotizacion (formulario principal):
 - Texto introductorio en una sola linea
+- Bloque propio de Fecha de la cotizacion / Subir cotizacion PDF (2 columnas)
 - Resumen: Tipo de servicio, No. de cotizacion (correlativo real desde
   Supabase, no editable), Fecha de cotizacion — alineados a la izquierda
 - Botones WhatsApp / Enviar por correo: SOLO abren el mensaje, ya NO guardan
   nada en la base de datos
-- Botones nuevos Guardar / Modificar / Eliminar: son el UNICO lugar donde
-  se guarda, actualiza o borra la cotizacion completa en Supabase
-  (tablas cotizaciones y solicitudes_servicio)
+- Botones Guardar / Modificar / Eliminar: unico lugar donde se guarda,
+  actualiza o borra la cotizacion completa en Supabase (tablas cotizaciones
+  y solicitudes_servicio)
 
 Tecnico:
 - Version de cache de script.js actualizada para forzar la ultima version
