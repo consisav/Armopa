@@ -101,16 +101,17 @@
     <div class="wrap">
       <div class="sec-h sec-h-tight">
         <h2 data-i18n="propH"></h2>
-        <div class="city-quick-wrap">
-          <button type="button" class="lnk" id="catalogBtn" data-i18n="catalog"></button>
-          <div class="city-quick-menu" id="cityQuickMenu" hidden></div>
-        </div>
-<button class="btn btn-dark" type="button" id="addCityBtn" style="margin-left:12px">+ Agregar ciudad</button>
       </div>
-      <div class="car" id="car" style="--i:0">
-        <button class="arr" type="button" id="prev" data-i18n-label="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
-     <div class="car-vp"><div class="car-track" id="carTrack"></div></div>
-        <button class="arr" type="button" id="next" data-i18n-label="next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+      <div class="cq-bar" id="cityQuickMenu"></div>
+      <div class="car-row">
+        <div class="car" id="car" style="--i:0">
+          <button class="arr" type="button" id="prev" data-i18n-label="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+          <div class="car-vp"><div class="car-track" id="carTrack"></div></div>
+          <button class="arr" type="button" id="next" data-i18n-label="next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+        </div>
+      </div>
+      <div class="add-city-row">
+        <button class="btn btn-dark" type="button" id="addCityBtn">+ Agregar ciudad</button>
       </div>
       <div class="dots" id="dots"></div>
     </div>
@@ -752,71 +753,106 @@
     <div class="ed" id="pEdit">
       <div class="ll" id="pList"></div>
       <div class="ee">
-        <div id="pEmpty" hidden><h3 data-i18n="emptyH"></h3><p class="hint" data-i18n="emptyP"></p></div>
-        <div id="pForm" hidden>
-          <div class="fld"><span class="lbl" data-i18n="opL"></span>
-            <div class="seg-g" id="pOps">
-              <button class="seg" type="button" data-op="renta" data-i18n="opRent"></button>
-              <button class="seg" type="button" data-op="venta" data-i18n="opSale"></button>
-              <button class="seg" type="button" data-op="ambos" data-i18n="opBoth"></button>
-            </div>
-          </div>
-          <div class="fld" style="margin-top:16px"><label for="p-name" data-i18n="nameL"></label><input id="p-name" type="text"></div>
-          <div class="fld" style="margin-top:16px"><label for="p-desc" data-i18n="descL"></label><textarea id="p-desc" rows="5" data-i18n-ph="descPh"></textarea></div>
-          <p class="hint" id="opHint" data-i18n="opHint" style="margin-top:12px" hidden></p>
-          <div class="pr-row" id="pPrices" style="margin-top:16px" hidden>
-            <div class="fld" id="fRent"><label for="p-rent" data-i18n="rentL"></label><input id="p-rent" type="text" data-i18n-ph="rentPh"></div>
-            <div class="fld" id="fSale"><label for="p-sale" data-i18n="saleL"></label><input id="p-sale" type="text" data-i18n-ph="salePh"></div>
-          </div>
-          <div class="x-row" style="margin-top:16px">
-            <div class="fld"><label for="p-sector">Sector</label><input id="p-sector" type="text" placeholder="Ej. Cayalá, Vista Hermosa…"></div>
-            <div class="fld"><label for="p-zona">Zona</label><input id="p-zona" type="text" placeholder="Ej. Zona 10, Zona 4…"></div>
-          </div>
-          <div class="fld" style="margin-top:16px"><label for="p-addr" data-i18n="addrL"></label><input id="p-addr" type="text"></div>
-          <div class="up" style="margin-top:20px">
+
+        <div id="pLocPanel" hidden>
+          <div class="loc-tabs-wrap"><div class="loc-tabs" id="pLocTabs"></div></div>
+
+          <div id="pEmpty" hidden><h3 data-i18n="emptyH"></h3><p class="hint" data-i18n="emptyP"></p></div>
+
+          <div id="pPhotosTop" hidden>
             <h3 data-i18n="photosH"></h3>
-            <div class="acts">
-              <button class="btn btn-gold" type="button" id="pView" data-i18n="view"></button>
-              <input id="p-files" class="sr" type="file" accept="image/*" multiple>
-              <label class="btn btn-gold" for="p-files" data-i18n="upload"></label>
-              <button class="btn btn-dark mk-btn" type="button" id="pMkBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V6M16 20v-8"></path><path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8z"></path></svg><span data-i18n="mkBtn"></span></button>
+            <div class="loc-hero-wrap" id="pHeroWrap" hidden>
+              <button class="loc-hero" type="button" id="pHeroBtn" aria-label="Ver todas las fotos">
+                <img id="pHeroImg" src="" alt="">
+                <span class="loc-hero-count" id="pHeroCount"></span>
+              </button>
+              <button class="arr loc-hero-arr loc-hero-arr-l" type="button" id="pHeroPrev" aria-label="Foto anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+              <button class="arr loc-hero-arr loc-hero-arr-r" type="button" id="pHeroNext" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
             </div>
-            <p class="hint" data-i18n="uploadHint"></p>
+            <p class="hint" id="pHeroEmpty" hidden>Todavía no hay fotos de esta ubicación.</p>
           </div>
-          <div class="x-est mk-card" id="pMk" hidden>
-            <div class="x-est-top"><p class="x-est-h" data-i18n="mkTitle"></p><button class="x-est-x" type="button" id="pMkHide" data-i18n="mkHide"></button></div>
-            <div id="pMkBlocks"></div>
-            <ul class="x-est-l" id="pMkLines"></ul>
-            <p class="x-est-h" id="pMkSimH" data-i18n="mkSimilar"></p>
-            <ul class="x-est-l" id="pMkSim"></ul>
-            <p class="x-est-h" id="pMkAroH" data-i18n="mkAround"></p>
-            <ul class="x-est-l" id="pMkAro"></ul>
-            <p class="assum" id="pMkConf"></p>
-            <div class="acts" id="pMkUseRow"><button class="btn btn-gold btn-sm" type="button" id="pMkUse" data-i18n="mkUse"></button></div>
-            <p class="hint" id="pMkNotes"></p>
-          </div>
-          <div class="tg" id="pGrid" style="margin-top:16px"></div>
-          <div class="seller" style="margin-top:20px">
-            <h3 data-i18n="sellerH"></h3>
-            <div class="srow">
-              <button class="av-btn" type="button" id="sAvBtn" data-i18n-label="zoom" hidden><img class="avatar" id="sAvatar" alt=""></button>
-              <div class="avatar ph" id="sAvatarPh"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg></div>
-              <div class="acts">
-                <input id="p-sphoto" class="sr" type="file" accept="image/*">
-                <label class="btn btn-gold btn-sm" for="p-sphoto" data-i18n="sellerUp"></label>
-                <button class="btn btn-danger btn-sm" type="button" id="sRm" data-i18n="sellerRm" hidden></button>
+
+          <button class="desc-toggle" type="button" id="pDescToggle" aria-expanded="true" hidden>
+            <span class="desc-toggle-main">
+              <span class="desc-toggle-value" id="pDescValue" hidden></span>
+              <span class="desc-toggle-label">Descripción Propiedad</span>
+              <span class="desc-toggle-summary" id="pDescSummary" hidden></span>
+            </span>
+            <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </button>
+
+          <div id="pForm" hidden>
+            <div class="x-row">
+              <div class="fld"><label for="p-tipo">Tipo de propiedad</label><input id="p-tipo" type="text" list="pTipoList" placeholder="Ej. Casa, Local comercial, Finca cafetalera…"><datalist id="pTipoList"></datalist></div>
+              <div class="fld"><span class="lbl" data-i18n="opL"></span>
+                <div class="seg-g" id="pOps">
+                  <button class="seg" type="button" data-op="renta" data-i18n="opRent"></button>
+                  <button class="seg" type="button" data-op="venta" data-i18n="opSale"></button>
+                  <button class="seg" type="button" data-op="ambos" data-i18n="opBoth"></button>
+                </div>
               </div>
             </div>
-            <div class="fld"><label for="p-sname" data-i18n="sellerName"></label><input id="p-sname" type="text"></div>
-            <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"><p class="hint" data-i18n="waHint"></p></div>
-          </div>
-          <div class="acts" style="margin-top:20px">
-            <button class="btn btn-dark" type="button" id="pSaveTop">💾 Guardar</button>
-            <button class="btn btn-line-dark" type="button" id="pUpdateTop">🔄 Actualizar</button>
-            <a class="btn btn-line-dark" id="pMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
-            <button class="btn btn-danger" type="button" id="pDel"></button>
+            <div class="fld" style="margin-top:16px"><label for="p-name" data-i18n="nameL"></label><input id="p-name" type="text"></div>
+            <div class="fld" style="margin-top:16px"><label for="p-desc" data-i18n="descL"></label><textarea id="p-desc" rows="5" data-i18n-ph="descPh"></textarea></div>
+            <p class="hint" id="opHint" data-i18n="opHint" style="margin-top:12px" hidden></p>
+            <div class="pr-row" id="pPrices" style="margin-top:16px" hidden>
+              <div class="fld" id="fRent"><label for="p-rent" data-i18n="rentL"></label><input id="p-rent" type="text" data-i18n-ph="rentPh"></div>
+              <div class="fld" id="fSale"><label for="p-sale" data-i18n="saleL"></label><input id="p-sale" type="text" data-i18n-ph="salePh"></div>
+            </div>
+            <div class="x-row" style="margin-top:16px">
+              <div class="fld"><label for="p-sector">Sector</label><input id="p-sector" type="text" list="pSectorList" placeholder="Ej. Cayalá, Vista Hermosa…"><datalist id="pSectorList"></datalist></div>
+              <div class="fld"><label for="p-zona">Zona</label><input id="p-zona" type="text" list="pZonaList" placeholder="Ej. Zona 10, Zona 4…"><datalist id="pZonaList"></datalist></div>
+            </div>
+            <div class="fld" style="margin-top:16px"><label for="p-addr" data-i18n="addrL"></label><input id="p-addr" type="text"></div>
+            <div class="up" style="margin-top:20px">
+              <div class="acts">
+                <button class="btn btn-dark mk-btn" type="button" id="pMkBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V6M16 20v-8"></path><path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8z"></path></svg><span data-i18n="mkBtn"></span></button>
+                <button class="btn btn-gold" type="button" id="pView" data-i18n="view"></button>
+                <input id="p-files" class="sr" type="file" accept="image/*" multiple>
+                <label class="btn btn-gold" for="p-files" data-i18n="upload"></label>
+              </div>
+              <p class="hint" data-i18n="uploadHint"></p>
+              <button class="grid-toggle" type="button" id="pGridToggle" aria-expanded="false" hidden>
+                <span id="pGridToggleLabel"></span>
+                <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+              <div class="tg" id="pGrid" style="margin-top:16px" hidden></div>
+            </div>
+            <div class="x-est mk-card" id="pMk" hidden>
+              <div class="x-est-top"><p class="x-est-h" data-i18n="mkTitle"></p><button class="x-est-x" type="button" id="pMkHide" data-i18n="mkHide"></button></div>
+              <div id="pMkBlocks"></div>
+              <ul class="x-est-l" id="pMkLines"></ul>
+              <p class="x-est-h" id="pMkSimH" data-i18n="mkSimilar"></p>
+              <ul class="x-est-l" id="pMkSim"></ul>
+              <p class="x-est-h" id="pMkAroH" data-i18n="mkAround"></p>
+              <ul class="x-est-l" id="pMkAro"></ul>
+              <p class="assum" id="pMkConf"></p>
+              <div class="acts" id="pMkUseRow"><button class="btn btn-gold btn-sm" type="button" id="pMkUse" data-i18n="mkUse"></button></div>
+              <p class="hint" id="pMkNotes"></p>
+            </div>
+            <div class="seller" style="margin-top:20px">
+              <h3 data-i18n="sellerH"></h3>
+              <div class="srow">
+                <button class="av-btn" type="button" id="sAvBtn" data-i18n-label="zoom" hidden><img class="avatar" id="sAvatar" alt=""></button>
+                <div class="avatar ph" id="sAvatarPh"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg></div>
+                <div class="acts">
+                  <input id="p-sphoto" class="sr" type="file" accept="image/*">
+                  <label class="btn btn-gold btn-sm" for="p-sphoto" data-i18n="sellerUp"></label>
+                  <button class="btn btn-danger btn-sm" type="button" id="sRm" data-i18n="sellerRm" hidden></button>
+                </div>
+              </div>
+              <div class="fld"><label for="p-sname" data-i18n="sellerName"></label><input id="p-sname" type="text"></div>
+              <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"><p class="hint" data-i18n="waHint"></p></div>
+            </div>
+            <div class="acts" style="margin-top:20px">
+              <button class="btn btn-dark" type="button" id="pSaveTop">💾 Guardar</button>
+              <button class="btn btn-line-dark" type="button" id="pUpdateTop">🔄 Actualizar</button>
+              <a class="btn btn-line-dark" id="pMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
+              <button class="btn btn-danger" type="button" id="pDel"></button>
+            </div>
           </div>
         </div>
+
         <p class="note" id="pMsg" hidden></p>
         <p class="hint" data-i18n="storeNote"></p>
       </div>

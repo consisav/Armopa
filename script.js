@@ -406,15 +406,15 @@ function update() {
 }
 let cityCovers = {};
 function openCity(name) {
-  cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null;
-  sel = (data[name] || []).length ? 0 : -1; vi = 0;
+  cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null; descOpen = true;
+  sel = (data[name] || []).length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false;
   note('');
   render();
   pModal.hidden = false;
 }
 function openLocationDirect(name, locIndex) {
-  cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null;
-  sel = locIndex; vi = 0;
+  cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null; descOpen = true;
+  sel = locIndex; vi = 0; heroIdx = 0; gridOpen = false;
   note('');
   render();
   pModal.hidden = false;
@@ -442,6 +442,7 @@ function buildCityCards() {
   idx = Math.min(idx, maxIdx());
   buildDots();
   update();
+  if (typeof buildSearchMenu === 'function') buildSearchMenu();
 }
 $('#prev').addEventListener('click', () => { idx = idx <= 0 ? maxIdx() : idx - 1; update(); });
 $('#next').addEventListener('click', () => { idx = idx >= maxIdx() ? 0 : idx + 1; update(); });
@@ -623,7 +624,10 @@ try { data = (JSON.parse(localStorage.getItem(STORE) || 'null') || {}).data || {
 let cur = null;           // nombre de la ciudad activa (texto), o null si no hay ninguna elegida
 let panelView = 'cities'; // 'cities' = viendo ciudades | 'locs' = viendo ubicaciones de una ciudad
 let mode = 'edit', sel = -1, vi = 0, confirmDel = false;
+let heroIdx = 0;         // índice de la foto grande mostrada en el panel de ubicación
+let gridOpen = false;    // si la galería de miniaturas (con opción de eliminar) está desplegada
 let citySearch = '';      // texto de búsqueda de ciudad en el modal
+let descOpen = true;      // si el segmento "Descripción Propiedad" está expandido
 const pModal = $('#propModal');
 
 const cityNames = () => Object.keys(data).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
@@ -650,9 +654,9 @@ function el(tag, cls, text) {
   if (text !== undefined) e.textContent = text;
   return e;
 }
-function pickLoc(i) { sel = i; vi = 0; confirmDel = false; mk = null; note(''); render(); }
+function pickLoc(i) { sel = i; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; mk = null; descOpen = true; note(''); render(); }
 function openCityFromList(name) {
-  cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
+  cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; descOpen = true;
   note(''); render();
 }
 
@@ -807,25 +811,33 @@ add.addEventListener('click', () => openNewCityDialog());
 box.appendChild(add);
 return;
   }
+}
 
-  const back = el('button', 'btn btn-line-dark', '← Ciudades');
+/* Pestañas horizontales con los nombres de las ubicaciones de la ciudad activa */
+function renderLocTabs() {
+  const t = T[lang];
+  const box = $('#pLocTabs');
+  box.innerHTML = '';
+
+  const back = el('button', 'btn btn-line-dark btn-sm loc-back', '← Ciudades');
   back.type = 'button';
   back.addEventListener('click', () => { panelView = 'cities'; cur = null; sel = -1; note(''); render(); });
   box.appendChild(back);
 
   list().forEach((l, i) => {
-    const b = el('button', 'li' + (i === sel ? ' on' : ''));
+    const b = el('button', 'loc-tab' + (i === sel ? ' on' : ''));
     b.type = 'button';
     b.append(el('span', '', l.name || t.locDefault), el('small', '', String(l.imgs.length)));
     b.addEventListener('click', () => pickLoc(i));
     box.appendChild(b);
   });
-  const add = el('button', 'btn btn-dark', t.addLoc);
+
+  const add = el('button', 'btn btn-dark btn-sm loc-add', '+ ' + t.addLoc);
   add.type = 'button';
   add.addEventListener('click', () => {
     const l = list();
-    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '' });
-    sel = l.length - 1; vi = 0; confirmDel = false;
+    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '' });
+    sel = l.length - 1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; descOpen = true;
     note(persist() ? '' : t.storeErr);
     render();
   });
@@ -836,14 +848,35 @@ function renderEdit() {
   const t = T[lang];
   const l = list();
   const c = l[sel];
-  renderList();
+  renderLocTabs();
+  $('#pLocPanel').hidden = false;
   $('#pEmpty').hidden = !!c;
-  $('#pForm').hidden = !c;
+  $('#pPhotosTop').hidden = !c;
+  $('#pDescToggle').hidden = !c;
+  $('#pDescToggle').setAttribute('aria-expanded', String(descOpen));
+  $('#pForm').hidden = !c || !descOpen;
   if (!c) return;
+  const dOp = c.op || '';
+  const dShowR = (dOp === 'renta' || dOp === 'ambos') && (c.pRent || '').trim();
+  const dShowS = (dOp === 'venta' || dOp === 'ambos') && (c.pSale || '').trim();
+  const dParts = [];
+  if (dShowR) dParts.push((dOp === 'ambos' ? t.rentView + ' ' : '') + c.pRent.trim());
+  if (dShowS) dParts.push((dOp === 'ambos' ? t.saleView + ' ' : '') + c.pSale.trim());
+  const dValueEl = $('#pDescValue');
+  dValueEl.textContent = dParts.join(' · ');
+  dValueEl.hidden = !dParts.length;
+  const dSummaryEl = $('#pDescSummary');
+  const dText = (c.desc || '').trim();
+  dSummaryEl.textContent = dText;
+  dSummaryEl.hidden = !dText;
   $('#p-name').value = c.name;
   $('#p-addr').value = c.addr;
   $('#p-sector').value = c.sector || '';
   $('#p-zona').value = c.zona || '';
+  $('#p-tipo').value = c.tipo || '';
+  fillDatalist($('#pSectorList'), citySuggestions(cur, 'sector', CITY_SECTOR_SEED));
+  fillDatalist($('#pZonaList'), citySuggestions(cur, 'zona', CITY_ZONA_SEED));
+  fillDatalist($('#pTipoList'), typeSuggestions());
   $('#p-desc').value = c.desc || '';
   const op = c.op || '';
   $$('#pOps .seg').forEach((b) => {
@@ -866,7 +899,25 @@ function renderEdit() {
   const del = $('#pDel');
   del.textContent = confirmDel ? t.delSure : t.del;
   del.classList.toggle('on', confirmDel);
+  const hasImgs = c.imgs.length > 0;
+  $('#pHeroWrap').hidden = !hasImgs;
+  $('#pHeroEmpty').hidden = hasImgs;
+  if (hasImgs) {
+    heroIdx = ((heroIdx % c.imgs.length) + c.imgs.length) % c.imgs.length;
+    $('#pHeroImg').src = c.imgs[heroIdx];
+    $('#pHeroImg').alt = c.name || '';
+    $('#pHeroCount').textContent = c.imgs.length > 1 ? (heroIdx + 1) + ' / ' + c.imgs.length : '';
+    const multi = c.imgs.length > 1;
+    $('#pHeroPrev').hidden = !multi;
+    $('#pHeroNext').hidden = !multi;
+  }
+  const gridToggle = $('#pGridToggle');
+  const hasGridImgs = c.imgs.length > 0;
+  gridToggle.hidden = !hasGridImgs;
+  gridToggle.setAttribute('aria-expanded', String(gridOpen));
+  $('#pGridToggleLabel').textContent = (gridOpen ? 'Ocultar fotos subidas' : 'Ver fotos subidas') + (hasGridImgs ? ' (' + c.imgs.length + ')' : '');
   const grid = $('#pGrid');
+  grid.hidden = !hasGridImgs || !gridOpen;
   grid.innerHTML = '';
   c.imgs.forEach((src, i) => {
     const wrap = el('div', 'th');
@@ -955,6 +1006,8 @@ function render() {
     $('#pTitle').textContent = 'Ciudades';
     $('#pSub').textContent = cityNames().length ? cityNames().length + ' ciudad(es)' : 'Agrega tu primera ciudad';
     $('#pEdit').hidden = false;
+    $('#pEdit').classList.remove('locs-mode');
+    $('#pLocPanel').hidden = true;
     $('#pForm').hidden = true;
     $('#pEmpty').hidden = true;
     $('#pCard').classList.remove('vw');
@@ -969,13 +1022,14 @@ function render() {
   $('#pSub').textContent = l.length === 0 ? t.noLocs : l.length === 1 ? t.oneLoc : l.length + ' ' + t.locsWord;
   $('#pCard').classList.toggle('vw', mode === 'view');
   $('#pEdit').hidden = mode !== 'edit';
+  $('#pEdit').classList.toggle('locs-mode', mode === 'edit');
   $('#pViewBox').hidden = mode !== 'view';
   if (mode === 'edit') renderEdit(); else renderView();
   renderMk();
 }
 function openProp() {
-  panelView = 'cities'; cur = null; mode = 'edit'; confirmDel = false; mk = null; sel = -1; vi = 0;
-  citySearch = '';
+  panelView = 'cities'; cur = null; mode = 'edit'; confirmDel = false; mk = null; sel = -1; vi = 0; heroIdx = 0; gridOpen = false;
+  citySearch = ''; descOpen = true;
   note('');
   render();
   pModal.hidden = false;
@@ -1012,10 +1066,60 @@ $('#addCityBtn').addEventListener('click', () => openProp());
   hide.addEventListener('click', () => { box.hidden = true; });
 })();
 
-/* Menú rápido: buscar propiedades por Ciudad, Zona y Área */
-const catalogBtn = $('#catalogBtn');
+/* Barra de búsqueda: buscar propiedades por Ciudad, Sector y Zona */
 const cityQuickMenu = $('#cityQuickMenu');
-function closeCityQuickMenu() { cityQuickMenu.hidden = true; }
+
+/* Listas base de sectores y zonas conocidas por ciudad (semilla), combinadas
+   dinámicamente con los sectores/zonas que ya se han usado en las ubicaciones
+   guardadas de cada ciudad, para armar una sugerencia inteligente por ciudad. */
+const CITY_ZONA_SEED = {
+  'Ciudad de Guatemala': ['Zona 1', 'Zona 2', 'Zona 4', 'Zona 9', 'Zona 10', 'Zona 11', 'Zona 13', 'Zona 14', 'Zona 15', 'Zona 16'],
+  'Antigua Guatemala': ['Centro Histórico', 'San Pedro El Panorama', 'Santa Ana', 'Santa Lucía Milpas Altas', 'San Bartolomé Becerra'],
+  'Lago de Atitlán': ['Panajachel', 'San Pedro La Laguna', 'Santiago Atitlán', 'San Marcos La Laguna'],
+  'Petén': ['Flores', 'Santa Elena', 'San Benito', 'San Andrés']
+};
+const CITY_SECTOR_SEED = {
+  'Ciudad de Guatemala': ['Cayalá', 'Vista Hermosa', 'Oakland', 'Las Charcas', 'San Isidro', 'Lourdes'],
+  'Antigua Guatemala': ['Cayalá', 'Panorama', 'San Cristóbal El Bajo', 'San Cristóbal El Alto'],
+  'Lago de Atitlán': ['Centro', 'Jaibalito', 'Tzununá'],
+  'Petén': ['Centro', 'Malecón']
+};
+function citySuggestions(city, field, seed) {
+  const fromData = new Set((data[city] || []).map((l) => (l[field] || '').trim()).filter(Boolean));
+  (seed[city] || []).forEach((v) => fromData.add(v));
+  return Array.from(fromData).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
+}
+
+/* Tipos de propiedad: una sola lista combinada con residencial, comercial y
+   los tipos de finca típicos de Guatemala. No depende de la ciudad. */
+const TIPO_PROPIEDAD_SEED = [
+  // Residencial
+  'Casa', 'Apartamento', 'Condominio', 'Casa en condominio', 'Townhouse', 'Dúplex', 'Penthouse', 'Estudio / Loft', 'Casa de campo', 'Cabaña',
+  // Comercial
+  'Local comercial', 'Oficina', 'Edificio comercial', 'Bodega / Nave industrial', 'Terreno comercial', 'Centro comercial / Plaza comercial', 'Hotel', 'Restaurante / Local gastronómico', 'Gasolinera', 'Parqueo / Estacionamiento',
+  // Terrenos
+  'Terreno urbano', 'Terreno rústico',
+  // Fincas (Guatemala)
+  'Finca agrícola', 'Finca cafetalera', 'Finca cañera', 'Finca ganadera', 'Finca de recreo', 'Finca hortícola / frutícola', 'Finca forestal', 'Finca cardamomera', 'Finca hulera', 'Finca bananera', 'Finca avícola'
+];
+function typeSuggestions() {
+  const extra = new Set();
+  Object.keys(data).forEach((city) => {
+    (data[city] || []).forEach((l) => {
+      const v = (l.tipo || '').trim();
+      if (v && !TIPO_PROPIEDAD_SEED.includes(v)) extra.add(v);
+    });
+  });
+  return TIPO_PROPIEDAD_SEED.concat(Array.from(extra).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })));
+}
+function fillDatalist(listEl, values) {
+  listEl.innerHTML = '';
+  values.forEach((v) => {
+    const opt = document.createElement('option');
+    opt.value = v;
+    listEl.appendChild(opt);
+  });
+}
 function openNewCityDialog() {
   const overlay = el('div', 'ncw-overlay');
   Object.assign(overlay.style, {
@@ -1107,7 +1211,7 @@ function openNewCityDialog() {
       saveBtn.textContent = 'Guardar';
       return;
     }
-    cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; confirmDel = false;
+    cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false;
     persistLocalOnly();
     buildCityCards();
     closeDialog();
@@ -1122,11 +1226,14 @@ function extractNumber(str) {
   return isNaN(num) ? null : num;
 }
 function buildSearchMenu() {
+  if (!cityQuickMenu) return;
+  const prevCity = cityQuickMenu.querySelector('.cq-select') ? cityQuickMenu.querySelector('.cq-select').value : '';
   cityQuickMenu.innerHTML = '';
   const names = cityNames();
-  const form = el('div', 'cq-form');
+  const row = el('div', 'cq-row');
 
-  form.appendChild(el('label', 'cq-label', 'Ciudad'));
+  const cityField = el('div', 'cq-field cq-field-city');
+  cityField.appendChild(el('label', 'cq-label', 'Ciudad'));
   const citySelect = document.createElement('select');
   citySelect.className = 'cq-select';
   if (!names.length) {
@@ -1141,44 +1248,88 @@ function buildSearchMenu() {
       opt.value = name; opt.textContent = name;
       citySelect.appendChild(opt);
     });
+    if (prevCity && names.includes(prevCity)) citySelect.value = prevCity;
   }
-  form.appendChild(citySelect);
+  cityField.appendChild(citySelect);
+  row.appendChild(cityField);
 
-  form.appendChild(el('label', 'cq-label', 'Zona'));
-  const zonaInput = document.createElement('input');
-  zonaInput.type = 'text';
-  zonaInput.className = 'cq-input';
-  zonaInput.placeholder = 'Ej. Zona 10, Antigua...';
-  form.appendChild(zonaInput);
+  const sectorList = document.createElement('datalist');
+  sectorList.id = 'cqSectorList';
+  const zonaList = document.createElement('datalist');
+  zonaList.id = 'cqZonaList';
 
-  form.appendChild(el('label', 'cq-label', 'Sector'));
+  const sectorField = el('div', 'cq-field');
+  sectorField.appendChild(el('label', 'cq-label', 'Sector'));
   const sectorInput = document.createElement('input');
   sectorInput.type = 'text';
   sectorInput.className = 'cq-input';
   sectorInput.placeholder = 'Ej. Cayalá, Vista Hermosa...';
-  form.appendChild(sectorInput);
+  sectorInput.setAttribute('list', 'cqSectorList');
+  sectorField.appendChild(sectorInput);
+  sectorField.appendChild(sectorList);
+  row.appendChild(sectorField);
 
-  form.appendChild(el('label', 'cq-label', 'Especificaciones de propiedad'));
+  const tipoList = document.createElement('datalist');
+  tipoList.id = 'cqTipoList';
+  fillDatalist(tipoList, typeSuggestions());
+
+  const tipoField = el('div', 'cq-field');
+  tipoField.appendChild(el('label', 'cq-label', 'Tipo de propiedad'));
+  const tipoInput = document.createElement('input');
+  tipoInput.type = 'text';
+  tipoInput.className = 'cq-input';
+  tipoInput.placeholder = 'Ej. Casa, Local comercial, Finca cafetalera...';
+  tipoInput.setAttribute('list', 'cqTipoList');
+  tipoField.appendChild(tipoInput);
+  tipoField.appendChild(tipoList);
+  row.appendChild(tipoField);
+
+  const zonaField = el('div', 'cq-field');
+  zonaField.appendChild(el('label', 'cq-label', 'Zona'));
+  const zonaInput = document.createElement('input');
+  zonaInput.type = 'text';
+  zonaInput.className = 'cq-input';
+  zonaInput.placeholder = 'Ej. Zona 10, Antigua...';
+  zonaInput.setAttribute('list', 'cqZonaList');
+  zonaField.appendChild(zonaInput);
+  zonaField.appendChild(zonaList);
+  row.appendChild(zonaField);
+
+  function refreshCqLists() {
+    const city = citySelect.value;
+    fillDatalist(sectorList, citySuggestions(city, 'sector', CITY_SECTOR_SEED));
+    fillDatalist(zonaList, citySuggestions(city, 'zona', CITY_ZONA_SEED));
+  }
+  citySelect.addEventListener('change', refreshCqLists);
+  refreshCqLists();
+
+  const specsField = el('div', 'cq-field cq-field-specs');
+  specsField.appendChild(el('label', 'cq-label', 'Especificaciones de propiedad'));
   const specsInput = document.createElement('input');
   specsInput.type = 'text';
   specsInput.className = 'cq-input';
   specsInput.placeholder = 'Ej. 150 m², 3 habitaciones, piscina...';
-  form.appendChild(specsInput);
+  specsField.appendChild(specsInput);
+  row.appendChild(specsField);
 
-  form.appendChild(el('label', 'cq-label', 'Presupuesto estimado (Q)'));
+  const budgetField = el('div', 'cq-field');
+  budgetField.appendChild(el('label', 'cq-label', 'Presupuesto estimado (Q)'));
   const budgetInput = document.createElement('input');
   budgetInput.type = 'text';
   budgetInput.className = 'cq-input';
   budgetInput.placeholder = 'Ej. 500,000';
   budgetInput.inputMode = 'decimal';
-  form.appendChild(budgetInput);
+  budgetField.appendChild(budgetInput);
+  row.appendChild(budgetField);
 
   const searchBtn = el('button', 'btn btn-dark cq-search-btn', 'Buscar');
   searchBtn.type = 'button';
-  form.appendChild(searchBtn);
+  row.appendChild(searchBtn);
+
+  cityQuickMenu.appendChild(row);
 
   const results = el('div', 'cq-results');
-  form.appendChild(results);
+  cityQuickMenu.appendChild(results);
 
   searchBtn.addEventListener('click', () => {
     results.innerHTML = '';
@@ -1186,6 +1337,7 @@ function buildSearchMenu() {
     if (!city) return;
     const zonaQ = zonaInput.value.trim().toLowerCase();
     const sectorQ = sectorInput.value.trim().toLowerCase();
+    const tipoQ = tipoInput.value.trim().toLowerCase();
     const specsQ = specsInput.value.trim().toLowerCase();
     const budgetNum = extractNumber(budgetInput.value);
     const matches = (data[city] || [])
@@ -1194,8 +1346,10 @@ function buildSearchMenu() {
         const addrTxt = (l.addr || '').toLowerCase();
         const zonaTxt = ((l.zona || '') + ' ' + addrTxt).toLowerCase();
         const sectorTxt = ((l.sector || '') + ' ' + addrTxt).toLowerCase();
+        const tipoTxt = ((l.tipo || '') + ' ' + (l.desc || '')).toLowerCase();
         const okZona = !zonaQ || zonaTxt.includes(zonaQ);
         const okSector = !sectorQ || sectorTxt.includes(sectorQ);
+        const okTipo = !tipoQ || tipoTxt.includes(tipoQ);
         const okSpecs = !specsQ || (l.desc || '').toLowerCase().includes(specsQ);
         let okBudget = true;
         if (budgetNum != null) {
@@ -1204,7 +1358,7 @@ function buildSearchMenu() {
           if (l.op === 'venta' || l.op === 'ambos' || !l.op) { const s = extractNumber(l.pSale); if (s != null) prices.push(s); }
           okBudget = prices.length > 0 && prices.some((p) => p <= budgetNum);
         }
-        return okZona && okSector && okSpecs && okBudget;
+        return okZona && okSector && okTipo && okSpecs && okBudget;
       });
     if (!matches.length) {
       results.appendChild(el('div', 'cq-empty', 'No se encontraron ubicaciones con esos criterios.'));
@@ -1215,30 +1369,14 @@ function buildSearchMenu() {
       r.type = 'button';
       r.append(el('small', '', l.addr || ''));
       r.addEventListener('click', () => {
-        closeCityQuickMenu();
+        results.innerHTML = '';
         openLocationDirect(city, i);
       });
       results.appendChild(r);
     });
   });
-
-  cityQuickMenu.appendChild(form);
 }
-if (catalogBtn && cityQuickMenu) {
-  catalogBtn.addEventListener('click', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const willOpen = cityQuickMenu.hidden;
-    if (willOpen) buildSearchMenu();
-    cityQuickMenu.hidden = !willOpen;
-  });
-  document.addEventListener('click', (e) => {
-    if (!cityQuickMenu.hidden && !cityQuickMenu.contains(e.target) && e.target !== catalogBtn) {
-      closeCityQuickMenu();
-    }
-  });
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeCityQuickMenu(); });
-}
+buildSearchMenu();
 
 $('#pClose').addEventListener('click', closeProp);
 $('#pScrim').addEventListener('click', closeProp);
@@ -1246,7 +1384,15 @@ $('#p-name').addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
   c.name = $('#p-name').value;
   note(persist() ? '' : T[lang].storeErr);
-  renderList();
+  renderLocTabs();
+});
+$('#pDescToggle').addEventListener('click', () => {
+  descOpen = !descOpen;
+  renderEdit();
+});
+$('#pGridToggle').addEventListener('click', () => {
+  gridOpen = !gridOpen;
+  renderEdit();
 });
 $('#p-addr').addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
@@ -1262,6 +1408,11 @@ $('#p-sector').addEventListener('input', () => {
 $('#p-zona').addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
   c.zona = $('#p-zona').value;
+  note(persist() ? '' : T[lang].storeErr);
+});
+$('#p-tipo').addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.tipo = $('#p-tipo').value;
   note(persist() ? '' : T[lang].storeErr);
 });
 $('#p-desc').addEventListener('input', () => {
@@ -1368,13 +1519,28 @@ $('#pMkUse').addEventListener('click', () => {
   renderMk();
 });
 $('#pView').addEventListener('click', () => { mode = 'view'; vi = 0; note(''); render(); });
+$('#pHeroBtn').addEventListener('click', () => { mode = 'view'; vi = heroIdx; note(''); render(); });
+$('#pHeroPrev').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const c = list()[sel];
+  if (!c || !c.imgs.length) return;
+  heroIdx = (heroIdx - 1 + c.imgs.length) % c.imgs.length;
+  renderEdit();
+});
+$('#pHeroNext').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const c = list()[sel];
+  if (!c || !c.imgs.length) return;
+  heroIdx = (heroIdx + 1) % c.imgs.length;
+  renderEdit();
+});
 $('#vEdit').addEventListener('click', () => { mode = 'edit'; render(); });
 $('#pDel').addEventListener('click', () => {
   if (!confirmDel) { confirmDel = true; renderEdit(); return; }
   const removed = list()[sel];
   const cityAtDelete = cur;
   list().splice(sel, 1);
-  sel = Math.max(0, sel - 1); confirmDel = false; vi = 0;
+  sel = Math.max(0, sel - 1); confirmDel = false; vi = 0; heroIdx = 0; gridOpen = false;
   note(persist() ? T[lang].saved : T[lang].storeErr);
   render();
   if (removed && cityAtDelete) {
@@ -2076,6 +2242,7 @@ function toSupaRow(cityName, l) {
     direccion: l.addr || '',
     sector: l.sector || '',
     zona: l.zona || '',
+    tipo_propiedad: l.tipo || '',
     tipo_operacion: l.op || 'renta',
     valor_renta: l.pRent || '',
     valor_venta: l.pSale || '',
@@ -2131,6 +2298,7 @@ async function cargarPropiedadesArmopa() {
         addr: row.direccion || '',
         sector: row.sector || '',
         zona: row.zona || '',
+        tipo: row.tipo_propiedad || '',
         desc: row.descripcion || '',
         op: row.tipo_operacion || 'renta',
         pRent: row.valor_renta || '',
