@@ -151,7 +151,7 @@
     <div class="wrap">
       <div class="svc-head"><h2><span class="h1l" data-i18n="servH1"></span><span class="h2l" data-i18n="servH2"></span></h2></div>
       <div class="sv-grid">
-        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/salon-badge.jpg" alt="" data-i18n-alt="salonAlt"></span><h3 data-i18n="s1"></h3><p data-i18n="s1d"></p></article>
+        <article class="sv" id="svRentBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/salon-badge.jpg" alt="" data-i18n-alt="salonAlt"></span><h3 data-i18n="s1"></h3><p data-i18n="s1d"></p></article>
         <article class="sv"><span class="sv-ic sv-ph"><img src="assets/presupuesto-badge.jpg" alt="" data-i18n-alt="budgetAlt"></span><h3 data-i18n="s2"></h3><p data-i18n="s2d"></p></article>
         <article class="sv"><span class="sv-ic sv-ph"><img src="assets/compra-badge.jpg" alt="" data-i18n-alt="buyAlt"></span><h3 data-i18n="s3"></h3><p data-i18n="s3d"></p></article>
         <article class="sv"><span class="sv-ic sv-ph"><img src="assets/remodela-badge.jpg" alt="" data-i18n-alt="remodelAlt"></span><h3 data-i18n="s4"></h3><p data-i18n="s4d"></p></article>
@@ -917,6 +917,116 @@
       </div>
       <div class="chips" id="vChips"></div>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="authModal" hidden>
+  <button class="scrim" type="button" id="authScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="authCard" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+    <button class="mx" type="button" id="authClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="authTitle">Formulario de Autorización de Promoción y Venta</h2><p class="ph-sub">Como propietario del inmueble que se describe a continuación, autorizo a Armopa Group a promocionar en Alquiler y/o Venta mi inmueble por los medios que este considere pertinentes.</p></div>
+
+    <h3 class="x-est-h" style="margin-top:6px">Datos del Propietario</h3>
+    <div class="x-row">
+      <div class="fld"><label for="fp-nombre">Nombre completo</label><input id="fp-nombre" type="text"></div>
+      <div class="fld"><label for="fp-nacimiento">Fecha de Nacimiento</label><input id="fp-nacimiento" type="date"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-dpi">DPI/CUI o Pasaporte</label><input id="fp-dpi" type="text"></div>
+      <div class="fld"><label for="fp-repleg">Representante Legal</label><input id="fp-repleg" type="text"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-razon">Razón Social</label><input id="fp-razon" type="text"></div>
+      <div class="fld"><label for="fp-nit">NIT</label><input id="fp-nit" type="text"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-tel">Teléfono móvil</label><input id="fp-tel" type="tel"></div>
+      <div class="fld"><label for="fp-correo">Correo Electrónico</label><input id="fp-correo" type="email"></div>
+    </div>
+    <div class="fld" style="margin-top:16px"><label for="fp-domicilio">Dirección domicilio actual</label><input id="fp-domicilio" type="text"></div>
+
+    <h3 class="x-est-h" style="margin-top:22px">Descripción Propiedad</h3>
+    <div class="x-row">
+      <div class="fld"><label for="fp-tipo">Tipo</label><input id="fp-tipo" type="text" placeholder="Ej. Casa, Apartamento, Terreno…"></div>
+      <div class="fld"><label for="fp-dirprop">Dirección</label><input id="fp-dirprop" type="text"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-numero">Número</label><input id="fp-numero" type="text"></div>
+      <div class="fld"><label for="fp-finca">Finca</label><input id="fp-finca" type="text"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-folio">Folio</label><input id="fp-folio" type="text"></div>
+      <div class="fld"><label for="fp-libro">Libro</label><input id="fp-libro" type="text"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-gravamen">Gravamen</label><input id="fp-gravamen" type="text"></div>
+      <div class="fld"><label for="fp-institucion">Institución</label><input id="fp-institucion" type="text"></div>
+    </div>
+    <div class="fld" style="margin-top:16px"><label for="fp-monto">Monto</label><input id="fp-monto" type="text"></div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-mfrente">Mts. Frente</label><input id="fp-mfrente" type="text"></div>
+      <div class="fld"><label for="fp-mfondo">Mts. Fondo</label><input id="fp-mfondo" type="text"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-mconst">Mts. Construcción</label><input id="fp-mconst" type="text"></div>
+      <div class="fld"><label for="fp-terreno">Terreno Vrs2</label><input id="fp-terreno" type="text"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-mts2">Mts2</label><input id="fp-mts2" type="text"></div>
+      <div class="fld"><label for="fp-niveles">Niveles</label><input id="fp-niveles" type="text"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-estac">Estacionamientos</label><input id="fp-estac" type="text"></div>
+      <div class="fld"><label for="fp-habitaciones">Habitaciones</label><input id="fp-habitaciones" type="text"></div>
+    </div>
+    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-banos">Baños</label><input id="fp-banos" type="text"></div>
+
+    <div class="chk-grid" style="margin-top:16px">
+      <label class="chk-it"><input type="checkbox" id="fp-lavanderia"> Lavandería</label>
+      <label class="chk-it"><input type="checkbox" id="fp-linea-blanca"> Línea Blanca</label>
+      <label class="chk-it"><input type="checkbox" id="fp-hab-servicio"> Habitación Servicio</label>
+      <label class="chk-it"><input type="checkbox" id="fp-bodega"> Bodega</label>
+      <label class="chk-it"><input type="checkbox" id="fp-amueblado"> Amueblado</label>
+      <label class="chk-it"><input type="checkbox" id="fp-balcon"> Balcón y/o Terraza / Jardín</label>
+      <label class="chk-it"><input type="checkbox" id="fp-mascota"> Mascota</label>
+    </div>
+
+    <h3 class="x-est-h" style="margin-top:22px">Amenidades del Edificio / Condominio</h3>
+    <div class="chk-grid">
+      <label class="chk-it"><input type="checkbox" id="fp-am-motorlobby"> Motor Lobby</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-piscina"> Piscina</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-sauna"> Sauna</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-juegos"> Juegos de Niños</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-areaverde"> Área Verde</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-salon"> Salón Usos Múltiples</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-gimnasio"> Gimnasio</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-business"> Business Center</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-canchas"> Canchas Deportivas</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-cisterna"> Cisterna y/o Pozo</label>
+    </div>
+    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-am-parqueos">Número de parqueos de visita</label><input id="fp-am-parqueos" type="number" min="0"></div>
+
+    <h3 class="x-est-h" style="margin-top:22px">Precio de Venta</h3>
+    <div class="x-row">
+      <div class="fld"><label for="fp-precio-venta">Precio de Venta</label><input id="fp-precio-venta" type="text"></div>
+      <div class="fld"><label for="fp-valor-registro">Valor del Registro</label><input id="fp-valor-registro" type="text"></div>
+    </div>
+    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-iusi">IUSI Trimestral</label><input id="fp-iusi" type="text"></div>
+
+    <h3 class="x-est-h" style="margin-top:22px">Precio de Alquiler</h3>
+    <div class="x-row">
+      <div class="fld"><label for="fp-precio-alquiler">Precio de Alquiler</label><input id="fp-precio-alquiler" type="text"></div>
+      <div class="fld"><label for="fp-mantenimiento">Mantenimiento</label><input id="fp-mantenimiento" type="text"></div>
+    </div>
+    <div class="fld" style="margin-top:16px"><label for="fp-incluye-mant">Qué incluye el mantenimiento</label><textarea id="fp-incluye-mant" rows="2"></textarea></div>
+
+    <div class="fld" style="margin-top:16px"><label for="fp-obs">Observaciones</label><textarea id="fp-obs" rows="3"></textarea></div>
+
+    <div class="acts" style="margin-top:20px">
+      <button class="btn btn-dark" type="button" id="fpSave">💾 Guardar autorización</button>
+      <button class="btn btn-line-dark" type="button" id="fpPrint">🖨️ Imprimir reporte</button>
+    </div>
+    <p class="note" id="fpNote" hidden>Autorización guardada correctamente. Gracias.</p>
   </div>
 </div>
 
