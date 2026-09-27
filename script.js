@@ -407,7 +407,7 @@ function update() {
 let cityCovers = {};
 function openCity(name) {
   cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null; descOpen = true;
-  sel = (data[name] || []).length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false;
+  sel = (data[name] || []).length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; locFilterIdx = null;
   note('');
   render();
   pModal.hidden = false;
@@ -628,6 +628,7 @@ let heroIdx = 0;         // índice de la foto grande mostrada en el panel de ub
 let gridOpen = false;    // si la galería de miniaturas (con opción de eliminar) está desplegada
 let citySearch = '';      // texto de búsqueda de ciudad en el modal
 let descOpen = true;      // si el segmento "Descripción Propiedad" está expandido
+let locFilterIdx = null;  // índices (dentro de la ciudad activa) que coinciden con la última búsqueda, o null = mostrar todas
 const pModal = $('#propModal');
 
 const cityNames = () => Object.keys(data).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
@@ -656,7 +657,7 @@ function el(tag, cls, text) {
 }
 function pickLoc(i) { sel = i; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; mk = null; descOpen = true; note(''); render(); }
 function openCityFromList(name) {
-  cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; descOpen = true;
+  cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; locFilterIdx = null; confirmDel = false; descOpen = true;
   note(''); render();
 }
 
@@ -821,10 +822,26 @@ function renderLocTabs() {
 
   const back = el('button', 'btn btn-line-dark btn-sm loc-back', '← Ciudades');
   back.type = 'button';
-  back.addEventListener('click', () => { panelView = 'cities'; cur = null; sel = -1; note(''); render(); });
+  back.addEventListener('click', () => { panelView = 'cities'; cur = null; sel = -1; locFilterIdx = null; note(''); render(); });
   box.appendChild(back);
 
+  const filterBar = $('#pLocFilterBar');
+  if (filterBar) {
+    filterBar.innerHTML = '';
+    if (locFilterIdx) {
+      filterBar.hidden = false;
+      filterBar.append(el('span', '', 'Resultados de tu búsqueda (' + locFilterIdx.length + ')'));
+      const clearBtn = el('button', 'loc-filter-clear', 'Ver todas las ubicaciones');
+      clearBtn.type = 'button';
+      clearBtn.addEventListener('click', () => { locFilterIdx = null; render(); });
+      filterBar.appendChild(clearBtn);
+    } else {
+      filterBar.hidden = true;
+    }
+  }
+
   list().forEach((l, i) => {
+    if (locFilterIdx && !locFilterIdx.includes(i)) return;
     const b = el('button', 'loc-tab' + (i === sel ? ' on' : ''));
     b.type = 'button';
     b.append(el('span', '', l.name || t.locDefault), el('small', '', String(l.imgs.length)));
@@ -1028,7 +1045,7 @@ function render() {
   renderMk();
 }
 function openProp() {
-  panelView = 'cities'; cur = null; mode = 'edit'; confirmDel = false; mk = null; sel = -1; vi = 0; heroIdx = 0; gridOpen = false;
+  panelView = 'cities'; cur = null; mode = 'edit'; confirmDel = false; mk = null; sel = -1; vi = 0; heroIdx = 0; gridOpen = false; locFilterIdx = null;
   citySearch = ''; descOpen = true;
   note('');
   render();
@@ -1364,16 +1381,8 @@ function buildSearchMenu() {
       results.appendChild(el('div', 'cq-empty', 'No se encontraron ubicaciones con esos criterios.'));
       return;
     }
-    matches.forEach(({ l, i }) => {
-      const r = el('button', '', l.name || 'Ubicación ' + (i + 1));
-      r.type = 'button';
-      r.append(el('small', '', l.addr || ''));
-      r.addEventListener('click', () => {
-        results.innerHTML = '';
-        openLocationDirect(city, i);
-      });
-      results.appendChild(r);
-    });
+    locFilterIdx = matches.map(({ i }) => i);
+    openLocationDirect(city, matches[0].i);
   });
 }
 buildSearchMenu();
