@@ -602,27 +602,27 @@ function buildAuthReportHTML() {
 <meta charset="utf-8">
 <title>Formulario de Autorización de Promoción y Venta</title>
 <style>
-  @page { size: letter; margin: 8mm 10mm; }
+  @page { size: letter; margin: 10mm 14mm; }
   * { box-sizing: border-box; }
   html, body { height: 100%; }
-  body { font-family: Arial, Helvetica, sans-serif; font-size: 9px; color: #111; margin: 0; }
-  .fp-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 2px solid #071a2f; padding-bottom: 5px; margin-bottom: 6px; }
-  .fp-head img { height: 40px; }
-  .fp-head h1 { flex: 1; text-align: center; font-size: 13px; margin: 0; color: #10243c; }
-  .fp-contact { border: 1px solid #333; padding: 3px 8px; font-size: 8px; text-align: center; line-height: 1.3; white-space: nowrap; }
-  .fp-sec-h { background: #071a2f; color: #fff; font-weight: bold; font-size: 9.5px; padding: 2px 7px; margin: 6px 0 0; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #111; margin: 0; }
+  .fp-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 3px solid #071a2f; padding-bottom: 8px; margin: 0 0 12px; }
+  .fp-head img { height: 58px; }
+  .fp-head h1 { flex: 1; text-align: center; font-size: 19px; margin: 0; color: #10243c; }
+  .fp-contact { border: 1px solid #333; padding: 6px 12px; font-size: 11px; text-align: center; line-height: 1.4; white-space: nowrap; }
+  .fp-sec-h { background: #071a2f; color: #fff; font-weight: bold; font-size: 12.5px; padding: 5px 10px; margin: 16px 0 0; }
   table.fp-tab { width: 100%; border-collapse: collapse; margin-bottom: 0; }
-  table.fp-tab td { border: 1px solid #999; background: #f2f2f2; padding: 2px 7px; font-size: 9px; vertical-align: top; line-height: 1.35; }
+  table.fp-tab td { border: 1px solid #999; background: #f2f2f2; padding: 6px 12px; font-size: 11.5px; vertical-align: top; line-height: 1.5; }
   table.fp-tab td b { font-weight: bold; }
-  .fp-note { font-size: 7.6px; line-height: 1.3; color: #222; margin: 4px 0 0; text-align: justify; }
-  .fp-chk { display: inline-block; margin-right: 2px; }
-  .fp-terms { font-size: 7.2px; line-height: 1.28; text-align: justify; margin-top: 6px; }
-  .fp-terms p { margin: 3px 0; }
-  .fp-terms ul { margin: 2px 0; padding-left: 16px; }
-  .fp-terms li { margin-bottom: 1px; }
-  .fp-sign { display: flex; justify-content: space-around; margin-top: 14px; }
-  .fp-sign div { width: 42%; text-align: center; border-top: 1px solid #111; padding-top: 3px; font-size: 8.5px; }
-  .fp-cert { font-size: 7.6px; line-height: 1.35; text-align: justify; margin-top: 10px; }
+  .fp-note { font-size: 10.5px; line-height: 1.55; color: #222; margin: 10px 0 0; text-align: justify; }
+  .fp-chk { display: inline-block; margin-right: 3px; }
+  .fp-terms { font-size: 10px; line-height: 1.55; text-align: justify; margin-top: 18px; }
+  .fp-terms p { margin: 8px 0; }
+  .fp-terms ul { margin: 6px 0; padding-left: 20px; }
+  .fp-terms li { margin-bottom: 4px; }
+  .fp-sign { display: flex; justify-content: space-around; margin-top: 58px; page-break-inside: avoid; }
+  .fp-sign div { width: 42%; text-align: center; border-top: 1px solid #111; padding-top: 6px; font-size: 11px; }
+  .fp-cert { font-size: 10.5px; line-height: 1.55; text-align: justify; margin-top: 20px; }
   @media print {
     .fp-noprint { display: none; }
     html, body { width: 100%; height: 100%; }
