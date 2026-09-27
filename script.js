@@ -1279,7 +1279,7 @@ function buildSearchMenu() {
   sectorField.appendChild(el('label', 'cq-label', 'Sector'));
   const sectorInput = document.createElement('input');
   sectorInput.type = 'text';
-  sectorInput.className = 'cq-input';
+  sectorInput.className = 'cq-input cq-input-list';
   sectorInput.placeholder = 'Ej. Cayalá, Vista Hermosa...';
   sectorInput.setAttribute('list', 'cqSectorList');
   sectorField.appendChild(sectorInput);
@@ -1294,7 +1294,7 @@ function buildSearchMenu() {
   tipoField.appendChild(el('label', 'cq-label', 'Tipo de propiedad'));
   const tipoInput = document.createElement('input');
   tipoInput.type = 'text';
-  tipoInput.className = 'cq-input';
+  tipoInput.className = 'cq-input cq-input-list';
   tipoInput.placeholder = 'Ej. Casa, Local comercial, Finca cafetalera...';
   tipoInput.setAttribute('list', 'cqTipoList');
   tipoField.appendChild(tipoInput);
@@ -1305,7 +1305,7 @@ function buildSearchMenu() {
   zonaField.appendChild(el('label', 'cq-label', 'Zona'));
   const zonaInput = document.createElement('input');
   zonaInput.type = 'text';
-  zonaInput.className = 'cq-input';
+  zonaInput.className = 'cq-input cq-input-list';
   zonaInput.placeholder = 'Ej. Zona 10, Antigua...';
   zonaInput.setAttribute('list', 'cqZonaList');
   zonaField.appendChild(zonaInput);
