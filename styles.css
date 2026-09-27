@@ -496,6 +496,8 @@ section[id]{scroll-margin-top:148px}
 /* Panel de ubicaciones: pestañas horizontales + fotos + "Descripción Propiedad" colegible */
 .ed.locs-mode{grid-template-columns:1fr}
 .ed.locs-mode .ll{display:none}
+.loc-filter-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#fbf5e6;border:1px solid var(--line);border-radius:9px;padding:10px 14px;margin-bottom:14px;font-size:13px;font-weight:700;color:var(--ink)}
+.loc-filter-clear{flex:none;background:none;border:0;padding:0;color:var(--goldtx);font-weight:700;font-size:13px;font-family:inherit;cursor:pointer;text-decoration:underline}
 .loc-tabs-wrap{margin-bottom:18px}
 .loc-tabs{display:flex;gap:10px;overflow-x:auto;padding-bottom:6px}
 .loc-tabs::-webkit-scrollbar{height:6px}
