@@ -745,6 +745,185 @@ $('#fpPrint')?.addEventListener('click', () => {
   w.onload = () => { w.focus(); w.print(); };
 });
 
+/* Requisitos para vender una propiedad (guía generada con IA) + subida de PDF por requisito */
+const REQ_DOCS_BUCKET = 'requisitos-venta'; // bucket de Supabase Storage — debe crearse como PRIVADO
+const REQ_DOC_TYPES = ['dpi', 'nit', 'escritura', 'certificacion-rgp', 'gravamenes', 'iusi', 'solvencia-municipal', 'catastro', 'planos', 'empresa', 'poder', 'avaluo'];
+let reqVentaId = null;
+
+const reqModal = $('#reqModal');
+const openReqModal = () => {
+  reqModal.hidden = false;
+  reqVentaId = null;
+  REQ_DOC_TYPES.forEach((doc) => { const st = $('#reqs-' + doc); if (st) st.textContent = 'Sin subir'; });
+};
+const closeReqModal = () => { reqModal.hidden = true; };
+const svComprarBtn = $('#svComprarBtn');
+if (svComprarBtn) {
+  svComprarBtn.addEventListener('click', openReqModal);
+  svComprarBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openReqModal(); } });
+}
+$('#reqClose')?.addEventListener('click', closeReqModal);
+$('#reqScrim')?.addEventListener('click', closeReqModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && reqModal && !reqModal.hidden) closeReqModal(); });
+
+async function reqEnsureVentaId() {
+  if (reqVentaId) return reqVentaId;
+  const { data, error } = await supabaseClient.from('ventas_requisitos').insert({}).select('id').single();
+  if (error) throw error;
+  reqVentaId = data.id;
+  return reqVentaId;
+}
+
+REQ_DOC_TYPES.forEach((doc) => {
+  const input = $('#reqf-' + doc);
+  if (!input) return;
+  input.addEventListener('change', async () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      alert('Solo se permiten archivos PDF.');
+      input.value = '';
+      return;
+    }
+    const st = $('#reqs-' + doc);
+    if (st) st.textContent = 'Subiendo…';
+    try {
+      const ventaId = await reqEnsureVentaId();
+      const path = ventaId + '/' + doc + '-' + Date.now() + '.pdf';
+      const { error: upErr } = await supabaseClient.storage.from(REQ_DOCS_BUCKET).upload(path, file, { contentType: 'application/pdf', upsert: true });
+      if (upErr) { if (st) st.textContent = 'Error al subir'; return; }
+      const { error: dbErr } = await supabaseClient.from('documentos_venta_propiedad').upsert({
+        venta_id: ventaId,
+        tipo_documento: doc,
+        ruta_archivo_pdf: path,
+        tamano_bytes: file.size
+      }, { onConflict: 'venta_id,tipo_documento' });
+      if (dbErr) { if (st) st.textContent = 'Error al guardar'; return; }
+      if (st) st.textContent = '✅ Subido: ' + file.name;
+    } catch (err) {
+      console.error('Error al subir requisito:', err);
+      if (st) st.textContent = 'Error al subir';
+    }
+  });
+});
+
+/* Solicitud de Remodelación: datos del cliente + fotografías */
+const REMODEL_BUCKET = 'remodelaciones';
+let frImgs1 = [];
+let frImgs2 = [];
+
+function uploadImageToBucket(file, bucket, max) {
+  return new Promise((resolve, reject) => {
+    const fr = new FileReader();
+    fr.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const r = Math.min(1, (max || 1600) / Math.max(img.width, img.height));
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width * r);
+        c.height = Math.round(img.height * r);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        c.toBlob(async (blob) => {
+          try {
+            const path = Date.now() + '-' + Math.random().toString(36).slice(2) + '.jpg';
+            const { error } = await supabaseClient.storage.from(bucket).upload(path, blob, { contentType: 'image/jpeg' });
+            if (error) { reject(error); return; }
+            const pub = supabaseClient.storage.from(bucket).getPublicUrl(path);
+            resolve(pub.data.publicUrl);
+          } catch (err) { reject(err); }
+        }, 'image/jpeg', 0.82);
+      };
+      img.onerror = reject;
+      img.src = fr.result;
+    };
+    fr.onerror = reject;
+    fr.readAsDataURL(file);
+  });
+}
+
+function frRenderGrid(gridId, arr) {
+  const grid = $(gridId);
+  if (!grid) return;
+  grid.innerHTML = '';
+  arr.forEach((src, i) => {
+    const wrap = el('div', 'th');
+    const img = el('img'); img.src = src; img.alt = '';
+    wrap.appendChild(img);
+    const x = el('button', 'th-x', '×');
+    x.type = 'button';
+    x.setAttribute('aria-label', 'Quitar');
+    x.addEventListener('click', () => { arr.splice(i, 1); frRenderGrid(gridId, arr); });
+    wrap.appendChild(x);
+    grid.appendChild(wrap);
+  });
+}
+
+$('#fr-files1')?.addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  for (const f of files) {
+    try { frImgs1.push(await uploadImageToBucket(f, REMODEL_BUCKET, 1600)); } catch (err) { console.error(err); }
+  }
+  frRenderGrid('#frGrid1', frImgs1);
+});
+$('#fr-files2')?.addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  for (const f of files) {
+    try { frImgs2.push(await uploadImageToBucket(f, REMODEL_BUCKET, 1600)); } catch (err) { console.error(err); }
+  }
+  frRenderGrid('#frGrid2', frImgs2);
+});
+
+const remodelModal = $('#remodelModal');
+const openRemodelModal = () => {
+  remodelModal.hidden = false;
+  $('#frNote').hidden = true;
+  frImgs1 = [];
+  frImgs2 = [];
+  frRenderGrid('#frGrid1', frImgs1);
+  frRenderGrid('#frGrid2', frImgs2);
+  $('#fr-nombre').value = '';
+  $('#fr-detalles').value = '';
+  $('#fr-tiempo').value = '';
+  $('#fr-presupuesto').value = '';
+};
+const closeRemodelModal = () => { remodelModal.hidden = true; };
+const svRemodelBtn = $('#svRemodelBtn');
+if (svRemodelBtn) {
+  svRemodelBtn.addEventListener('click', openRemodelModal);
+  svRemodelBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openRemodelModal(); } });
+}
+$('#remodelClose')?.addEventListener('click', closeRemodelModal);
+$('#remodelScrim')?.addEventListener('click', closeRemodelModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && remodelModal && !remodelModal.hidden) closeRemodelModal(); });
+
+$('#frSend')?.addEventListener('click', async () => {
+  const nombre = $('#fr-nombre')?.value.trim();
+  if (!nombre) {
+    alert('Por favor escribe el nombre del cliente.');
+    return;
+  }
+  const row = {
+    nombre_cliente: nombre,
+    detalles: $('#fr-detalles')?.value.trim() || null,
+    fotos_actuales: frImgs1,
+    fotos_referencia: frImgs2,
+    tiempo_estimado: $('#fr-tiempo')?.value || null,
+    presupuesto_estimado: $('#fr-presupuesto')?.value.trim() || null
+  };
+
+  const { error } = await supabaseClient.from('solicitudes_remodelacion').insert(row);
+
+  if (error) {
+    console.error('Error al guardar solicitud de remodelación:', error);
+    alert('No pudimos enviar tu solicitud. Intenta de nuevo.');
+    return;
+  }
+
+  $('#frNote').hidden = false;
+});
+
 /* Propiedades: ubicaciones, imágenes y vista (se guardan en este navegador) */
 /* Costos alrededor: valores de referencia de renta y venta de propiedades similares en Guatemala (2026). Son precios pedidos publicados en portales inmobiliarios, no precios de cierre. */
 const MK_FX = 7.7;

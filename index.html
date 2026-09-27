@@ -153,8 +153,8 @@
       <div class="sv-grid">
         <article class="sv" id="svRentBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/salon-badge.jpg" alt="" data-i18n-alt="salonAlt"></span><h3 data-i18n="s1"></h3><p data-i18n="s1d"></p></article>
         <article class="sv"><span class="sv-ic sv-ph"><img src="assets/presupuesto-badge.jpg" alt="" data-i18n-alt="budgetAlt"></span><h3 data-i18n="s2"></h3><p data-i18n="s2d"></p></article>
-        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/compra-badge.jpg" alt="" data-i18n-alt="buyAlt"></span><h3 data-i18n="s3"></h3><p data-i18n="s3d"></p></article>
-        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/remodela-badge.jpg" alt="" data-i18n-alt="remodelAlt"></span><h3 data-i18n="s4"></h3><p data-i18n="s4d"></p></article>
+        <article class="sv" id="svComprarBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/compra-badge.jpg" alt="" data-i18n-alt="buyAlt"></span><h3 data-i18n="s3"></h3><p data-i18n="s3d"></p></article>
+        <article class="sv" id="svRemodelBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/remodela-badge.jpg" alt="" data-i18n-alt="remodelAlt"></span><h3 data-i18n="s4"></h3><p data-i18n="s4d"></p></article>
         <article class="sv"><span class="sv-ic sv-ph"><img src="assets/terreno-badge.jpg" alt="" data-i18n-alt="landAlt"></span><h3 data-i18n="s5"></h3><p data-i18n="s5d"></p></article>
         <article class="sv"><span class="sv-ic sv-ph"><img src="assets/proyecto-badge.jpg" alt="" data-i18n-alt="projAlt"></span><h3 data-i18n="s6"></h3><p data-i18n="s6d"></p></article>
       </div>
@@ -1027,6 +1027,120 @@
       <button class="btn btn-line-dark" type="button" id="fpPrint">🖨️ Imprimir reporte</button>
     </div>
     <p class="note" id="fpNote" hidden>Autorización guardada correctamente. Gracias.</p>
+  </div>
+</div>
+
+<div class="modal" id="reqModal" hidden>
+  <button class="scrim" type="button" id="reqScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="reqCard" role="dialog" aria-modal="true" aria-labelledby="reqTitle">
+    <button class="mx" type="button" id="reqClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="reqTitle">Requisitos para vender tu propiedad en Guatemala</h2><p class="ph-sub">Esta guía fue generada con IA a partir de los requisitos habituales que piden bancos, notarios y el Registro General de la Propiedad en Guatemala. Sube el PDF de cada documento que ya tengas listo; puedes completar los demás después.</p></div>
+
+    <ul class="x-est-l" id="reqList">
+      <li class="pq-item" data-doc="dpi">
+        <span><b>DPI del propietario</b><br><small>Documento Personal de Identificación vigente.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-dpi"><label class="btn btn-line-dark btn-sm" for="reqf-dpi">📎 Subir PDF</label><span class="pq-status" id="reqs-dpi">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="nit">
+        <span><b>NIT del propietario</b><br><small>Número de Identificación Tributaria.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-nit"><label class="btn btn-line-dark btn-sm" for="reqf-nit">📎 Subir PDF</label><span class="pq-status" id="reqs-nit">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="escritura">
+        <span><b>Escritura pública de propiedad</b><br><small>Título de propiedad o escritura traslativa de dominio, debidamente registrada.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-escritura"><label class="btn btn-line-dark btn-sm" for="reqf-escritura">📎 Subir PDF</label><span class="pq-status" id="reqs-escritura">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="certificacion-rgp">
+        <span><b>Certificación del Registro General de la Propiedad (RGP)</b><br><small>Con vigencia no mayor a 30 días; confirma quién es el propietario actual.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-certificacion-rgp"><label class="btn btn-line-dark btn-sm" for="reqf-certificacion-rgp">📎 Subir PDF</label><span class="pq-status" id="reqs-certificacion-rgp">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="gravamenes">
+        <span><b>Certificación de gravámenes</b><br><small>Descarta hipotecas, embargos o anotaciones sobre el inmueble.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-gravamenes"><label class="btn btn-line-dark btn-sm" for="reqf-gravamenes">📎 Subir PDF</label><span class="pq-status" id="reqs-gravamenes">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="iusi">
+        <span><b>Solvencia y recibo de pago del IUSI</b><br><small>Impuesto Único Sobre Inmuebles al día.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-iusi"><label class="btn btn-line-dark btn-sm" for="reqf-iusi">📎 Subir PDF</label><span class="pq-status" id="reqs-iusi">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="solvencia-municipal">
+        <span><b>Solvencia municipal</b><br><small>Boleto de ornato y arbitrios municipales al día.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-solvencia-municipal"><label class="btn btn-line-dark btn-sm" for="reqf-solvencia-municipal">📎 Subir PDF</label><span class="pq-status" id="reqs-solvencia-municipal">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="catastro">
+        <span><b>Certificación catastral</b><br><small>Cuando el municipio donde está ubicado el inmueble cuenta con catastro.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-catastro"><label class="btn btn-line-dark btn-sm" for="reqf-catastro">📎 Subir PDF</label><span class="pq-status" id="reqs-catastro">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="planos">
+        <span><b>Planos registrados de la propiedad</b><br><small>Si existen planos de construcción o de finca registrados.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-planos"><label class="btn btn-line-dark btn-sm" for="reqf-planos">📎 Subir PDF</label><span class="pq-status" id="reqs-planos">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="empresa">
+        <span><b>Escritura de constitución y patente de comercio</b><br><small>Solo si el propietario es una sociedad o empresa.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-empresa"><label class="btn btn-line-dark btn-sm" for="reqf-empresa">📎 Subir PDF</label><span class="pq-status" id="reqs-empresa">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="poder">
+        <span><b>Poder legal notarial</b><br><small>Solo si actúa un representante o apoderado en lugar del propietario.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-poder"><label class="btn btn-line-dark btn-sm" for="reqf-poder">📎 Subir PDF</label><span class="pq-status" id="reqs-poder">Sin subir</span></span>
+      </li>
+      <li class="pq-item" data-doc="avaluo">
+        <span><b>Avalúo comercial del inmueble</b><br><small>Recomendado, no obligatorio: ayuda a definir un precio de venta realista.</small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-avaluo"><label class="btn btn-line-dark btn-sm" for="reqf-avaluo">📎 Subir PDF</label><span class="pq-status" id="reqs-avaluo">Sin subir</span></span>
+      </li>
+    </ul>
+    <p class="hint" style="margin-top:8px">Esta guía es informativa y puede variar según el municipio, si el inmueble está en régimen de propiedad horizontal o si intervienen bancos. Para tu caso particular, consulta con un notario o con nuestro equipo.</p>
+  </div>
+</div>
+
+<div class="modal" id="remodelModal" hidden>
+  <button class="scrim" type="button" id="remodelScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="remodelCard" role="dialog" aria-modal="true" aria-labelledby="remodelTitle">
+    <button class="mx" type="button" id="remodelClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="remodelTitle">Solicitud de Remodelación</h2><p class="ph-sub">Cuéntanos qué quieres remodelar y adjunta fotografías para que podamos ayudarte a planificar, coordinar y supervisar el proyecto.</p></div>
+
+    <div class="fld" style="margin-top:6px"><label for="fr-nombre">Nombre Cliente</label><input id="fr-nombre" type="text"></div>
+
+    <div class="fld" style="margin-top:16px"><label for="fr-detalles">Detalles que se desean de la remodelación</label><textarea id="fr-detalles" rows="4" placeholder="Ej. Remodelar cocina y sala, cambiar piso, ampliar un cuarto…"></textarea></div>
+
+    <div class="fld" style="margin-top:16px">
+      <label>Adjuntar fotografías (estado actual)</label>
+      <div class="up">
+        <div class="acts">
+          <input id="fr-files1" class="sr" type="file" accept="image/*" multiple>
+          <label class="btn btn-gold btn-sm" for="fr-files1">📷 Subir fotografías</label>
+        </div>
+        <div class="tg" id="frGrid1"></div>
+      </div>
+    </div>
+
+    <div class="fld" style="margin-top:16px">
+      <label>Adjuntar fotografías (referencia / inspiración)</label>
+      <div class="up">
+        <div class="acts">
+          <input id="fr-files2" class="sr" type="file" accept="image/*" multiple>
+          <label class="btn btn-gold btn-sm" for="fr-files2">📷 Subir fotografías</label>
+        </div>
+        <div class="tg" id="frGrid2"></div>
+      </div>
+    </div>
+
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fr-tiempo">Tiempo estimado de remodelación</label>
+        <select id="fr-tiempo">
+          <option value="">Selecciona…</option>
+          <option value="1-2 semanas">1 a 2 semanas</option>
+          <option value="3-4 semanas">3 a 4 semanas</option>
+          <option value="1-2 meses">1 a 2 meses</option>
+          <option value="3-6 meses">3 a 6 meses</option>
+          <option value="Más de 6 meses">Más de 6 meses</option>
+          <option value="No estoy seguro">No estoy seguro</option>
+        </select>
+      </div>
+      <div class="fld"><label for="fr-presupuesto">Presupuesto estimado de remodelación (Q)</label><input id="fr-presupuesto" type="text" placeholder="Ej. 50,000"></div>
+    </div>
+
+    <div class="acts" style="margin-top:20px">
+      <button class="btn btn-dark" type="button" id="frSend">Enviar solicitud</button>
+    </div>
+    <p class="note" id="frNote" hidden>Solicitud enviada correctamente. Gracias.</p>
   </div>
 </div>
 
