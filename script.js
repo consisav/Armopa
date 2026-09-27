@@ -488,6 +488,263 @@ $('#sendBtn').addEventListener('click', async () => {
   $('#sentNote').hidden = false;
 });
 
+/* Formulario de Autorización de Promoción y Venta */
+const authModal = $('#authModal');
+const openAuthModal = () => { authModal.hidden = false; $('#fpNote').hidden = true; };
+const closeAuthModal = () => { authModal.hidden = true; };
+const svRentBtn = $('#svRentBtn');
+if (svRentBtn) {
+  svRentBtn.addEventListener('click', openAuthModal);
+  svRentBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openAuthModal(); } });
+}
+$('#authClose')?.addEventListener('click', closeAuthModal);
+$('#authScrim')?.addEventListener('click', closeAuthModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && authModal && !authModal.hidden) closeAuthModal(); });
+
+$('#fpSave')?.addEventListener('click', async () => {
+  const v = (id) => $(id)?.value.trim() || null;
+  const n = (id) => { const x = $(id)?.value; return x === '' || x == null ? null : Number(x); };
+  const c = (id) => !!$(id)?.checked;
+
+  const nombre = v('#fp-nombre');
+  if (!nombre) {
+    alert('Por favor escribe el nombre completo del propietario.');
+    return;
+  }
+
+  const row = {
+    nombre_completo: nombre,
+    fecha_nacimiento: v('#fp-nacimiento'),
+    dpi_pasaporte: v('#fp-dpi'),
+    representante_legal: v('#fp-repleg'),
+    razon_social: v('#fp-razon'),
+    nit: v('#fp-nit'),
+    telefono_movil: v('#fp-tel'),
+    correo_electronico: v('#fp-correo'),
+    direccion_domicilio: v('#fp-domicilio'),
+
+    tipo_propiedad: v('#fp-tipo'),
+    direccion_propiedad: v('#fp-dirprop'),
+    numero: v('#fp-numero'),
+    finca: v('#fp-finca'),
+    folio: v('#fp-folio'),
+    libro: v('#fp-libro'),
+    gravamen: v('#fp-gravamen'),
+    institucion: v('#fp-institucion'),
+    monto: v('#fp-monto'),
+    mts_frente: v('#fp-mfrente'),
+    mts_fondo: v('#fp-mfondo'),
+    mts_construccion: v('#fp-mconst'),
+    terreno_vrs2: v('#fp-terreno'),
+    mts2: v('#fp-mts2'),
+    niveles: v('#fp-niveles'),
+    estacionamientos: v('#fp-estac'),
+    habitaciones: v('#fp-habitaciones'),
+    banos: v('#fp-banos'),
+
+    lavanderia: c('#fp-lavanderia'),
+    linea_blanca: c('#fp-linea-blanca'),
+    habitacion_servicio: c('#fp-hab-servicio'),
+    bodega: c('#fp-bodega'),
+    amueblado: c('#fp-amueblado'),
+    balcon_terraza_jardin: c('#fp-balcon'),
+    mascota: c('#fp-mascota'),
+
+    amenidad_motor_lobby: c('#fp-am-motorlobby'),
+    amenidad_piscina: c('#fp-am-piscina'),
+    amenidad_sauna: c('#fp-am-sauna'),
+    amenidad_juegos_ninos: c('#fp-am-juegos'),
+    amenidad_area_verde: c('#fp-am-areaverde'),
+    amenidad_salon_usos_multiples: c('#fp-am-salon'),
+    amenidad_gimnasio: c('#fp-am-gimnasio'),
+    amenidad_business_center: c('#fp-am-business'),
+    amenidad_canchas_deportivas: c('#fp-am-canchas'),
+    amenidad_cisterna_pozo: c('#fp-am-cisterna'),
+    num_parqueos_visita: n('#fp-am-parqueos'),
+
+    precio_venta: v('#fp-precio-venta'),
+    valor_registro: v('#fp-valor-registro'),
+    iusi_trimestral: v('#fp-iusi'),
+
+    precio_alquiler: v('#fp-precio-alquiler'),
+    mantenimiento: v('#fp-mantenimiento'),
+    incluye_mantenimiento: v('#fp-incluye-mant'),
+
+    observaciones: v('#fp-obs')
+  };
+
+  const { error } = await supabaseClient.from('autorizaciones_promocion').insert(row);
+
+  if (error) {
+    console.error('Error al guardar autorización:', error);
+    alert('No pudimos guardar la autorización. Intenta de nuevo.');
+    return;
+  }
+
+  $('#fpNote').hidden = false;
+});
+
+/* Reporte imprimible del Formulario de Autorización de Promoción y Venta */
+function fpEsc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function fpBox(checked) {
+  return '<span class="fp-chk">' + (checked ? '☑' : '☐') + '</span>';
+}
+function buildAuthReportHTML() {
+  const v = (id) => fpEsc($(id)?.value.trim() || '');
+  const c = (id) => !!$(id)?.checked;
+  const logoUrl = new URL('assets/logo-reporte.png', window.location.href).href;
+
+  return `<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Formulario de Autorización de Promoción y Venta</title>
+<style>
+  @page { size: letter; margin: 8mm 10mm; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { font-family: Arial, Helvetica, sans-serif; font-size: 9px; color: #111; margin: 0; }
+  .fp-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 2px solid #071a2f; padding-bottom: 5px; margin-bottom: 6px; }
+  .fp-head img { height: 40px; }
+  .fp-head h1 { flex: 1; text-align: center; font-size: 13px; margin: 0; color: #10243c; }
+  .fp-contact { border: 1px solid #333; padding: 3px 8px; font-size: 8px; text-align: center; line-height: 1.3; white-space: nowrap; }
+  .fp-sec-h { background: #071a2f; color: #fff; font-weight: bold; font-size: 9.5px; padding: 2px 7px; margin: 6px 0 0; }
+  table.fp-tab { width: 100%; border-collapse: collapse; margin-bottom: 0; }
+  table.fp-tab td { border: 1px solid #999; background: #f2f2f2; padding: 2px 7px; font-size: 9px; vertical-align: top; line-height: 1.35; }
+  table.fp-tab td b { font-weight: bold; }
+  .fp-note { font-size: 7.6px; line-height: 1.3; color: #222; margin: 4px 0 0; text-align: justify; }
+  .fp-chk { display: inline-block; margin-right: 2px; }
+  .fp-terms { font-size: 7.2px; line-height: 1.28; text-align: justify; margin-top: 6px; }
+  .fp-terms p { margin: 3px 0; }
+  .fp-terms ul { margin: 2px 0; padding-left: 16px; }
+  .fp-terms li { margin-bottom: 1px; }
+  .fp-sign { display: flex; justify-content: space-around; margin-top: 14px; }
+  .fp-sign div { width: 42%; text-align: center; border-top: 1px solid #111; padding-top: 3px; font-size: 8.5px; }
+  .fp-cert { font-size: 7.6px; line-height: 1.35; text-align: justify; margin-top: 10px; }
+  @media print {
+    .fp-noprint { display: none; }
+    html, body { width: 100%; height: 100%; }
+  }
+</style>
+</head>
+<body>
+  <div class="fp-head">
+    <img src="${logoUrl}" alt="ARMOPA">
+    <h1>Formulario de Autorización de Promoción y Venta</h1>
+    <div class="fp-contact">Información y Ventas<br>(502) 4918 3411<br>(502) 5801 0723</div>
+  </div>
+
+  <div class="fp-sec-h">Datos del Propietario</div>
+  <table class="fp-tab">
+    <tr><td colspan="3"><b>Nombre completo:</b> ${v('#fp-nombre')}</td></tr>
+    <tr><td><b>DPI/CUI o Pasaporte:</b> ${v('#fp-dpi')}</td><td colspan="2"><b>Fecha de Nacimiento:</b> ${v('#fp-nacimiento')}</td></tr>
+    <tr><td><b>Representante Legal:</b> ${v('#fp-repleg')}</td><td><b>Razón Social:</b> ${v('#fp-razon')}</td><td><b>NIT:</b> ${v('#fp-nit')}</td></tr>
+    <tr><td colspan="2"><b>Teléfono móvil:</b> ${v('#fp-tel')}</td><td><b>Correo Electrónico:</b> ${v('#fp-correo')}</td></tr>
+  </table>
+
+  <div class="fp-sec-h">Dirección domicilio actual:</div>
+  <table class="fp-tab"><tr><td>${v('#fp-domicilio')}</td></tr></table>
+
+  <p class="fp-note">Como propietario del inmueble que se describe a continuación, autorizo a <b>Armopa group</b>, a promocionar en Alquiler y/o Venta mi inmueble por los medios que este considere pertinentes, derivado de lo anterior y por el cumplimiento del decreto # 55-2010 adjunto mi documento de identificación (<b>DPI/CUI o Pasaporte</b>), así como uno de estos documentos: (1.- Recibo de IUSI reciente; ó 2.- Consulta electrónica del Registro de la Propiedad; ó 3.- Avalúo Reciente; ó 4.- Escritura Pública).</p>
+
+  <div class="fp-sec-h">Descripción Propiedad</div>
+  <table class="fp-tab">
+    <tr><td colspan="3"><b>Tipo:</b> ${v('#fp-tipo')}</td></tr>
+    <tr><td colspan="3"><b>Dirección:</b> ${v('#fp-dirprop')}</td></tr>
+    <tr><td colspan="3"><b>Número:</b> ${v('#fp-numero')}</td></tr>
+    <tr><td><b>Finca:</b> ${v('#fp-finca')}</td><td><b>Folio:</b> ${v('#fp-folio')}</td><td><b>Libro:</b> ${v('#fp-libro')}</td></tr>
+    <tr><td><b>Gravamen:</b> ${v('#fp-gravamen')}</td><td><b>Institución:</b> ${v('#fp-institucion')}</td><td><b>Monto:</b> ${v('#fp-monto')}</td></tr>
+    <tr><td><b>Mts. Frente:</b> ${v('#fp-mfrente')}</td><td><b>Mts. Fondo:</b> ${v('#fp-mfondo')}</td><td><b>Mts. Construcción:</b> ${v('#fp-mconst')}</td></tr>
+    <tr><td><b>Terreno Vrs2:</b> ${v('#fp-terreno')}</td><td><b>Mts2:</b> ${v('#fp-mts2')}</td><td><b>Niveles:</b> ${v('#fp-niveles')}</td></tr>
+    <tr><td><b>Estacionamientos:</b> ${v('#fp-estac')}</td><td><b>Habitaciones:</b> ${v('#fp-habitaciones')}</td><td><b>Baños:</b> ${v('#fp-banos')}</td></tr>
+    <tr>
+      <td colspan="3">
+        ${fpBox(c('#fp-lavanderia'))}<b>Lavandería</b>&nbsp;&nbsp;&nbsp;
+        ${fpBox(c('#fp-linea-blanca'))}<b>Línea Blanca</b>&nbsp;&nbsp;&nbsp;
+        ${fpBox(c('#fp-hab-servicio'))}<b>Habitación Servicio</b>&nbsp;&nbsp;&nbsp;
+        ${fpBox(c('#fp-bodega'))}<b>Bodega</b>&nbsp;&nbsp;&nbsp;
+        ${fpBox(c('#fp-amueblado'))}<b>Amueblado</b>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        ${fpBox(c('#fp-balcon'))}<b>Balcón y/o Terraza / Jardín</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        ${fpBox(c('#fp-mascota'))}<b>Mascota</b>
+      </td>
+    </tr>
+  </table>
+
+  <div class="fp-sec-h">Amenidades del Edificio / Condominio</div>
+  <table class="fp-tab">
+    <tr>
+      <td colspan="3">
+        ${fpBox(c('#fp-am-motorlobby'))}<b>Motor Lobby</b>&nbsp;&nbsp;
+        ${fpBox(c('#fp-am-piscina'))}<b>Piscina</b>&nbsp;&nbsp;
+        ${fpBox(c('#fp-am-sauna'))}<b>Sauna</b>&nbsp;&nbsp;
+        ${fpBox(c('#fp-am-juegos'))}<b>Juegos de Niños</b>&nbsp;&nbsp;
+        ${fpBox(c('#fp-am-areaverde'))}<b>Área Verde</b>&nbsp;&nbsp;
+        ${fpBox(c('#fp-am-salon'))}<b>Salón Usos Múltiples</b>&nbsp;&nbsp;
+        ${fpBox(c('#fp-am-gimnasio'))}<b>Gimnasio</b>&nbsp;&nbsp;
+        ${fpBox(c('#fp-am-business'))}<b>Bussines Center</b>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3">
+        ${fpBox(c('#fp-am-canchas'))}<b>Canchas Deportivas</b>&nbsp;&nbsp;
+        ${fpBox(c('#fp-am-cisterna'))}<b>Cisterna y/o Pozo</b>&nbsp;&nbsp;
+        <b>Número de parqueos de visita:</b> ${v('#fp-am-parqueos')}
+      </td>
+    </tr>
+  </table>
+
+  <table class="fp-tab" style="margin-top:10px">
+    <tr><td colspan="3"><b>Precio de Venta:</b> ${v('#fp-precio-venta')}</td></tr>
+    <tr><td colspan="2"><b>Valor del Registro:</b> ${v('#fp-valor-registro')}</td><td><b>IUSI Trimestral:</b> ${v('#fp-iusi')}</td></tr>
+    <tr><td colspan="3"><b>Precio Alquiler:</b> ${v('#fp-precio-alquiler')}</td></tr>
+    <tr><td colspan="3"><b>Mantenimiento:</b> ${v('#fp-mantenimiento')}</td></tr>
+    <tr><td colspan="3"><b>Qué incluye el mantenimiento:</b> ${v('#fp-incluye-mant')}</td></tr>
+    <tr><td colspan="3"><b>Observaciones:</b> ${v('#fp-obs')}</td></tr>
+  </table>
+
+  <div class="fp-terms">
+    <p>En caso de que la negociación se realice con un cliente de <b>Armopa group</b> (proporcionado o referido por cualquiera de sus Ejecutivos Asociados) me comprometo a cancelar los honorarios en concepto de Servicios Profesionales de Bienes Raíces correspondientes por:</p>
+    <ul>
+      <li>Alquileres: 112% (Incluye IVA) de la primera mensualidad de Alquiler en contrato de 1 año.</li>
+      <li>Alquileres a largo Plazo: 112% (Incluye IVA) x múltiplos o fracción de cada 3 años de contrato.</li>
+      <li>Venta: 5.6% (Incluye IVA) del valor final de venta de la negociación.</li>
+    </ul>
+    <p>En caso de que se firme una promesa de compraventa y que no se concrete la compraventa se dividirán las Arras pactadas en dos partes, el 50% para <b>Armopa group</b> por concepto de honorarios y otro 50% para <b>EL PROPIETARIO</b>. Los honorarios se cancelarán en el momento de la firma de promesa de compra-venta o en el contrato de arrendamiento. Autorizo voluntariamente que la información recopilada y/o proporcionada por entidades públicas o privadas y le generación de relaciones contractuales, crediticias o comerciales, sea reportada a centrales de riesgo o burós de crédito para ser tratada, almacenada o transferida y autorizo expresamente a las entidades que presten servicios de información, centrales de riesgo o burós de crédito, el recopilar, difundir o comercializar reportes o estudios que contengan información sobre mi persona. Autorizo a que el comprador o arrendatario emita cheque de pago de honorarios a nombre de <b>Armopa group</b>, al momento de formalizar la negociación.</p>
+  </div>
+
+  <div class="fp-sign">
+    <div>Firma Propietario</div>
+    <div>Firma Armopa group</div>
+  </div>
+
+  <p class="fp-cert">En la ciudad de Guatemala, el _______ de ___________ de _______, DOY FÉ que las firmas que anteceden son AUTÉNTICAS por haber sido puestas en mi presencia por _____________ y _____________, personas de mi conocimiento. Estas firmas calzan un documento denominado FORMULARIO DE AUTORIZACIÓN DE PROMOCIÓN Y VENTA, contenido en una página impresa la cual firmo y sello.</p>
+
+  <div class="fp-sign">
+    <div>Firma Propietario</div>
+    <div>Firma Armopa group</div>
+  </div>
+</body>
+</html>`;
+}
+
+$('#fpPrint')?.addEventListener('click', () => {
+  const w = window.open('', '_blank');
+  if (!w) {
+    alert('Tu navegador bloqueó la ventana de impresión. Permite ventanas emergentes para este sitio e intenta de nuevo.');
+    return;
+  }
+  w.document.open();
+  w.document.write(buildAuthReportHTML());
+  w.document.close();
+  w.onload = () => { w.focus(); w.print(); };
+});
+
 /* Propiedades: ubicaciones, imágenes y vista (se guardan en este navegador) */
 /* Costos alrededor: valores de referencia de renta y venta de propiedades similares en Guatemala (2026). Son precios pedidos publicados en portales inmobiliarios, no precios de cierre. */
 const MK_FX = 7.7;
