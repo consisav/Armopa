@@ -1928,7 +1928,7 @@ function mkList(id, items) {
 }
 function renderMk() {
   const box = $('#pMk');
-  const c = cur >= 0 ? list()[sel] : null;
+  const c = cur !== null ? list()[sel] : null;
   if (!mk || !c || mk.key !== cur + '-' + sel || mode !== 'edit') { box.hidden = true; return; }
   const e = marketEstimate(cur, mk.in, lang);
   box.hidden = false;
