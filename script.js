@@ -940,6 +940,7 @@ const openPresupuestoModal = () => {
   presupuestoModal.hidden = false;
   $('#ppNote').hidden = true;
   $('#pp-nombre').value = '';
+  $('#pp-telefono').value = '';
   $('#pp-fecha').value = ppFormatFecha();
   $('#pp-valor').value = '';
   $('#pp-descripcion').value = '';
@@ -1008,6 +1009,7 @@ $('#ppSend')?.addEventListener('click', async () => {
   }
   const row = {
     nombre_cliente: nombre,
+    telefono_cliente: $('#pp-telefono')?.value.trim() || null,
     fecha_solicitud: new Date().toISOString().slice(0, 10),
     valor_presupuesto: $('#pp-valor')?.value.trim() || null,
     opcion: ppOpcion,
@@ -1024,6 +1026,160 @@ $('#ppSend')?.addEventListener('click', async () => {
   }
 
   $('#ppNote').hidden = false;
+});
+
+/* Construimos en tu terreno: datos del proyecto + guía de requisitos generada con IA */
+const CS_BUCKET = 'terreno-construccion'; // bucket de Supabase Storage — debe crearse como PÚBLICO
+let csFiles = []; // { url, name, isPdf }
+let csDisenoUrl = '';
+
+function uploadPlainFileToBucket(file, bucket) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const path = Date.now() + '-' + Math.random().toString(36).slice(2) + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const { error } = await supabaseClient.storage.from(bucket).upload(path, file, { contentType: file.type || 'application/octet-stream' });
+      if (error) { reject(error); return; }
+      const pub = supabaseClient.storage.from(bucket).getPublicUrl(path);
+      resolve(pub.data.publicUrl);
+    } catch (err) { reject(err); }
+  });
+}
+
+function csRenderGrid() {
+  const grid = $('#csGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  csFiles.forEach((f, i) => {
+    const wrap = el('div', 'th');
+    if (f.isPdf) {
+      const box = el('div');
+      box.style.cssText = 'width:100%;height:100%;border-radius:8px;background:#f2f4f7;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center;padding:4px;box-sizing:border-box;overflow:hidden';
+      box.innerHTML = '📄<br>' + (f.name || 'PDF');
+      wrap.appendChild(box);
+    } else {
+      const img = el('img'); img.src = f.url; img.alt = '';
+      wrap.appendChild(img);
+    }
+    const x = el('button', 'th-x', '×');
+    x.type = 'button';
+    x.setAttribute('aria-label', 'Quitar');
+    x.addEventListener('click', () => { csFiles.splice(i, 1); csRenderGrid(); });
+    wrap.appendChild(x);
+    grid.appendChild(wrap);
+  });
+}
+
+$('#cs-files')?.addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  for (const f of files) {
+    try {
+      if (f.type === 'application/pdf') {
+        const url = await uploadPlainFileToBucket(f, CS_BUCKET);
+        csFiles.push({ url, name: f.name, isPdf: true });
+      } else if (f.type.startsWith('image/')) {
+        const url = await uploadImageToBucket(f, CS_BUCKET, 1600);
+        csFiles.push({ url, name: f.name, isPdf: false });
+      }
+    } catch (err) { console.error('Error al subir archivo del terreno:', err); }
+  }
+  csRenderGrid();
+});
+
+const construirModal = $('#construirModal');
+const openConstruirModal = () => {
+  construirModal.hidden = false;
+  $('#csNote').hidden = true;
+  $('#cs-valor').value = '';
+  $('#cs-nombre').value = '';
+  $('#cs-fecha-inicio').value = '';
+  $('#cs-que-hacer').value = '';
+  $('#cs-m2').value = '';
+  $('#cs-descripcion-diseno').value = '';
+  $('#cs-files').value = '';
+  csFiles = [];
+  csRenderGrid();
+  csDisenoUrl = '';
+  $('#csDisenoStatus').textContent = '';
+  $('#csDisenoImg').hidden = true;
+  $('#csDisenoImg').src = '';
+  $('#csReqBlock').hidden = true;
+  $('#csReqBtn')?.setAttribute('aria-expanded', 'false');
+};
+const closeConstruirModal = () => { construirModal.hidden = true; };
+const svConstruirBtn = $('#svConstruirBtn');
+if (svConstruirBtn) {
+  svConstruirBtn.addEventListener('click', openConstruirModal);
+  svConstruirBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openConstruirModal(); } });
+}
+$('#construirClose')?.addEventListener('click', closeConstruirModal);
+$('#construirScrim')?.addEventListener('click', closeConstruirModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && construirModal && !construirModal.hidden) closeConstruirModal(); });
+
+$('#csReqBtn')?.addEventListener('click', () => {
+  const block = $('#csReqBlock');
+  const show = block.hidden;
+  block.hidden = !show;
+  $('#csReqBtn').setAttribute('aria-expanded', String(show));
+  if (show) block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+});
+
+/* Genera una imagen del diseño con IA a partir del texto del punto (c), llamando a la Edge
+   Function 'generar-diseno' en Supabase (debe configurarse aparte, ver documentación). */
+$('#csGenerarDisenoBtn')?.addEventListener('click', async () => {
+  const descripcion = $('#cs-descripcion-diseno')?.value.trim();
+  if (!descripcion) {
+    alert('Por favor describe primero lo que deseas construir.');
+    return;
+  }
+  const btn = $('#csGenerarDisenoBtn');
+  const status = $('#csDisenoStatus');
+  const img = $('#csDisenoImg');
+  btn.disabled = true;
+  status.textContent = 'Generando diseño con IA… esto puede tardar unos segundos.';
+  img.hidden = true;
+  try {
+    const { data, error } = await supabaseClient.functions.invoke('generar-diseno', { body: { descripcion } });
+    if (error || !data || !data.imageUrl) throw error || new Error('Sin imagen en la respuesta');
+    csDisenoUrl = data.imageUrl;
+    img.src = csDisenoUrl;
+    img.hidden = false;
+    status.textContent = 'Diseño generado con IA:';
+  } catch (err) {
+    console.error('Error al generar diseño con IA:', err);
+    status.textContent = 'No pudimos generar el diseño en este momento. Intenta de nuevo más tarde.';
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$('#csSend')?.addEventListener('click', async () => {
+  const nombre = $('#cs-nombre')?.value.trim();
+  if (!nombre) {
+    alert('Por favor escribe el nombre completo.');
+    return;
+  }
+  const row = {
+    nombre_completo: nombre,
+    fecha_solicitud: new Date().toISOString().slice(0, 10),
+    valor_presupuesto: $('#cs-valor')?.value.trim() || null,
+    fecha_inicio_estimada: $('#cs-fecha-inicio')?.value || null,
+    descripcion_construccion: $('#cs-que-hacer')?.value.trim() || null,
+    metros_cuadrados: $('#cs-m2')?.value ? Number($('#cs-m2').value) : null,
+    descripcion_diseno: $('#cs-descripcion-diseno')?.value.trim() || null,
+    imagen_diseno_url: csDisenoUrl || null,
+    fotos_terreno: csFiles.map((f) => f.url)
+  };
+
+  const { error } = await supabaseClient.from('solicitudes_construccion').insert(row);
+
+  if (error) {
+    console.error('Error al guardar solicitud de construcción:', error);
+    alert('No pudimos enviar tu solicitud. Intenta de nuevo.');
+    return;
+  }
+
+  $('#csNote').hidden = false;
 });
 
 /* Propiedades: ubicaciones, imágenes y vista (se guardan en este navegador) */

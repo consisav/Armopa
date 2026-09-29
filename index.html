@@ -155,7 +155,7 @@
         <article class="sv" id="svPresupuestoBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/presupuesto-badge.jpg" alt="" data-i18n-alt="budgetAlt"></span><h3 data-i18n="s2"></h3><p data-i18n="s2d"></p></article>
         <article class="sv" id="svComprarBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/compra-badge.jpg" alt="" data-i18n-alt="buyAlt"></span><h3 data-i18n="s3"></h3><p data-i18n="s3d"></p></article>
         <article class="sv" id="svRemodelBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/remodela-badge.jpg" alt="" data-i18n-alt="remodelAlt"></span><h3 data-i18n="s4"></h3><p data-i18n="s4d"></p></article>
-        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/terreno-badge.jpg" alt="" data-i18n-alt="landAlt"></span><h3 data-i18n="s5"></h3><p data-i18n="s5d"></p></article>
+        <article class="sv" id="svConstruirBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/terreno-badge.jpg" alt="" data-i18n-alt="landAlt"></span><h3 data-i18n="s5"></h3><p data-i18n="s5d"></p></article>
         <article class="sv"><span class="sv-ic sv-ph"><img src="assets/proyecto-badge.jpg" alt="" data-i18n-alt="projAlt"></span><h3 data-i18n="s6"></h3><p data-i18n="s6d"></p></article>
       </div>
     </div>
@@ -1156,8 +1156,10 @@
 
     <div class="x-row" style="margin-top:16px">
       <div class="fld"><label for="pp-nombre">Nombre del cliente</label><input id="pp-nombre" type="text"></div>
-      <div class="fld"><label for="pp-fecha">Fecha</label><input id="pp-fecha" type="text" readonly></div>
+      <div class="fld"><label for="pp-telefono">Teléfono</label><input id="pp-telefono" type="tel" placeholder="Ej. 5555-1234"></div>
     </div>
+
+    <div class="fld" style="margin-top:16px"><label for="pp-fecha">Fecha</label><input id="pp-fecha" type="text" readonly></div>
 
     <div class="fld" style="margin-top:16px">
       <span class="lbl">¿Qué deseas realizar con una propiedad?</span>
@@ -1185,6 +1187,70 @@
       <button class="btn btn-dark" type="button" id="ppSend">Enviar solicitud</button>
     </div>
     <p class="note" id="ppNote" hidden>Solicitud enviada correctamente. Gracias.</p>
+  </div>
+</div>
+
+<div class="modal" id="construirModal" hidden>
+  <button class="scrim" type="button" id="construirScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="construirCard" role="dialog" aria-modal="true" aria-labelledby="construirTitle">
+    <button class="mx" type="button" id="construirClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="construirTitle">Construimos en tu terreno</h2><p class="ph-sub">Cuéntanos los datos generales de tu proyecto; con gusto te ayudamos con el diseño, el presupuesto y la ejecución.</p></div>
+
+    <div class="fld" style="margin-top:6px"><label for="cs-valor">Valor Presupuesto (Q)</label><input id="cs-valor" type="text" placeholder="Ej. 350,000"></div>
+
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="cs-nombre">Nombre completo</label><input id="cs-nombre" type="text"></div>
+      <div class="fld"><label for="cs-fecha-inicio">Fecha de Inicio estimada</label><input id="cs-fecha-inicio" type="date"></div>
+    </div>
+
+    <div class="fld" style="margin-top:16px"><label for="cs-que-hacer">Describe qué deseas hacer en la construcción</label><textarea id="cs-que-hacer" rows="3" placeholder="Ej. Construir mi casa de habitación en un terreno propio de 300 mts2…"></textarea></div>
+
+    <div class="fld" style="margin-top:16px"><label for="cs-m2">Metros cuadrados</label><input id="cs-m2" type="number" min="0" step="1" placeholder="Ej. 200"></div>
+
+    <div class="fld" style="margin-top:16px"><label for="cs-descripcion-diseno">Describe lo que deseas construir</label><textarea id="cs-descripcion-diseno" rows="4" placeholder="Ej. Casa moderna de un nivel, fachada blanca con detalles de madera, techo plano, ventanales grandes, 3 habitaciones…"></textarea></div>
+
+    <div class="acts" style="margin-top:12px">
+      <button class="btn btn-line-dark" type="button" id="csGenerarDisenoBtn">🎨 Generar diseño con IA</button>
+    </div>
+    <div id="csDisenoBox" style="margin-top:14px">
+      <p class="pq-status" id="csDisenoStatus"></p>
+      <img id="csDisenoImg" alt="Diseño generado con IA" hidden style="width:100%;border-radius:12px;border:1px solid var(--line);margin-top:8px">
+    </div>
+
+    <div class="fld" style="margin-top:16px">
+      <label>Fotografías del terreno (imágenes o PDF)</label>
+      <div class="up">
+        <div class="acts">
+          <input id="cs-files" class="sr" type="file" accept="image/*,application/pdf" multiple>
+          <label class="btn btn-gold btn-sm" for="cs-files">📎 Subir fotografías / PDF</label>
+        </div>
+        <div class="tg" id="csGrid"></div>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:20px">
+      <button class="btn btn-dark" type="button" id="csSend">Enviar solicitud</button>
+      <button class="btn btn-line-dark" type="button" id="csReqBtn" aria-expanded="false" aria-controls="csReqBlock">📋 Requisitos para construir</button>
+    </div>
+    <p class="note" id="csNote" hidden>Solicitud enviada correctamente. Gracias.</p>
+
+    <div id="csReqBlock" hidden style="margin-top:22px;border-top:1px solid var(--line);padding-top:18px">
+      <h3 style="font-size:20px;color:#10243c;margin:0 0 4px">Pasos para construir una propiedad en Guatemala</h3>
+      <p class="ph-sub" style="margin:0 0 14px">Esta guía fue generada con IA a partir del proceso habitual ante municipalidades, colegios profesionales y entidades de servicios en Guatemala. Es informativa y puede variar según el municipio y el tipo de proyecto.</p>
+      <ol class="stp-list" id="csReqList">
+        <li><b>Verificar el uso de suelo y el Plan de Ordenamiento Territorial (POT)</b><br><small>Confirma en la municipalidad que el terreno permite el tipo de construcción que deseas.</small></li>
+        <li><b>Reunir la documentación legal del terreno</b><br><small>Escritura registrada, certificación del RGP y solvencia del IUSI al día.</small></li>
+        <li><b>Contratar a un profesional colegiado (arquitecto o ingeniero civil)</b><br><small>Debe estar activo en el CIG (Colegio de Ingenieros) o CAG (Colegio de Arquitectos).</small></li>
+        <li><b>Elaborar el anteproyecto y los planos</b><br><small>Diseño arquitectónico, planos estructurales, eléctricos e hidrosanitarios.</small></li>
+        <li><b>Realizar un estudio de suelos</b><br><small>Recomendado para definir el tipo de cimentación adecuado.</small></li>
+        <li><b>Gestionar la licencia municipal de construcción</b><br><small>Presentar planos, boleta de pago de arbitrios y demás requisitos ante la municipalidad correspondiente.</small></li>
+        <li><b>Confirmar factibilidad de servicios</b><br><small>Agua, drenajes y energía eléctrica (EEGSA u otra distribuidora local).</small></li>
+        <li><b>Iniciar la obra con bitácora y supervisión</b><br><small>Llevar bitácora de obra y supervisión periódica del profesional responsable.</small></li>
+        <li><b>Solicitar la recepción de obra / permiso de habitabilidad</b><br><small>Trámite final ante la municipalidad al concluir la construcción.</small></li>
+        <li><b>Registrar las mejoras en el Registro General de la Propiedad</b><br><small>Actualiza el valor y la descripción del inmueble ya construido.</small></li>
+      </ol>
+      <p class="hint" style="margin-top:8px">Para tu caso particular, te recomendamos confirmar los pasos exactos con un profesional colegiado o con nuestro equipo.</p>
+    </div>
   </div>
 </div>
 
