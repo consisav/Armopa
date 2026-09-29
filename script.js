@@ -924,6 +924,108 @@ $('#frSend')?.addEventListener('click', async () => {
   $('#frNote').hidden = false;
 });
 
+/* Adaptamos tu presupuesto: solicitud del cliente + PDF opcional */
+const PRESUP_BUCKET = 'solicitudes-presupuesto'; // bucket de Supabase Storage — debe crearse como PRIVADO
+let ppOpcion = '';
+let ppFileUrl = '';
+
+function ppFormatFecha() {
+  const d = new Date();
+  const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+  return d.getDate() + ' de ' + meses[d.getMonth()] + ' de ' + d.getFullYear();
+}
+
+const presupuestoModal = $('#presupuestoModal');
+const openPresupuestoModal = () => {
+  presupuestoModal.hidden = false;
+  $('#ppNote').hidden = true;
+  $('#pp-nombre').value = '';
+  $('#pp-fecha').value = ppFormatFecha();
+  $('#pp-valor').value = '';
+  $('#pp-descripcion').value = '';
+  $('#pp-file').value = '';
+  $('#pp-file-status').textContent = 'Sin subir';
+  ppOpcion = '';
+  ppFileUrl = '';
+  $$('#ppOpciones .seg').forEach((b) => { b.classList.remove('on'); b.setAttribute('aria-pressed', 'false'); });
+};
+const closePresupuestoModal = () => { presupuestoModal.hidden = true; };
+const svPresupuestoBtn = $('#svPresupuestoBtn');
+if (svPresupuestoBtn) {
+  svPresupuestoBtn.addEventListener('click', openPresupuestoModal);
+  svPresupuestoBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPresupuestoModal(); } });
+}
+$('#presupuestoClose')?.addEventListener('click', closePresupuestoModal);
+$('#presupuestoScrim')?.addEventListener('click', closePresupuestoModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && presupuestoModal && !presupuestoModal.hidden) closePresupuestoModal(); });
+
+$$('#ppOpciones .seg').forEach((b) => b.addEventListener('click', () => {
+  if (b.dataset.op === 'servicios-especiales') {
+    closePresupuestoModal();
+    const dest = document.getElementById('servicios');
+    if (dest) dest.scrollIntoView({ behavior: 'smooth' });
+    return;
+  }
+  ppOpcion = b.dataset.op;
+  $$('#ppOpciones .seg').forEach((x) => {
+    x.classList.toggle('on', x === b);
+    x.setAttribute('aria-pressed', String(x === b));
+  });
+}));
+
+$('#pp-file')?.addEventListener('change', async () => {
+  const input = $('#pp-file');
+  const file = input.files && input.files[0];
+  if (!file) return;
+  if (file.type !== 'application/pdf') {
+    alert('Solo se permiten archivos PDF.');
+    input.value = '';
+    return;
+  }
+  const st = $('#pp-file-status');
+  st.textContent = 'Subiendo…';
+  try {
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2) + '.pdf';
+    const { error } = await supabaseClient.storage.from(PRESUP_BUCKET).upload(path, file, { contentType: 'application/pdf' });
+    if (error) { st.textContent = 'Error al subir'; return; }
+    ppFileUrl = path;
+    st.textContent = '✅ Subido: ' + file.name;
+  } catch (err) {
+    console.error('Error al subir PDF de presupuesto:', err);
+    st.textContent = 'Error al subir';
+  }
+});
+
+$('#ppSend')?.addEventListener('click', async () => {
+  const nombre = $('#pp-nombre')?.value.trim();
+  if (!nombre) {
+    alert('Por favor escribe el nombre del cliente.');
+    return;
+  }
+  if (!ppOpcion) {
+    alert('Por favor selecciona qué deseas realizar con una propiedad.');
+    return;
+  }
+  const row = {
+    nombre_cliente: nombre,
+    fecha_solicitud: new Date().toISOString().slice(0, 10),
+    valor_presupuesto: $('#pp-valor')?.value.trim() || null,
+    opcion: ppOpcion,
+    descripcion: $('#pp-descripcion')?.value.trim() || null,
+    ruta_archivo_pdf: ppFileUrl || null
+  };
+
+  const { error } = await supabaseClient.from('solicitudes_presupuesto').insert(row);
+
+  if (error) {
+    console.error('Error al guardar solicitud de presupuesto:', error);
+    alert('No pudimos enviar tu solicitud. Intenta de nuevo.');
+    return;
+  }
+
+  $('#ppNote').hidden = false;
+});
+
 /* Propiedades: ubicaciones, imágenes y vista (se guardan en este navegador) */
 /* Costos alrededor: valores de referencia de renta y venta de propiedades similares en Guatemala (2026). Son precios pedidos publicados en portales inmobiliarios, no precios de cierre. */
 const MK_FX = 7.7;

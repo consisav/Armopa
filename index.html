@@ -152,7 +152,7 @@
       <div class="svc-head"><h2><span class="h1l" data-i18n="servH1"></span><span class="h2l" data-i18n="servH2"></span></h2></div>
       <div class="sv-grid">
         <article class="sv" id="svRentBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/salon-badge.jpg" alt="" data-i18n-alt="salonAlt"></span><h3 data-i18n="s1"></h3><p data-i18n="s1d"></p></article>
-        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/presupuesto-badge.jpg" alt="" data-i18n-alt="budgetAlt"></span><h3 data-i18n="s2"></h3><p data-i18n="s2d"></p></article>
+        <article class="sv" id="svPresupuestoBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/presupuesto-badge.jpg" alt="" data-i18n-alt="budgetAlt"></span><h3 data-i18n="s2"></h3><p data-i18n="s2d"></p></article>
         <article class="sv" id="svComprarBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/compra-badge.jpg" alt="" data-i18n-alt="buyAlt"></span><h3 data-i18n="s3"></h3><p data-i18n="s3d"></p></article>
         <article class="sv" id="svRemodelBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/remodela-badge.jpg" alt="" data-i18n-alt="remodelAlt"></span><h3 data-i18n="s4"></h3><p data-i18n="s4d"></p></article>
         <article class="sv"><span class="sv-ic sv-ph"><img src="assets/terreno-badge.jpg" alt="" data-i18n-alt="landAlt"></span><h3 data-i18n="s5"></h3><p data-i18n="s5d"></p></article>
@@ -1141,6 +1141,50 @@
       <button class="btn btn-dark" type="button" id="frSend">Enviar solicitud</button>
     </div>
     <p class="note" id="frNote" hidden>Solicitud enviada correctamente. Gracias.</p>
+  </div>
+</div>
+
+<div class="modal" id="presupuestoModal" hidden>
+  <button class="scrim" type="button" id="presupuestoScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="presupuestoCard" role="dialog" aria-modal="true" aria-labelledby="presupuestoTitle">
+    <button class="mx" type="button" id="presupuestoClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="presupuestoTitle">Adaptamos tu presupuesto</h2><p class="ph-sub">Cuéntanos qué deseas realizar y diseñaremos alternativas de acuerdo con tus necesidades y objetivos.</p></div>
+
+    <h3 style="font-size:30px;color:#10243c;margin:14px 0 4px">Presupuesto</h3>
+
+    <div class="fld" style="margin-top:6px"><label for="pp-valor">Valor del presupuesto (Q)</label><input id="pp-valor" type="text" placeholder="Ej. 50,000"></div>
+
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="pp-nombre">Nombre del cliente</label><input id="pp-nombre" type="text"></div>
+      <div class="fld"><label for="pp-fecha">Fecha</label><input id="pp-fecha" type="text" readonly></div>
+    </div>
+
+    <div class="fld" style="margin-top:16px">
+      <span class="lbl">¿Qué deseas realizar con una propiedad?</span>
+      <div class="seg-g" id="ppOpciones">
+        <button class="seg" type="button" data-op="comprar">Comprar</button>
+        <button class="seg" type="button" data-op="rentar">Rentar</button>
+        <button class="seg" type="button" data-op="remodelar">Remodelar</button>
+        <button class="seg" type="button" data-op="servicios-especiales" id="ppServiciosBtn">Servicios especiales</button>
+        <button class="seg" type="button" data-op="emprendimiento">Emprendimiento financiero</button>
+      </div>
+    </div>
+
+    <div class="fld" style="margin-top:16px"><label for="pp-descripcion">Describe lo que deseas realizar</label><textarea id="pp-descripcion" rows="4" placeholder="Cuéntanos con el mayor detalle posible qué necesitas…"></textarea></div>
+
+    <div class="fld" style="margin-top:16px">
+      <label>Adjuntar PDF (opcional)</label>
+      <div class="pq-upl">
+        <input type="file" accept="application/pdf" class="sr" id="pp-file">
+        <label class="btn btn-line-dark btn-sm" for="pp-file">📎 Subir PDF</label>
+        <span class="pq-status" id="pp-file-status">Sin subir</span>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:20px">
+      <button class="btn btn-dark" type="button" id="ppSend">Enviar solicitud</button>
+    </div>
+    <p class="note" id="ppNote" hidden>Solicitud enviada correctamente. Gracias.</p>
   </div>
 </div>
 
