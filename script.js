@@ -1124,9 +1124,9 @@ $('#csReqBtn')?.addEventListener('click', () => {
   if (show) block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
-/* Genera una imagen del diseño con IA a partir del texto del punto (c), llamando a la Edge
-   Function 'generar-diseno' en Supabase (debe configurarse aparte, ver documentación). */
-$('#csGenerarDisenoBtn')?.addEventListener('click', async () => {
+/* Genera una imagen del diseño con IA a partir del texto del punto (c), usando el servicio
+   gratuito Pollinations.ai (no requiere API key ni backend propio). */
+$('#csGenerarDisenoBtn')?.addEventListener('click', () => {
   const descripcion = $('#cs-descripcion-diseno')?.value.trim();
   if (!descripcion) {
     alert('Por favor describe primero lo que deseas construir.');
@@ -1135,22 +1135,26 @@ $('#csGenerarDisenoBtn')?.addEventListener('click', async () => {
   const btn = $('#csGenerarDisenoBtn');
   const status = $('#csDisenoStatus');
   const img = $('#csDisenoImg');
+  const prompt = 'Render arquitectónico fotorrealista, vista exterior de día, de la siguiente construcción en Guatemala: ' + descripcion + '. Estilo limpio y realista, sin texto ni marcas de agua.';
+  const seed = Math.floor(Math.random() * 1000000);
+  const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=768&nologo=true&seed=' + seed;
+
   btn.disabled = true;
   status.textContent = 'Generando diseño con IA… esto puede tardar unos segundos.';
   img.hidden = true;
-  try {
-    const { data, error } = await supabaseClient.functions.invoke('generar-diseno', { body: { descripcion } });
-    if (error || !data || !data.imageUrl) throw error || new Error('Sin imagen en la respuesta');
-    csDisenoUrl = data.imageUrl;
-    img.src = csDisenoUrl;
-    img.hidden = false;
+
+  img.onload = () => {
     status.textContent = 'Diseño generado con IA:';
-  } catch (err) {
-    console.error('Error al generar diseño con IA:', err);
-    status.textContent = 'No pudimos generar el diseño en este momento. Intenta de nuevo más tarde.';
-  } finally {
+    img.hidden = false;
     btn.disabled = false;
-  }
+  };
+  img.onerror = () => {
+    status.textContent = 'No pudimos generar el diseño en este momento. Intenta de nuevo más tarde.';
+    btn.disabled = false;
+  };
+
+  csDisenoUrl = url;
+  img.src = url;
 });
 
 $('#csSend')?.addEventListener('click', async () => {
