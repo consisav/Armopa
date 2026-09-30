@@ -1126,8 +1126,9 @@ $('#csReqBtn')?.addEventListener('click', () => {
   if (show) block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
-/* Lee del texto lo que la persona describió (dormitorios, baños, parqueos) para armar
-   un plano esquemático confiable (sin depender de que la IA "escriba" texto correcto). */
+/* Lee del texto lo que la persona describió (dormitorios, baños, parqueos, niveles, cuarto
+   de servicio) para armar un plano esquemático confiable (sin depender de que la IA
+   "escriba" texto correcto dentro de una imagen). */
 function csParseHabitaciones(text) {
   const t = (text || '').toLowerCase();
   const find = (re) => {
@@ -1137,38 +1138,86 @@ function csParseHabitaciones(text) {
   const dormitorios = find(/(\d+)\s*(?:dormitorios?|habitaciones?|cuartos?|recamaras?)/) ?? 3;
   const banos = find(/(\d+(?:\.\d+)?)\s*ba[ñn]os?/) ?? 2;
   const parqueos = find(/(\d+)\s*(?:parqueos?|parqueaderos?|garaj(?:e|es))/) ?? 1;
+  let niveles = find(/(\d+)\s*(?:niveles?|pisos?|plantas?)/);
+  if (niveles === null) niveles = /\bdos\s+(?:niveles?|pisos?|plantas?)\b/.test(t) ? 2 : 1;
+  const cuartoServicio = /cuarto de servicio|cuarto de empleada|habitaci[oó]n de servicio/.test(t);
   return {
     dormitorios: Math.max(1, Math.round(dormitorios)),
     banos: Math.max(1, banos),
-    parqueos: Math.max(0, Math.round(parqueos))
+    parqueos: Math.max(0, Math.round(parqueos)),
+    niveles: Math.max(1, Math.min(3, Math.round(niveles))),
+    cuartoServicio
   };
+}
+
+function csRoomBox(label, peso) {
+  const h2 = Math.round(42 * (peso || 1));
+  return '<div style="border:1.5px dashed #071a2f;border-radius:6px;padding:8px 6px;min-height:' + h2 + 'px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11.5px;font-weight:600;color:#10243c;background:#fff">' + label + '</div>';
 }
 
 function csRenderPlano(text, m2) {
   const h = csParseHabitaciones(text);
-  const boxes = [
-    { label: 'Sala', peso: 2 },
-    { label: 'Cocina', peso: 1.4 }
-  ];
-  for (let i = 1; i <= h.dormitorios; i++) boxes.push({ label: 'Dormitorio ' + i, peso: 1.6 });
   const banosEnteros = Math.max(1, Math.round(h.banos));
-  for (let i = 1; i <= banosEnteros; i++) boxes.push({ label: 'Baño ' + i, peso: 0.9 });
-  for (let i = 1; i <= h.parqueos; i++) boxes.push({ label: 'Parqueo ' + i, peso: 1.3 });
+
+  let nivel1 = ['Sala', 'Comedor', 'Cocina'];
+  if (h.cuartoServicio) nivel1.push('Cuarto de servicio');
+  nivel1.push('Baño 1');
+  nivel1.push('Ingreso');
+  let nivel2 = [];
+
+  if (h.niveles >= 2) {
+    for (let i = 1; i <= h.dormitorios; i++) nivel2.push('Dormitorio ' + i);
+    for (let i = 2; i <= banosEnteros; i++) nivel2.push('Baño ' + i);
+    if (!nivel2.length) nivel2.push('Dormitorio 1');
+  } else {
+    for (let i = 1; i <= h.dormitorios; i++) nivel1.push('Dormitorio ' + i);
+    for (let i = 2; i <= banosEnteros; i++) nivel1.push('Baño ' + i);
+  }
+
+  const panel = (titulo, rooms) => {
+    let p = '<div style="flex:1 1 220px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#f7f8fa">';
+    p += '<div style="background:#071a2f;color:#e6bd61;text-align:center;font-weight:700;font-size:11.5px;letter-spacing:.04em;padding:8px">' + titulo + '</div>';
+    p += '<div style="padding:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px">';
+    rooms.forEach((r) => { p += csRoomBox(r, 1); });
+    p += '</div>';
+    p += '<div style="padding:0 10px 10px">' + csRoomBox('🚗 Parqueos (' + h.parqueos + ')', 1) + '</div>';
+    p += '</div>';
+    return p;
+  };
+
+  const sidebar = '<div style="flex:1 1 170px;max-width:220px;background:#071a2f;color:#fff;border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:10px">' +
+    '<div style="text-align:center">' +
+      '<div style="font-family:Marcellus,Georgia,serif;font-size:19px;color:#e6bd61;letter-spacing:.04em">ARMOPA</div>' +
+      '<div style="font-size:8.5px;color:#b9c3d1;letter-spacing:.05em;margin-top:2px">ADMINISTRACIÓN INMOBILIARIA</div>' +
+    '</div>' +
+    '<div style="font-size:12px;font-weight:700;text-align:center;border-top:1px solid #23344c;border-bottom:1px solid #23344c;padding:8px 0">CONSTRUCCIÓN DE PROPIEDAD</div>' +
+    '<div style="display:grid;gap:7px;font-size:12px">' +
+      '<div>📐 Área: <b>' + (m2 ? m2 + ' m²' : '—') + '</b></div>' +
+      '<div>🏠 Niveles: <b>' + h.niveles + '</b></div>' +
+      '<div>🛏️ Habitaciones: <b>' + h.dormitorios + '</b></div>' +
+      '<div>🚿 Baños: <b>' + banosEnteros + '</b></div>' +
+      '<div>🚗 Parqueos: <b>' + h.parqueos + '</b></div>' +
+      '<div>🍳 Cocina: <b>1</b></div>' +
+      (h.cuartoServicio ? '<div>🧺 Cuarto de servicio: <b>1</b></div>' : '') +
+    '</div>' +
+  '</div>';
+
+  let html = '<div style="display:flex;flex-wrap:wrap;gap:12px">';
+  html += panel(h.niveles >= 2 ? 'PRIMER NIVEL' : 'DISTRIBUCIÓN', nivel1);
+  if (h.niveles >= 2) html += panel('SEGUNDO NIVEL', nivel2);
+  html += sidebar;
+  html += '</div>';
+
+  html += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;text-align:center">' +
+    '<div style="flex:1 1 130px;font-size:11px;color:var(--muted)">🛡️<br>Diseño funcional<br>y moderno</div>' +
+    '<div style="flex:1 1 130px;font-size:11px;color:var(--muted)">💎<br>Materiales de<br>alta calidad</div>' +
+    '<div style="flex:1 1 130px;font-size:11px;color:var(--muted)">🌿<br>Espacios amplios<br>y confortables</div>' +
+    '<div style="flex:1 1 130px;font-size:11px;color:var(--muted)">📈<br>Más valor<br>a tu patrimonio</div>' +
+  '</div>';
+
+  html += '<p style="font-size:11px;color:#56667a;margin:12px 0 0;line-height:1.5">Plano esquemático generado automáticamente a partir de tu descripción. No es un plano arquitectónico oficial; es una referencia inicial para conversar con nuestro equipo de diseño.</p>';
 
   const box = $('#csPlanoBox');
-  let html = '<div style="border:2px solid #071a2f;border-radius:10px;padding:16px;background:#f7f8fa">';
-  html += '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">';
-  html += '<span style="font-family:Marcellus,Georgia,serif;font-size:16px;color:#071a2f">Plano esquemático de distribución</span>';
-  if (m2) html += '<span style="color:#56667a;font-weight:600;font-size:13px">' + m2 + ' m² aprox.</span>';
-  html += '</div>';
-  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px">';
-  boxes.forEach((b) => {
-    const h2 = Math.round(46 * b.peso);
-    html += '<div style="border:1.5px dashed #071a2f;border-radius:6px;padding:10px 8px;min-height:' + h2 + 'px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12.5px;font-weight:600;color:#10243c;background:#fff">' + b.label + '</div>';
-  });
-  html += '</div>';
-  html += '<p style="font-size:11px;color:#56667a;margin:10px 0 0;line-height:1.5">Plano esquemático generado automáticamente a partir de tu descripción (' + h.dormitorios + ' dormitorio(s), ' + banosEnteros + ' baño(s), ' + h.parqueos + ' parqueo(s)). No es un plano arquitectónico oficial; es una referencia inicial para conversar con nuestro equipo de diseño.</p>';
-  html += '</div>';
   box.innerHTML = html;
   box.hidden = false;
 }
