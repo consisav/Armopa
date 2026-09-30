@@ -1150,9 +1150,52 @@ function csParseHabitaciones(text) {
   };
 }
 
-function csRoomBox(label, peso) {
-  const h2 = Math.round(42 * (peso || 1));
-  return '<div style="border:1.5px dashed #071a2f;border-radius:6px;padding:8px 6px;min-height:' + h2 + 'px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:11.5px;font-weight:600;color:#10243c;background:#fff">' + label + '</div>';
+/* Color por tipo de ambiente, para que el esquema se lea como una planta real. */
+function csRoomColor(label) {
+  const l = label.toLowerCase();
+  if (l.includes('dormitorio')) return '#dbe6f5';
+  if (l.includes('baño')) return '#d9f0ec';
+  if (l.includes('cocina')) return '#fde8cf';
+  if (l.includes('comedor') || l.includes('sala')) return '#f4ead9';
+  if (l.includes('servicio')) return '#e3f0da';
+  if (l.includes('ingreso')) return '#eef1f4';
+  if (l.includes('parqueo')) return '#e7e9ec';
+  return '#f2f4f7';
+}
+
+/* Parte el texto de una habitación en hasta 2 líneas para que quepa dentro de su celda SVG. */
+function csWrapLabel(label) {
+  if (label.length <= 12) return [label];
+  const words = label.split(' ');
+  if (words.length === 1) return [label];
+  const mid = Math.ceil(words.length / 2);
+  return [words.slice(0, mid).join(' '), words.slice(mid).join(' ')];
+}
+
+/* Dibuja un plano esquemático en SVG: celdas con paredes y color por ambiente,
+   en vez de simples cajas de texto. */
+function csDrawPlanoSVG(rooms) {
+  const cols = rooms.length <= 4 ? 2 : 3;
+  const cellW = 130;
+  const cellH = 92;
+  const rows = Math.ceil(rooms.length / cols);
+  const w = cols * cellW;
+  const hgt = rows * cellH;
+  let svg = '<svg viewBox="0 0 ' + w + ' ' + hgt + '" width="100%" style="display:block;background:#fff" xmlns="http://www.w3.org/2000/svg">';
+  rooms.forEach((label, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const x = col * cellW;
+    const y = row * cellH;
+    svg += '<rect x="' + x + '" y="' + y + '" width="' + cellW + '" height="' + cellH + '" fill="' + csRoomColor(label) + '" stroke="#071a2f" stroke-width="3"/>';
+    const lines = csWrapLabel(label);
+    const cy = y + cellH / 2 - (lines.length - 1) * 7;
+    lines.forEach((ln, li) => {
+      svg += '<text x="' + (x + cellW / 2) + '" y="' + (cy + li * 14) + '" text-anchor="middle" dominant-baseline="middle" font-size="11" font-weight="600" fill="#10243c" font-family="Figtree, sans-serif">' + ln + '</text>';
+    });
+  });
+  svg += '</svg>';
+  return svg;
 }
 
 function csRenderPlano(text, m2) {
@@ -1163,6 +1206,7 @@ function csRenderPlano(text, m2) {
   if (h.cuartoServicio) nivel1.push('Cuarto de servicio');
   nivel1.push('Baño 1');
   nivel1.push('Ingreso');
+  for (let i = 1; i <= h.parqueos; i++) nivel1.push('Parqueo ' + i);
   let nivel2 = [];
 
   if (h.niveles >= 2) {
@@ -1175,12 +1219,9 @@ function csRenderPlano(text, m2) {
   }
 
   const panel = (titulo, rooms) => {
-    let p = '<div style="flex:1 1 220px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#f7f8fa">';
+    let p = '<div style="flex:1 1 240px;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#f7f8fa">';
     p += '<div style="background:#071a2f;color:#e6bd61;text-align:center;font-weight:700;font-size:11.5px;letter-spacing:.04em;padding:8px">' + titulo + '</div>';
-    p += '<div style="padding:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px">';
-    rooms.forEach((r) => { p += csRoomBox(r, 1); });
-    p += '</div>';
-    p += '<div style="padding:0 10px 10px">' + csRoomBox('🚗 Parqueos (' + h.parqueos + ')', 1) + '</div>';
+    p += csDrawPlanoSVG(rooms);
     p += '</div>';
     return p;
   };
