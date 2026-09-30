@@ -1103,6 +1103,8 @@ const openConstruirModal = () => {
   $('#csDisenoStatus').textContent = '';
   $('#csDisenoImg').hidden = true;
   $('#csDisenoImg').src = '';
+  $('#csPlanoBox').hidden = true;
+  $('#csPlanoBox').innerHTML = '';
   $('#csReqBlock').hidden = true;
   $('#csReqBtn')?.setAttribute('aria-expanded', 'false');
 };
@@ -1124,14 +1126,66 @@ $('#csReqBtn')?.addEventListener('click', () => {
   if (show) block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
 
-/* Genera una imagen del diseño con IA a partir del texto del punto (c), usando el servicio
-   gratuito Pollinations.ai (no requiere API key ni backend propio). */
+/* Lee del texto lo que la persona describió (dormitorios, baños, parqueos) para armar
+   un plano esquemático confiable (sin depender de que la IA "escriba" texto correcto). */
+function csParseHabitaciones(text) {
+  const t = (text || '').toLowerCase();
+  const find = (re) => {
+    const m = t.match(re);
+    return m ? parseFloat(m[1]) : null;
+  };
+  const dormitorios = find(/(\d+)\s*(?:dormitorios?|habitaciones?|cuartos?|recamaras?)/) ?? 3;
+  const banos = find(/(\d+(?:\.\d+)?)\s*ba[ñn]os?/) ?? 2;
+  const parqueos = find(/(\d+)\s*(?:parqueos?|parqueaderos?|garaj(?:e|es))/) ?? 1;
+  return {
+    dormitorios: Math.max(1, Math.round(dormitorios)),
+    banos: Math.max(1, banos),
+    parqueos: Math.max(0, Math.round(parqueos))
+  };
+}
+
+function csRenderPlano(text, m2) {
+  const h = csParseHabitaciones(text);
+  const boxes = [
+    { label: 'Sala', peso: 2 },
+    { label: 'Cocina', peso: 1.4 }
+  ];
+  for (let i = 1; i <= h.dormitorios; i++) boxes.push({ label: 'Dormitorio ' + i, peso: 1.6 });
+  const banosEnteros = Math.max(1, Math.round(h.banos));
+  for (let i = 1; i <= banosEnteros; i++) boxes.push({ label: 'Baño ' + i, peso: 0.9 });
+  for (let i = 1; i <= h.parqueos; i++) boxes.push({ label: 'Parqueo ' + i, peso: 1.3 });
+
+  const box = $('#csPlanoBox');
+  let html = '<div style="border:2px solid #071a2f;border-radius:10px;padding:16px;background:#f7f8fa">';
+  html += '<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:12px">';
+  html += '<span style="font-family:Marcellus,Georgia,serif;font-size:16px;color:#071a2f">Plano esquemático de distribución</span>';
+  if (m2) html += '<span style="color:#56667a;font-weight:600;font-size:13px">' + m2 + ' m² aprox.</span>';
+  html += '</div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px">';
+  boxes.forEach((b) => {
+    const h2 = Math.round(46 * b.peso);
+    html += '<div style="border:1.5px dashed #071a2f;border-radius:6px;padding:10px 8px;min-height:' + h2 + 'px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:12.5px;font-weight:600;color:#10243c;background:#fff">' + b.label + '</div>';
+  });
+  html += '</div>';
+  html += '<p style="font-size:11px;color:#56667a;margin:10px 0 0;line-height:1.5">Plano esquemático generado automáticamente a partir de tu descripción (' + h.dormitorios + ' dormitorio(s), ' + banosEnteros + ' baño(s), ' + h.parqueos + ' parqueo(s)). No es un plano arquitectónico oficial; es una referencia inicial para conversar con nuestro equipo de diseño.</p>';
+  html += '</div>';
+  box.innerHTML = html;
+  box.hidden = false;
+}
+
+/* Genera el plano esquemático (confiable, local) y una vista exterior de referencia con IA
+   a través del servicio gratuito Pollinations.ai (no requiere API key ni backend propio). */
 $('#csGenerarDisenoBtn')?.addEventListener('click', () => {
   const descripcion = $('#cs-descripcion-diseno')?.value.trim();
   if (!descripcion) {
     alert('Por favor describe primero lo que deseas construir.');
     return;
   }
+  const queHacer = $('#cs-que-hacer')?.value.trim() || '';
+  const m2 = $('#cs-m2')?.value ? Number($('#cs-m2').value) : null;
+
+  csRenderPlano(queHacer + ' ' + descripcion, m2);
+
   const btn = $('#csGenerarDisenoBtn');
   const status = $('#csDisenoStatus');
   const img = $('#csDisenoImg');
@@ -1140,16 +1194,16 @@ $('#csGenerarDisenoBtn')?.addEventListener('click', () => {
   const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=768&nologo=true&seed=' + seed;
 
   btn.disabled = true;
-  status.textContent = 'Generando diseño con IA… esto puede tardar unos segundos.';
+  status.textContent = 'Generando vista exterior con IA… esto puede tardar unos segundos.';
   img.hidden = true;
 
   img.onload = () => {
-    status.textContent = 'Diseño generado con IA:';
+    status.textContent = 'Vista exterior generada con IA (referencial):';
     img.hidden = false;
     btn.disabled = false;
   };
   img.onerror = () => {
-    status.textContent = 'No pudimos generar el diseño en este momento. Intenta de nuevo más tarde.';
+    status.textContent = 'No pudimos generar la vista exterior en este momento. Intenta de nuevo más tarde.';
     btn.disabled = false;
   };
 
