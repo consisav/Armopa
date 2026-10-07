@@ -1218,6 +1218,15 @@
     <div class="ph"><h2 id="loginTitle">Conectarse</h2><p class="ph-sub">Escribe tu usuario y clave. Si todavía no tienes cuenta, se crea automáticamente con esos mismos datos.</p></div>
     <div class="fld" style="margin-top:6px"><label for="login-usuario">Usuario</label><input id="login-usuario" type="text" autocomplete="username"></div>
     <div class="fld" style="margin-top:16px"><label for="login-clave">Clave</label><input id="login-clave" type="password" autocomplete="current-password"></div>
+    <div class="fld" style="margin-top:16px">
+      <label for="login-tipo">Tipo de usuario</label>
+      <select id="login-tipo">
+        <option value="super_administrador">Super administrador</option>
+        <option value="administrador">Administrador</option>
+        <option value="usuario_general" selected>Usuario general</option>
+      </select>
+      <p class="hint">Solo aplica al crear una cuenta nueva; si el usuario ya existe, se usa el tipo con el que fue registrado.</p>
+    </div>
     <div class="acts" style="margin-top:20px">
       <button class="btn btn-dark" type="button" id="loginSubmitBtn">Conectar</button>
     </div>
