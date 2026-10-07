@@ -407,14 +407,14 @@ function update() {
 let cityCovers = {};
 function openCity(name) {
   cur = name; panelView = 'locs'; mode = estaConectado() ? 'edit' : 'view'; confirmDel = false; mk = null; descOpen = true;
-  sel = (data[name] || []).length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; locFilterIdx = null;
+  sel = (data[name] || []).length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; locFilterIdx = null; locQuickSearch = '';
   note('');
   render();
   pModal.hidden = false;
 }
 function openLocationDirect(name, locIndex) {
   cur = name; panelView = 'locs'; mode = estaConectado() ? 'edit' : 'view'; confirmDel = false; mk = null; descOpen = true;
-  sel = locIndex; vi = 0; heroIdx = 0; gridOpen = false;
+  sel = locIndex; vi = 0; heroIdx = 0; gridOpen = false; locQuickSearch = '';
   note('');
   render();
   pModal.hidden = false;
@@ -1572,6 +1572,7 @@ let gridOpen = false;    // si la galería de miniaturas (con opción de elimina
 let citySearch = '';      // texto de búsqueda de ciudad en el modal
 let descOpen = true;      // si el segmento "Descripción Propiedad" está expandido
 let locFilterIdx = null;  // índices (dentro de la ciudad activa) que coinciden con la última búsqueda, o null = mostrar todas
+let locQuickSearch = '';  // texto para filtrar rápidamente las ubicaciones dentro de la ciudad activa
 const pModal = $('#propModal');
 
 const cityNames = () => Object.keys(data).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
@@ -1600,7 +1601,7 @@ function el(tag, cls, text) {
 }
 function pickLoc(i) { sel = i; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; mk = null; descOpen = true; note(''); render(); }
 function openCityFromList(name) {
-  cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; locFilterIdx = null; confirmDel = false; descOpen = true;
+  cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; locFilterIdx = null; locQuickSearch = ''; confirmDel = false; descOpen = true;
   note(''); render();
 }
 
@@ -1757,18 +1758,58 @@ return;
   }
 }
 
-/* Pestañas horizontales con los nombres de las ubicaciones de la ciudad activa */
+/* Panel con todas las ubicaciones de la ciudad activa: encabezado (volver + contador + buscador) y cuadrícula de pestañas */
 function renderLocTabs() {
   const t = T[lang];
   const box = $('#pLocTabs');
   box.innerHTML = '';
 
+  const todas = list();
+  const wasLocSearchFocused = document.activeElement && document.activeElement.id === 'locSearchInput';
+  const prevSelStart = wasLocSearchFocused ? document.activeElement.selectionStart : null;
+  const prevSelEnd = wasLocSearchFocused ? document.activeElement.selectionEnd : null;
+
+  const head = el('div', 'loc-tabs-head');
+
+  const headLeft = el('div', 'loc-tabs-head-l');
   if (estaConectado()) {
     const back = el('button', 'btn btn-line-dark btn-sm loc-back', '← Ciudades');
     back.type = 'button';
-    back.addEventListener('click', () => { if (!estaConectado()) return; panelView = 'cities'; cur = null; sel = -1; locFilterIdx = null; note(''); render(); });
-    box.appendChild(back);
+    back.addEventListener('click', () => { if (!estaConectado()) return; panelView = 'cities'; cur = null; sel = -1; locFilterIdx = null; locQuickSearch = ''; note(''); render(); });
+    headLeft.appendChild(back);
   }
+  const count = el('span', 'loc-count', todas.length === 1 ? '1 ubicación' : todas.length + ' ubicaciones');
+  headLeft.appendChild(count);
+  head.appendChild(headLeft);
+
+  if (todas.length > 6) {
+    const searchWrap = el('div', 'loc-search-wrap');
+    const searchInput = document.createElement('input');
+    searchInput.type = 'text';
+    searchInput.id = 'locSearchInput';
+    searchInput.className = 'loc-search-input';
+    searchInput.placeholder = 'Buscar ubicación por nombre, sector o zona...';
+    searchInput.autocomplete = 'off';
+    searchInput.value = locQuickSearch;
+    searchInput.addEventListener('input', () => {
+      locQuickSearch = searchInput.value;
+      renderLocTabs();
+    });
+    searchWrap.appendChild(searchInput);
+    head.appendChild(searchWrap);
+
+    if (wasLocSearchFocused) {
+      requestAnimationFrame(() => {
+        const fresh = $('#locSearchInput');
+        if (fresh) {
+          fresh.focus();
+          if (prevSelStart != null) fresh.setSelectionRange(prevSelStart, prevSelEnd);
+        }
+      });
+    }
+  }
+
+  box.appendChild(head);
 
   const filterBar = $('#pLocFilterBar');
   if (filterBar) {
@@ -1785,14 +1826,27 @@ function renderLocTabs() {
     }
   }
 
-  list().forEach((l, i) => {
+  const q = locQuickSearch.trim().toLowerCase();
+  const grid = el('div', 'loc-tabs-grid');
+  let shown = 0;
+  todas.forEach((l, i) => {
     if (locFilterIdx && !locFilterIdx.includes(i)) return;
+    if (q) {
+      const hay = ((l.name || '') + ' ' + (l.sector || '') + ' ' + (l.zona || '') + ' ' + (l.addr || '')).toLowerCase();
+      if (!hay.includes(q)) return;
+    }
+    shown++;
     const b = el('button', 'loc-tab' + (i === sel ? ' on' : ''));
     b.type = 'button';
     b.append(el('span', '', l.name || t.locDefault), el('small', '', String(l.imgs.length)));
     b.addEventListener('click', () => pickLoc(i));
-    box.appendChild(b);
+    grid.appendChild(b);
   });
+  if (q && !shown) {
+    const noRes = el('p', 'loc-no-res', 'No se encontraron ubicaciones para "' + locQuickSearch.trim() + '".');
+    grid.appendChild(noRes);
+  }
+  box.appendChild(grid);
 
   if (!estaConectado()) return;
   const add = el('button', 'btn btn-dark btn-sm loc-add', '+ ' + t.addLoc);
