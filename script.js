@@ -406,14 +406,14 @@ function update() {
 }
 let cityCovers = {};
 function openCity(name) {
-  cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null; descOpen = true;
+  cur = name; panelView = 'locs'; mode = estaConectado() ? 'edit' : 'view'; confirmDel = false; mk = null; descOpen = true;
   sel = (data[name] || []).length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; locFilterIdx = null;
   note('');
   render();
   pModal.hidden = false;
 }
 function openLocationDirect(name, locIndex) {
-  cur = name; panelView = 'locs'; mode = 'edit'; confirmDel = false; mk = null; descOpen = true;
+  cur = name; panelView = 'locs'; mode = estaConectado() ? 'edit' : 'view'; confirmDel = false; mk = null; descOpen = true;
   sel = locIndex; vi = 0; heroIdx = 0; gridOpen = false;
   note('');
   render();
@@ -463,6 +463,10 @@ $('#clientGo').addEventListener('click', () => { $('#clientNote').hidden = false
    que es la única que puede leer el hash guardado. */
 const LOGIN_STORE = 'armopaUsuario';
 
+function estaConectado() {
+  return !!localStorage.getItem(LOGIN_STORE);
+}
+
 async function csHashClave(texto) {
   const enc = new TextEncoder().encode(texto);
   const buf = await crypto.subtle.digest('SHA-256', enc);
@@ -473,13 +477,16 @@ function pintarEstadoUsuario() {
   const usuario = localStorage.getItem(LOGIN_STORE);
   const badge = $('#userBadge');
   const loginBtn = $('#openLoginBtn');
+  const addCityBtn = $('#addCityBtn');
   if (usuario) {
     $('#userBadgeName').textContent = 'Hola, ' + usuario;
     badge.hidden = false;
     loginBtn.hidden = true;
+    if (addCityBtn) addCityBtn.hidden = false;
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
+    if (addCityBtn) addCityBtn.hidden = true;
   }
 }
 pintarEstadoUsuario();
@@ -1756,10 +1763,12 @@ function renderLocTabs() {
   const box = $('#pLocTabs');
   box.innerHTML = '';
 
-  const back = el('button', 'btn btn-line-dark btn-sm loc-back', '← Ciudades');
-  back.type = 'button';
-  back.addEventListener('click', () => { panelView = 'cities'; cur = null; sel = -1; locFilterIdx = null; note(''); render(); });
-  box.appendChild(back);
+  if (estaConectado()) {
+    const back = el('button', 'btn btn-line-dark btn-sm loc-back', '← Ciudades');
+    back.type = 'button';
+    back.addEventListener('click', () => { if (!estaConectado()) return; panelView = 'cities'; cur = null; sel = -1; locFilterIdx = null; note(''); render(); });
+    box.appendChild(back);
+  }
 
   const filterBar = $('#pLocFilterBar');
   if (filterBar) {
@@ -1785,9 +1794,11 @@ function renderLocTabs() {
     box.appendChild(b);
   });
 
+  if (!estaConectado()) return;
   const add = el('button', 'btn btn-dark btn-sm loc-add', '+ ' + t.addLoc);
   add.type = 'button';
   add.addEventListener('click', () => {
+    if (!estaConectado()) return;
     const l = list();
     l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '' });
     sel = l.length - 1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; descOpen = true;
@@ -1917,6 +1928,7 @@ function renderView() {
     b.addEventListener('click', () => { vi = i; renderView(); });
     th.appendChild(b);
   });
+  $('#vEdit').hidden = !estaConectado();
   $('#vName').textContent = c ? c.name : '';
   const vop = c ? (c.op || '') : '';
   const showR = !!(c && (vop === 'renta' || vop === 'ambos') && (c.pRent || '').trim());
@@ -1955,6 +1967,10 @@ function renderView() {
 
 function render() {
   const t = T[lang];
+  if (panelView === 'cities' && !estaConectado()) {
+    if (cur) { panelView = 'locs'; mode = 'view'; }
+    else { closeProp(); return; }
+  }
   if (panelView === 'cities') {
     $('#pTitle').textContent = 'Ciudades';
     $('#pSub').textContent = cityNames().length ? cityNames().length + ' ciudad(es)' : 'Agrega tu primera ciudad';
@@ -1981,6 +1997,7 @@ function render() {
   renderMk();
 }
 function openProp() {
+  if (!estaConectado()) { if (typeof openLoginModal === 'function') openLoginModal(); return; }
   panelView = 'cities'; cur = null; mode = 'edit'; confirmDel = false; mk = null; sel = -1; vi = 0; heroIdx = 0; gridOpen = false; locFilterIdx = null;
   citySearch = ''; descOpen = true;
   note('');
@@ -2479,7 +2496,7 @@ $('#pHeroNext').addEventListener('click', (e) => {
   heroIdx = (heroIdx + 1) % c.imgs.length;
   renderEdit();
 });
-$('#vEdit').addEventListener('click', () => { mode = 'edit'; render(); });
+$('#vEdit').addEventListener('click', () => { if (!estaConectado()) return; mode = 'edit'; render(); });
 $('#pDel').addEventListener('click', () => {
   if (!confirmDel) { confirmDel = true; renderEdit(); return; }
   const removed = list()[sel];
