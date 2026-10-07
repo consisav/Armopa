@@ -1215,18 +1215,40 @@
   <button class="scrim" type="button" id="loginScrim" data-i18n-label="close"></button>
   <div class="mcard" id="loginCard" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
     <button class="mx" type="button" id="loginClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="loginTitle">Conectarse</h2><p class="ph-sub">Escribe tu usuario y clave. Si todavía no tienes cuenta, se crea automáticamente con esos mismos datos.</p></div>
-    <div class="fld" style="margin-top:6px"><label for="login-usuario">Usuario</label><input id="login-usuario" type="text" autocomplete="username"></div>
-    <div class="fld" style="margin-top:16px"><label for="login-clave">Clave</label><input id="login-clave" type="password" autocomplete="current-password"></div>
+    <div class="ph"><h2 id="loginTitle">Conectarse</h2><p class="ph-sub" id="loginSub">Escribe tu usuario y clave para conectarte.</p></div>
+
+    <div class="seg-g" id="loginModeSeg" style="margin-top:4px">
+      <button class="seg on" type="button" id="loginModeConectar" data-mode="conectar">Conectarse</button>
+      <button class="seg" type="button" id="loginModeCrear" data-mode="crear">Crear usuario</button>
+    </div>
+
+    <div class="fld" style="margin-top:16px"><label for="login-usuario">Usuario</label><input id="login-usuario" type="text" autocomplete="username"></div>
+
     <div class="fld" style="margin-top:16px">
+      <label for="login-clave">Clave</label>
+      <div class="pw-wrap">
+        <input id="login-clave" type="password" autocomplete="current-password">
+        <button class="pw-eye" type="button" id="loginClaveEye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+      </div>
+    </div>
+
+    <div class="fld" id="loginConfirmWrap" style="margin-top:16px" hidden>
+      <label for="login-clave2">Confirmar clave</label>
+      <div class="pw-wrap">
+        <input id="login-clave2" type="password" autocomplete="new-password">
+        <button class="pw-eye" type="button" id="loginClave2Eye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+      </div>
+    </div>
+
+    <div class="fld" id="loginTipoWrap" style="margin-top:16px" hidden>
       <label for="login-tipo">Tipo de usuario</label>
       <select id="login-tipo">
         <option value="super_administrador">Super administrador</option>
         <option value="administrador">Administrador</option>
         <option value="usuario_general" selected>Usuario general</option>
       </select>
-      <p class="hint">Solo aplica al crear una cuenta nueva; si el usuario ya existe, se usa el tipo con el que fue registrado.</p>
     </div>
+
     <div class="acts" style="margin-top:20px">
       <button class="btn btn-dark" type="button" id="loginSubmitBtn">Conectar</button>
     </div>
