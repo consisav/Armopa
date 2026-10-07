@@ -457,6 +457,100 @@ $('#scrim').addEventListener('click', closeClient);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeClient(); });
 $('#clientGo').addEventListener('click', () => { $('#clientNote').hidden = false; });
 
+/* Conectarse: usuario y clave propios de ARMOPA (no es el sistema de Auth de Supabase).
+   La clave nunca se guarda ni se compara en texto plano: se cifra (SHA-256) en el navegador
+   y la comparación real ocurre dentro de una función de la base de datos (conectar_usuario),
+   que es la única que puede leer el hash guardado. */
+const LOGIN_STORE = 'armopaUsuario';
+
+async function csHashClave(texto) {
+  const enc = new TextEncoder().encode(texto);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+function pintarEstadoUsuario() {
+  const usuario = localStorage.getItem(LOGIN_STORE);
+  const badge = $('#userBadge');
+  const loginBtn = $('#openLoginBtn');
+  if (usuario) {
+    $('#userBadgeName').textContent = 'Hola, ' + usuario;
+    badge.hidden = false;
+    loginBtn.hidden = true;
+  } else {
+    badge.hidden = true;
+    loginBtn.hidden = false;
+  }
+}
+pintarEstadoUsuario();
+
+const loginModal = $('#loginModal');
+const openLoginModal = () => {
+  loginModal.hidden = false;
+  $('#login-usuario').value = '';
+  $('#login-clave').value = '';
+  $('#loginNote').hidden = true;
+  $('#loginError').hidden = true;
+  navwrap.classList.remove('open');
+};
+const closeLoginModal = () => { loginModal.hidden = true; };
+$('#openLoginBtn')?.addEventListener('click', openLoginModal);
+$('#loginClose')?.addEventListener('click', closeLoginModal);
+$('#loginScrim')?.addEventListener('click', closeLoginModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && loginModal && !loginModal.hidden) closeLoginModal(); });
+
+$('#logoutBtn')?.addEventListener('click', () => {
+  localStorage.removeItem(LOGIN_STORE);
+  pintarEstadoUsuario();
+});
+
+$('#loginSubmitBtn')?.addEventListener('click', async () => {
+  const usuario = $('#login-usuario')?.value.trim();
+  const clave = $('#login-clave')?.value;
+  const errorEl = $('#loginError');
+  const noteEl = $('#loginNote');
+  errorEl.hidden = true;
+  noteEl.hidden = true;
+
+  if (!usuario || !clave) {
+    errorEl.textContent = 'Escribe tu usuario y tu clave.';
+    errorEl.hidden = false;
+    return;
+  }
+
+  const btn = $('#loginSubmitBtn');
+  btn.disabled = true;
+  try {
+    const hash = await csHashClave(clave);
+    const { data, error } = await supabaseClient.rpc('conectar_usuario', { p_usuario: usuario, p_hash: hash });
+    if (error) throw error;
+
+    const status = data && data.status;
+    if (status === 'creado') {
+      localStorage.setItem(LOGIN_STORE, usuario);
+      pintarEstadoUsuario();
+      noteEl.textContent = 'Cuenta creada. ¡Bienvenido, ' + usuario + '!';
+      noteEl.hidden = false;
+      setTimeout(closeLoginModal, 1200);
+    } else if (status === 'ok') {
+      localStorage.setItem(LOGIN_STORE, usuario);
+      pintarEstadoUsuario();
+      noteEl.textContent = 'Conectado correctamente.';
+      noteEl.hidden = false;
+      setTimeout(closeLoginModal, 900);
+    } else {
+      errorEl.textContent = 'Ese usuario ya existe y la clave no es correcta.';
+      errorEl.hidden = false;
+    }
+  } catch (err) {
+    console.error('Error al conectar:', err);
+    errorEl.textContent = 'No pudimos conectar en este momento. Intenta de nuevo.';
+    errorEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
 /* Formulario de contacto (demostración) */
 $('#sendBtn').addEventListener('click', async () => {
   const nombre = $('#f-nombre')?.value.trim();

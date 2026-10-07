@@ -29,6 +29,11 @@
       <div class="tools">
         <button class="lg on" type="button" data-lang="es">ES</button>
         <button class="lg" type="button" data-lang="en">EN</button>
+        <span id="userBadge" hidden style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink)">
+          <span id="userBadgeName"></span>
+          <button class="btn btn-line btn-sm" type="button" id="logoutBtn">Salir</button>
+        </span>
+        <button class="btn btn-line" type="button" id="openLoginBtn">Conectarse</button>
         <button class="btn btn-line" type="button" id="openClient" data-i18n="client"></button>
       </div>
     </div>
@@ -1187,6 +1192,24 @@
       <button class="btn btn-dark" type="button" id="ppSend">Enviar solicitud</button>
     </div>
     <p class="note" id="ppNote" hidden>Solicitud enviada correctamente. Gracias.</p>
+  </div>
+</div>
+
+<div class="modal" id="loginModal" hidden>
+  <button class="scrim" type="button" id="loginScrim" data-i18n-label="close"></button>
+  <div class="mcard" id="loginCard" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+    <button class="mx" type="button" id="loginClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="loginTitle">Conectarse</h2><p class="ph-sub">Escribe tu usuario y clave. Si todavía no tienes cuenta, se crea automáticamente con esos mismos datos.</p></div>
+
+    <div class="fld" style="margin-top:6px"><label for="login-usuario">Usuario</label><input id="login-usuario" type="text" autocomplete="username"></div>
+
+    <div class="fld" style="margin-top:16px"><label for="login-clave">Clave</label><input id="login-clave" type="password" autocomplete="current-password"></div>
+
+    <div class="acts" style="margin-top:20px">
+      <button class="btn btn-dark" type="button" id="loginSubmitBtn">Conectar</button>
+    </div>
+    <p class="note" id="loginNote" hidden></p>
+    <p class="hint" id="loginError" hidden style="color:#b23"></p>
   </div>
 </div>
 
