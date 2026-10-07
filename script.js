@@ -2021,6 +2021,8 @@ function renderView() {
   });
   if (activeChip) activeChip.scrollIntoView({ block: 'nearest', inline: 'center' });
 }
+$('#vChipsPrev')?.addEventListener('click', () => { $('#vChips').scrollBy({ left: -220, behavior: 'smooth' }); });
+$('#vChipsNext')?.addEventListener('click', () => { $('#vChips').scrollBy({ left: 220, behavior: 'smooth' }); });
 
 function render() {
   const t = T[lang];
