@@ -138,7 +138,9 @@
       <div class="sec-h sec-h-tight">
         <h2 data-i18n="propH"></h2>
       </div>
-      <div class="cq-bar" id="cityQuickMenu"></div>
+      <div class="cq-trigger-row">
+        <button class="btn btn-dark" type="button" id="abrirBuscarPropBtn">🔍 Buscar propiedades</button>
+      </div>
       <div class="car-row">
         <div class="car" id="car" style="--i:0">
           <button class="arr" type="button" id="prev" data-i18n-label="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
@@ -779,6 +781,15 @@
   </div>
 </div>
 
+
+<div class="modal" id="buscarPropModal" hidden>
+  <button class="scrim" type="button" id="buscarPropScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="buscarPropCard" role="dialog" aria-modal="true" aria-labelledby="buscarPropTitle">
+    <button class="mx" type="button" id="buscarPropClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="buscarPropTitle">Buscar propiedades</h2><p class="ph-sub">Filtra por ciudad, sector, tipo, zona, especificaciones y presupuesto para encontrar la ubicación que buscas.</p></div>
+    <div class="cq-bar" id="cityQuickMenu"></div>
+  </div>
+</div>
 
 <div class="modal" id="propModal" hidden>
   <button class="scrim" type="button" id="pScrim" data-i18n-label="close"></button>

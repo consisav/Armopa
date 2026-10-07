@@ -2726,10 +2726,21 @@ function buildSearchMenu() {
       return;
     }
     locFilterIdx = matches.map(({ i }) => i);
+    closeBuscarPropModal();
     openLocationDirect(city, matches[0].i);
   });
 }
 buildSearchMenu();
+
+/* Modal "Buscar propiedades": al inicio solo se ve el botón; al presionarlo
+   se abre este modal con el formulario completo de búsqueda. */
+const buscarPropModal = $('#buscarPropModal');
+const openBuscarPropModal = () => { if (buscarPropModal) buscarPropModal.hidden = false; };
+const closeBuscarPropModal = () => { if (buscarPropModal) buscarPropModal.hidden = true; };
+$('#abrirBuscarPropBtn')?.addEventListener('click', openBuscarPropModal);
+$('#buscarPropClose')?.addEventListener('click', closeBuscarPropModal);
+$('#buscarPropScrim')?.addEventListener('click', closeBuscarPropModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && buscarPropModal && !buscarPropModal.hidden) closeBuscarPropModal(); });
 
 $('#pClose').addEventListener('click', closeProp);
 $('#pScrim').addEventListener('click', closeProp);
