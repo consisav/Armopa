@@ -753,6 +753,41 @@
         </div>
         <p class="hint" id="qSaveMsg" style="margin-top:8px"></p>
       </div>
+
+      <div class="ex-sol" id="solPanel" hidden>
+        <div class="ex-sol-head">
+          <div>
+            <h4>Solicitudes de servicio<span class="sub">Solo Administrador / Super administrador</span></h4>
+          </div>
+          <button class="btn btn-dark btn-sm" type="button" id="solAddBtn">+ Agregar solicitud</button>
+        </div>
+
+        <div class="fld" id="solServicioFld">
+          <label for="sol-servicio-sel">Servicio</label>
+          <select id="sol-servicio-sel">
+            <option value="0">Alquiler de maquinaria pesada</option>
+            <option value="1">Renta de camiones para extracción</option>
+            <option value="2">Renta de apartamentos y edificios</option>
+            <option value="3">Mantenimiento de edificios</option>
+            <option value="4">Plomería y electricidad</option>
+            <option value="5">Asesoría jurídica</option>
+            <option value="6">Gestión de Préstamos Bancarios</option>
+            <option value="7">Movimiento de tierra</option>
+            <option value="8">Administración de Bienes Inmuebles</option>
+          </select>
+        </div>
+
+        <div class="ex-sol-gate" id="solGate">
+          <p class="hint">Confirma tu clave para ver y gestionar las solicitudes de servicio.</p>
+          <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
+            <input type="password" id="solGateClave" placeholder="Tu clave" autocomplete="current-password">
+            <button class="btn btn-line-dark btn-sm" type="button" id="solGateBtn">Confirmar</button>
+          </div>
+          <p class="hint" id="solGateErr" hidden style="color:#b42318"></p>
+        </div>
+
+        <div class="ex-sol-list" id="solList" hidden></div>
+      </div>
     </div>
   </section>
 
