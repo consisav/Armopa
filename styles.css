@@ -152,6 +152,27 @@ section[id]{scroll-margin-top:148px}
 .x-est .amt{font-family:'Marcellus',Georgia,serif;font-size:30px;line-height:1.2;color:var(--ink);margin:6px 0 12px}
 .x-est-l{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:6px}
 .x-est-l li{display:flex;justify-content:space-between;gap:16px;font-size:14.5px;border-bottom:1px solid var(--line);padding-bottom:6px}
+
+/* Solicitudes de servicio (Administrador / Super administrador) */
+.ex-sol{background:#fbfaf7;border:1px solid #e6e0d0;border-radius:14px;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.ex-sol-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ex-sol-head h4{font-size:16px;color:var(--ink);margin:0}
+.ex-sol-head .sub{display:block;font-size:12px;color:var(--muted);font-weight:400;margin-top:2px}
+.ex-sol-gate{display:flex;flex-direction:column;gap:10px}
+.ex-sol-gate .x-row{grid-template-columns:1fr auto;align-items:center;gap:10px}
+.ex-sol-gate input[type="password"]{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:14px;color:var(--ink);font-family:inherit}
+.sol-table{display:flex;flex-direction:column;border:1px solid #e6e0d0;border-radius:12px;overflow:hidden;background:#fff}
+.sol-row{display:grid;grid-template-columns:1.2fr 1fr 1.1fr auto;gap:10px;align-items:center;padding:12px 14px;border-top:1px solid #f0ede4;font-size:14px}
+.sol-row:first-child{border-top:0}
+.sol-num{font-weight:700;font-family:ui-monospace,'SFMono-Regular',Menlo,monospace;color:var(--ink)}
+.sol-cli{color:var(--ink)}
+.sol-badge{display:inline-flex;align-items:center;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.sol-actions{display:flex;gap:8px;justify-content:flex-end}
+.sol-actions .btn{padding:0 11px;height:30px;font-size:12.5px}
+.sol-del{color:#b42318!important;border-color:#f3c7c7!important}
+@media (max-width:720px){.sol-row{grid-template-columns:1fr;gap:6px}.sol-actions{justify-content:flex-start}}
+#solCard .hint{margin:0}
+#solCard .fld{margin-bottom:2px}
 .x-est-l span{color:var(--muted)}
 .x-est-l strong{font-weight:600;text-align:right}
 .x-est-l li.pq-item{flex-wrap:wrap;align-items:center;padding-bottom:10px}
