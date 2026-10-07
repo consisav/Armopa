@@ -895,7 +895,11 @@
     </div>
 
     <div id="pViewBox" hidden>
-      <div class="chips chips-top" id="vChips"></div>
+      <div class="chips-row">
+        <button class="arr chips-arr" type="button" id="vChipsPrev" data-i18n-label="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+        <div class="chips chips-top" id="vChips"></div>
+        <button class="arr chips-arr" type="button" id="vChipsNext" data-i18n-label="next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+      </div>
       <div class="vw-stage">
         <img class="vw-img" id="vImg" alt="">
         <button class="arr vw-prev" type="button" id="vPrev" data-i18n-label="prevImg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
