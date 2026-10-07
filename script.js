@@ -527,6 +527,7 @@ function esSuperAdministrador() {
   return estaConectado() && localStorage.getItem(LOGIN_TIPO_STORE) === 'super_administrador';
 }
 let adminHashConfirmado = null;
+let adminUsuarioEncontrado = null;
 
 function aplicarModoLogin() {
   const esAdmin = loginMode === 'admin';
@@ -581,7 +582,9 @@ function reiniciarPanelAdmin() {
   reiniciarCampoClave('#admin-clave-nueva', '#adminClaveNuevaEye');
   reiniciarCampoClave('#admin-clave-nueva2', '#adminClaveNueva2Eye');
   if ($('#admin-usuario-obj')) $('#admin-usuario-obj').value = '';
+  adminUsuarioEncontrado = null;
   $('#adminInfoBox').hidden = true;
+  $('#adminTipoWrap').hidden = true;
   $('#adminConfirmBox').hidden = false;
   $('#adminTools').hidden = true;
 }
@@ -672,6 +675,59 @@ $('#adminBuscarBtn')?.addEventListener('click', async () => {
       const etiquetaTipo = TIPOS_USUARIO_LABEL[data.tipo_usuario] || data.tipo_usuario;
       infoBox.textContent = 'Usuario: ' + data.usuario + ' · ' + etiquetaTipo + ' · Código #' + data.codigo_usuario;
       infoBox.hidden = false;
+      adminUsuarioEncontrado = data.usuario;
+      $('#admin-tipo-obj').value = data.tipo_usuario;
+      $('#adminTipoWrap').hidden = false;
+    } else if (status === 'no_autorizado') {
+      errorEl.textContent = 'Tu sesión de Super Administrador no pudo validarse. Vuelve a confirmar tu clave.';
+      errorEl.hidden = false;
+      adminHashConfirmado = null;
+      adminUsuarioEncontrado = null;
+      $('#adminTipoWrap').hidden = true;
+      $('#adminConfirmBox').hidden = false;
+      $('#adminTools').hidden = true;
+    } else {
+      errorEl.textContent = 'No se encontró ningún usuario con ese nombre.';
+      errorEl.hidden = false;
+      adminUsuarioEncontrado = null;
+      $('#adminTipoWrap').hidden = true;
+    }
+  } catch (err) {
+    console.error('Error al buscar usuario:', err);
+    errorEl.textContent = 'No pudimos buscar el usuario en este momento.';
+    errorEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$('#adminActualizarTipoBtn')?.addEventListener('click', async () => {
+  const errorEl = $('#loginError');
+  const noteEl = $('#loginNote');
+  const infoBox = $('#adminInfoBox');
+  errorEl.hidden = true;
+  noteEl.hidden = true;
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  const nuevoTipo = $('#admin-tipo-obj')?.value;
+
+  if (!adminHashConfirmado) { errorEl.textContent = 'Primero confirma tu clave.'; errorEl.hidden = false; return; }
+  if (!adminUsuarioEncontrado) { errorEl.textContent = 'Primero busca un usuario.'; errorEl.hidden = false; return; }
+
+  const btn = $('#adminActualizarTipoBtn');
+  btn.disabled = true;
+  try {
+    const { data, error } = await supabaseClient.rpc('admin_actualizar_tipo', { p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado, p_usuario_objetivo: adminUsuarioEncontrado, p_nuevo_tipo: nuevoTipo });
+    if (error) throw error;
+    const status = data && data.status;
+    if (status === 'ok') {
+      const etiquetaTipo = TIPOS_USUARIO_LABEL[nuevoTipo] || nuevoTipo;
+      noteEl.textContent = 'Tipo de usuario de "' + adminUsuarioEncontrado + '" actualizado a ' + etiquetaTipo + '.';
+      noteEl.hidden = false;
+      if (!infoBox.hidden) infoBox.textContent = infoBox.textContent.replace(/·.*·/, '· ' + etiquetaTipo + ' ·');
+      if (adminUsuarioEncontrado === miUsuario) {
+        localStorage.setItem(LOGIN_TIPO_STORE, nuevoTipo);
+        pintarEstadoUsuario();
+      }
     } else if (status === 'no_autorizado') {
       errorEl.textContent = 'Tu sesión de Super Administrador no pudo validarse. Vuelve a confirmar tu clave.';
       errorEl.hidden = false;
@@ -683,8 +739,8 @@ $('#adminBuscarBtn')?.addEventListener('click', async () => {
       errorEl.hidden = false;
     }
   } catch (err) {
-    console.error('Error al buscar usuario:', err);
-    errorEl.textContent = 'No pudimos buscar el usuario en este momento.';
+    console.error('Error al actualizar el tipo de usuario:', err);
+    errorEl.textContent = 'No pudimos actualizar el tipo de usuario en este momento.';
     errorEl.hidden = false;
   } finally {
     btn.disabled = false;

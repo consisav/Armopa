@@ -1269,6 +1269,16 @@
         <div class="acts" style="margin-top:14px"><button class="btn btn-line-dark btn-sm" type="button" id="adminBuscarBtn">🔍 Buscar</button></div>
         <div class="note" id="adminInfoBox" hidden style="margin-top:10px"></div>
 
+        <div class="fld" id="adminTipoWrap" style="margin-top:16px" hidden>
+          <label for="admin-tipo-obj">Tipo de usuario</label>
+          <select id="admin-tipo-obj">
+            <option value="super_administrador">Super administrador</option>
+            <option value="administrador">Administrador</option>
+            <option value="usuario_general">Usuario general</option>
+          </select>
+          <div class="acts" style="margin-top:14px"><button class="btn btn-line-dark btn-sm" type="button" id="adminActualizarTipoBtn">Actualizar tipo de usuario</button></div>
+        </div>
+
         <div class="fld" style="margin-top:20px">
           <label for="admin-clave-nueva">Nueva clave para ese usuario</label>
           <div class="pw-wrap">
