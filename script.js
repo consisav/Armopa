@@ -484,6 +484,8 @@ function pintarEstadoUsuario() {
   const loginBtn = $('#openLoginBtn');
   const addCityBtn = $('#addCityBtn');
   const adminBtn = $('#adminUsuariosBtn');
+  const serviciosSec = $('#serviciosDinamicos');
+  const buscarServBtn = $('#abrirBuscarServBtn');
   if (usuario) {
     const extra = tipo ? ' · ' + (TIPOS_USUARIO_LABEL[tipo] || tipo) + (codigo ? ' #' + codigo : '') : '';
     $('#userBadgeName').textContent = 'Hola, ' + usuario + extra;
@@ -491,11 +493,15 @@ function pintarEstadoUsuario() {
     loginBtn.hidden = true;
     if (addCityBtn) addCityBtn.hidden = false;
     if (adminBtn) adminBtn.hidden = tipo !== 'super_administrador';
+    if (serviciosSec) serviciosSec.hidden = tipo !== 'super_administrador';
+    if (buscarServBtn) buscarServBtn.hidden = tipo !== 'super_administrador';
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
     if (addCityBtn) addCityBtn.hidden = true;
     if (adminBtn) adminBtn.hidden = true;
+    if (serviciosSec) serviciosSec.hidden = true;
+    if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
 pintarEstadoUsuario();
@@ -3385,7 +3391,7 @@ $('#servSearchBtn')?.addEventListener('click', () => {
   closeBuscarServModal();
   const ir = () => {
     const card = document.querySelector(`.servicio-card[data-servicio-id="${CSS.escape(id)}"]`);
-    const seccion = document.getElementById('servicios');
+    const seccion = document.getElementById('serviciosDinamicos');
     if (!card) { if (seccion) seccion.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
     card.classList.add('servicio-destacado');
