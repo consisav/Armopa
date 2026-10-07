@@ -3310,6 +3310,7 @@ async function cargarServiciosArmopa() {
 
   if (!data.length) {
     contenedor.innerHTML = '<p class="servicios-estado">Próximamente.</p>';
+    poblarServSelect([]);
     return;
   }
 
@@ -3325,7 +3326,7 @@ async function cargarServiciosArmopa() {
       <h3 class="servicios-categoria">${escaparTexto(cat)}</h3>
       <div class="servicios-grid">
         ${items.map(s => `
-          <article class="servicio-card">
+          <article class="servicio-card" data-servicio-id="${escaparTexto(s.id)}">
             <h4>${escaparTexto(s.nombre)}</h4>
             <p>${escaparTexto(s.descripcion)}</p>
           </article>
@@ -3333,10 +3334,68 @@ async function cargarServiciosArmopa() {
       </div>
     </div>
   `).join('');
+
+  poblarServSelect(data, grupos);
+}
+
+/* Llena el selector del modal "Buscar servicios" de forma dinámica, agrupado
+   por categoría igual que la lista visible en la sección de servicios. */
+function poblarServSelect(data, grupos) {
+  const sel = $('#servSelect');
+  if (!sel) return;
+  if (!data || !data.length) {
+    sel.innerHTML = '<option value="">No hay servicios disponibles</option>';
+    return;
+  }
+  const g = grupos || data.reduce((acc, s) => {
+    const cat = s.categoria || 'Otros servicios';
+    (acc[cat] = acc[cat] || []).push(s);
+    return acc;
+  }, {});
+  sel.innerHTML = '<option value="">Selecciona un servicio…</option>' +
+    Object.entries(g).map(([cat, items]) => `
+      <optgroup label="${escaparTexto(cat)}">
+        ${items.map(s => `<option value="${escaparTexto(s.id)}">${escaparTexto(s.nombre)}</option>`).join('')}
+      </optgroup>
+    `).join('');
 }
 
 document.addEventListener('DOMContentLoaded', cargarServiciosArmopa);
 window.cargarServiciosArmopa = cargarServiciosArmopa;
+
+/* Modal "Buscar servicios": al inicio solo se ve el botón; al presionarlo se
+   abre este modal con la lista dinámica de servicios y su botón de buscar. */
+const buscarServModal = $('#buscarServModal');
+const openBuscarServModal = () => { if (buscarServModal) buscarServModal.hidden = false; };
+const closeBuscarServModal = () => { if (buscarServModal) buscarServModal.hidden = true; };
+$('#abrirBuscarServBtn')?.addEventListener('click', openBuscarServModal);
+$('#buscarServClose')?.addEventListener('click', closeBuscarServModal);
+$('#buscarServScrim')?.addEventListener('click', closeBuscarServModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && buscarServModal && !buscarServModal.hidden) closeBuscarServModal(); });
+
+$('#servSearchBtn')?.addEventListener('click', () => {
+  const sel = $('#servSelect');
+  const msg = $('#servSearchMsg');
+  const id = sel ? sel.value : '';
+  if (!id) {
+    if (msg) msg.innerHTML = '<div class="cq-empty">Elige un servicio de la lista.</div>';
+    return;
+  }
+  if (msg) msg.innerHTML = '';
+  closeBuscarServModal();
+  const ir = () => {
+    const card = document.querySelector(`.servicio-card[data-servicio-id="${CSS.escape(id)}"]`);
+    const seccion = document.getElementById('servicios');
+    if (!card) { if (seccion) seccion.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.classList.add('servicio-destacado');
+    setTimeout(() => card.classList.remove('servicio-destacado'), 2400);
+  };
+  // Si los servicios aún no terminaron de cargar en el DOM, se espera un
+  // momento antes de buscar la tarjeta correspondiente.
+  if (document.querySelector(`.servicio-card[data-servicio-id="${CSS.escape(id)}"]`)) ir();
+  else setTimeout(ir, 300);
+});
 // ===== Propiedades: sincronización con Supabase =====
 const PROPS_BUCKET = 'propiedades';
 
