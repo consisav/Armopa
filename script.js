@@ -483,16 +483,19 @@ function pintarEstadoUsuario() {
   const badge = $('#userBadge');
   const loginBtn = $('#openLoginBtn');
   const addCityBtn = $('#addCityBtn');
+  const adminBtn = $('#adminUsuariosBtn');
   if (usuario) {
     const extra = tipo ? ' · ' + (TIPOS_USUARIO_LABEL[tipo] || tipo) + (codigo ? ' #' + codigo : '') : '';
     $('#userBadgeName').textContent = 'Hola, ' + usuario + extra;
     badge.hidden = false;
     loginBtn.hidden = true;
     if (addCityBtn) addCityBtn.hidden = false;
+    if (adminBtn) adminBtn.hidden = tipo !== 'super_administrador';
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
     if (addCityBtn) addCityBtn.hidden = true;
+    if (adminBtn) adminBtn.hidden = true;
   }
 }
 pintarEstadoUsuario();
@@ -516,48 +519,223 @@ function activarOjoClave(inputId, btnId) {
 }
 activarOjoClave('#login-clave', '#loginClaveEye');
 activarOjoClave('#login-clave2', '#loginClave2Eye');
+activarOjoClave('#admin-clave-propia', '#adminClavePropiaEye');
+activarOjoClave('#admin-clave-nueva', '#adminClaveNuevaEye');
+activarOjoClave('#admin-clave-nueva2', '#adminClaveNueva2Eye');
+
+function esSuperAdministrador() {
+  return estaConectado() && localStorage.getItem(LOGIN_TIPO_STORE) === 'super_administrador';
+}
+let adminHashConfirmado = null;
 
 function aplicarModoLogin() {
+  const esAdmin = loginMode === 'admin';
   const esCrear = loginMode === 'crear';
-  $('#loginModeConectar').classList.toggle('on', !esCrear);
-  $('#loginModeCrear').classList.toggle('on', esCrear);
-  $('#loginTitle').textContent = esCrear ? 'Crear usuario' : 'Conectarse';
-  $('#loginSub').textContent = esCrear
-    ? 'Crea tu cuenta: elige un usuario, una clave y tu tipo de usuario.'
-    : 'Escribe tu usuario y clave para conectarte.';
-  $('#loginConfirmWrap').hidden = !esCrear;
-  $('#loginTipoWrap').hidden = !esCrear;
-  $('#loginSubmitBtn').textContent = esCrear ? 'Crear cuenta' : 'Conectar';
+  const puedeElegirTipo = esCrear && esSuperAdministrador();
+
+  $('#loginModeSeg').hidden = esAdmin;
+  $('#login-usuario').closest('.fld').hidden = esAdmin;
+  $('#loginSubmitWrap').hidden = esAdmin;
+  $('#adminPanel').hidden = !esAdmin;
+
+  if (esAdmin) {
+    $('#loginTitle').textContent = 'Administrar usuarios';
+    $('#loginSub').textContent = 'Consulta el código de un usuario o actualiza su clave (solo Super Administrador).';
+    $('#loginConfirmWrap').hidden = true;
+    $('#loginTipoWrap').hidden = true;
+    $('#login-clave').closest('.fld').hidden = true;
+  } else {
+    $('#login-clave').closest('.fld').hidden = false;
+    $('#loginModeConectar').classList.toggle('on', !esCrear);
+    $('#loginModeCrear').classList.toggle('on', esCrear);
+    $('#loginTitle').textContent = esCrear ? 'Crear usuario' : 'Conectarse';
+    $('#loginSub').textContent = esCrear
+      ? 'Crea tu cuenta: elige un usuario y una clave.'
+      : 'Escribe tu usuario y clave para conectarte.';
+    $('#loginConfirmWrap').hidden = !esCrear;
+    $('#loginTipoWrap').hidden = !puedeElegirTipo;
+    if (!puedeElegirTipo && $('#login-tipo')) $('#login-tipo').value = 'usuario_general';
+    $('#loginSubmitBtn').textContent = esCrear ? 'Crear cuenta' : 'Conectar';
+  }
   $('#loginError').hidden = true;
   $('#loginNote').hidden = true;
 }
 $('#loginModeConectar')?.addEventListener('click', () => { loginMode = 'conectar'; aplicarModoLogin(); });
 $('#loginModeCrear')?.addEventListener('click', () => { loginMode = 'crear'; aplicarModoLogin(); });
 
+function reiniciarCampoClave(inputId, eyeBtnId) {
+  const input = $(inputId);
+  if (!input) return;
+  input.value = '';
+  input.type = 'password';
+  const eye = $(eyeBtnId);
+  if (eye) {
+    eye.setAttribute('aria-pressed', 'false');
+    eye.querySelector('svg').innerHTML = EYE_OPEN;
+  }
+}
+
+function reiniciarPanelAdmin() {
+  adminHashConfirmado = null;
+  reiniciarCampoClave('#admin-clave-propia', '#adminClavePropiaEye');
+  reiniciarCampoClave('#admin-clave-nueva', '#adminClaveNuevaEye');
+  reiniciarCampoClave('#admin-clave-nueva2', '#adminClaveNueva2Eye');
+  if ($('#admin-usuario-obj')) $('#admin-usuario-obj').value = '';
+  $('#adminInfoBox').hidden = true;
+  $('#adminConfirmBox').hidden = false;
+  $('#adminTools').hidden = true;
+}
+
 const openLoginModal = () => {
   loginModal.hidden = false;
   $('#login-usuario').value = '';
-  $('#login-clave').value = '';
-  $('#login-clave').type = 'password';
-  $('#loginClaveEye').setAttribute('aria-pressed', 'false');
-  $('#loginClaveEye').querySelector('svg').innerHTML = EYE_OPEN;
-  if ($('#login-clave2')) {
-    $('#login-clave2').value = '';
-    $('#login-clave2').type = 'password';
-    $('#loginClave2Eye').setAttribute('aria-pressed', 'false');
-    $('#loginClave2Eye').querySelector('svg').innerHTML = EYE_OPEN;
-  }
+  reiniciarCampoClave('#login-clave', '#loginClaveEye');
+  reiniciarCampoClave('#login-clave2', '#loginClave2Eye');
   if ($('#login-tipo')) $('#login-tipo').value = 'usuario_general';
+  reiniciarPanelAdmin();
   loginMode = 'conectar';
   loginIntentosFallidos = 0;
   aplicarModoLogin();
   navwrap.classList.remove('open');
 };
-const closeLoginModal = () => { loginModal.hidden = true; };
+const openAdminPanel = () => {
+  if (!esSuperAdministrador()) return;
+  loginModal.hidden = false;
+  reiniciarPanelAdmin();
+  loginMode = 'admin';
+  aplicarModoLogin();
+  navwrap.classList.remove('open');
+};
+const closeLoginModal = () => { loginModal.hidden = true; adminHashConfirmado = null; };
 $('#openLoginBtn')?.addEventListener('click', openLoginModal);
+$('#adminUsuariosBtn')?.addEventListener('click', openAdminPanel);
 $('#loginClose')?.addEventListener('click', closeLoginModal);
 $('#loginScrim')?.addEventListener('click', closeLoginModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && loginModal && !loginModal.hidden) closeLoginModal(); });
+
+$('#adminConfirmarBtn')?.addEventListener('click', async () => {
+  const errorEl = $('#loginError');
+  const noteEl = $('#loginNote');
+  errorEl.hidden = true;
+  noteEl.hidden = true;
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  const clave = $('#admin-clave-propia')?.value;
+  if (!miUsuario || !clave) {
+    errorEl.textContent = 'Escribe tu clave para confirmar.';
+    errorEl.hidden = false;
+    return;
+  }
+  const btn = $('#adminConfirmarBtn');
+  btn.disabled = true;
+  try {
+    const hash = await csHashClave(clave);
+    const { data, error } = await supabaseClient.rpc('conectar_usuario', { p_usuario: miUsuario, p_hash: hash, p_crear: false });
+    if (error) throw error;
+    if (data && data.status === 'ok' && data.tipo_usuario === 'super_administrador') {
+      adminHashConfirmado = hash;
+      $('#adminConfirmBox').hidden = true;
+      $('#adminTools').hidden = false;
+      noteEl.textContent = 'Identidad confirmada.';
+      noteEl.hidden = false;
+    } else {
+      errorEl.textContent = 'Clave incorrecta. No se pudo confirmar tu identidad.';
+      errorEl.hidden = false;
+    }
+  } catch (err) {
+    console.error('Error al confirmar:', err);
+    errorEl.textContent = 'No pudimos confirmar en este momento. Intenta de nuevo.';
+    errorEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$('#adminBuscarBtn')?.addEventListener('click', async () => {
+  const errorEl = $('#loginError');
+  const noteEl = $('#loginNote');
+  const infoBox = $('#adminInfoBox');
+  errorEl.hidden = true;
+  noteEl.hidden = true;
+  infoBox.hidden = true;
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  const objetivo = $('#admin-usuario-obj')?.value.trim();
+  if (!adminHashConfirmado) { errorEl.textContent = 'Primero confirma tu clave.'; errorEl.hidden = false; return; }
+  if (!objetivo) { errorEl.textContent = 'Escribe el usuario a buscar.'; errorEl.hidden = false; return; }
+
+  const btn = $('#adminBuscarBtn');
+  btn.disabled = true;
+  try {
+    const { data, error } = await supabaseClient.rpc('admin_buscar_usuario', { p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado, p_usuario_buscar: objetivo });
+    if (error) throw error;
+    const status = data && data.status;
+    if (status === 'ok') {
+      const etiquetaTipo = TIPOS_USUARIO_LABEL[data.tipo_usuario] || data.tipo_usuario;
+      infoBox.textContent = 'Usuario: ' + data.usuario + ' · ' + etiquetaTipo + ' · Código #' + data.codigo_usuario;
+      infoBox.hidden = false;
+    } else if (status === 'no_autorizado') {
+      errorEl.textContent = 'Tu sesión de Super Administrador no pudo validarse. Vuelve a confirmar tu clave.';
+      errorEl.hidden = false;
+      adminHashConfirmado = null;
+      $('#adminConfirmBox').hidden = false;
+      $('#adminTools').hidden = true;
+    } else {
+      errorEl.textContent = 'No se encontró ningún usuario con ese nombre.';
+      errorEl.hidden = false;
+    }
+  } catch (err) {
+    console.error('Error al buscar usuario:', err);
+    errorEl.textContent = 'No pudimos buscar el usuario en este momento.';
+    errorEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+$('#adminActualizarBtn')?.addEventListener('click', async () => {
+  const errorEl = $('#loginError');
+  const noteEl = $('#loginNote');
+  errorEl.hidden = true;
+  noteEl.hidden = true;
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  const objetivo = $('#admin-usuario-obj')?.value.trim();
+  const nueva = $('#admin-clave-nueva')?.value;
+  const nueva2 = $('#admin-clave-nueva2')?.value;
+
+  if (!adminHashConfirmado) { errorEl.textContent = 'Primero confirma tu clave.'; errorEl.hidden = false; return; }
+  if (!objetivo) { errorEl.textContent = 'Escribe el usuario al que vas a actualizar la clave.'; errorEl.hidden = false; return; }
+  if (!nueva) { errorEl.textContent = 'Escribe la nueva clave.'; errorEl.hidden = false; return; }
+  if (nueva !== nueva2) { errorEl.textContent = 'Las claves no coinciden.'; errorEl.hidden = false; return; }
+
+  const btn = $('#adminActualizarBtn');
+  btn.disabled = true;
+  try {
+    const nuevoHash = await csHashClave(nueva);
+    const { data, error } = await supabaseClient.rpc('admin_actualizar_clave', { p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado, p_usuario_objetivo: objetivo, p_nuevo_hash: nuevoHash });
+    if (error) throw error;
+    const status = data && data.status;
+    if (status === 'ok') {
+      noteEl.textContent = 'Clave de "' + objetivo + '" actualizada correctamente.';
+      noteEl.hidden = false;
+      reiniciarCampoClave('#admin-clave-nueva', '#adminClaveNuevaEye');
+      reiniciarCampoClave('#admin-clave-nueva2', '#adminClaveNueva2Eye');
+    } else if (status === 'no_autorizado') {
+      errorEl.textContent = 'Tu sesión de Super Administrador no pudo validarse. Vuelve a confirmar tu clave.';
+      errorEl.hidden = false;
+      adminHashConfirmado = null;
+      $('#adminConfirmBox').hidden = false;
+      $('#adminTools').hidden = true;
+    } else {
+      errorEl.textContent = 'No se encontró ningún usuario con ese nombre.';
+      errorEl.hidden = false;
+    }
+  } catch (err) {
+    console.error('Error al actualizar la clave:', err);
+    errorEl.textContent = 'No pudimos actualizar la clave en este momento.';
+    errorEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 $('#logoutBtn')?.addEventListener('click', () => {
   localStorage.removeItem(LOGIN_STORE);
@@ -570,7 +748,7 @@ $('#loginSubmitBtn')?.addEventListener('click', async () => {
   const usuario = $('#login-usuario')?.value.trim();
   const clave = $('#login-clave')?.value;
   const clave2 = $('#login-clave2')?.value;
-  const tipoUsuario = $('#login-tipo')?.value || 'usuario_general';
+  const tipoUsuario = (loginMode === 'crear' && esSuperAdministrador()) ? ($('#login-tipo')?.value || 'usuario_general') : 'usuario_general';
   const errorEl = $('#loginError');
   const noteEl = $('#loginNote');
   errorEl.hidden = true;

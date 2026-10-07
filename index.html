@@ -31,6 +31,7 @@
         <button class="lg" type="button" data-lang="en">EN</button>
         <span id="userBadge" hidden style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink)">
           <span id="userBadgeName"></span>
+          <button class="btn btn-line btn-sm" type="button" id="adminUsuariosBtn" hidden>Administrar usuarios</button>
           <button class="btn btn-line btn-sm" type="button" id="logoutBtn">Salir</button>
         </span>
         <button class="btn btn-line" type="button" id="openLoginBtn">Conectarse</button>
@@ -1249,9 +1250,43 @@
       </select>
     </div>
 
-    <div class="acts" style="margin-top:20px">
+    <div class="acts" id="loginSubmitWrap" style="margin-top:20px">
       <button class="btn btn-dark" type="button" id="loginSubmitBtn">Conectar</button>
     </div>
+
+    <div id="adminPanel" hidden>
+      <div class="fld" id="adminConfirmBox" style="margin-top:6px">
+        <label for="admin-clave-propia">Confirma tu clave de Super Administrador</label>
+        <div class="pw-wrap">
+          <input id="admin-clave-propia" type="password" autocomplete="current-password">
+          <button class="pw-eye" type="button" id="adminClavePropiaEye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+        </div>
+        <div class="acts" style="margin-top:14px"><button class="btn btn-dark" type="button" id="adminConfirmarBtn">Confirmar</button></div>
+      </div>
+
+      <div id="adminTools" hidden>
+        <div class="fld" style="margin-top:6px"><label for="admin-usuario-obj">Usuario a administrar</label><input id="admin-usuario-obj" type="text" autocomplete="off"></div>
+        <div class="acts" style="margin-top:14px"><button class="btn btn-line-dark btn-sm" type="button" id="adminBuscarBtn">🔍 Buscar</button></div>
+        <div class="note" id="adminInfoBox" hidden style="margin-top:10px"></div>
+
+        <div class="fld" style="margin-top:20px">
+          <label for="admin-clave-nueva">Nueva clave para ese usuario</label>
+          <div class="pw-wrap">
+            <input id="admin-clave-nueva" type="password" autocomplete="new-password">
+            <button class="pw-eye" type="button" id="adminClaveNuevaEye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+          </div>
+        </div>
+        <div class="fld" style="margin-top:16px">
+          <label for="admin-clave-nueva2">Confirmar nueva clave</label>
+          <div class="pw-wrap">
+            <input id="admin-clave-nueva2" type="password" autocomplete="new-password">
+            <button class="pw-eye" type="button" id="adminClaveNueva2Eye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
+          </div>
+        </div>
+        <div class="acts" style="margin-top:20px"><button class="btn btn-dark" type="button" id="adminActualizarBtn">Actualizar clave</button></div>
+      </div>
+    </div>
+
     <p class="note" id="loginNote" hidden></p>
     <p class="hint" id="loginError" hidden style="color:#b23"></p>
   </div>
