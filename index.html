@@ -138,8 +138,9 @@
       <div class="sec-h sec-h-tight">
         <h2 data-i18n="propH"></h2>
       </div>
-      <div class="cq-trigger-row">
+      <div class="cq-trigger-row cq-trigger-row-multi">
         <button class="btn btn-dark" type="button" id="abrirBuscarPropBtn">🔍 Buscar propiedades</button>
+        <button class="btn btn-line" type="button" id="abrirBuscarServBtn">🔧 Buscar servicios</button>
       </div>
       <div class="car-row">
         <div class="car" id="car" style="--i:0">
@@ -788,6 +789,24 @@
     <button class="mx" type="button" id="buscarPropClose" data-i18n-label="close">×</button>
     <div class="ph"><h2 id="buscarPropTitle">Buscar propiedades</h2><p class="ph-sub">Filtra por ciudad, sector, tipo, zona, especificaciones y presupuesto para encontrar la ubicación que buscas.</p></div>
     <div class="cq-bar" id="cityQuickMenu"></div>
+  </div>
+</div>
+
+<div class="modal" id="buscarServModal" hidden>
+  <button class="scrim" type="button" id="buscarServScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="buscarServCard" role="dialog" aria-modal="true" aria-labelledby="buscarServTitle">
+    <button class="mx" type="button" id="buscarServClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="buscarServTitle">Buscar servicios</h2><p class="ph-sub">Elige uno de los servicios que ofrecemos para ir directamente a su información.</p></div>
+    <div class="cq-bar">
+      <div class="cq-row">
+        <div class="cq-field cq-field-city">
+          <span class="cq-label">Servicio</span>
+          <select class="cq-select" id="servSelect"><option value="">Cargando servicios...</option></select>
+        </div>
+        <button class="btn btn-dark cq-search-btn" type="button" id="servSearchBtn">Buscar</button>
+      </div>
+      <div class="cq-results" id="servSearchMsg"></div>
+    </div>
   </div>
 </div>
 
