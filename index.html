@@ -895,6 +895,7 @@
     </div>
 
     <div id="pViewBox" hidden>
+      <div class="chips chips-top" id="vChips"></div>
       <div class="vw-stage">
         <img class="vw-img" id="vImg" alt="">
         <button class="arr vw-prev" type="button" id="vPrev" data-i18n-label="prevImg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
@@ -907,7 +908,19 @@
         <div><span class="vw-op" id="vOp" hidden></span><h3 class="vw-name" id="vName"></h3><p class="vw-addr" id="vAddr"></p></div>
         <div class="acts">
           <a class="btn btn-gold" id="vMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
+          <button class="btn btn-dark mk-btn" type="button" id="vMkBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V6M16 20v-8"></path><path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8z"></path></svg><span data-i18n="mkBtn"></span></button>
           <button class="btn btn-line" type="button" id="vEdit" data-i18n="edit"></button>
+        </div>
+        <div class="x-est mk-card vw-mk" id="vMk" hidden>
+          <div class="x-est-top"><p class="x-est-h" data-i18n="mkTitle"></p><button class="x-est-x" type="button" id="vMkHide" data-i18n="mkHide"></button></div>
+          <div id="vMkBlocks"></div>
+          <ul class="x-est-l" id="vMkLines"></ul>
+          <p class="x-est-h" id="vMkSimH" data-i18n="mkSimilar"></p>
+          <ul class="x-est-l" id="vMkSim"></ul>
+          <p class="x-est-h" id="vMkAroH" data-i18n="mkAround"></p>
+          <ul class="x-est-l" id="vMkAro"></ul>
+          <p class="assum" id="vMkConf"></p>
+          <p class="hint" id="vMkNotes"></p>
         </div>
       </div>
       <div class="vw-prices" id="vPrices" hidden>
@@ -920,7 +933,6 @@
         <div class="vw-sinfo"><p class="vw-slabel" data-i18n="sellerLabel"></p><p class="vw-sname" id="vsName"></p><p class="vw-snum" id="vsNum"></p></div>
         <a class="btn btn-wa" id="vsWa" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="waBtn"></span></a>
       </div>
-      <div class="chips" id="vChips"></div>
     </div>
   </div>
 </div>

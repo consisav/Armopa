@@ -2011,12 +2011,15 @@ function renderView() {
   if (c) $('#vMap').href = mapUrl(c);
   const chips = $('#vChips');
   chips.innerHTML = '';
+  let activeChip = null;
   l.forEach((x, i) => {
     const b = el('button', 'chip' + (i === sel ? ' on' : ''), x.name || t.locDefault);
     b.type = 'button';
     b.addEventListener('click', () => pickLoc(i));
+    if (i === sel) activeChip = b;
     chips.appendChild(b);
   });
+  if (activeChip) activeChip.scrollIntoView({ block: 'nearest', inline: 'center' });
 }
 
 function render() {
@@ -2497,34 +2500,43 @@ function mkList(id, items) {
   ul.innerHTML = '';
   items.forEach((x) => { const li = el('li'); li.append(el('span', '', x.k), el('strong', '', x.v)); ul.appendChild(li); });
 }
-function renderMk() {
-  const box = $('#pMk');
-  const c = cur !== null ? list()[sel] : null;
-  if (!mk || !c || mk.key !== cur + '-' + sel || mode !== 'edit') { box.hidden = true; return; }
-  const e = marketEstimate(cur, mk.in, lang);
-  box.hidden = false;
-  const bl = $('#pMkBlocks');
+function paintMkCard(ids, e) {
+  $(ids.box).hidden = false;
+  const bl = $(ids.blocks);
   bl.innerHTML = '';
   e.blocks.forEach((b) => {
     const row = el('div', 'mk-b');
     row.append(el('span', 'mk-l', b.label), el('span', 'amt', b.range), el('span', 'mk-u', b.usd));
     bl.appendChild(row);
   });
-  mkList('#pMkLines', e.lines);
-  mkList('#pMkSim', e.similar);
-  mkList('#pMkAro', e.around);
-  $('#pMkSimH').hidden = $('#pMkSim').hidden = !e.hasSimilar;
-  $('#pMkAroH').hidden = $('#pMkAro').hidden = !e.hasAround;
-  $('#pMkConf').textContent = e.conf;
-  $('#pMkUseRow').hidden = !e.hasFill;
-  $('#pMkNotes').textContent = e.notes;
+  mkList(ids.lines, e.lines);
+  mkList(ids.sim, e.similar);
+  mkList(ids.aro, e.around);
+  $(ids.simH).hidden = $(ids.sim).hidden = !e.hasSimilar;
+  $(ids.aroH).hidden = $(ids.aro).hidden = !e.hasAround;
+  $(ids.conf).textContent = e.conf;
+  if (ids.useRow) $(ids.useRow).hidden = !e.hasFill;
+  $(ids.notes).textContent = e.notes;
 }
-$('#pMkBtn').addEventListener('click', () => {
+const MK_IDS_EDIT = { box: '#pMk', blocks: '#pMkBlocks', lines: '#pMkLines', simH: '#pMkSimH', sim: '#pMkSim', aroH: '#pMkAroH', aro: '#pMkAro', conf: '#pMkConf', notes: '#pMkNotes', useRow: '#pMkUseRow' };
+const MK_IDS_VIEW = { box: '#vMk', blocks: '#vMkBlocks', lines: '#vMkLines', simH: '#vMkSimH', sim: '#vMkSim', aroH: '#vMkAroH', aro: '#vMkAro', conf: '#vMkConf', notes: '#vMkNotes' };
+function renderMk() {
+  const c = cur !== null ? list()[sel] : null;
+  const active = !!(mk && c && mk.key === cur + '-' + sel);
+  if (active && mode === 'edit') paintMkCard(MK_IDS_EDIT, marketEstimate(cur, mk.in, lang));
+  else $('#pMk').hidden = true;
+  if (active && mode === 'view') paintMkCard(MK_IDS_VIEW, marketEstimate(cur, mk.in, lang));
+  else $('#vMk').hidden = true;
+}
+function abrirCostosAlrededor() {
   const c = list()[sel]; if (!c) return;
   mk = { key: cur + '-' + sel, in: { op: c.op || '', name: c.name || '', addr: c.addr || '', desc: c.desc || '' } };
   renderMk();
-});
+}
+$('#pMkBtn').addEventListener('click', abrirCostosAlrededor);
+$('#vMkBtn').addEventListener('click', abrirCostosAlrededor);
 $('#pMkHide').addEventListener('click', () => { mk = null; renderMk(); });
+$('#vMkHide').addEventListener('click', () => { mk = null; renderMk(); });
 $('#pMkUse').addEventListener('click', () => {
   const c = list()[sel]; if (!c || !mk) return;
   const e = marketEstimate(cur, mk.in, lang);
