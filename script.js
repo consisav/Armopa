@@ -2974,6 +2974,11 @@ const xfilled = (i) => { const d = xd[i]; return !!(d && ((d.need || '').trim() 
 /* Resumen de cotización: tipo de servicio, número correlativo y fecha */
 let currentCotizacionId = null;
 const currentCotizacionDate = new Date();
+/* Registro de la cotización como solicitud(es) de servicio formales (Administrador /
+   Super administrador): un registro por cada servicio marcado en la cotización,
+   indexado por idx de servicio (0..8). Se reinicia con cada cotización nueva. */
+let qSolRegistros = {};
+let qSolClienteSel = null; // { usuario, codigo }
 function refreshQuoteSummary() {
   const t = T[lang];
   const el = $('#qSvcTypeVal');
@@ -2988,8 +2993,16 @@ async function initCotizacionNumber() {
     const { data, error } = await supabaseClient.from('cotizaciones').insert({}).select('id').single();
     if (error || !data) return;
     currentCotizacionId = data.id;
+    qSolRegistros = {};
+    qSolClienteSel = null;
     const numEl = $('#qNumVal');
     if (numEl) numEl.textContent = 'COT-' + String(data.id).padStart(6, '0');
+    const qSolInfoEl = $('#qSolClienteInfo');
+    if (qSolInfoEl) { qSolInfoEl.hidden = true; qSolInfoEl.textContent = ''; }
+    const qSolClienteInput = $('#qSol-cliente-usuario');
+    if (qSolClienteInput) qSolClienteInput.value = '';
+    const qSolListEl = $('#qSolList');
+    if (qSolListEl) { qSolListEl.innerHTML = ''; qSolListEl.hidden = true; }
   } catch (e) { /* silencioso: si falla, el número simplemente queda en "—" */ }
 }
 initCotizacionNumber();
@@ -3242,6 +3255,120 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
     el.textContent = text || '';
     el.style.color = isError ? '#b3261e' : '';
   }
+
+  /* Registro de la cotización como solicitud(es) de servicio formales
+     (Administrador / Super administrador): reusa el mismo gate de clave y las
+     mismas funciones RPC que el panel "Solicitudes de servicio". */
+  $('#qSolGateBtn')?.addEventListener('click', () => confirmarSolAdmin($('#qSolGateClave'), $('#qSolGateErr')));
+  $('#qSolGateClave')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); confirmarSolAdmin($('#qSolGateClave'), $('#qSolGateErr')); } });
+
+  $('#qSolBuscarClienteBtn')?.addEventListener('click', async () => {
+    const infoEl = $('#qSolClienteInfo');
+    const objetivo = $('#qSol-cliente-usuario')?.value.trim();
+    if (!objetivo) { qMsg('Escribe el nombre de usuario del cliente.', true); return; }
+    if (!solHashConfirmado) { qMsg('Primero confirma tu clave de administrador.', true); return; }
+    const miUsuario = localStorage.getItem(LOGIN_STORE);
+    try {
+      const { data, error } = await supabaseClient.rpc('buscar_cliente_solicitud', { p_usuario: miUsuario, p_hash: solHashConfirmado, p_cliente_usuario: objetivo });
+      if (error) throw error;
+      if (data && data.status === 'ok') {
+        qSolClienteSel = { usuario: data.usuario, codigo: data.codigo_usuario };
+        infoEl.textContent = data.usuario + ' · Código de cliente: #' + data.codigo_usuario;
+        infoEl.hidden = false;
+        qMsg('');
+      } else if (data && data.status === 'no_encontrado') {
+        qSolClienteSel = null;
+        infoEl.hidden = true;
+        qMsg('No existe ningún usuario registrado con ese nombre.', true);
+      } else {
+        qSolClienteSel = null;
+        qMsg('No se pudo confirmar el cliente.', true);
+      }
+    } catch (e) {
+      console.error('Error buscando cliente para la cotización:', e);
+      qMsg('No se pudo buscar el cliente en este momento.', true);
+    }
+  });
+
+  function renderQSolList() {
+    const listEl = $('#qSolList');
+    if (!listEl) return;
+    const idxs = Object.keys(qSolRegistros);
+    if (!idxs.length) { listEl.hidden = true; listEl.innerHTML = ''; return; }
+    listEl.hidden = false;
+    listEl.innerHTML = '';
+    const table = el('div', 'sol-table');
+    idxs.forEach((k) => {
+      const r = qSolRegistros[k];
+      const info = solEstadoInfo(r.estado);
+      const row = el('div', 'sol-row');
+      const num = el('div', 'sol-num', r.numero_solicitud || '—');
+      const cli = el('div', 'sol-cli', (T[lang].ext[+k] || '') + ' · ' + r.cliente_usuario + ' · #' + r.cliente_codigo);
+      const estadoWrap = el('div');
+      const badge = el('span', 'sol-badge', info.l);
+      badge.style.background = info.bg;
+      badge.style.color = info.fg;
+      estadoWrap.appendChild(badge);
+      row.append(num, cli, estadoWrap);
+      table.appendChild(row);
+    });
+    listEl.appendChild(table);
+  }
+
+  async function guardarRegistrosGestion() {
+    if (!esAdminOSuperAdmin() || !solHashConfirmado) return; // bloque oculto para quien no sea admin
+    if (!currentCotizacionId) return;
+    const clienteEscrito = $('#qSol-cliente-usuario')?.value.trim();
+    if (!clienteEscrito) return; // el registro formal es opcional: si no se buscó cliente, no se crea
+    if (!qSolClienteSel || qSolClienteSel.usuario !== clienteEscrito) {
+      qMsg('Busca y confirma el cliente antes de guardar la solicitud.', true);
+      return;
+    }
+    const estado = $('#qSol-estado')?.value || 'solicitado';
+    const miUsuario = localStorage.getItem(LOGIN_STORE);
+    const t = T[lang];
+    const idxs = [];
+    t.ext.forEach((name, i) => { if (xfilled(i)) idxs.push(i); });
+    for (const i of idxs) {
+      const codigo = SOL_TIPOS_CODIGO[i];
+      try {
+        let resp;
+        if (qSolRegistros[i]) {
+          resp = await supabaseClient.rpc('actualizar_solicitud_servicio', {
+            p_usuario: miUsuario, p_hash: solHashConfirmado, p_id: qSolRegistros[i].id,
+            p_cliente_usuario: qSolClienteSel.usuario, p_estado: estado,
+          });
+        } else {
+          resp = await supabaseClient.rpc('crear_solicitud_servicio', {
+            p_usuario: miUsuario, p_hash: solHashConfirmado,
+            p_tipo_servicio_idx: i, p_tipo_servicio_codigo: codigo,
+            p_cliente_usuario: qSolClienteSel.usuario, p_estado: estado,
+            p_cotizacion_id: currentCotizacionId,
+          });
+        }
+        const { data, error } = resp;
+        if (error) throw error;
+        if (data && data.status === 'ok') {
+          qSolRegistros[i] = {
+            id: data.id || (qSolRegistros[i] && qSolRegistros[i].id),
+            numero_solicitud: data.numero_solicitud || (qSolRegistros[i] && qSolRegistros[i].numero_solicitud),
+            cliente_usuario: qSolClienteSel.usuario,
+            cliente_codigo: qSolClienteSel.codigo,
+            estado,
+          };
+        } else if (data && data.status === 'no_autorizado') {
+          solHashConfirmado = null;
+          actualizarVisibilidadSolicitudes();
+          qMsg('Tu sesión de administrador expiró. Vuelve a confirmar tu clave.', true);
+          return;
+        }
+      } catch (e) {
+        console.error('Error guardando la solicitud de servicio de la cotización:', e);
+      }
+    }
+    renderQSolList();
+  }
+
   async function qSaveOrModify(successText) {
     const t = T[lang];
     const f = readQuoteFields();
@@ -3250,6 +3377,7 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
     try {
       saveCotizacionMaster(t, { name: f.name, phone: f.phone, email: f.email }, f.addr, f.date, f.budget);
       saveServiceRequestsSupabase(t, { name: f.name, phone: f.phone, email: f.email });
+      await guardarRegistrosGestion();
       qMsg(successText);
     } catch (err) {
       qMsg('Error al guardar la cotización.', true);
@@ -3263,9 +3391,17 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
     qMsg('Eliminando…');
     try {
       await supabaseClient.from('solicitudes_servicio').delete().eq('cotizacion_id', currentCotizacionId);
+      if (esAdminOSuperAdmin() && solHashConfirmado) {
+        const miUsuario = localStorage.getItem(LOGIN_STORE);
+        try {
+          await supabaseClient.rpc('eliminar_solicitudes_gestion_por_cotizacion', { p_usuario: miUsuario, p_hash: solHashConfirmado, p_cotizacion_id: currentCotizacionId });
+        } catch (e) { console.error('Error eliminando solicitudes de gestión de la cotización:', e); }
+      }
       const { error } = await supabaseClient.from('cotizaciones').delete().eq('id', currentCotizacionId);
       if (error) { qMsg('Error al eliminar: ' + error.message, true); return; }
       currentCotizacionId = null;
+      qSolRegistros = {};
+      qSolClienteSel = null;
       qMsg('Cotización eliminada con éxito.');
       initCotizacionNumber();
     } catch (err) {
@@ -3801,7 +3937,9 @@ function solServicioActual() {
 function actualizarVisibilidadSolicitudes() {
   const mostrar = esAdminOSuperAdmin();
   const panel = $('#solPanel');
+  const qBlock = $('#qSolBlock');
   if (panel) panel.hidden = !mostrar;
+  if (qBlock) qBlock.hidden = !mostrar;
   if (!mostrar) return;
   // La sesión cambió (por ejemplo otro usuario inició sesión): hay que
   // volver a confirmar la clave antes de ver o gestionar solicitudes.
@@ -3810,6 +3948,11 @@ function actualizarVisibilidadSolicitudes() {
   if (gate) gate.hidden = !!solHashConfirmado;
   if (list) list.hidden = !solHashConfirmado;
   if (solHashConfirmado) cargarSolicitudes(solServicioActual());
+
+  const qGate = $('#qSolGate');
+  const qFields = $('#qSolFields');
+  if (qGate) qGate.hidden = !!solHashConfirmado;
+  if (qFields) qFields.hidden = !solHashConfirmado;
 }
 
 async function confirmarSolAdmin(inputEl, errEl) {
@@ -3824,11 +3967,7 @@ async function confirmarSolAdmin(inputEl, errEl) {
     if (data && data.status === 'ok' && (data.tipo_usuario === 'administrador' || data.tipo_usuario === 'super_administrador')) {
       solHashConfirmado = hash;
       inputEl.value = '';
-      const gate = $('#solGate');
-      const list = $('#solList');
-      if (gate) gate.hidden = true;
-      if (list) list.hidden = false;
-      cargarSolicitudes(solServicioActual());
+      actualizarVisibilidadSolicitudes();
     } else {
       errEl.textContent = 'Clave incorrecta.';
       errEl.hidden = false;
