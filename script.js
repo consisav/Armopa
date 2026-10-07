@@ -462,6 +462,9 @@ $('#clientGo').addEventListener('click', () => { $('#clientNote').hidden = false
    y la comparación real ocurre dentro de una función de la base de datos (conectar_usuario),
    que es la única que puede leer el hash guardado. */
 const LOGIN_STORE = 'armopaUsuario';
+const LOGIN_TIPO_STORE = 'armopaUsuarioTipo';
+const LOGIN_CODIGO_STORE = 'armopaUsuarioCodigo';
+const TIPOS_USUARIO_LABEL = { super_administrador: 'Super administrador', administrador: 'Administrador', usuario_general: 'Usuario general' };
 
 function estaConectado() {
   return !!localStorage.getItem(LOGIN_STORE);
@@ -475,11 +478,14 @@ async function csHashClave(texto) {
 
 function pintarEstadoUsuario() {
   const usuario = localStorage.getItem(LOGIN_STORE);
+  const tipo = localStorage.getItem(LOGIN_TIPO_STORE);
+  const codigo = localStorage.getItem(LOGIN_CODIGO_STORE);
   const badge = $('#userBadge');
   const loginBtn = $('#openLoginBtn');
   const addCityBtn = $('#addCityBtn');
   if (usuario) {
-    $('#userBadgeName').textContent = 'Hola, ' + usuario;
+    const extra = tipo ? ' · ' + (TIPOS_USUARIO_LABEL[tipo] || tipo) + (codigo ? ' #' + codigo : '') : '';
+    $('#userBadgeName').textContent = 'Hola, ' + usuario + extra;
     badge.hidden = false;
     loginBtn.hidden = true;
     if (addCityBtn) addCityBtn.hidden = false;
@@ -496,6 +502,7 @@ const openLoginModal = () => {
   loginModal.hidden = false;
   $('#login-usuario').value = '';
   $('#login-clave').value = '';
+  if ($('#login-tipo')) $('#login-tipo').value = 'usuario_general';
   $('#loginNote').hidden = true;
   $('#loginError').hidden = true;
   navwrap.classList.remove('open');
@@ -508,12 +515,15 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && loginMod
 
 $('#logoutBtn')?.addEventListener('click', () => {
   localStorage.removeItem(LOGIN_STORE);
+  localStorage.removeItem(LOGIN_TIPO_STORE);
+  localStorage.removeItem(LOGIN_CODIGO_STORE);
   pintarEstadoUsuario();
 });
 
 $('#loginSubmitBtn')?.addEventListener('click', async () => {
   const usuario = $('#login-usuario')?.value.trim();
   const clave = $('#login-clave')?.value;
+  const tipoUsuario = $('#login-tipo')?.value || 'usuario_general';
   const errorEl = $('#loginError');
   const noteEl = $('#loginNote');
   errorEl.hidden = true;
@@ -529,18 +539,25 @@ $('#loginSubmitBtn')?.addEventListener('click', async () => {
   btn.disabled = true;
   try {
     const hash = await csHashClave(clave);
-    const { data, error } = await supabaseClient.rpc('conectar_usuario', { p_usuario: usuario, p_hash: hash });
+    const { data, error } = await supabaseClient.rpc('conectar_usuario', { p_usuario: usuario, p_hash: hash, p_tipo_usuario: tipoUsuario });
     if (error) throw error;
 
     const status = data && data.status;
+    const tipoResuelto = data && data.tipo_usuario;
+    const codigoResuelto = data && data.codigo_usuario;
     if (status === 'creado') {
       localStorage.setItem(LOGIN_STORE, usuario);
+      if (tipoResuelto) localStorage.setItem(LOGIN_TIPO_STORE, tipoResuelto);
+      if (codigoResuelto != null) localStorage.setItem(LOGIN_CODIGO_STORE, String(codigoResuelto));
       pintarEstadoUsuario();
-      noteEl.textContent = 'Cuenta creada. ¡Bienvenido, ' + usuario + '!';
+      const etiquetaTipo = TIPOS_USUARIO_LABEL[tipoResuelto] || tipoResuelto || '';
+      noteEl.textContent = 'Cuenta creada como ' + etiquetaTipo + ' (código #' + codigoResuelto + '). ¡Bienvenido, ' + usuario + '!';
       noteEl.hidden = false;
-      setTimeout(closeLoginModal, 1200);
+      setTimeout(closeLoginModal, 1800);
     } else if (status === 'ok') {
       localStorage.setItem(LOGIN_STORE, usuario);
+      if (tipoResuelto) localStorage.setItem(LOGIN_TIPO_STORE, tipoResuelto);
+      if (codigoResuelto != null) localStorage.setItem(LOGIN_CODIGO_STORE, String(codigoResuelto));
       pintarEstadoUsuario();
       noteEl.textContent = 'Conectado correctamente.';
       noteEl.hidden = false;
