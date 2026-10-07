@@ -848,6 +848,45 @@
   </div>
 </div>
 
+<div class="modal" id="solModal" hidden>
+  <button class="scrim" type="button" id="solScrim" data-i18n-label="close"></button>
+  <div class="mcard" id="solCard" role="dialog" aria-modal="true" aria-labelledby="solTitle">
+    <button class="mx" type="button" id="solClose" data-i18n-label="close">×</button>
+    <h2 id="solTitle">Nueva solicitud de servicio</h2>
+    <p class="hint" id="solServicioNombre"></p>
+
+    <div class="fld">
+      <span class="lbl">No. de solicitud</span>
+      <p class="hint" id="solNumeroPreview">Se genera automáticamente al guardar.</p>
+    </div>
+
+    <div class="fld">
+      <label for="sol-cliente-usuario">Cliente (usuario registrado)</label>
+      <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
+        <input id="sol-cliente-usuario" type="text" placeholder="Nombre de usuario del cliente">
+        <button class="btn btn-dark btn-sm" type="button" id="solBuscarClienteBtn">Buscar</button>
+      </div>
+      <p class="hint" id="solClienteInfo" hidden></p>
+    </div>
+
+    <div class="fld">
+      <label for="sol-estado">Estado</label>
+      <select id="sol-estado">
+        <option value="solicitado">Solicitado</option>
+        <option value="presupuesto_enviado">Enviado presupuesto</option>
+        <option value="aprobado">Aprobado</option>
+        <option value="en_proceso">En proceso</option>
+        <option value="ejecutado">Ejecutado</option>
+        <option value="anulado">Anulado</option>
+      </select>
+    </div>
+
+    <button class="btn btn-dark" type="button" id="solGuardarBtn" style="width:100%;margin-top:4px">Guardar solicitud</button>
+    <p class="hint" id="solError" hidden style="color:#b42318"></p>
+    <p class="hint" id="solNote" hidden></p>
+  </div>
+</div>
+
 <div class="modal" id="propModal" hidden>
   <button class="scrim" type="button" id="pScrim" data-i18n-label="close"></button>
   <div class="pcard" id="pCard" role="dialog" aria-modal="true" aria-labelledby="pTitle">

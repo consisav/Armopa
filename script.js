@@ -470,6 +470,14 @@ function estaConectado() {
   return !!localStorage.getItem(LOGIN_STORE);
 }
 
+/* Solicitudes de servicio: clave ya confirmada en esta sesión (Administrador o
+   Super administrador). Declarada aquí arriba porque pintarEstadoUsuario() la usa. */
+let solHashConfirmado = null;
+function esAdminOSuperAdmin() {
+  const tipo = localStorage.getItem(LOGIN_TIPO_STORE);
+  return estaConectado() && (tipo === 'administrador' || tipo === 'super_administrador');
+}
+
 async function csHashClave(texto) {
   const enc = new TextEncoder().encode(texto);
   const buf = await crypto.subtle.digest('SHA-256', enc);
@@ -495,12 +503,15 @@ function pintarEstadoUsuario() {
     if (adminBtn) adminBtn.hidden = tipo !== 'super_administrador';
     if (serviciosSec) serviciosSec.hidden = tipo !== 'super_administrador';
     if (buscarServBtn) buscarServBtn.hidden = tipo !== 'super_administrador';
+    actualizarVisibilidadSolicitudes();
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
     if (addCityBtn) addCityBtn.hidden = true;
     if (adminBtn) adminBtn.hidden = true;
     if (serviciosSec) serviciosSec.hidden = true;
+    solHashConfirmado = null;
+    actualizarVisibilidadSolicitudes();
     if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
@@ -3763,3 +3774,292 @@ buildCityCards();
 }
 document.addEventListener('DOMContentLoaded', cargarPropiedadesArmopa);
 window.cargarPropiedadesArmopa = cargarPropiedadesArmopa;
+/* ===== Solicitudes de servicio (Administrador / Super administrador) =====
+   Vive dentro de cada una de las 9 tarjetas de "Especialistas para cada
+   necesidad". Oculto para cualquiera que no tenga sesión de Administrador o
+   Super administrador. La clave se vuelve a confirmar una vez por sesión
+   (solHashConfirmado, declarado arriba) y se reenvía a cada función de
+   Supabase, que la vuelve a verificar del lado del servidor. */
+const SOL_TIPOS_CODIGO = ['ALQ', 'CAM', 'REN', 'MTO', 'PLE', 'JUR', 'PRE', 'MOV', 'ADM'];
+const SOL_ESTADOS = [
+  { v: 'solicitado', l: 'Solicitado', bg: '#e6eef5', fg: '#2b4a66' },
+  { v: 'presupuesto_enviado', l: 'Enviado presupuesto', bg: '#fbe9c8', fg: '#8b641d' },
+  { v: 'aprobado', l: 'Aprobado', bg: '#dcefe0', fg: '#1f7a43' },
+  { v: 'en_proceso', l: 'En proceso', bg: '#dde8fb', fg: '#1d4ed8' },
+  { v: 'ejecutado', l: 'Ejecutado', bg: '#c9eed2', fg: '#0f5132' },
+  { v: 'anulado', l: 'Anulado', bg: '#fbdede', fg: '#b42318' },
+];
+const solEstadoInfo = (v) => SOL_ESTADOS.find((e) => e.v === v) || SOL_ESTADOS[0];
+
+function actualizarVisibilidadSolicitudes() {
+  const mostrar = esAdminOSuperAdmin();
+  $$('.ex-sol').forEach((w) => { w.hidden = !mostrar; });
+  if (!mostrar) return;
+  // La sesión cambió (por ejemplo otro usuario inició sesión): hay que
+  // volver a confirmar la clave antes de ver o gestionar solicitudes.
+  $$('.ex-sol-gate').forEach((g) => { g.hidden = !!solHashConfirmado; });
+  $$('.ex-sol-list').forEach((l) => { l.hidden = !solHashConfirmado; });
+  if (solHashConfirmado) $$('.ex-sol').forEach((w) => cargarSolicitudes(+w.dataset.idx));
+}
+
+function buildSolPanel(i) {
+  const c = $$('.ex-c')[i];
+  const expPanel = c && c.querySelector('.ex-p');
+  if (!expPanel || expPanel.querySelector('.ex-sol')) return;
+
+  const wrap = el('div', 'ex-sol');
+  wrap.hidden = !esAdminOSuperAdmin();
+  wrap.dataset.idx = String(i);
+
+  const head = el('div', 'ex-sol-head');
+  const titleWrap = el('div');
+  titleWrap.innerHTML = '<h4>Solicitudes de servicio<span class="sub">Solo Administrador / Super administrador</span></h4>';
+  const addBtn = el('button', 'btn btn-dark btn-sm', '+ Agregar solicitud');
+  addBtn.type = 'button';
+  addBtn.addEventListener('click', () => openSolModal(i, null));
+  head.append(titleWrap, addBtn);
+
+  const gate = el('div', 'ex-sol-gate');
+  gate.hidden = !!solHashConfirmado;
+  const gateMsg = el('p', 'hint', 'Confirma tu clave para ver y gestionar las solicitudes de este servicio.');
+  const gateRow = el('div', 'x-row');
+  const gateInput = document.createElement('input');
+  gateInput.type = 'password';
+  gateInput.placeholder = 'Tu clave';
+  gateInput.autocomplete = 'current-password';
+  const gateBtn = el('button', 'btn btn-line-dark btn-sm', 'Confirmar');
+  gateBtn.type = 'button';
+  const gateErr = el('p', 'hint ex-sol-err', '');
+  gateErr.hidden = true;
+  gateErr.style.color = '#b42318';
+  gateBtn.addEventListener('click', () => confirmarSolAdmin(gateInput, gateErr));
+  gateInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); confirmarSolAdmin(gateInput, gateErr); } });
+  gateRow.append(gateInput, gateBtn);
+  gate.append(gateMsg, gateRow, gateErr);
+
+  const list = el('div', 'ex-sol-list');
+  list.hidden = !solHashConfirmado;
+
+  wrap.append(head, gate, list);
+  expPanel.appendChild(wrap);
+}
+
+async function confirmarSolAdmin(inputEl, errEl) {
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  const clave = inputEl.value;
+  errEl.hidden = true;
+  if (!miUsuario || !clave) { errEl.textContent = 'Escribe tu clave.'; errEl.hidden = false; return; }
+  try {
+    const hash = await csHashClave(clave);
+    const { data, error } = await supabaseClient.rpc('conectar_usuario', { p_usuario: miUsuario, p_hash: hash, p_crear: false });
+    if (error) throw error;
+    if (data && data.status === 'ok' && (data.tipo_usuario === 'administrador' || data.tipo_usuario === 'super_administrador')) {
+      solHashConfirmado = hash;
+      inputEl.value = '';
+      $$('.ex-sol-gate').forEach((g) => { g.hidden = true; });
+      $$('.ex-sol-list').forEach((l) => { l.hidden = false; });
+      $$('.ex-sol').forEach((w) => cargarSolicitudes(+w.dataset.idx));
+    } else {
+      errEl.textContent = 'Clave incorrecta.';
+      errEl.hidden = false;
+    }
+  } catch (e) {
+    console.error('Error confirmando clave para solicitudes:', e);
+    errEl.textContent = 'No se pudo confirmar en este momento. Intenta de nuevo.';
+    errEl.hidden = false;
+  }
+}
+
+async function cargarSolicitudes(i) {
+  const c = $$('.ex-c')[i];
+  const listEl = c && c.querySelector('.ex-sol-list');
+  if (!listEl || !solHashConfirmado) return;
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  listEl.innerHTML = '<p class="hint">Cargando…</p>';
+  try {
+    const { data, error } = await supabaseClient.rpc('listar_solicitudes_servicio', { p_usuario: miUsuario, p_hash: solHashConfirmado, p_tipo_servicio_idx: i });
+    if (error) throw error;
+    renderSolicitudes(i, data || []);
+  } catch (e) {
+    console.error('Error cargando solicitudes:', e);
+    listEl.innerHTML = '<p class="hint">No se pudieron cargar las solicitudes.</p>';
+  }
+}
+
+function renderSolicitudes(i, rows) {
+  const c = $$('.ex-c')[i];
+  const listEl = c && c.querySelector('.ex-sol-list');
+  if (!listEl) return;
+  if (!rows.length) {
+    listEl.innerHTML = '<p class="hint">Todavía no hay solicitudes para este servicio.</p>';
+    return;
+  }
+  listEl.innerHTML = '';
+  const table = el('div', 'sol-table');
+  rows.forEach((r) => {
+    const info = solEstadoInfo(r.estado);
+    const row = el('div', 'sol-row');
+
+    const num = el('div', 'sol-num', r.numero_solicitud);
+    const cli = el('div', 'sol-cli', r.cliente_usuario + ' · #' + r.cliente_codigo);
+    const estadoWrap = el('div');
+    const badge = el('span', 'sol-badge', info.l);
+    badge.style.background = info.bg;
+    badge.style.color = info.fg;
+    estadoWrap.appendChild(badge);
+
+    const actions = el('div', 'sol-actions');
+    const editBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar');
+    editBtn.type = 'button';
+    editBtn.addEventListener('click', () => openSolModal(i, r));
+    const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar');
+    delBtn.type = 'button';
+    delBtn.addEventListener('click', () => eliminarSolicitud(i, r.id, r.numero_solicitud));
+    actions.append(editBtn, delBtn);
+
+    row.append(num, cli, estadoWrap, actions);
+    table.appendChild(row);
+  });
+  listEl.appendChild(table);
+}
+
+async function eliminarSolicitud(i, id, numero) {
+  if (!solHashConfirmado) return;
+  if (!confirm('¿Eliminar la solicitud ' + numero + '? Esta acción no se puede deshacer.')) return;
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  try {
+    const { data, error } = await supabaseClient.rpc('eliminar_solicitud_servicio', { p_usuario: miUsuario, p_hash: solHashConfirmado, p_id: id });
+    if (error) throw error;
+    if (data && data.status === 'ok') cargarSolicitudes(i);
+    else cargarSolicitudes(i);
+  } catch (e) {
+    console.error('Error eliminando solicitud:', e);
+  }
+}
+
+/* Modal compartido: Agregar / Modificar solicitud */
+const solModal = $('#solModal');
+let solItemIndex = null;
+let solEditId = null;
+let solClienteSel = null; // { usuario, codigo }
+
+function openSolModal(i, row) {
+  solItemIndex = i;
+  solEditId = row ? row.id : null;
+  solClienteSel = row ? { usuario: row.cliente_usuario, codigo: row.cliente_codigo } : null;
+  $('#solTitle').textContent = row ? 'Modificar solicitud' : 'Nueva solicitud de servicio';
+  $('#solServicioNombre').textContent = (T[lang].ext && T[lang].ext[i]) || '';
+  $('#solNumeroPreview').textContent = row ? row.numero_solicitud : 'Se genera automáticamente al guardar.';
+  $('#sol-cliente-usuario').value = row ? row.cliente_usuario : '';
+  const infoEl = $('#solClienteInfo');
+  if (row) {
+    infoEl.textContent = 'Código de cliente: #' + row.cliente_codigo;
+    infoEl.hidden = false;
+  } else {
+    infoEl.hidden = true;
+    infoEl.textContent = '';
+  }
+  $('#sol-estado').value = row ? row.estado : 'solicitado';
+  $('#solError').hidden = true;
+  $('#solNote').hidden = true;
+  if (solModal) solModal.hidden = false;
+}
+const closeSolModal = () => { if (solModal) solModal.hidden = true; };
+$('#solClose')?.addEventListener('click', closeSolModal);
+$('#solScrim')?.addEventListener('click', closeSolModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && solModal && !solModal.hidden) closeSolModal(); });
+
+$('#solBuscarClienteBtn')?.addEventListener('click', async () => {
+  const errEl = $('#solError');
+  errEl.hidden = true;
+  const infoEl = $('#solClienteInfo');
+  const objetivo = $('#sol-cliente-usuario')?.value.trim();
+  if (!objetivo) { errEl.textContent = 'Escribe el nombre de usuario del cliente.'; errEl.hidden = false; return; }
+  if (!solHashConfirmado) { errEl.textContent = 'Primero confirma tu clave de administrador.'; errEl.hidden = false; return; }
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  try {
+    const { data, error } = await supabaseClient.rpc('buscar_cliente_solicitud', { p_usuario: miUsuario, p_hash: solHashConfirmado, p_cliente_usuario: objetivo });
+    if (error) throw error;
+    if (data && data.status === 'ok') {
+      solClienteSel = { usuario: data.usuario, codigo: data.codigo_usuario };
+      infoEl.textContent = data.usuario + ' · Código de cliente: #' + data.codigo_usuario;
+      infoEl.hidden = false;
+    } else if (data && data.status === 'no_encontrado') {
+      solClienteSel = null;
+      infoEl.hidden = true;
+      errEl.textContent = 'No existe ningún usuario registrado con ese nombre.';
+      errEl.hidden = false;
+    } else {
+      solClienteSel = null;
+      errEl.textContent = 'No se pudo confirmar el cliente.';
+      errEl.hidden = false;
+    }
+  } catch (e) {
+    console.error('Error buscando cliente:', e);
+    errEl.textContent = 'No se pudo buscar el cliente en este momento.';
+    errEl.hidden = false;
+  }
+});
+
+$('#solGuardarBtn')?.addEventListener('click', async () => {
+  const errEl = $('#solError');
+  const noteEl = $('#solNote');
+  errEl.hidden = true;
+  noteEl.hidden = true;
+  if (!solHashConfirmado) { errEl.textContent = 'Primero confirma tu clave de administrador.'; errEl.hidden = false; return; }
+  if (solItemIndex === null) return;
+  const clienteUsuarioEscrito = $('#sol-cliente-usuario')?.value.trim();
+  if (!solClienteSel || solClienteSel.usuario !== clienteUsuarioEscrito) {
+    errEl.textContent = 'Busca y confirma el cliente antes de guardar.';
+    errEl.hidden = false;
+    return;
+  }
+  const estado = $('#sol-estado')?.value || 'solicitado';
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  const codigo = SOL_TIPOS_CODIGO[solItemIndex];
+  const btn = $('#solGuardarBtn');
+  btn.disabled = true;
+  try {
+    let resp;
+    if (solEditId) {
+      resp = await supabaseClient.rpc('actualizar_solicitud_servicio', {
+        p_usuario: miUsuario, p_hash: solHashConfirmado, p_id: solEditId,
+        p_cliente_usuario: solClienteSel.usuario, p_estado: estado,
+      });
+    } else {
+      resp = await supabaseClient.rpc('crear_solicitud_servicio', {
+        p_usuario: miUsuario, p_hash: solHashConfirmado,
+        p_tipo_servicio_idx: solItemIndex, p_tipo_servicio_codigo: codigo,
+        p_cliente_usuario: solClienteSel.usuario, p_estado: estado,
+      });
+    }
+    const { data, error } = resp;
+    if (error) throw error;
+    const status = data && data.status;
+    if (status === 'ok') {
+      cargarSolicitudes(solItemIndex);
+      closeSolModal();
+    } else if (status === 'cliente_no_existe') {
+      errEl.textContent = 'Ese usuario ya no existe. Búscalo de nuevo.';
+      errEl.hidden = false;
+    } else if (status === 'no_autorizado') {
+      errEl.textContent = 'Tu sesión de administrador expiró. Cierra este formulario y vuelve a confirmar tu clave.';
+      errEl.hidden = false;
+      solHashConfirmado = null;
+      actualizarVisibilidadSolicitudes();
+    } else {
+      errEl.textContent = 'No se pudo guardar la solicitud.';
+      errEl.hidden = false;
+    }
+  } catch (e) {
+    console.error('Error guardando solicitud:', e);
+    errEl.textContent = 'No se pudo guardar la solicitud en este momento.';
+    errEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+/* Construir el panel en cada una de las 9 tarjetas y aplicar la visibilidad inicial */
+$$('.ex-c').forEach((c, i) => buildSolPanel(i));
+actualizarVisibilidadSolicitudes();
