@@ -3775,9 +3775,10 @@ buildCityCards();
 document.addEventListener('DOMContentLoaded', cargarPropiedadesArmopa);
 window.cargarPropiedadesArmopa = cargarPropiedadesArmopa;
 /* ===== Solicitudes de servicio (Administrador / Super administrador) =====
-   Vive dentro de cada una de las 9 tarjetas de "Especialistas para cada
-   necesidad". Oculto para cualquiera que no tenga sesión de Administrador o
-   Super administrador. La clave se vuelve a confirmar una vez por sesión
+   Panel único al final de "Solicitar cotización" (#solPanel), con un
+   selector para elegir a cuál de los 9 servicios pertenece cada solicitud.
+   Oculto para cualquiera que no tenga sesión de Administrador o Super
+   administrador. La clave se vuelve a confirmar una vez por sesión
    (solHashConfirmado, declarado arriba) y se reenvía a cada función de
    Supabase, que la vuelve a verificar del lado del servidor. */
 const SOL_TIPOS_CODIGO = ['ALQ', 'CAM', 'REN', 'MTO', 'PLE', 'JUR', 'PRE', 'MOV', 'ADM'];
@@ -3791,57 +3792,24 @@ const SOL_ESTADOS = [
 ];
 const solEstadoInfo = (v) => SOL_ESTADOS.find((e) => e.v === v) || SOL_ESTADOS[0];
 
+function solServicioActual() {
+  const sel = $('#sol-servicio-sel');
+  const v = sel ? parseInt(sel.value, 10) : 0;
+  return Number.isFinite(v) ? v : 0;
+}
+
 function actualizarVisibilidadSolicitudes() {
   const mostrar = esAdminOSuperAdmin();
-  $$('.ex-sol').forEach((w) => { w.hidden = !mostrar; });
+  const panel = $('#solPanel');
+  if (panel) panel.hidden = !mostrar;
   if (!mostrar) return;
   // La sesión cambió (por ejemplo otro usuario inició sesión): hay que
   // volver a confirmar la clave antes de ver o gestionar solicitudes.
-  $$('.ex-sol-gate').forEach((g) => { g.hidden = !!solHashConfirmado; });
-  $$('.ex-sol-list').forEach((l) => { l.hidden = !solHashConfirmado; });
-  if (solHashConfirmado) $$('.ex-sol').forEach((w) => cargarSolicitudes(+w.dataset.idx));
-}
-
-function buildSolPanel(i) {
-  const c = $$('.ex-c')[i];
-  const expPanel = c && c.querySelector('.ex-p');
-  if (!expPanel || expPanel.querySelector('.ex-sol')) return;
-
-  const wrap = el('div', 'ex-sol');
-  wrap.hidden = !esAdminOSuperAdmin();
-  wrap.dataset.idx = String(i);
-
-  const head = el('div', 'ex-sol-head');
-  const titleWrap = el('div');
-  titleWrap.innerHTML = '<h4>Solicitudes de servicio<span class="sub">Solo Administrador / Super administrador</span></h4>';
-  const addBtn = el('button', 'btn btn-dark btn-sm', '+ Agregar solicitud');
-  addBtn.type = 'button';
-  addBtn.addEventListener('click', () => openSolModal(i, null));
-  head.append(titleWrap, addBtn);
-
-  const gate = el('div', 'ex-sol-gate');
-  gate.hidden = !!solHashConfirmado;
-  const gateMsg = el('p', 'hint', 'Confirma tu clave para ver y gestionar las solicitudes de este servicio.');
-  const gateRow = el('div', 'x-row');
-  const gateInput = document.createElement('input');
-  gateInput.type = 'password';
-  gateInput.placeholder = 'Tu clave';
-  gateInput.autocomplete = 'current-password';
-  const gateBtn = el('button', 'btn btn-line-dark btn-sm', 'Confirmar');
-  gateBtn.type = 'button';
-  const gateErr = el('p', 'hint ex-sol-err', '');
-  gateErr.hidden = true;
-  gateErr.style.color = '#b42318';
-  gateBtn.addEventListener('click', () => confirmarSolAdmin(gateInput, gateErr));
-  gateInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); confirmarSolAdmin(gateInput, gateErr); } });
-  gateRow.append(gateInput, gateBtn);
-  gate.append(gateMsg, gateRow, gateErr);
-
-  const list = el('div', 'ex-sol-list');
-  list.hidden = !solHashConfirmado;
-
-  wrap.append(head, gate, list);
-  expPanel.appendChild(wrap);
+  const gate = $('#solGate');
+  const list = $('#solList');
+  if (gate) gate.hidden = !!solHashConfirmado;
+  if (list) list.hidden = !solHashConfirmado;
+  if (solHashConfirmado) cargarSolicitudes(solServicioActual());
 }
 
 async function confirmarSolAdmin(inputEl, errEl) {
@@ -3856,9 +3824,11 @@ async function confirmarSolAdmin(inputEl, errEl) {
     if (data && data.status === 'ok' && (data.tipo_usuario === 'administrador' || data.tipo_usuario === 'super_administrador')) {
       solHashConfirmado = hash;
       inputEl.value = '';
-      $$('.ex-sol-gate').forEach((g) => { g.hidden = true; });
-      $$('.ex-sol-list').forEach((l) => { l.hidden = false; });
-      $$('.ex-sol').forEach((w) => cargarSolicitudes(+w.dataset.idx));
+      const gate = $('#solGate');
+      const list = $('#solList');
+      if (gate) gate.hidden = true;
+      if (list) list.hidden = false;
+      cargarSolicitudes(solServicioActual());
     } else {
       errEl.textContent = 'Clave incorrecta.';
       errEl.hidden = false;
@@ -3871,8 +3841,7 @@ async function confirmarSolAdmin(inputEl, errEl) {
 }
 
 async function cargarSolicitudes(i) {
-  const c = $$('.ex-c')[i];
-  const listEl = c && c.querySelector('.ex-sol-list');
+  const listEl = $('#solList');
   if (!listEl || !solHashConfirmado) return;
   const miUsuario = localStorage.getItem(LOGIN_STORE);
   listEl.innerHTML = '<p class="hint">Cargando…</p>';
@@ -3887,8 +3856,7 @@ async function cargarSolicitudes(i) {
 }
 
 function renderSolicitudes(i, rows) {
-  const c = $$('.ex-c')[i];
-  const listEl = c && c.querySelector('.ex-sol-list');
+  const listEl = $('#solList');
   if (!listEl) return;
   if (!rows.length) {
     listEl.innerHTML = '<p class="hint">Todavía no hay solicitudes para este servicio.</p>';
@@ -4060,6 +4028,10 @@ $('#solGuardarBtn')?.addEventListener('click', async () => {
   }
 });
 
-/* Construir el panel en cada una de las 9 tarjetas y aplicar la visibilidad inicial */
-$$('.ex-c').forEach((c, i) => buildSolPanel(i));
+/* Panel único de solicitudes de servicio: clave, selector y botón de agregar */
+$('#solGateBtn')?.addEventListener('click', () => confirmarSolAdmin($('#solGateClave'), $('#solGateErr')));
+$('#solGateClave')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); confirmarSolAdmin($('#solGateClave'), $('#solGateErr')); } });
+$('#solAddBtn')?.addEventListener('click', () => openSolModal(solServicioActual(), null));
+$('#sol-servicio-sel')?.addEventListener('change', () => { if (solHashConfirmado) cargarSolicitudes(solServicioActual()); });
+
 actualizarVisibilidadSolicitudes();
