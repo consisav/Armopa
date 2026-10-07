@@ -498,13 +498,59 @@ function pintarEstadoUsuario() {
 pintarEstadoUsuario();
 
 const loginModal = $('#loginModal');
+const LOGIN_MAX_INTENTOS = 3;
+let loginMode = 'conectar'; // 'conectar' = iniciar sesión en cuenta existente | 'crear' = registrar cuenta nueva
+let loginIntentosFallidos = 0;
+
+const EYE_OPEN = '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle>';
+const EYE_OFF = '<path d="M3 3l18 18"></path><path d="M10.6 5.2A10.6 10.6 0 0 1 12 5c6.4 0 10 7 10 7a16.6 16.6 0 0 1-3.3 4.3M6.5 6.6C3.7 8.4 2 12 2 12s3.6 7 10 7c1.4 0 2.6-.3 3.7-.8"></path><path d="M9.5 10a3 3 0 0 0 4.2 4.2"></path>';
+function activarOjoClave(inputId, btnId) {
+  const input = $(inputId), btn = $(btnId);
+  if (!input || !btn) return;
+  btn.addEventListener('click', () => {
+    const mostrar = input.type === 'password';
+    input.type = mostrar ? 'text' : 'password';
+    btn.setAttribute('aria-pressed', String(mostrar));
+    btn.querySelector('svg').innerHTML = mostrar ? EYE_OFF : EYE_OPEN;
+  });
+}
+activarOjoClave('#login-clave', '#loginClaveEye');
+activarOjoClave('#login-clave2', '#loginClave2Eye');
+
+function aplicarModoLogin() {
+  const esCrear = loginMode === 'crear';
+  $('#loginModeConectar').classList.toggle('on', !esCrear);
+  $('#loginModeCrear').classList.toggle('on', esCrear);
+  $('#loginTitle').textContent = esCrear ? 'Crear usuario' : 'Conectarse';
+  $('#loginSub').textContent = esCrear
+    ? 'Crea tu cuenta: elige un usuario, una clave y tu tipo de usuario.'
+    : 'Escribe tu usuario y clave para conectarte.';
+  $('#loginConfirmWrap').hidden = !esCrear;
+  $('#loginTipoWrap').hidden = !esCrear;
+  $('#loginSubmitBtn').textContent = esCrear ? 'Crear cuenta' : 'Conectar';
+  $('#loginError').hidden = true;
+  $('#loginNote').hidden = true;
+}
+$('#loginModeConectar')?.addEventListener('click', () => { loginMode = 'conectar'; aplicarModoLogin(); });
+$('#loginModeCrear')?.addEventListener('click', () => { loginMode = 'crear'; aplicarModoLogin(); });
+
 const openLoginModal = () => {
   loginModal.hidden = false;
   $('#login-usuario').value = '';
   $('#login-clave').value = '';
+  $('#login-clave').type = 'password';
+  $('#loginClaveEye').setAttribute('aria-pressed', 'false');
+  $('#loginClaveEye').querySelector('svg').innerHTML = EYE_OPEN;
+  if ($('#login-clave2')) {
+    $('#login-clave2').value = '';
+    $('#login-clave2').type = 'password';
+    $('#loginClave2Eye').setAttribute('aria-pressed', 'false');
+    $('#loginClave2Eye').querySelector('svg').innerHTML = EYE_OPEN;
+  }
   if ($('#login-tipo')) $('#login-tipo').value = 'usuario_general';
-  $('#loginNote').hidden = true;
-  $('#loginError').hidden = true;
+  loginMode = 'conectar';
+  loginIntentosFallidos = 0;
+  aplicarModoLogin();
   navwrap.classList.remove('open');
 };
 const closeLoginModal = () => { loginModal.hidden = true; };
@@ -523,6 +569,7 @@ $('#logoutBtn')?.addEventListener('click', () => {
 $('#loginSubmitBtn')?.addEventListener('click', async () => {
   const usuario = $('#login-usuario')?.value.trim();
   const clave = $('#login-clave')?.value;
+  const clave2 = $('#login-clave2')?.value;
   const tipoUsuario = $('#login-tipo')?.value || 'usuario_general';
   const errorEl = $('#loginError');
   const noteEl = $('#loginNote');
@@ -534,18 +581,30 @@ $('#loginSubmitBtn')?.addEventListener('click', async () => {
     errorEl.hidden = false;
     return;
   }
+  if (loginMode === 'crear' && clave !== clave2) {
+    errorEl.textContent = 'Las claves no coinciden. Verifica el campo "Confirmar clave".';
+    errorEl.hidden = false;
+    return;
+  }
 
   const btn = $('#loginSubmitBtn');
   btn.disabled = true;
   try {
     const hash = await csHashClave(clave);
-    const { data, error } = await supabaseClient.rpc('conectar_usuario', { p_usuario: usuario, p_hash: hash, p_tipo_usuario: tipoUsuario });
+    const { data, error } = await supabaseClient.rpc('conectar_usuario', {
+      p_usuario: usuario,
+      p_hash: hash,
+      p_tipo_usuario: tipoUsuario,
+      p_crear: loginMode === 'crear',
+    });
     if (error) throw error;
 
     const status = data && data.status;
     const tipoResuelto = data && data.tipo_usuario;
     const codigoResuelto = data && data.codigo_usuario;
+
     if (status === 'creado') {
+      loginIntentosFallidos = 0;
       localStorage.setItem(LOGIN_STORE, usuario);
       if (tipoResuelto) localStorage.setItem(LOGIN_TIPO_STORE, tipoResuelto);
       if (codigoResuelto != null) localStorage.setItem(LOGIN_CODIGO_STORE, String(codigoResuelto));
@@ -555,16 +614,38 @@ $('#loginSubmitBtn')?.addEventListener('click', async () => {
       noteEl.hidden = false;
       setTimeout(closeLoginModal, 1800);
     } else if (status === 'ok') {
+      loginIntentosFallidos = 0;
       localStorage.setItem(LOGIN_STORE, usuario);
       if (tipoResuelto) localStorage.setItem(LOGIN_TIPO_STORE, tipoResuelto);
       if (codigoResuelto != null) localStorage.setItem(LOGIN_CODIGO_STORE, String(codigoResuelto));
       pintarEstadoUsuario();
-      noteEl.textContent = 'Conectado correctamente.';
-      noteEl.hidden = false;
-      setTimeout(closeLoginModal, 900);
-    } else {
-      errorEl.textContent = 'Ese usuario ya existe y la clave no es correcta.';
+      if (loginMode === 'crear') {
+        errorEl.textContent = 'Ese usuario ya existe. Usa "Conectarse" para iniciar sesión.';
+        errorEl.hidden = false;
+        localStorage.removeItem(LOGIN_STORE);
+        localStorage.removeItem(LOGIN_TIPO_STORE);
+        localStorage.removeItem(LOGIN_CODIGO_STORE);
+        pintarEstadoUsuario();
+      } else {
+        noteEl.textContent = 'Conectado correctamente.';
+        noteEl.hidden = false;
+        setTimeout(closeLoginModal, 900);
+      }
+    } else if (status === 'no_existe') {
+      errorEl.textContent = 'Ese usuario no existe todavía. Usa "Crear usuario" para registrarte.';
       errorEl.hidden = false;
+    } else {
+      // Clave incorrecta para un usuario que sí existe.
+      loginIntentosFallidos++;
+      if (loginIntentosFallidos >= LOGIN_MAX_INTENTOS) {
+        errorEl.textContent = 'Clave incorrecta. Alcanzaste el máximo de ' + LOGIN_MAX_INTENTOS + ' intentos; vuelve a intentarlo.';
+        errorEl.hidden = false;
+        setTimeout(closeLoginModal, 1600);
+      } else {
+        const restantes = LOGIN_MAX_INTENTOS - loginIntentosFallidos;
+        errorEl.textContent = 'Clave incorrecta. Te queda' + (restantes === 1 ? '' : 'n') + ' ' + restantes + ' intento' + (restantes === 1 ? '' : 's') + '.';
+        errorEl.hidden = false;
+      }
     }
   } catch (err) {
     console.error('Error al conectar:', err);
