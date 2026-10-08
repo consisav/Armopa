@@ -3952,6 +3952,10 @@ function actualizarVisibilidadSolicitudes() {
   if (gate) gate.hidden = !!solHashConfirmado;
   if (list) list.hidden = !solHashConfirmado;
   if (solHashConfirmado) cargarSolicitudes(solServicioActual());
+  if (!solHashConfirmado) {
+    const seguimiento = $('#solSeguimientoPanel');
+    if (seguimiento) seguimiento.hidden = true;
+  }
 
   const qGate = $('#qSolGate');
   const qFields = $('#qSolFields');
@@ -4171,10 +4175,79 @@ $('#solGuardarBtn')?.addEventListener('click', async () => {
   }
 });
 
-/* Panel único de solicitudes de servicio: clave, selector y botón de agregar */
+/* Seguimiento de cotización: para el servicio seleccionado, muestra por cada
+   solicitud el código de cliente, el estado de la cotización que la originó,
+   el número de solicitud y el estado de la solicitud. Es un segmento aparte,
+   de solo lectura, que se abre/actualiza con su propio botón. */
+async function cargarSeguimiento(i) {
+  const listEl = $('#solSeguimientoList');
+  if (!listEl || !solHashConfirmado) return;
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  listEl.innerHTML = '<p class="hint">Cargando…</p>';
+  try {
+    const { data, error } = await supabaseClient.rpc('listar_seguimiento_cotizacion', { p_usuario: miUsuario, p_hash: solHashConfirmado, p_tipo_servicio_idx: i });
+    if (error) throw error;
+    renderSeguimiento(data || []);
+  } catch (e) {
+    console.error('Error cargando el seguimiento de cotización:', e);
+    listEl.innerHTML = '<p class="hint">No se pudo cargar el seguimiento de cotización.</p>';
+  }
+}
+
+function labeledCell(label, valueEl) {
+  const cell = el('div');
+  cell.append(el('span', 'lbl', label), valueEl);
+  return cell;
+}
+
+function renderSeguimiento(rows) {
+  const listEl = $('#solSeguimientoList');
+  if (!listEl) return;
+  if (!rows.length) {
+    listEl.innerHTML = '<p class="hint">Todavía no hay cotizaciones con solicitudes para este servicio.</p>';
+    return;
+  }
+  listEl.innerHTML = '';
+  const table = el('div', 'seg-table');
+  rows.forEach((r) => {
+    const info = solEstadoInfo(r.estado_solicitud);
+    const row = el('div', 'seg-row');
+
+    const cotBadge = el('span', 'sol-badge', r.cotizacion_enviada ? 'Enviada' : 'Pendiente');
+    cotBadge.style.background = r.cotizacion_enviada ? '#dcefe0' : '#fbe9c8';
+    cotBadge.style.color = r.cotizacion_enviada ? '#1f7a43' : '#8b641d';
+
+    const estBadge = el('span', 'sol-badge', info.l);
+    estBadge.style.background = info.bg;
+    estBadge.style.color = info.fg;
+
+    row.append(
+      labeledCell('Código de cliente', el('strong', '', '#' + r.cliente_codigo)),
+      labeledCell('Estado de la cotización', cotBadge),
+      labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud)),
+      labeledCell('Estado de la solicitud', estBadge),
+    );
+    table.appendChild(row);
+  });
+  listEl.appendChild(table);
+}
+
+/* Panel único de solicitudes de servicio: clave, selector y seguimiento */
 $('#solGateBtn')?.addEventListener('click', () => confirmarSolAdmin($('#solGateClave'), $('#solGateErr')));
 $('#solGateClave')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); confirmarSolAdmin($('#solGateClave'), $('#solGateErr')); } });
-$('#solAddBtn')?.addEventListener('click', () => openSolModal(solServicioActual(), null));
-$('#sol-servicio-sel')?.addEventListener('change', () => { if (solHashConfirmado) cargarSolicitudes(solServicioActual()); });
+$('#solSeguimientoBtn')?.addEventListener('click', () => {
+  const panel = $('#solSeguimientoPanel');
+  if (!panel) return;
+  const mostrar = panel.hidden;
+  panel.hidden = !mostrar;
+  if (mostrar) cargarSeguimiento(solServicioActual());
+});
+$('#solSeguimientoActualizarBtn')?.addEventListener('click', () => cargarSeguimiento(solServicioActual()));
+$('#sol-servicio-sel')?.addEventListener('change', () => {
+  if (!solHashConfirmado) return;
+  cargarSolicitudes(solServicioActual());
+  const panel = $('#solSeguimientoPanel');
+  if (panel && !panel.hidden) cargarSeguimiento(solServicioActual());
+});
 
 actualizarVisibilidadSolicitudes();

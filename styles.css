@@ -171,6 +171,11 @@ section[id]{scroll-margin-top:148px}
 .sol-actions .btn{padding:0 11px;height:30px;font-size:12.5px}
 .sol-del{color:#b42318!important;border-color:#f3c7c7!important}
 @media (max-width:720px){.sol-row{grid-template-columns:1fr;gap:6px}.sol-actions{justify-content:flex-start}}
+.seg-table{display:flex;flex-direction:column;border:1px solid #e6e0d0;border-radius:12px;overflow:hidden;background:#fff;margin-top:8px}
+.seg-row{display:grid;grid-template-columns:1fr 1fr 1.2fr 1fr;gap:10px;align-items:start;padding:12px 14px;border-top:1px solid #f0ede4;font-size:13px}
+.seg-row:first-child{border-top:0}
+.seg-row .lbl{display:block;font-size:11px;color:var(--muted);margin-bottom:3px}
+@media (max-width:720px){.seg-row{grid-template-columns:1fr;gap:10px}}
 #solCard .hint{margin:0}
 #solCard .fld{margin-bottom:2px}
 .x-est-l span{color:var(--muted)}
