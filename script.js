@@ -3939,7 +3939,11 @@ function solServicioActual() {
 }
 
 function actualizarVisibilidadSolicitudes() {
-  const mostrar = esAdminOSuperAdmin();
+  // Ocultos por ahora a pedido del cliente (ambos bloques: "Solicitud de
+  // servicio" dentro de Solicitar cotización, y el panel "Solicitudes de
+  // servicio"), aunque quien esté conectado sea Administrador o Super
+  // administrador. El resto de la lógica queda intacta por si se reactivan.
+  const mostrar = false; // antes: esAdminOSuperAdmin();
   const panel = $('#solPanel');
   const qBlock = $('#qSolBlock');
   if (panel) panel.hidden = !mostrar;
