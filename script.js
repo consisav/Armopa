@@ -3324,16 +3324,20 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
       qMsg('Busca y confirma el cliente antes de guardar la solicitud.', true);
       return;
     }
-    const estado = $('#qSol-estado')?.value || 'solicitado';
+    // El estado solo se puede elegir al Modificar: toda solicitud nace en
+    // "Solicitado" sin importar lo que tenga seleccionado el combo todavía.
+    const estadoSeleccionado = $('#qSol-estado')?.value || 'solicitado';
     const miUsuario = localStorage.getItem(LOGIN_STORE);
     const t = T[lang];
     const idxs = [];
     t.ext.forEach((name, i) => { if (xfilled(i)) idxs.push(i); });
     for (const i of idxs) {
       const codigo = SOL_TIPOS_CODIGO[i];
+      const esNueva = !qSolRegistros[i];
+      const estado = esNueva ? 'solicitado' : estadoSeleccionado;
       try {
         let resp;
-        if (qSolRegistros[i]) {
+        if (!esNueva) {
           resp = await supabaseClient.rpc('actualizar_solicitud_servicio', {
             p_usuario: miUsuario, p_hash: solHashConfirmado, p_id: qSolRegistros[i].id,
             p_cliente_usuario: qSolClienteSel.usuario, p_estado: estado,
@@ -3342,7 +3346,7 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
           resp = await supabaseClient.rpc('crear_solicitud_servicio', {
             p_usuario: miUsuario, p_hash: solHashConfirmado,
             p_tipo_servicio_idx: i, p_tipo_servicio_codigo: codigo,
-            p_cliente_usuario: qSolClienteSel.usuario, p_estado: estado,
+            p_cliente_usuario: qSolClienteSel.usuario, p_estado: 'solicitado',
             p_cotizacion_id: currentCotizacionId,
           });
         }

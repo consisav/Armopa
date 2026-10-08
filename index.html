@@ -743,48 +743,43 @@
         </div>
         <div class="q-summary" id="qSummary">
           <div><span data-i18n="qSvcType"></span><strong id="qSvcTypeVal">—</strong></div>
-          <div><span data-i18n="qNum"></span><strong id="qNumVal">—</strong></div>
           <div><span data-i18n="qQuoteDate"></span><strong id="qQuoteDateVal">—</strong></div>
-        </div>
 
-        <div class="ex-sol" id="qSolBlock" hidden>
-          <div class="ex-sol-head">
-            <div>
-              <h4>Registrar como solicitud de servicio<span class="sub">Solo Administrador / Super administrador</span></h4>
-            </div>
-          </div>
+          <section id="qSolBlock" hidden>
+            <p class="hint" style="margin:0"><strong>Solicitud de servicio</strong><span style="display:block;font-size:12px;color:var(--muted)">Solo Administrador / Super administrador · No. de solicitud, cliente y estado</span></p>
 
-          <div class="ex-sol-gate" id="qSolGate">
-            <p class="hint">Confirma tu clave para registrar esta cotización como solicitud(es) de servicio.</p>
-            <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
-              <input type="password" id="qSolGateClave" placeholder="Tu clave" autocomplete="current-password">
-              <button class="btn btn-line-dark btn-sm" type="button" id="qSolGateBtn">Confirmar</button>
-            </div>
-            <p class="hint" id="qSolGateErr" hidden style="color:#b42318"></p>
-          </div>
-
-          <div id="qSolFields" hidden>
-            <div class="fld">
-              <label for="qSol-cliente-usuario">Cliente (usuario registrado)</label>
+            <div class="ex-sol-gate" id="qSolGate">
+              <p class="hint">Confirma tu clave para registrar esta cotización como solicitud(es) de servicio.</p>
               <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
-                <input id="qSol-cliente-usuario" type="text" placeholder="Nombre de usuario del cliente">
-                <button class="btn btn-dark btn-sm" type="button" id="qSolBuscarClienteBtn">Buscar</button>
+                <input type="password" id="qSolGateClave" placeholder="Tu clave" autocomplete="current-password">
+                <button class="btn btn-line-dark btn-sm" type="button" id="qSolGateBtn">Confirmar</button>
               </div>
-              <p class="hint" id="qSolClienteInfo" hidden></p>
+              <p class="hint" id="qSolGateErr" hidden style="color:#b42318"></p>
             </div>
-            <div class="fld">
-              <label for="qSol-estado">Estado</label>
-              <select id="qSol-estado">
-                <option value="solicitado">Solicitado</option>
-                <option value="presupuesto_enviado">Enviado presupuesto</option>
-                <option value="aprobado">Aprobado</option>
-                <option value="en_proceso">En proceso</option>
-                <option value="ejecutado">Ejecutado</option>
-                <option value="anulado">Anulado</option>
-              </select>
+
+            <div id="qSolFields" hidden>
+              <div class="fld">
+                <label for="qSol-cliente-usuario">Cliente (usuario registrado)</label>
+                <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
+                  <input id="qSol-cliente-usuario" type="text" placeholder="Nombre de usuario del cliente">
+                  <button class="btn btn-dark btn-sm" type="button" id="qSolBuscarClienteBtn">Buscar</button>
+                </div>
+                <p class="hint" id="qSolClienteInfo" hidden></p>
+              </div>
+              <div class="fld">
+                <label for="qSol-estado">Estado</label>
+                <select id="qSol-estado">
+                  <option value="solicitado">Solicitado</option>
+                  <option value="presupuesto_enviado">Enviado presupuesto</option>
+                  <option value="aprobado">Aprobado</option>
+                  <option value="en_proceso">En proceso</option>
+                  <option value="ejecutado">Ejecutado</option>
+                  <option value="anulado">Anulado</option>
+                </select>
+              </div>
+              <div class="ex-sol-list" id="qSolList" hidden></div>
             </div>
-            <div class="ex-sol-list" id="qSolList" hidden></div>
-          </div>
+          </section>
         </div>
 
         <div class="acts" style="margin-top:16px">
