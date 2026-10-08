@@ -4176,9 +4176,11 @@ $('#solGuardarBtn')?.addEventListener('click', async () => {
 });
 
 /* Seguimiento de cotización: para el servicio seleccionado, muestra por cada
-   solicitud el código de cliente, el estado de la cotización que la originó,
-   el número de solicitud y el estado de la solicitud. Es un segmento aparte,
-   de solo lectura, que se abre/actualiza con su propio botón. */
+   solicitud tres datos: el código de cliente, el estado de la cotización (el
+   mismo estado de la solicitud, mostrado aquí con ese nombre) y el código de
+   la cotización que la originó (en vez de un número de solicitud aparte). Es
+   un segmento aparte, de solo lectura, que se abre/actualiza con su propio
+   botón. */
 async function cargarSeguimiento(i) {
   const listEl = $('#solSeguimientoList');
   if (!listEl || !solHashConfirmado) return;
@@ -4213,19 +4215,16 @@ function renderSeguimiento(rows) {
     const info = solEstadoInfo(r.estado_solicitud);
     const row = el('div', 'seg-row');
 
-    const cotBadge = el('span', 'sol-badge', r.cotizacion_enviada ? 'Enviada' : 'Pendiente');
-    cotBadge.style.background = r.cotizacion_enviada ? '#dcefe0' : '#fbe9c8';
-    cotBadge.style.color = r.cotizacion_enviada ? '#1f7a43' : '#8b641d';
-
     const estBadge = el('span', 'sol-badge', info.l);
     estBadge.style.background = info.bg;
     estBadge.style.color = info.fg;
 
+    const codigoCotizacion = r.cotizacion_id ? 'COT-' + String(r.cotizacion_id).padStart(6, '0') : '—';
+
     row.append(
       labeledCell('Código de cliente', el('strong', '', '#' + r.cliente_codigo)),
-      labeledCell('Estado de la cotización', cotBadge),
-      labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud)),
-      labeledCell('Estado de la solicitud', estBadge),
+      labeledCell('Estado de la cotización', estBadge),
+      labeledCell('Código de la cotización', el('strong', 'sol-num', codigoCotizacion)),
     );
     table.appendChild(row);
   });
