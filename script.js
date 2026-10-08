@@ -504,6 +504,7 @@ function pintarEstadoUsuario() {
     if (serviciosSec) serviciosSec.hidden = tipo !== 'super_administrador';
     if (buscarServBtn) buscarServBtn.hidden = tipo !== 'super_administrador';
     actualizarVisibilidadSolicitudes();
+    actualizarVisibilidadSeguimientoCotizacion();
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
@@ -512,6 +513,7 @@ function pintarEstadoUsuario() {
     if (serviciosSec) serviciosSec.hidden = true;
     solHashConfirmado = null;
     actualizarVisibilidadSolicitudes();
+    actualizarVisibilidadSeguimientoCotizacion();
     if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
@@ -3980,6 +3982,7 @@ async function confirmarSolAdmin(inputEl, errEl) {
       solHashConfirmado = hash;
       inputEl.value = '';
       actualizarVisibilidadSolicitudes();
+      actualizarVisibilidadSeguimientoCotizacion();
     } else {
       errEl.textContent = 'Clave incorrecta.';
       errEl.hidden = false;
@@ -4254,3 +4257,80 @@ $('#sol-servicio-sel')?.addEventListener('change', () => {
 });
 
 actualizarVisibilidadSolicitudes();
+
+/* Seguimiento de cotización (botón al final de "Solicitar cotización"):
+   visible solo para Administrador/Super administrador, muestra para la
+   cotización actual: código de cliente, código de la solicitud/cotización y
+   estado — con su propio botón para actualizar. */
+function actualizarVisibilidadSeguimientoCotizacion() {
+  const btn = $('#qSeguimientoBlock');
+  const esAdmin = esAdminOSuperAdmin();
+  if (btn) btn.hidden = !esAdmin;
+  if (!esAdmin) return;
+  const gate = $('#qSeguimientoGate');
+  const datos = $('#qSeguimientoDatos');
+  if (gate) gate.hidden = !!solHashConfirmado;
+  if (datos) datos.hidden = !solHashConfirmado;
+}
+
+async function cargarSeguimientoCotizacionActual() {
+  const listEl = $('#qSeguimientoList');
+  if (!listEl || !solHashConfirmado) return;
+  if (!currentCotizacionId) {
+    listEl.innerHTML = '<p class="hint">Todavía no hay una cotización guardada.</p>';
+    return;
+  }
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  listEl.innerHTML = '<p class="hint">Cargando…</p>';
+  try {
+    const { data, error } = await supabaseClient.rpc('listar_seguimiento_por_cotizacion', { p_usuario: miUsuario, p_hash: solHashConfirmado, p_cotizacion_id: currentCotizacionId });
+    if (error) throw error;
+    renderSeguimientoCotizacionActual(data || []);
+  } catch (e) {
+    console.error('Error cargando el seguimiento de esta cotización:', e);
+    listEl.innerHTML = '<p class="hint">No se pudo cargar el seguimiento.</p>';
+  }
+}
+
+function renderSeguimientoCotizacionActual(rows) {
+  const listEl = $('#qSeguimientoList');
+  if (!listEl) return;
+  if (!rows.length) {
+    listEl.innerHTML = '<p class="hint">Esta cotización todavía no tiene solicitudes de servicio registradas.</p>';
+    return;
+  }
+  listEl.innerHTML = '';
+  const codigoCotizacion = 'COT-' + String(currentCotizacionId).padStart(6, '0');
+  const table = el('div', 'seg-table');
+  rows.forEach((r) => {
+    const info = solEstadoInfo(r.estado_solicitud);
+    const row = el('div', 'seg-row');
+    const estBadge = el('span', 'sol-badge', info.l);
+    estBadge.style.background = info.bg;
+    estBadge.style.color = info.fg;
+    row.append(
+      labeledCell('Código de cliente', el('strong', '', '#' + r.cliente_codigo)),
+      labeledCell('Código de la solicitud/cotización', el('strong', 'sol-num', codigoCotizacion)),
+      labeledCell('Estado', estBadge),
+    );
+    table.appendChild(row);
+  });
+  listEl.appendChild(table);
+}
+
+$('#qSeguimientoBtn')?.addEventListener('click', () => {
+  const panel = $('#qSeguimientoPanel');
+  if (!panel) return;
+  const mostrar = panel.hidden;
+  panel.hidden = !mostrar;
+  if (mostrar && solHashConfirmado) cargarSeguimientoCotizacionActual();
+});
+$('#qSeguimientoGateBtn')?.addEventListener('click', async () => {
+  await confirmarSolAdmin($('#qSeguimientoClave'), $('#qSeguimientoGateErr'));
+  actualizarVisibilidadSeguimientoCotizacion();
+  if (solHashConfirmado) cargarSeguimientoCotizacionActual();
+});
+$('#qSeguimientoClave')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#qSeguimientoGateBtn')?.click(); } });
+$('#qSeguimientoActualizarBtn')?.addEventListener('click', () => cargarSeguimientoCotizacionActual());
+
+actualizarVisibilidadSeguimientoCotizacion();
