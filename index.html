@@ -795,7 +795,7 @@
           <div>
             <h4>Solicitudes de servicio<span class="sub">Solo Administrador / Super administrador</span></h4>
           </div>
-          <button class="btn btn-dark btn-sm" type="button" id="solAddBtn">+ Agregar solicitud</button>
+          <button class="btn btn-dark btn-sm" type="button" id="solSeguimientoBtn">📋 Seguimiento de cotización</button>
         </div>
 
         <div class="fld" id="solServicioFld">
@@ -823,6 +823,14 @@
         </div>
 
         <div class="ex-sol-list" id="solList" hidden></div>
+
+        <div id="solSeguimientoPanel" hidden>
+          <div class="ex-sol-head" style="margin-top:4px">
+            <div><h4 style="font-size:15px;margin:0">Seguimiento de cotización</h4></div>
+            <button class="btn btn-line-dark btn-sm" type="button" id="solSeguimientoActualizarBtn">🔄 Actualizar</button>
+          </div>
+          <div id="solSeguimientoList"></div>
+        </div>
       </div>
     </div>
   </section>
