@@ -788,6 +788,26 @@
           <button class="btn btn-danger" type="button" id="qDeleteBtn">🗑️ Eliminar</button>
         </div>
         <p class="hint" id="qSaveMsg" style="margin-top:8px"></p>
+
+        <div id="qSeguimientoBlock" hidden style="margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)">
+          <button class="btn btn-dark btn-sm" type="button" id="qSeguimientoBtn">📋 Seguimiento de cotización</button>
+
+          <div id="qSeguimientoPanel" hidden style="margin-top:14px">
+            <div class="ex-sol-gate" id="qSeguimientoGate">
+              <p class="hint">Confirma tu clave para ver el seguimiento de esta cotización.</p>
+              <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
+                <input type="password" id="qSeguimientoClave" placeholder="Tu clave" autocomplete="current-password">
+                <button class="btn btn-line-dark btn-sm" type="button" id="qSeguimientoGateBtn">Confirmar</button>
+              </div>
+              <p class="hint" id="qSeguimientoGateErr" hidden style="color:#b42318"></p>
+            </div>
+
+            <div id="qSeguimientoDatos" hidden>
+              <div id="qSeguimientoList"></div>
+              <button class="btn btn-line-dark btn-sm" type="button" id="qSeguimientoActualizarBtn" style="margin-top:10px">🔄 Actualizar</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="ex-sol" id="solPanel" hidden>
