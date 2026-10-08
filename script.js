@@ -3161,12 +3161,29 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
       }
     });
   }
-  function saveServiceRequestsSupabase(t, contact) {
-    const rows = [];
+  async function saveServiceRequestsSupabase(t, contact) {
+    const idxs = [];
     t.ext.forEach((name, i) => {
       const d = xd[i] || {};
       const need = (d.need || '').trim(), addrSvc = (d.addr || '').trim(), time = (d.time || '').trim(), start = d.start || '', prio = d.prio || '', cot = d.cotPdf || '', cotDate = d.cotDate || '';
       if (!need && !addrSvc && !time && !start && !prio && !cot && !cotDate) return;
+      idxs.push(i);
+    });
+    if (!idxs.length) return;
+    const clienteCodigo = localStorage.getItem(LOGIN_CODIGO_STORE) || null;
+    const rows = [];
+    for (const i of idxs) {
+      const name = t.ext[i];
+      const d = xd[i] || {};
+      const addrSvc = (d.addr || '').trim(), need = (d.need || '').trim(), time = (d.time || '').trim(), start = d.start || '', prio = d.prio || '', cot = d.cotPdf || '', cotDate = d.cotDate || '';
+      let numeroSolicitud = null;
+      try {
+        const { data, error } = await supabaseClient.rpc('generar_numero_solicitud_servicio', { p_codigo: SOL_TIPOS_CODIGO[i] });
+        if (error) throw error;
+        numeroSolicitud = data || null;
+      } catch (e) {
+        console.error('Error generando el número de solicitud:', e);
+      }
       rows.push({
         nombre_cliente: contact.name,
         telefono_cliente: contact.phone,
@@ -3179,13 +3196,14 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
         prioridad: prio || null,
         cotizacion_pdf: cot || null,
         fecha_cotizacion: cotDate || null,
-        cotizacion_id: currentCotizacionId
+        cotizacion_id: currentCotizacionId,
+        cliente_codigo: clienteCodigo,
+        estado: 'solicitado',
+        numero_solicitud: numeroSolicitud
       });
-    });
-    if (!rows.length) return;
-    supabaseClient.from('solicitudes_servicio').insert(rows).then(({ error }) => {
-      if (error) console.error('Error al guardar la solicitud en Supabase:', error);
-    });
+    }
+    const { error } = await supabaseClient.from('solicitudes_servicio').insert(rows);
+    if (error) console.error('Error al guardar la solicitud en Supabase:', error);
   }
   function saveCotizacionMaster(t, contact, addr, date, budget) {
     const names = t.ext.filter((name, i) => xfilled(i));
@@ -3382,7 +3400,7 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
     qMsg('Guardando…');
     try {
       saveCotizacionMaster(t, { name: f.name, phone: f.phone, email: f.email }, f.addr, f.date, f.budget);
-      saveServiceRequestsSupabase(t, { name: f.name, phone: f.phone, email: f.email });
+      await saveServiceRequestsSupabase(t, { name: f.name, phone: f.phone, email: f.email });
       await guardarRegistrosGestion();
       qMsg(successText);
     } catch (err) {
