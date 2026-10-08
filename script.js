@@ -4259,9 +4259,11 @@ $('#sol-servicio-sel')?.addEventListener('change', () => {
 actualizarVisibilidadSolicitudes();
 
 /* Seguimiento de cotización (botón al final de "Solicitar cotización"):
-   visible solo para Administrador/Super administrador, muestra para la
-   cotización actual: código de cliente, código de la solicitud/cotización y
-   estado — con su propio botón para actualizar. */
+   visible solo para Administrador/Super administrador. Muestra, por cada
+   solicitud de servicio (tabla solicitudes_gestion) ligada a la cotización
+   actual: código de cliente (asociado al código de usuario), estado (de la
+   solicitud de servicio, con su color) y el No. de solicitud autogenerado
+   en formato AÑO-CÓDIGO-CORRELATIVO — con su propio botón para actualizar. */
 function actualizarVisibilidadSeguimientoCotizacion() {
   const btn = $('#qSeguimientoBlock');
   const esAdmin = esAdminOSuperAdmin();
@@ -4300,7 +4302,6 @@ function renderSeguimientoCotizacionActual(rows) {
     return;
   }
   listEl.innerHTML = '';
-  const codigoCotizacion = 'COT-' + String(currentCotizacionId).padStart(6, '0');
   const table = el('div', 'seg-table');
   rows.forEach((r) => {
     const info = solEstadoInfo(r.estado_solicitud);
@@ -4310,8 +4311,8 @@ function renderSeguimientoCotizacionActual(rows) {
     estBadge.style.color = info.fg;
     row.append(
       labeledCell('Código de cliente', el('strong', '', '#' + r.cliente_codigo)),
-      labeledCell('Código de la solicitud/cotización', el('strong', 'sol-num', codigoCotizacion)),
       labeledCell('Estado', estBadge),
+      labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
     );
     table.appendChild(row);
   });
