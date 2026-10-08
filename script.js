@@ -4276,12 +4276,12 @@ $('#sol-servicio-sel')?.addEventListener('change', () => {
 
 actualizarVisibilidadSolicitudes();
 
-/* Seguimiento de cotización (botón al final de "Solicitar cotización"):
+/* Seguimiento de solicitud (botón al final de "Solicitar cotización"):
    visible solo para Administrador/Super administrador. Muestra, por cada
-   solicitud de servicio (tabla solicitudes_gestion) ligada a la cotización
-   actual: código de cliente (asociado al código de usuario), estado (de la
-   solicitud de servicio, con su color) y el No. de solicitud autogenerado
-   en formato AÑO-CÓDIGO-CORRELATIVO — con su propio botón para actualizar. */
+   servicio marcado en esta cotización (tabla solicitudes_servicio): tipo de
+   servicio, código de usuario, estado (con su color) y el No. de solicitud
+   autogenerado en formato AÑO-CÓDIGO-CORRELATIVO — con su propio botón para
+   actualizar. */
 function actualizarVisibilidadSeguimientoCotizacion() {
   const btn = $('#qSeguimientoBlock');
   const esAdmin = esAdminOSuperAdmin();
@@ -4300,14 +4300,17 @@ async function cargarSeguimientoCotizacionActual() {
     listEl.innerHTML = '<p class="hint">Todavía no hay una cotización guardada.</p>';
     return;
   }
-  const miUsuario = localStorage.getItem(LOGIN_STORE);
   listEl.innerHTML = '<p class="hint">Cargando…</p>';
   try {
-    const { data, error } = await supabaseClient.rpc('listar_seguimiento_por_cotizacion', { p_usuario: miUsuario, p_hash: solHashConfirmado, p_cotizacion_id: currentCotizacionId });
+    const { data, error } = await supabaseClient
+      .from('solicitudes_servicio')
+      .select('servicio, cliente_codigo, estado, numero_solicitud')
+      .eq('cotizacion_id', currentCotizacionId)
+      .order('id', { ascending: false });
     if (error) throw error;
     renderSeguimientoCotizacionActual(data || []);
   } catch (e) {
-    console.error('Error cargando el seguimiento de esta cotización:', e);
+    console.error('Error cargando el seguimiento de esta solicitud:', e);
     listEl.innerHTML = '<p class="hint">No se pudo cargar el seguimiento.</p>';
   }
 }
@@ -4322,13 +4325,14 @@ function renderSeguimientoCotizacionActual(rows) {
   listEl.innerHTML = '';
   const table = el('div', 'seg-table');
   rows.forEach((r) => {
-    const info = solEstadoInfo(r.estado_solicitud);
+    const info = solEstadoInfo(r.estado);
     const row = el('div', 'seg-row');
     const estBadge = el('span', 'sol-badge', info.l);
     estBadge.style.background = info.bg;
     estBadge.style.color = info.fg;
     row.append(
-      labeledCell('Código de cliente', el('strong', '', '#' + r.cliente_codigo)),
+      labeledCell('Tipo de servicio', el('strong', '', r.servicio || '—')),
+      labeledCell('Código de usuario', el('strong', '', r.cliente_codigo ? ('#' + r.cliente_codigo) : '—')),
       labeledCell('Estado', estBadge),
       labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
     );
