@@ -4442,3 +4442,98 @@ function actualizarVisibilidadAccionesCotizacion() {
 
 actualizarVisibilidadSolServicio();
 actualizarVisibilidadAccionesCotizacion();
+
+/* Botón "Buscar registros" (esquina superior derecha del bloque "Solicitar
+   cotización"): al presionarlo, despliega un selector de tipo de servicio y
+   un selector con las solicitudes guardadas (tabla solicitudes_servicio,
+   cruzada con cotizaciones para el presupuesto), mostrando por cada una:
+   No. de solicitud, nombre del cliente y presupuesto asignado. */
+function formatQBuscarRegPresupuesto(v) {
+  if (v === null || v === undefined || v === '') return 'Sin presupuesto';
+  const n = Number(v);
+  return Number.isFinite(n) ? ('Q ' + n.toLocaleString('es-GT')) : String(v);
+}
+
+function poblarQBuscarRegTipoSel() {
+  const sel = $('#qBuscarRegTipoSel');
+  if (!sel || sel.options.length) return;
+  const t = T[lang] || T.es;
+  const optTodos = document.createElement('option');
+  optTodos.value = '';
+  optTodos.textContent = 'Todos los servicios';
+  sel.appendChild(optTodos);
+  t.ext.forEach((name, i) => {
+    const opt = document.createElement('option');
+    opt.value = String(i);
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+}
+
+async function cargarQBuscarRegLista() {
+  const listaSel = $('#qBuscarRegListaSel');
+  const hint = $('#qBuscarRegHint');
+  if (!listaSel) return;
+  listaSel.innerHTML = '';
+  if (hint) hint.textContent = 'Cargando…';
+  const tipoSel = $('#qBuscarRegTipoSel');
+  const t = T[lang] || T.es;
+  const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
+  try {
+    let query = supabaseClient
+      .from('solicitudes_servicio')
+      .select('id, numero_solicitud, nombre_cliente, cotizacion_id')
+      .order('id', { ascending: false })
+      .limit(200);
+    if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
+    const { data, error } = await query;
+    if (error) throw error;
+    const filas = data || [];
+    const idsCotizacion = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
+    let presupuestos = {};
+    if (idsCotizacion.length) {
+      const { data: cots, error: errCot } = await supabaseClient
+        .from('cotizaciones')
+        .select('id, presupuesto_asignado')
+        .in('id', idsCotizacion);
+      if (!errCot && cots) {
+        cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
+      }
+    }
+    if (!filas.length) {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'Sin solicitudes registradas';
+      listaSel.appendChild(opt);
+      if (hint) hint.textContent = '';
+      return;
+    }
+    filas.forEach((r) => {
+      const opt = document.createElement('option');
+      opt.value = String(r.id);
+      const presupuesto = formatQBuscarRegPresupuesto(presupuestos[r.cotizacion_id]);
+      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + presupuesto;
+      listaSel.appendChild(opt);
+    });
+    if (hint) hint.textContent = filas.length + (filas.length === 1 ? ' solicitud encontrada' : ' solicitudes encontradas');
+  } catch (e) {
+    console.error('Error cargando la lista de solicitudes:', e);
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = 'Error al cargar';
+    listaSel.appendChild(opt);
+    if (hint) hint.textContent = 'No se pudo cargar la lista.';
+  }
+}
+
+$('#qBuscarRegBtn')?.addEventListener('click', () => {
+  const panel = $('#qBuscarRegPanel');
+  if (!panel) return;
+  const mostrar = panel.hidden;
+  panel.hidden = !mostrar;
+  if (mostrar) {
+    poblarQBuscarRegTipoSel();
+    cargarQBuscarRegLista();
+  }
+});
+$('#qBuscarRegTipoSel')?.addEventListener('change', () => cargarQBuscarRegLista());
