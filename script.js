@@ -4296,15 +4296,32 @@ let qBuscarRegAbierto = false;
 
 function actualizarVisibilidadSolServicio() {
   const bloque = $('#qSolServicioBlock');
-  const esAdmin = esAdminOSuperAdmin();
-  const visible = esAdmin && qBuscarRegAbierto;
-  if (bloque) bloque.hidden = !visible;
-  if (!visible) return;
-  const gate = $('#qSolServicioGate');
-  const datos = $('#qSolServicioDatos');
-  if (gate) gate.hidden = !!solHashConfirmado;
-  if (datos) datos.hidden = !solHashConfirmado;
-  if (solHashConfirmado) cargarSolicitudesServicioActual();
+  if (bloque) bloque.hidden = !qBuscarRegAbierto;
+  if (qBuscarRegAbierto) {
+    const gate = $('#qSolServicioGate');
+    const datos = $('#qSolServicioDatos');
+    if (gate) gate.hidden = !!solHashConfirmado;
+    if (datos) datos.hidden = !solHashConfirmado;
+    if (solHashConfirmado) cargarSolicitudesServicioActual();
+  }
+  // Los campos de búsqueda (tipo de servicio, lista y "Mostrar") solo se
+  // revelan una vez confirmada la clave de Administrador/Super administrador
+  // en el bloque de arriba -- confirmarSolAdmin() ya exige ese tipo de
+  // usuario antes de dar por confirmada la clave.
+  const panelBusqueda = $('#qBuscarRegPanel');
+  if (panelBusqueda) {
+    const mostrarBusqueda = qBuscarRegAbierto && !!solHashConfirmado;
+    const estabaOculto = panelBusqueda.hidden;
+    panelBusqueda.hidden = !mostrarBusqueda;
+    if (mostrarBusqueda && estabaOculto) {
+      poblarQBuscarRegTipoSel();
+      cargarQBuscarRegLista();
+    }
+    if (!mostrarBusqueda) {
+      const result = $('#qBuscarRegResult');
+      if (result) { result.hidden = true; result.innerHTML = ''; }
+    }
+  }
 }
 
 async function cargarSolicitudesServicioActual() {
@@ -4551,18 +4568,16 @@ async function cargarQBuscarRegLista() {
 }
 
 $('#qBuscarRegBtn')?.addEventListener('click', () => {
-  const panel = $('#qBuscarRegPanel');
-  if (!panel) return;
-  const mostrar = panel.hidden;
-  panel.hidden = !mostrar;
-  qBuscarRegAbierto = mostrar;
+  const bloque = $('#qSolServicioBlock');
+  if (!bloque) return;
+  // Al presionar "Buscar registros" se pide la clave de Administrador/Super
+  // administrador (bloque de arriba); los campos de búsqueda solo aparecen
+  // una vez confirmada esa clave (ver actualizarVisibilidadSolServicio()).
+  qBuscarRegAbierto = bloque.hidden;
   actualizarVisibilidadSolServicio();
-  if (mostrar) {
-    poblarQBuscarRegTipoSel();
-    cargarQBuscarRegLista();
-  } else {
-    const result = $('#qBuscarRegResult');
-    if (result) { result.hidden = true; result.innerHTML = ''; }
+  if (qBuscarRegAbierto && !solHashConfirmado) {
+    const clave = $('#qSolServicioClave');
+    if (clave) clave.focus();
   }
 });
 $('#qBuscarRegTipoSel')?.addEventListener('change', () => {
