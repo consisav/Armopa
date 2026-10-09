@@ -4286,17 +4286,20 @@ $('#sol-servicio-sel')?.addEventListener('change', () => {
 
 actualizarVisibilidadSolicitudes();
 
-/* Solicitudes de servicio de esta cotización (al final de "Solicitar
-   cotización", sin botón aparte): visible solo para Administrador/Super
-   administrador. Pide la clave directamente y luego lista cada solicitud
-   (tabla solicitudes_servicio) ligada a la cotización actual, con No. de
-   solicitud, código de cliente, estado (con su color) y acciones de
-   Modificar/Eliminar. */
+/* Solicitudes de servicio de esta cotización (debajo del botón "Buscar
+   registros", solo visible mientras ese panel de búsqueda está abierto):
+   visible solo para Administrador/Super administrador. Pide la clave
+   directamente y luego lista cada solicitud (tabla solicitudes_servicio)
+   ligada a la cotización actual, con No. de solicitud, código de cliente,
+   estado (con su color) y acciones de Modificar/Eliminar. */
+let qBuscarRegAbierto = false;
+
 function actualizarVisibilidadSolServicio() {
   const bloque = $('#qSolServicioBlock');
   const esAdmin = esAdminOSuperAdmin();
-  if (bloque) bloque.hidden = !esAdmin;
-  if (!esAdmin) return;
+  const visible = esAdmin && qBuscarRegAbierto;
+  if (bloque) bloque.hidden = !visible;
+  if (!visible) return;
   const gate = $('#qSolServicioGate');
   const datos = $('#qSolServicioDatos');
   if (gate) gate.hidden = !!solHashConfirmado;
@@ -4552,6 +4555,8 @@ $('#qBuscarRegBtn')?.addEventListener('click', () => {
   if (!panel) return;
   const mostrar = panel.hidden;
   panel.hidden = !mostrar;
+  qBuscarRegAbierto = mostrar;
+  actualizarVisibilidadSolServicio();
   if (mostrar) {
     poblarQBuscarRegTipoSel();
     cargarQBuscarRegLista();
