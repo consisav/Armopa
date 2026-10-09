@@ -504,7 +504,7 @@ function pintarEstadoUsuario() {
     if (serviciosSec) serviciosSec.hidden = tipo !== 'super_administrador';
     if (buscarServBtn) buscarServBtn.hidden = tipo !== 'super_administrador';
     actualizarVisibilidadSolicitudes();
-    actualizarVisibilidadSeguimientoCotizacion();
+    actualizarVisibilidadSolServicio();
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
@@ -513,7 +513,7 @@ function pintarEstadoUsuario() {
     if (serviciosSec) serviciosSec.hidden = true;
     solHashConfirmado = null;
     actualizarVisibilidadSolicitudes();
-    actualizarVisibilidadSeguimientoCotizacion();
+    actualizarVisibilidadSolServicio();
     if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
@@ -3403,6 +3403,7 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
       await saveServiceRequestsSupabase(t, { name: f.name, phone: f.phone, email: f.email });
       await guardarRegistrosGestion();
       qMsg(successText);
+      if (esAdminOSuperAdmin() && solHashConfirmado) cargarSolicitudesServicioActual();
     } catch (err) {
       qMsg('Error al guardar la cotización.', true);
     }
@@ -4000,7 +4001,7 @@ async function confirmarSolAdmin(inputEl, errEl) {
       solHashConfirmado = hash;
       inputEl.value = '';
       actualizarVisibilidadSolicitudes();
-      actualizarVisibilidadSeguimientoCotizacion();
+      actualizarVisibilidadSolServicio();
     } else {
       errEl.textContent = 'Clave incorrecta.';
       errEl.hidden = false;
@@ -4276,25 +4277,26 @@ $('#sol-servicio-sel')?.addEventListener('change', () => {
 
 actualizarVisibilidadSolicitudes();
 
-/* Seguimiento de solicitud (botón al final de "Solicitar cotización"):
-   visible solo para Administrador/Super administrador. Muestra, por cada
-   servicio marcado en esta cotización (tabla solicitudes_servicio): tipo de
-   servicio, código de usuario, estado (con su color) y el No. de solicitud
-   autogenerado en formato AÑO-CÓDIGO-CORRELATIVO — con su propio botón para
-   actualizar. */
-function actualizarVisibilidadSeguimientoCotizacion() {
-  const btn = $('#qSeguimientoBlock');
+/* Solicitudes de servicio de esta cotización (al final de "Solicitar
+   cotización", sin botón aparte): visible solo para Administrador/Super
+   administrador. Pide la clave directamente y luego lista cada solicitud
+   (tabla solicitudes_servicio) ligada a la cotización actual, con No. de
+   solicitud, código de cliente, estado (con su color) y acciones de
+   Modificar/Eliminar. */
+function actualizarVisibilidadSolServicio() {
+  const bloque = $('#qSolServicioBlock');
   const esAdmin = esAdminOSuperAdmin();
-  if (btn) btn.hidden = !esAdmin;
+  if (bloque) bloque.hidden = !esAdmin;
   if (!esAdmin) return;
-  const gate = $('#qSeguimientoGate');
-  const datos = $('#qSeguimientoDatos');
+  const gate = $('#qSolServicioGate');
+  const datos = $('#qSolServicioDatos');
   if (gate) gate.hidden = !!solHashConfirmado;
   if (datos) datos.hidden = !solHashConfirmado;
+  if (solHashConfirmado) cargarSolicitudesServicioActual();
 }
 
-async function cargarSeguimientoCotizacionActual() {
-  const listEl = $('#qSeguimientoList');
+async function cargarSolicitudesServicioActual() {
+  const listEl = $('#qSolServicioList');
   if (!listEl || !solHashConfirmado) return;
   if (!currentCotizacionId) {
     listEl.innerHTML = '<p class="hint">Todavía no hay una cotización guardada.</p>';
@@ -4304,56 +4306,118 @@ async function cargarSeguimientoCotizacionActual() {
   try {
     const { data, error } = await supabaseClient
       .from('solicitudes_servicio')
-      .select('servicio, cliente_codigo, estado, numero_solicitud')
+      .select('id, servicio, cliente_codigo, estado, numero_solicitud')
       .eq('cotizacion_id', currentCotizacionId)
       .order('id', { ascending: false });
     if (error) throw error;
-    renderSeguimientoCotizacionActual(data || []);
+    renderSolicitudesServicioActual(data || []);
   } catch (e) {
-    console.error('Error cargando el seguimiento de esta solicitud:', e);
-    listEl.innerHTML = '<p class="hint">No se pudo cargar el seguimiento.</p>';
+    console.error('Error cargando las solicitudes de esta cotización:', e);
+    listEl.innerHTML = '<p class="hint">No se pudieron cargar las solicitudes.</p>';
   }
 }
 
-function renderSeguimientoCotizacionActual(rows) {
-  const listEl = $('#qSeguimientoList');
+function renderSolicitudesServicioActual(rows) {
+  const listEl = $('#qSolServicioList');
   if (!listEl) return;
   if (!rows.length) {
     listEl.innerHTML = '<p class="hint">Esta cotización todavía no tiene solicitudes de servicio registradas.</p>';
     return;
   }
   listEl.innerHTML = '';
-  const table = el('div', 'seg-table');
-  rows.forEach((r) => {
-    const info = solEstadoInfo(r.estado);
-    const row = el('div', 'seg-row');
-    const estBadge = el('span', 'sol-badge', info.l);
-    estBadge.style.background = info.bg;
-    estBadge.style.color = info.fg;
-    row.append(
-      labeledCell('Tipo de servicio', el('strong', '', r.servicio || '—')),
-      labeledCell('Código de usuario', el('strong', '', r.cliente_codigo ? ('#' + r.cliente_codigo) : '—')),
-      labeledCell('Estado', estBadge),
-      labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
-    );
-    table.appendChild(row);
-  });
+  const table = el('div', 'sol-table');
+  rows.forEach((r) => table.appendChild(buildSolServicioRow(r)));
   listEl.appendChild(table);
 }
 
-$('#qSeguimientoBtn')?.addEventListener('click', () => {
-  const panel = $('#qSeguimientoPanel');
-  if (!panel) return;
-  const mostrar = panel.hidden;
-  panel.hidden = !mostrar;
-  if (mostrar && solHashConfirmado) cargarSeguimientoCotizacionActual();
-});
-$('#qSeguimientoGateBtn')?.addEventListener('click', async () => {
-  await confirmarSolAdmin($('#qSeguimientoClave'), $('#qSeguimientoGateErr'));
-  actualizarVisibilidadSeguimientoCotizacion();
-  if (solHashConfirmado) cargarSeguimientoCotizacionActual();
-});
-$('#qSeguimientoClave')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#qSeguimientoGateBtn')?.click(); } });
-$('#qSeguimientoActualizarBtn')?.addEventListener('click', () => cargarSeguimientoCotizacionActual());
+function buildSolServicioRow(r) {
+  const row = el('div', 'sol-row');
+  renderSolServicioRowView(row, r);
+  return row;
+}
 
-actualizarVisibilidadSeguimientoCotizacion();
+function renderSolServicioRowView(row, r) {
+  row.innerHTML = '';
+  const info = solEstadoInfo(r.estado);
+  const estBadge = el('span', 'sol-badge', info.l);
+  estBadge.style.background = info.bg;
+  estBadge.style.color = info.fg;
+  const actions = el('div', 'sol-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar');
+  modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar');
+  delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+  row.append(
+    el('strong', 'sol-num', r.numero_solicitud || '—'),
+    el('span', 'sol-cli', r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'),
+    estBadge,
+    actions
+  );
+  modBtn.addEventListener('click', () => renderSolServicioRowEdit(row, r));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm('¿Eliminar esta solicitud de servicio? Esta acción no se puede deshacer.')) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('solicitudes_servicio').delete().eq('id', r.id);
+      if (error) throw error;
+      cargarSolicitudesServicioActual();
+    } catch (e) {
+      console.error('Error eliminando la solicitud:', e);
+      alert('No se pudo eliminar la solicitud.');
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function renderSolServicioRowEdit(row, r) {
+  row.innerHTML = '';
+  const clienteInput = document.createElement('input');
+  clienteInput.type = 'text';
+  clienteInput.value = r.cliente_codigo || '';
+  clienteInput.placeholder = 'Código de cliente';
+  const estadoSel = document.createElement('select');
+  SOL_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v;
+    opt.textContent = e.l;
+    if (e.v === r.estado) opt.selected = true;
+    estadoSel.appendChild(opt);
+  });
+  const actions = el('div', 'sol-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar');
+  saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar');
+  cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+  row.append(
+    el('strong', 'sol-num', r.numero_solicitud || '—'),
+    clienteInput,
+    estadoSel,
+    actions
+  );
+  cancelBtn.addEventListener('click', () => renderSolServicioRowView(row, r));
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    try {
+      const payload = { cliente_codigo: clienteInput.value.trim() || null, estado: estadoSel.value };
+      const { error } = await supabaseClient.from('solicitudes_servicio').update(payload).eq('id', r.id);
+      if (error) throw error;
+      r.cliente_codigo = payload.cliente_codigo;
+      r.estado = payload.estado;
+      renderSolServicioRowView(row, r);
+    } catch (e) {
+      console.error('Error actualizando la solicitud:', e);
+      alert('No se pudo guardar el cambio.');
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+$('#qSolServicioGateBtn')?.addEventListener('click', async () => {
+  await confirmarSolAdmin($('#qSolServicioClave'), $('#qSolServicioGateErr'));
+  actualizarVisibilidadSolServicio();
+});
+$('#qSolServicioClave')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#qSolServicioGateBtn')?.click(); } });
+
+actualizarVisibilidadSolServicio();
