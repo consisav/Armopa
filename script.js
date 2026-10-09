@@ -4454,6 +4454,12 @@ function formatQBuscarRegPresupuesto(v) {
   return Number.isFinite(n) ? ('Q ' + n.toLocaleString('es-GT')) : String(v);
 }
 
+function formatQBuscarRegFecha(v) {
+  if (!v) return 'Sin fecha';
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? String(v) : d.toLocaleDateString('es-GT', { year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
 function poblarQBuscarRegTipoSel() {
   const sel = $('#qBuscarRegTipoSel');
   if (!sel || sel.options.length) return;
@@ -4482,7 +4488,7 @@ async function cargarQBuscarRegLista() {
   try {
     let query = supabaseClient
       .from('solicitudes_servicio')
-      .select('id, numero_solicitud, nombre_cliente, cotizacion_id')
+      .select('id, numero_solicitud, nombre_cliente, cotizacion_id, created_at')
       .order('id', { ascending: false })
       .limit(200);
     if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
@@ -4512,7 +4518,8 @@ async function cargarQBuscarRegLista() {
       const opt = document.createElement('option');
       opt.value = String(r.id);
       const presupuesto = formatQBuscarRegPresupuesto(presupuestos[r.cotizacion_id]);
-      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + presupuesto;
+      const fecha = formatQBuscarRegFecha(r.created_at);
+      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + fecha + ' · ' + presupuesto;
       listaSel.appendChild(opt);
     });
     if (hint) hint.textContent = filas.length + (filas.length === 1 ? ' solicitud encontrada' : ' solicitudes encontradas');
