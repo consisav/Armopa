@@ -505,6 +505,7 @@ function pintarEstadoUsuario() {
     if (buscarServBtn) buscarServBtn.hidden = tipo !== 'super_administrador';
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
+    actualizarVisibilidadAccionesCotizacion();
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
@@ -514,6 +515,7 @@ function pintarEstadoUsuario() {
     solHashConfirmado = null;
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
+    actualizarVisibilidadAccionesCotizacion();
     if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
@@ -3170,6 +3172,13 @@ const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código d
       idxs.push(i);
     });
     if (!idxs.length) return;
+    // Evita que cada Guardar/Modificar acumule filas duplicadas: se borran las
+    // solicitudes anteriores de esta misma cotización antes de insertar las
+    // que corresponden al estado actual del formulario.
+    if (currentCotizacionId) {
+      const { error: delError } = await supabaseClient.from('solicitudes_servicio').delete().eq('cotizacion_id', currentCotizacionId);
+      if (delError) console.error('Error limpiando solicitudes anteriores de esta cotización:', delError);
+    }
     const clienteCodigo = localStorage.getItem(LOGIN_CODIGO_STORE) || null;
     const rows = [];
     for (const i of idxs) {
@@ -4331,7 +4340,7 @@ function renderSolicitudesServicioActual(rows) {
 }
 
 function buildSolServicioRow(r) {
-  const row = el('div', 'sol-row');
+  const row = el('div', 'sol-row sol-row-id');
   renderSolServicioRowView(row, r);
   return row;
 }
@@ -4349,9 +4358,10 @@ function renderSolServicioRowView(row, r) {
   delBtn.type = 'button';
   actions.append(modBtn, delBtn);
   row.append(
-    el('strong', 'sol-num', r.numero_solicitud || '—'),
-    el('span', 'sol-cli', r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'),
-    estBadge,
+    labeledCell('ID', el('strong', '', r.id != null ? String(r.id) : '—')),
+    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
+    labeledCell('Código de cliente', el('span', 'sol-cli', r.cliente_codigo ? ('#' + r.cliente_codigo) : '—')),
+    labeledCell('Estado', estBadge),
     actions
   );
   modBtn.addEventListener('click', () => renderSolServicioRowEdit(row, r));
@@ -4391,9 +4401,10 @@ function renderSolServicioRowEdit(row, r) {
   cancelBtn.type = 'button';
   actions.append(saveBtn, cancelBtn);
   row.append(
-    el('strong', 'sol-num', r.numero_solicitud || '—'),
-    clienteInput,
-    estadoSel,
+    labeledCell('ID', el('strong', '', r.id != null ? String(r.id) : '—')),
+    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
+    labeledCell('Código de cliente', clienteInput),
+    labeledCell('Estado', estadoSel),
     actions
   );
   cancelBtn.addEventListener('click', () => renderSolServicioRowView(row, r));
@@ -4420,4 +4431,14 @@ $('#qSolServicioGateBtn')?.addEventListener('click', async () => {
 });
 $('#qSolServicioClave')?.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#qSolServicioGateBtn')?.click(); } });
 
+/* Los botones "Solicitar cotización"/"Enviar por correo" y "Adjuntar
+   cotización (PDF)" solo se muestran si hay sesión iniciada como
+   Administrador o Super administrador — no están disponibles para un
+   visitante sin identificarse. */
+function actualizarVisibilidadAccionesCotizacion() {
+  const bloque = $('#qAccionesAdminBlock');
+  if (bloque) bloque.hidden = !esAdminOSuperAdmin();
+}
+
 actualizarVisibilidadSolServicio();
+actualizarVisibilidadAccionesCotizacion();
