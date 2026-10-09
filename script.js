@@ -4534,6 +4534,75 @@ $('#qBuscarRegBtn')?.addEventListener('click', () => {
   if (mostrar) {
     poblarQBuscarRegTipoSel();
     cargarQBuscarRegLista();
+  } else {
+    const result = $('#qBuscarRegResult');
+    if (result) { result.hidden = true; result.innerHTML = ''; }
   }
 });
-$('#qBuscarRegTipoSel')?.addEventListener('change', () => cargarQBuscarRegLista());
+$('#qBuscarRegTipoSel')?.addEventListener('change', () => {
+  cargarQBuscarRegLista();
+  const result = $('#qBuscarRegResult');
+  if (result) { result.hidden = true; result.innerHTML = ''; }
+});
+
+/* Botón "Mostrar": trae y despliega, dentro de este mismo bloque, la
+   información completa del registro seleccionado en la lista (de acuerdo
+   al tipo de servicio y a la solicitud elegidos). */
+function qbrRow(label, value) {
+  return '<div class="qbr-row"><span>' + label + ':</span><strong>' + (value || value === 0 ? value : '—') + '</strong></div>';
+}
+
+async function mostrarQBuscarRegDetalle() {
+  const result = $('#qBuscarRegResult');
+  const listaSel = $('#qBuscarRegListaSel');
+  if (!result || !listaSel) return;
+  const id = listaSel.value;
+  result.hidden = false;
+  if (!id) {
+    result.innerHTML = '<p class="qbr-empty">Elige una solicitud de la lista para ver su información.</p>';
+    return;
+  }
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    const { data: sol, error } = await supabaseClient
+      .from('solicitudes_servicio')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!sol) {
+      result.innerHTML = '<p class="qbr-empty">No se encontró la solicitud.</p>';
+      return;
+    }
+    let presupuesto = null;
+    if (sol.cotizacion_id != null) {
+      const { data: cot } = await supabaseClient
+        .from('cotizaciones')
+        .select('presupuesto_asignado')
+        .eq('id', sol.cotizacion_id)
+        .maybeSingle();
+      if (cot) presupuesto = cot.presupuesto_asignado;
+    }
+    const est = typeof solEstadoInfo === 'function' ? solEstadoInfo(sol.estado) : null;
+    result.innerHTML = [
+      qbrRow('No. de solicitud', sol.numero_solicitud || ('#' + sol.id)),
+      qbrRow('Tipo de servicio', sol.servicio),
+      qbrRow('Nombre del cliente', sol.nombre_cliente),
+      qbrRow('Teléfono', sol.telefono_cliente),
+      qbrRow('Correo', sol.correo_cliente),
+      qbrRow('Dirección', sol.direccion),
+      qbrRow('Necesidad', sol.necesidad),
+      qbrRow('Tiempo estimado', sol.tiempo_estimado),
+      qbrRow('Fecha de inicio', sol.fecha_inicio),
+      qbrRow('Prioridad', sol.prioridad),
+      qbrRow('Estado', est ? est.l : sol.estado),
+      qbrRow('Código de cliente', sol.cliente_codigo),
+      qbrRow('Presupuesto asignado', formatQBuscarRegPresupuesto(presupuesto))
+    ].join('');
+  } catch (e) {
+    console.error('Error cargando el detalle de la solicitud:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de la solicitud.</p>';
+  }
+}
+
+$('#qBuscarRegMostrarBtn')?.addEventListener('click', () => mostrarQBuscarRegDetalle());
