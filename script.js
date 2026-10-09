@@ -506,6 +506,7 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
+    actualizarVisibilidadBusquedaSolicitudes();
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
@@ -516,6 +517,7 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
+    actualizarVisibilidadBusquedaSolicitudes();
     if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
@@ -4442,3 +4444,129 @@ function actualizarVisibilidadAccionesCotizacion() {
 
 actualizarVisibilidadSolServicio();
 actualizarVisibilidadAccionesCotizacion();
+
+/* Buscar mis solicitudes guardadas (junto a "Tipo de servicio", a la derecha):
+   solo visible para cualquier usuario conectado (cliente, administrador o
+   super administrador) — no requiere ser admin, solo haberse identificado.
+   Deja elegir un tipo de servicio y, de las solicitudes de ese usuario
+   (tabla solicitudes_servicio, por código de cliente), cuál número de
+   solicitud buscar; el botón Buscar muestra la información de esa solicitud
+   en este mismo bloque. */
+let qBuscarFilas = [];
+
+function actualizarVisibilidadBusquedaSolicitudes() {
+  const row = $('#qBuscarRow');
+  const conectado = estaConectado();
+  if (row) row.hidden = !conectado;
+  const resultado = $('#qBuscarResultado');
+  if (!conectado) {
+    if (resultado) { resultado.hidden = true; resultado.innerHTML = ''; }
+    qBuscarFilas = [];
+    return;
+  }
+  poblarQBuscarTipoSel();
+  cargarMisSolicitudesBusqueda();
+}
+
+function poblarQBuscarTipoSel() {
+  const sel = $('#qBuscarTipoSel');
+  if (!sel || sel.options.length) return;
+  const t = T[lang] || T.es;
+  const optTodos = document.createElement('option');
+  optTodos.value = '';
+  optTodos.textContent = 'Todos los servicios';
+  sel.appendChild(optTodos);
+  t.ext.forEach((name, i) => {
+    const opt = document.createElement('option');
+    opt.value = String(i);
+    opt.textContent = name;
+    sel.appendChild(opt);
+  });
+}
+
+async function cargarMisSolicitudesBusqueda() {
+  const sel = $('#qBuscarNumeroSel');
+  if (!sel) return;
+  const clienteCodigo = localStorage.getItem(LOGIN_CODIGO_STORE);
+  sel.innerHTML = '';
+  if (!clienteCodigo) {
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = 'Sin código de cliente';
+    sel.appendChild(opt);
+    qBuscarFilas = [];
+    return;
+  }
+  const tipoSel = $('#qBuscarTipoSel');
+  const t = T[lang] || T.es;
+  const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
+  try {
+    let query = supabaseClient
+      .from('solicitudes_servicio')
+      .select('id, servicio, numero_solicitud, estado, cliente_codigo, cotizacion_id, direccion, necesidad, tiempo_estimado, fecha_inicio, prioridad, fecha_cotizacion')
+      .eq('cliente_codigo', clienteCodigo)
+      .order('id', { ascending: false });
+    if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
+    const { data, error } = await query;
+    if (error) throw error;
+    qBuscarFilas = data || [];
+    if (!qBuscarFilas.length) {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'Sin solicitudes';
+      sel.appendChild(opt);
+      return;
+    }
+    qBuscarFilas.forEach((r) => {
+      const opt = document.createElement('option');
+      opt.value = String(r.id);
+      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' — ' + (r.servicio || '');
+      sel.appendChild(opt);
+    });
+  } catch (e) {
+    console.error('Error cargando mis solicitudes para la búsqueda:', e);
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = 'Error al cargar';
+    sel.appendChild(opt);
+    qBuscarFilas = [];
+  }
+}
+
+function renderQBuscarResultado(r) {
+  const resultado = $('#qBuscarResultado');
+  if (!resultado) return;
+  if (!r) {
+    resultado.hidden = true;
+    resultado.innerHTML = '';
+    return;
+  }
+  const info = solEstadoInfo(r.estado);
+  const estBadge = el('span', 'sol-badge', info.l);
+  estBadge.style.background = info.bg;
+  estBadge.style.color = info.fg;
+  const card = el('div', 'qbuscar-card');
+  card.append(
+    labeledCell('Tipo de servicio', el('strong', '', r.servicio || '—')),
+    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
+    labeledCell('Estado', estBadge),
+    labeledCell('Código de cliente', el('strong', '', r.cliente_codigo ? ('#' + r.cliente_codigo) : '—')),
+    labeledCell('Dirección', el('span', '', r.direccion || '—')),
+    labeledCell('Necesidad', el('span', '', r.necesidad || '—')),
+    labeledCell('Fecha estimada', el('span', '', r.fecha_inicio || '—')),
+    labeledCell('Prioridad', el('span', '', r.prioridad || '—')),
+  );
+  resultado.innerHTML = '';
+  resultado.appendChild(card);
+  resultado.hidden = false;
+}
+
+$('#qBuscarTipoSel')?.addEventListener('change', () => cargarMisSolicitudesBusqueda());
+$('#qBuscarSolBtn')?.addEventListener('click', () => {
+  const sel = $('#qBuscarNumeroSel');
+  const id = sel && sel.value ? Number(sel.value) : null;
+  const fila = id != null ? qBuscarFilas.find((r) => r.id === id) : null;
+  renderQBuscarResultado(fila || null);
+});
+
+actualizarVisibilidadBusquedaSolicitudes();

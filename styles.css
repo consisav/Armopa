@@ -465,6 +465,13 @@ section[id]{scroll-margin-top:148px}
 .q-summary>div{display:flex;justify-content:flex-start;gap:6px}
 .q-summary span{color:var(--muted)}
 .q-summary strong{font-weight:600;text-align:left}
+.q-summary-row{display:flex!important;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.q-summary-left{display:flex;gap:6px;align-items:baseline}
+.q-buscar-fields{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.q-buscar-fields select{padding:7px 10px;border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--ink);font-family:inherit;max-width:220px}
+.qbuscar-card{border:1px solid #e6e0d0;border-radius:12px;background:#fff;padding:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;font-size:13px}
+.qbuscar-card .lbl{display:block;font-size:11px;color:var(--muted);margin-bottom:3px;font-weight:600}
+@media (max-width:640px){.q-summary-row{flex-direction:column;align-items:flex-start}.q-buscar-fields{width:100%}.q-buscar-fields select{max-width:none;flex:1}}
 #qSolBlock{display:flex;flex-direction:column;gap:12px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
 .q-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
 .q-grid .full{grid-column:1/-1}
