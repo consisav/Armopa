@@ -4492,8 +4492,22 @@ async function cargarQBuscarRegLista() {
       .order('id', { ascending: false })
       .limit(200);
     if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
-    const { data, error } = await query;
-    if (error) throw error;
+    let { data, error } = await query;
+    if (error) {
+      // La columna "created_at" puede no existir en esta tabla (según cuándo
+      // se creó); si falla por eso, se reintenta sin pedirla para no romper
+      // la búsqueda, simplemente sin mostrar la fecha.
+      console.error('Error cargando solicitudes (con created_at):', error);
+      let query2 = supabaseClient
+        .from('solicitudes_servicio')
+        .select('id, numero_solicitud, nombre_cliente, cotizacion_id')
+        .order('id', { ascending: false })
+        .limit(200);
+      if (tipoIdx !== null) query2 = query2.eq('servicio', t.ext[tipoIdx]);
+      const retry = await query2;
+      if (retry.error) throw retry.error;
+      data = retry.data;
+    }
     const filas = data || [];
     const idsCotizacion = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
     let presupuestos = {};
