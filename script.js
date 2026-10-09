@@ -4295,23 +4295,8 @@ actualizarVisibilidadSolicitudes();
 let qBuscarRegAbierto = false;
 
 function actualizarVisibilidadSolServicio() {
-  const esAdmin = esAdminOSuperAdmin();
-
-  // El botón "Buscar registros" (bloque "Solicitar cotización") solo se
-  // muestra a Administrador/Super administrador conectado.
-  const btnBuscar = $('#qBuscarRegBtn');
-  if (btnBuscar) btnBuscar.hidden = !esAdmin;
-  if (!esAdmin) {
-    // Si deja de ser admin (o cierra sesión) con el panel abierto, se cierra
-    // todo junto para no dejarlo visible sin el botón que lo controla.
-    qBuscarRegAbierto = false;
-    const panel = $('#qBuscarRegPanel');
-    if (panel) panel.hidden = true;
-    const result = $('#qBuscarRegResult');
-    if (result) { result.hidden = true; result.innerHTML = ''; }
-  }
-
   const bloque = $('#qSolServicioBlock');
+  const esAdmin = esAdminOSuperAdmin();
   const visible = esAdmin && qBuscarRegAbierto;
   if (bloque) bloque.hidden = !visible;
   if (!visible) return;
