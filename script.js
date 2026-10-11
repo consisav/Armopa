@@ -506,7 +506,6 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
-    actualizarVisibilidadBuscarReg();
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
@@ -517,7 +516,6 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
-    actualizarVisibilidadBuscarReg();
     if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
@@ -4445,26 +4443,8 @@ function actualizarVisibilidadAccionesCotizacion() {
   if (bloque) bloque.hidden = !esAdminOSuperAdmin();
 }
 
-/* Botón "Buscar registros" y su panel de búsqueda (tipo de servicio, lista
-   de solicitudes y "Mostrar"): no deben verse por visitantes, solo cuando
-   hay sesión iniciada como Administrador o Super administrador. */
-function actualizarVisibilidadBuscarReg() {
-  const esAdmin = esAdminOSuperAdmin();
-  const btn = $('#qBuscarRegBtn');
-  if (btn) btn.hidden = !esAdmin;
-  if (!esAdmin) {
-    qBuscarRegAbierto = false;
-    const panel = $('#qBuscarRegPanel');
-    if (panel) panel.hidden = true;
-    const result = $('#qBuscarRegResult');
-    if (result) { result.hidden = true; result.innerHTML = ''; }
-    actualizarVisibilidadSolServicio();
-  }
-}
-
 actualizarVisibilidadSolServicio();
 actualizarVisibilidadAccionesCotizacion();
-actualizarVisibilidadBuscarReg();
 
 /* Botón "Buscar registros" (esquina superior derecha del bloque "Solicitar
    cotización"): al presionarlo, despliega un selector de tipo de servicio y
