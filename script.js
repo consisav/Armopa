@@ -4507,6 +4507,23 @@ function poblarQBuscarRegTipoSel() {
   });
 }
 
+function poblarQBuscarRegEstadoSel() {
+  const sel = $('#qBuscarRegEstadoSel');
+  if (!sel || sel.options.length) return;
+  const optTodos = document.createElement('option');
+  optTodos.value = '';
+  optTodos.textContent = 'Todos los estados';
+  sel.appendChild(optTodos);
+  SOL_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v;
+    opt.textContent = e.l;
+    opt.style.color = e.fg;
+    opt.style.backgroundColor = e.bg;
+    sel.appendChild(opt);
+  });
+}
+
 async function cargarQBuscarRegLista() {
   const listaSel = $('#qBuscarRegListaSel');
   const hint = $('#qBuscarRegHint');
@@ -4514,8 +4531,10 @@ async function cargarQBuscarRegLista() {
   listaSel.innerHTML = '';
   if (hint) hint.textContent = 'Cargando…';
   const tipoSel = $('#qBuscarRegTipoSel');
+  const estadoSel = $('#qBuscarRegEstadoSel');
   const t = T[lang] || T.es;
   const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
+  const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
   try {
     let query = supabaseClient
       .from('solicitudes_servicio')
@@ -4523,6 +4542,7 @@ async function cargarQBuscarRegLista() {
       .order('id', { ascending: false })
       .limit(200);
     if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
+    if (estadoVal !== null) query = query.eq('estado', estadoVal);
     let { data, error } = await query;
     if (error) {
       // La columna "created_at" puede no existir en esta tabla (según cuándo
@@ -4535,6 +4555,7 @@ async function cargarQBuscarRegLista() {
         .order('id', { ascending: false })
         .limit(200);
       if (tipoIdx !== null) query2 = query2.eq('servicio', t.ext[tipoIdx]);
+      if (estadoVal !== null) query2 = query2.eq('estado', estadoVal);
       const retry = await query2;
       if (retry.error) throw retry.error;
       data = retry.data;
@@ -4564,9 +4585,7 @@ async function cargarQBuscarRegLista() {
       opt.value = String(r.id);
       const presupuesto = formatQBuscarRegPresupuesto(presupuestos[r.cotizacion_id]);
       const fecha = formatQBuscarRegFecha(r.created_at);
-      const est = typeof solEstadoInfo === 'function' ? solEstadoInfo(r.estado) : null;
-      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + fecha + ' · ' + presupuesto + ' · ' + (est ? est.l : (r.estado || 'Sin estado'));
-      if (est) { opt.style.color = est.fg; opt.style.backgroundColor = est.bg; }
+      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + fecha + ' · ' + presupuesto;
       listaSel.appendChild(opt);
     });
     if (hint) hint.textContent = filas.length + (filas.length === 1 ? ' solicitud encontrada' : ' solicitudes encontradas');
@@ -4589,6 +4608,7 @@ $('#qBuscarRegBtn')?.addEventListener('click', () => {
   actualizarVisibilidadSolServicio();
   if (mostrar) {
     poblarQBuscarRegTipoSel();
+    poblarQBuscarRegEstadoSel();
     cargarQBuscarRegLista();
   } else {
     const result = $('#qBuscarRegResult');
@@ -4596,6 +4616,11 @@ $('#qBuscarRegBtn')?.addEventListener('click', () => {
   }
 });
 $('#qBuscarRegTipoSel')?.addEventListener('change', () => {
+  cargarQBuscarRegLista();
+  const result = $('#qBuscarRegResult');
+  if (result) { result.hidden = true; result.innerHTML = ''; }
+});
+$('#qBuscarRegEstadoSel')?.addEventListener('change', () => {
   cargarQBuscarRegLista();
   const result = $('#qBuscarRegResult');
   if (result) { result.hidden = true; result.innerHTML = ''; }
