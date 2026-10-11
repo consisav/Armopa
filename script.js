@@ -480,6 +480,10 @@ let solHashConfirmado = null;
    inicial de la página, antes de llegar a la sección de "Buscar registros"
    más abajo en el archivo. */
 let qBuscarRegAbierto = false;
+
+/* Valor especial para la opción "Todos los registros" en la lista de
+   solicitudes del buscador. */
+const QBUSCARREG_TODOS = '__todos__';
 function esAdminOSuperAdmin() {
   const tipo = localStorage.getItem(LOGIN_TIPO_STORE);
   return estaConectado() && (tipo === 'administrador' || tipo === 'super_administrador');
@@ -4580,6 +4584,10 @@ async function cargarQBuscarRegLista() {
       if (hint) hint.textContent = '';
       return;
     }
+    const optTodosReg = document.createElement('option');
+    optTodosReg.value = QBUSCARREG_TODOS;
+    optTodosReg.textContent = 'Todos los registros (' + filas.length + ')';
+    listaSel.appendChild(optTodosReg);
     filas.forEach((r) => {
       const opt = document.createElement('option');
       opt.value = String(r.id);
@@ -4633,6 +4641,25 @@ function qbrRow(label, value) {
   return '<div class="qbr-row"><span>' + label + ':</span><strong>' + (value || value === 0 ? value : '—') + '</strong></div>';
 }
 
+function qbrRegistroHtml(sol, presupuesto) {
+  const est = typeof solEstadoInfo === 'function' ? solEstadoInfo(sol.estado) : null;
+  return [
+    qbrRow('No. de solicitud', sol.numero_solicitud || ('#' + sol.id)),
+    qbrRow('Tipo de servicio', sol.servicio),
+    qbrRow('Nombre del cliente', sol.nombre_cliente),
+    qbrRow('Teléfono', sol.telefono_cliente),
+    qbrRow('Correo', sol.correo_cliente),
+    qbrRow('Dirección', sol.direccion),
+    qbrRow('Necesidad', sol.necesidad),
+    qbrRow('Tiempo estimado', sol.tiempo_estimado),
+    qbrRow('Fecha de inicio', sol.fecha_inicio),
+    qbrRow('Prioridad', sol.prioridad),
+    qbrRow('Estado', est ? est.l : sol.estado),
+    qbrRow('Código de cliente', sol.cliente_codigo),
+    qbrRow('Presupuesto asignado', formatQBuscarRegPresupuesto(presupuesto))
+  ].join('');
+}
+
 async function mostrarQBuscarRegDetalle() {
   const result = $('#qBuscarRegResult');
   const listaSel = $('#qBuscarRegListaSel');
@@ -4643,6 +4670,42 @@ async function mostrarQBuscarRegDetalle() {
     result.innerHTML = '<p class="qbr-empty">Elige una solicitud de la lista para ver su información.</p>';
     return;
   }
+
+  if (id === QBUSCARREG_TODOS) {
+    result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+    try {
+      const tipoSel = $('#qBuscarRegTipoSel');
+      const estadoSel = $('#qBuscarRegEstadoSel');
+      const t = T[lang] || T.es;
+      const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
+      const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
+      let query = supabaseClient.from('solicitudes_servicio').select('*').order('id', { ascending: false }).limit(200);
+      if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
+      if (estadoVal !== null) query = query.eq('estado', estadoVal);
+      const { data, error } = await query;
+      if (error) throw error;
+      const filas = data || [];
+      if (!filas.length) {
+        result.innerHTML = '<p class="qbr-empty">No hay solicitudes que coincidan con la búsqueda.</p>';
+        return;
+      }
+      const idsCotizacion = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
+      let presupuestos = {};
+      if (idsCotizacion.length) {
+        const { data: cots } = await supabaseClient.from('cotizaciones').select('id, presupuesto_asignado').in('id', idsCotizacion);
+        if (cots) cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
+      }
+      result.innerHTML = filas.map((sol, i) => {
+        const bloque = qbrRegistroHtml(sol, presupuestos[sol.cotizacion_id]);
+        return (i > 0 ? '<hr class="qbr-sep">' : '') + bloque;
+      }).join('');
+    } catch (e) {
+      console.error('Error cargando todas las solicitudes:', e);
+      result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de las solicitudes.</p>';
+    }
+    return;
+  }
+
   result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
   try {
     const { data: sol, error } = await supabaseClient
@@ -4664,22 +4727,7 @@ async function mostrarQBuscarRegDetalle() {
         .maybeSingle();
       if (cot) presupuesto = cot.presupuesto_asignado;
     }
-    const est = typeof solEstadoInfo === 'function' ? solEstadoInfo(sol.estado) : null;
-    result.innerHTML = [
-      qbrRow('No. de solicitud', sol.numero_solicitud || ('#' + sol.id)),
-      qbrRow('Tipo de servicio', sol.servicio),
-      qbrRow('Nombre del cliente', sol.nombre_cliente),
-      qbrRow('Teléfono', sol.telefono_cliente),
-      qbrRow('Correo', sol.correo_cliente),
-      qbrRow('Dirección', sol.direccion),
-      qbrRow('Necesidad', sol.necesidad),
-      qbrRow('Tiempo estimado', sol.tiempo_estimado),
-      qbrRow('Fecha de inicio', sol.fecha_inicio),
-      qbrRow('Prioridad', sol.prioridad),
-      qbrRow('Estado', est ? est.l : sol.estado),
-      qbrRow('Código de cliente', sol.cliente_codigo),
-      qbrRow('Presupuesto asignado', formatQBuscarRegPresupuesto(presupuesto))
-    ].join('');
+    result.innerHTML = qbrRegistroHtml(sol, presupuesto);
   } catch (e) {
     console.error('Error cargando el detalle de la solicitud:', e);
     result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de la solicitud.</p>';
