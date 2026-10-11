@@ -4519,7 +4519,7 @@ async function cargarQBuscarRegLista() {
   try {
     let query = supabaseClient
       .from('solicitudes_servicio')
-      .select('id, numero_solicitud, nombre_cliente, cotizacion_id, created_at')
+      .select('id, numero_solicitud, nombre_cliente, cotizacion_id, created_at, estado')
       .order('id', { ascending: false })
       .limit(200);
     if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
@@ -4531,7 +4531,7 @@ async function cargarQBuscarRegLista() {
       console.error('Error cargando solicitudes (con created_at):', error);
       let query2 = supabaseClient
         .from('solicitudes_servicio')
-        .select('id, numero_solicitud, nombre_cliente, cotizacion_id')
+        .select('id, numero_solicitud, nombre_cliente, cotizacion_id, estado')
         .order('id', { ascending: false })
         .limit(200);
       if (tipoIdx !== null) query2 = query2.eq('servicio', t.ext[tipoIdx]);
@@ -4564,7 +4564,9 @@ async function cargarQBuscarRegLista() {
       opt.value = String(r.id);
       const presupuesto = formatQBuscarRegPresupuesto(presupuestos[r.cotizacion_id]);
       const fecha = formatQBuscarRegFecha(r.created_at);
-      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + fecha + ' · ' + presupuesto;
+      const est = typeof solEstadoInfo === 'function' ? solEstadoInfo(r.estado) : null;
+      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + fecha + ' · ' + presupuesto + ' · ' + (est ? est.l : (r.estado || 'Sin estado'));
+      if (est) { opt.style.color = est.fg; opt.style.backgroundColor = est.bg; }
       listaSel.appendChild(opt);
     });
     if (hint) hint.textContent = filas.length + (filas.length === 1 ? ' solicitud encontrada' : ' solicitudes encontradas');
