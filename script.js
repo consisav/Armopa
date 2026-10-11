@@ -4286,17 +4286,20 @@ $('#sol-servicio-sel')?.addEventListener('change', () => {
 
 actualizarVisibilidadSolicitudes();
 
-/* Solicitudes de servicio de esta cotización (al final de "Solicitar
-   cotización", sin botón aparte): visible solo para Administrador/Super
-   administrador. Pide la clave directamente y luego lista cada solicitud
-   (tabla solicitudes_servicio) ligada a la cotización actual, con No. de
-   solicitud, código de cliente, estado (con su color) y acciones de
-   Modificar/Eliminar. */
+/* Solicitudes de servicio de esta cotización (debajo del botón "Buscar
+   registros", solo visible mientras ese panel de búsqueda está abierto):
+   visible solo para Administrador/Super administrador. Pide la clave
+   directamente y luego lista cada solicitud (tabla solicitudes_servicio)
+   ligada a la cotización actual, con No. de solicitud, código de cliente,
+   estado (con su color) y acciones de Modificar/Eliminar. */
+let qBuscarRegAbierto = false;
+
 function actualizarVisibilidadSolServicio() {
   const bloque = $('#qSolServicioBlock');
   const esAdmin = esAdminOSuperAdmin();
-  if (bloque) bloque.hidden = !esAdmin;
-  if (!esAdmin) return;
+  const visible = esAdmin && qBuscarRegAbierto;
+  if (bloque) bloque.hidden = !visible;
+  if (!visible) return;
   const gate = $('#qSolServicioGate');
   const datos = $('#qSolServicioDatos');
   if (gate) gate.hidden = !!solHashConfirmado;
@@ -4454,6 +4457,12 @@ function formatQBuscarRegPresupuesto(v) {
   return Number.isFinite(n) ? ('Q ' + n.toLocaleString('es-GT')) : String(v);
 }
 
+function formatQBuscarRegFecha(v) {
+  if (!v) return 'Sin fecha';
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? String(v) : d.toLocaleDateString('es-GT', { year: 'numeric', month: '2-digit', day: '2-digit' });
+}
+
 function poblarQBuscarRegTipoSel() {
   const sel = $('#qBuscarRegTipoSel');
   if (!sel || sel.options.length) return;
@@ -4482,12 +4491,26 @@ async function cargarQBuscarRegLista() {
   try {
     let query = supabaseClient
       .from('solicitudes_servicio')
-      .select('id, numero_solicitud, nombre_cliente, cotizacion_id')
+      .select('id, numero_solicitud, nombre_cliente, cotizacion_id, created_at')
       .order('id', { ascending: false })
       .limit(200);
     if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
-    const { data, error } = await query;
-    if (error) throw error;
+    let { data, error } = await query;
+    if (error) {
+      // La columna "created_at" puede no existir en esta tabla (según cuándo
+      // se creó); si falla por eso, se reintenta sin pedirla para no romper
+      // la búsqueda, simplemente sin mostrar la fecha.
+      console.error('Error cargando solicitudes (con created_at):', error);
+      let query2 = supabaseClient
+        .from('solicitudes_servicio')
+        .select('id, numero_solicitud, nombre_cliente, cotizacion_id')
+        .order('id', { ascending: false })
+        .limit(200);
+      if (tipoIdx !== null) query2 = query2.eq('servicio', t.ext[tipoIdx]);
+      const retry = await query2;
+      if (retry.error) throw retry.error;
+      data = retry.data;
+    }
     const filas = data || [];
     const idsCotizacion = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
     let presupuestos = {};
@@ -4512,7 +4535,8 @@ async function cargarQBuscarRegLista() {
       const opt = document.createElement('option');
       opt.value = String(r.id);
       const presupuesto = formatQBuscarRegPresupuesto(presupuestos[r.cotizacion_id]);
-      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + presupuesto;
+      const fecha = formatQBuscarRegFecha(r.created_at);
+      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + fecha + ' · ' + presupuesto;
       listaSel.appendChild(opt);
     });
     if (hint) hint.textContent = filas.length + (filas.length === 1 ? ' solicitud encontrada' : ' solicitudes encontradas');
@@ -4531,9 +4555,80 @@ $('#qBuscarRegBtn')?.addEventListener('click', () => {
   if (!panel) return;
   const mostrar = panel.hidden;
   panel.hidden = !mostrar;
+  qBuscarRegAbierto = mostrar;
+  actualizarVisibilidadSolServicio();
   if (mostrar) {
     poblarQBuscarRegTipoSel();
     cargarQBuscarRegLista();
+  } else {
+    const result = $('#qBuscarRegResult');
+    if (result) { result.hidden = true; result.innerHTML = ''; }
   }
 });
-$('#qBuscarRegTipoSel')?.addEventListener('change', () => cargarQBuscarRegLista());
+$('#qBuscarRegTipoSel')?.addEventListener('change', () => {
+  cargarQBuscarRegLista();
+  const result = $('#qBuscarRegResult');
+  if (result) { result.hidden = true; result.innerHTML = ''; }
+});
+
+/* Botón "Mostrar": trae y despliega, dentro de este mismo bloque, la
+   información completa del registro seleccionado en la lista (de acuerdo
+   al tipo de servicio y a la solicitud elegidos). */
+function qbrRow(label, value) {
+  return '<div class="qbr-row"><span>' + label + ':</span><strong>' + (value || value === 0 ? value : '—') + '</strong></div>';
+}
+
+async function mostrarQBuscarRegDetalle() {
+  const result = $('#qBuscarRegResult');
+  const listaSel = $('#qBuscarRegListaSel');
+  if (!result || !listaSel) return;
+  const id = listaSel.value;
+  result.hidden = false;
+  if (!id) {
+    result.innerHTML = '<p class="qbr-empty">Elige una solicitud de la lista para ver su información.</p>';
+    return;
+  }
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    const { data: sol, error } = await supabaseClient
+      .from('solicitudes_servicio')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    if (error) throw error;
+    if (!sol) {
+      result.innerHTML = '<p class="qbr-empty">No se encontró la solicitud.</p>';
+      return;
+    }
+    let presupuesto = null;
+    if (sol.cotizacion_id != null) {
+      const { data: cot } = await supabaseClient
+        .from('cotizaciones')
+        .select('presupuesto_asignado')
+        .eq('id', sol.cotizacion_id)
+        .maybeSingle();
+      if (cot) presupuesto = cot.presupuesto_asignado;
+    }
+    const est = typeof solEstadoInfo === 'function' ? solEstadoInfo(sol.estado) : null;
+    result.innerHTML = [
+      qbrRow('No. de solicitud', sol.numero_solicitud || ('#' + sol.id)),
+      qbrRow('Tipo de servicio', sol.servicio),
+      qbrRow('Nombre del cliente', sol.nombre_cliente),
+      qbrRow('Teléfono', sol.telefono_cliente),
+      qbrRow('Correo', sol.correo_cliente),
+      qbrRow('Dirección', sol.direccion),
+      qbrRow('Necesidad', sol.necesidad),
+      qbrRow('Tiempo estimado', sol.tiempo_estimado),
+      qbrRow('Fecha de inicio', sol.fecha_inicio),
+      qbrRow('Prioridad', sol.prioridad),
+      qbrRow('Estado', est ? est.l : sol.estado),
+      qbrRow('Código de cliente', sol.cliente_codigo),
+      qbrRow('Presupuesto asignado', formatQBuscarRegPresupuesto(presupuesto))
+    ].join('');
+  } catch (e) {
+    console.error('Error cargando el detalle de la solicitud:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de la solicitud.</p>';
+  }
+}
+
+$('#qBuscarRegMostrarBtn')?.addEventListener('click', () => mostrarQBuscarRegDetalle());
