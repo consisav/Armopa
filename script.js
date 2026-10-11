@@ -473,6 +473,13 @@ function estaConectado() {
 /* Solicitudes de servicio: clave ya confirmada en esta sesión (Administrador o
    Super administrador). Declarada aquí arriba porque pintarEstadoUsuario() la usa. */
 let solHashConfirmado = null;
+
+/* Estado del panel "Buscar registros" (abierto/cerrado). Declarada aquí
+   arriba -- igual que solHashConfirmado -- porque actualizarVisibilidadSolServicio()
+   la usa y esa función se llama desde pintarEstadoUsuario() ya en la carga
+   inicial de la página, antes de llegar a la sección de "Buscar registros"
+   más abajo en el archivo. */
+let qBuscarRegAbierto = false;
 function esAdminOSuperAdmin() {
   const tipo = localStorage.getItem(LOGIN_TIPO_STORE);
   return estaConectado() && (tipo === 'administrador' || tipo === 'super_administrador');
@@ -4291,9 +4298,10 @@ actualizarVisibilidadSolicitudes();
    visible solo para Administrador/Super administrador. Pide la clave
    directamente y luego lista cada solicitud (tabla solicitudes_servicio)
    ligada a la cotización actual, con No. de solicitud, código de cliente,
-   estado (con su color) y acciones de Modificar/Eliminar. */
-let qBuscarRegAbierto = false;
-
+   estado (con su color) y acciones de Modificar/Eliminar.
+   (La variable qBuscarRegAbierto se declara arriba, junto a
+   solHashConfirmado, porque esta función se llama desde pintarEstadoUsuario()
+   ya desde la carga inicial de la página.) */
 function actualizarVisibilidadSolServicio() {
   const bloque = $('#qSolServicioBlock');
   const esAdmin = esAdminOSuperAdmin();
