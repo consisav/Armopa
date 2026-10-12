@@ -4634,30 +4634,93 @@ $('#qBuscarRegEstadoSel')?.addEventListener('change', () => {
   if (result) { result.hidden = true; result.innerHTML = ''; }
 });
 
-/* Botón "Mostrar": trae y despliega, dentro de este mismo bloque, la
-   información completa del registro seleccionado en la lista (de acuerdo
-   al tipo de servicio y a la solicitud elegidos). */
-function qbrRow(label, value) {
-  return '<div class="qbr-row"><span>' + label + ':</span><strong>' + (value || value === 0 ? value : '—') + '</strong></div>';
+/* Botón "Mostrar": trae y despliega, dentro de este mismo bloque, el
+   registro (o registros) seleccionado(s) en la lista, en una tabla
+   compacta (igual estilo que el panel de administración) con acciones
+   de Modificar y Eliminar por fila. */
+function qbrBuildRow(sol, presupuesto) {
+  const row = el('div', 'sol-row sol-row-id');
+  qbrRenderRowView(row, sol, presupuesto);
+  return row;
 }
 
-function qbrRegistroHtml(sol, presupuesto) {
-  const est = typeof solEstadoInfo === 'function' ? solEstadoInfo(sol.estado) : null;
-  return [
-    qbrRow('No. de solicitud', sol.numero_solicitud || ('#' + sol.id)),
-    qbrRow('Tipo de servicio', sol.servicio),
-    qbrRow('Nombre del cliente', sol.nombre_cliente),
-    qbrRow('Teléfono', sol.telefono_cliente),
-    qbrRow('Correo', sol.correo_cliente),
-    qbrRow('Dirección', sol.direccion),
-    qbrRow('Necesidad', sol.necesidad),
-    qbrRow('Tiempo estimado', sol.tiempo_estimado),
-    qbrRow('Fecha de inicio', sol.fecha_inicio),
-    qbrRow('Prioridad', sol.prioridad),
-    qbrRow('Estado', est ? est.l : sol.estado),
-    qbrRow('Código de cliente', sol.cliente_codigo),
-    qbrRow('Presupuesto asignado', formatQBuscarRegPresupuesto(presupuesto))
-  ].join('');
+function qbrRenderRowView(row, sol, presupuesto) {
+  row.innerHTML = '';
+  const info = solEstadoInfo(sol.estado);
+  const estBadge = el('span', 'sol-badge', info.l);
+  estBadge.style.background = info.bg;
+  estBadge.style.color = info.fg;
+  const actions = el('div', 'sol-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar');
+  modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar');
+  delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+  row.append(
+    labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
+    labeledCell('Código de cliente', el('span', 'sol-cli', sol.cliente_codigo ? ('#' + sol.cliente_codigo) : '—')),
+    labeledCell('Estado', estBadge),
+    actions
+  );
+  modBtn.addEventListener('click', () => qbrRenderRowEdit(row, sol, presupuesto));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm('¿Eliminar esta solicitud de servicio? Esta acción no se puede deshacer.')) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('solicitudes_servicio').delete().eq('id', sol.id);
+      if (error) throw error;
+      await cargarQBuscarRegLista();
+      mostrarQBuscarRegDetalle();
+    } catch (e) {
+      console.error('Error eliminando la solicitud:', e);
+      alert('No se pudo eliminar la solicitud.');
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function qbrRenderRowEdit(row, sol, presupuesto) {
+  row.innerHTML = '';
+  const clienteInput = document.createElement('input');
+  clienteInput.type = 'text';
+  clienteInput.value = sol.cliente_codigo || '';
+  clienteInput.placeholder = 'Código de cliente';
+  const estadoSel = document.createElement('select');
+  SOL_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v;
+    opt.textContent = e.l;
+    if (e.v === sol.estado) opt.selected = true;
+    estadoSel.appendChild(opt);
+  });
+  const actions = el('div', 'sol-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar');
+  saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar');
+  cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+  row.append(
+    labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
+    labeledCell('Código de cliente', clienteInput),
+    labeledCell('Estado', estadoSel),
+    actions
+  );
+  cancelBtn.addEventListener('click', () => qbrRenderRowView(row, sol, presupuesto));
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    try {
+      const payload = { cliente_codigo: clienteInput.value.trim() || null, estado: estadoSel.value };
+      const { error } = await supabaseClient.from('solicitudes_servicio').update(payload).eq('id', sol.id);
+      if (error) throw error;
+      sol.cliente_codigo = payload.cliente_codigo;
+      sol.estado = payload.estado;
+      qbrRenderRowView(row, sol, presupuesto);
+    } catch (e) {
+      console.error('Error actualizando la solicitud:', e);
+      alert('No se pudo guardar el cambio.');
+      saveBtn.disabled = false;
+    }
+  });
 }
 
 async function mostrarQBuscarRegDetalle() {
@@ -4695,10 +4758,10 @@ async function mostrarQBuscarRegDetalle() {
         const { data: cots } = await supabaseClient.from('cotizaciones').select('id, presupuesto_asignado').in('id', idsCotizacion);
         if (cots) cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
       }
-      result.innerHTML = filas.map((sol, i) => {
-        const bloque = qbrRegistroHtml(sol, presupuestos[sol.cotizacion_id]);
-        return (i > 0 ? '<hr class="qbr-sep">' : '') + bloque;
-      }).join('');
+      result.innerHTML = '';
+      const table = el('div', 'sol-table');
+      filas.forEach((sol) => table.appendChild(qbrBuildRow(sol, presupuestos[sol.cotizacion_id])));
+      result.appendChild(table);
     } catch (e) {
       console.error('Error cargando todas las solicitudes:', e);
       result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de las solicitudes.</p>';
@@ -4727,7 +4790,10 @@ async function mostrarQBuscarRegDetalle() {
         .maybeSingle();
       if (cot) presupuesto = cot.presupuesto_asignado;
     }
-    result.innerHTML = qbrRegistroHtml(sol, presupuesto);
+    result.innerHTML = '';
+    const table = el('div', 'sol-table');
+    table.appendChild(qbrBuildRow(sol, presupuesto));
+    result.appendChild(table);
   } catch (e) {
     console.error('Error cargando el detalle de la solicitud:', e);
     result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de la solicitud.</p>';
