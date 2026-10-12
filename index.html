@@ -186,7 +186,19 @@
         <article class="sv" id="svComprarBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/compra-badge.jpg" alt="" data-i18n-alt="buyAlt"></span><h3 data-i18n="s3"></h3><p data-i18n="s3d"></p></article>
         <article class="sv" id="svRemodelBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/remodela-badge.jpg" alt="" data-i18n-alt="remodelAlt"></span><h3 data-i18n="s4"></h3><p data-i18n="s4d"></p></article>
         <article class="sv" id="svConstruirBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/terreno-badge.jpg" alt="" data-i18n-alt="landAlt"></span><h3 data-i18n="s5"></h3><p data-i18n="s5d"></p></article>
-        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/proyecto-badge.jpg" alt="" data-i18n-alt="projAlt"></span><h3 data-i18n="s6"></h3><p data-i18n="s6d"></p></article>
+        <article class="sv" id="svDesarrolloBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/proyecto-badge.jpg" alt="" data-i18n-alt="projAlt"></span><h3 data-i18n="s6"></h3><p data-i18n="s6d"></p></article>
+      </div>
+
+      <button class="btn btn-line-dark btn-sm" type="button" id="qBuscarSolBtn" hidden style="margin-top:26px">📋 Buscar Solicitudes</button>
+      <div id="qBuscarSolPanel" hidden style="margin-top:16px;padding-top:18px;border-top:1px solid var(--line)">
+        <div class="q-buscar-fields">
+          <select id="qBuscarSolTipoSel" aria-label="Tipo de solicitud"></select>
+          <select id="qBuscarSolEstadoSel" aria-label="Estado"></select>
+          <select id="qBuscarSolListaSel" aria-label="Lista de solicitudes"></select>
+          <button class="btn btn-dark btn-sm" type="button" id="qBuscarSolMostrarBtn">Mostrar</button>
+        </div>
+        <p class="hint" id="qBuscarSolHint" style="margin-top:8px"></p>
+        <div id="qBuscarSolResult" class="qbuscar-result" hidden></div>
       </div>
     </div>
   </section>
@@ -1634,6 +1646,51 @@
       </ol>
       <p class="hint" style="margin-top:8px">Para tu caso particular, te recomendamos confirmar los pasos exactos con un profesional colegiado o con nuestro equipo.</p>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="desarrolloModal" hidden>
+  <button class="scrim" type="button" id="desarrolloScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="desarrolloCard" role="dialog" aria-modal="true" aria-labelledby="desarrolloTitle">
+    <button class="mx" type="button" id="desarrolloClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="desarrolloTitle">Desarrollamos tu proyecto</h2><p class="ph-sub">Cuéntanos sobre tu proyecto de desarrollo inmobiliario; te acompañamos en la evaluación, planificación, construcción y supervisión integral.</p></div>
+
+    <div class="x-row" style="margin-top:6px">
+      <div class="fld"><label for="ds-nombre">Nombre completo</label><input id="ds-nombre" type="text"></div>
+      <div class="fld"><label for="ds-telefono">Teléfono</label><input id="ds-telefono" type="tel" placeholder="+502 0000 0000"></div>
+    </div>
+
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="ds-correo">Correo electrónico</label><input id="ds-correo" type="email"></div>
+      <div class="fld"><label for="ds-tipo">Tipo de proyecto</label><input id="ds-tipo" type="text" placeholder="Ej. Condominio, desarrollo comercial, lotificación…"></div>
+    </div>
+
+    <div class="fld" style="margin-top:16px"><label for="ds-ubicacion">Ubicación del proyecto</label><input id="ds-ubicacion" type="text" placeholder="Dirección o enlace de Google Maps"></div>
+
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="ds-m2">Metros cuadrados</label><input id="ds-m2" type="number" min="0" step="1" placeholder="Ej. 5000"></div>
+      <div class="fld"><label for="ds-valor">Presupuesto estimado (Q)</label><input id="ds-valor" type="text" placeholder="Ej. 2,500,000"></div>
+    </div>
+
+    <div class="fld" style="margin-top:16px"><label for="ds-fecha-inicio">Fecha de inicio estimada</label><input id="ds-fecha-inicio" type="date"></div>
+
+    <div class="fld" style="margin-top:16px"><label for="ds-descripcion">Describe tu proyecto</label><textarea id="ds-descripcion" rows="4" placeholder="Objetivo del proyecto, alcance, etapas y cualquier detalle importante…"></textarea></div>
+
+    <div class="fld" style="margin-top:16px">
+      <label>Archivos de referencia (imágenes o PDF)</label>
+      <div class="up">
+        <div class="acts">
+          <input id="ds-files" class="sr" type="file" accept="image/*,application/pdf" multiple>
+          <label class="btn btn-gold btn-sm" for="ds-files">📎 Subir archivos</label>
+        </div>
+        <div class="tg" id="dsGrid"></div>
+      </div>
+    </div>
+
+    <div class="acts" style="margin-top:20px">
+      <button class="btn btn-dark" type="button" id="dsSend">Enviar solicitud</button>
+    </div>
+    <p class="note" id="dsNote" hidden>Solicitud enviada correctamente. Gracias.</p>
   </div>
 </div>
 

@@ -481,6 +481,13 @@ let solHashConfirmado = null;
    más abajo en el archivo. */
 let qBuscarRegAbierto = false;
 
+/* Igual que qBuscarRegAbierto, pero para el panel consolidado "Buscar
+   Solicitudes" (Compramos tu propiedad / Adaptamos tu presupuesto /
+   Remodelamos tu propiedad / Construimos en tu terreno / Desarrollamos tu
+   proyecto). Declarada aquí por la misma razón: actualizarVisibilidadBuscarSol()
+   la usa y se llama desde pintarEstadoUsuario() ya en la carga inicial. */
+let qBuscarSolAbierto = false;
+
 /* Valor especial para la opción "Todos los registros" en la lista de
    solicitudes del buscador. */
 const QBUSCARREG_TODOS = '__todos__';
@@ -520,6 +527,7 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
     actualizarVisibilidadBuscarReg();
+    actualizarVisibilidadBuscarSol();
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
@@ -532,6 +540,7 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
     actualizarVisibilidadBuscarReg();
+    actualizarVisibilidadBuscarSol();
     if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
@@ -1798,6 +1807,110 @@ $('#csSend')?.addEventListener('click', async () => {
   }
 
   $('#csNote').hidden = false;
+});
+
+/* Desarrollamos tu proyecto: mismos datos que "Construimos en tu terreno"
+   (datos del cliente, tipo de proyecto, ubicación, área, presupuesto
+   estimado y descripción) más archivos de referencia (imágenes o PDF). */
+const DS_BUCKET = 'desarrollo-proyectos'; // bucket de Supabase Storage — debe crearse como PÚBLICO
+let dsFiles = []; // { url, name, isPdf }
+
+function dsRenderGrid() {
+  const grid = $('#dsGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  dsFiles.forEach((f, i) => {
+    const wrap = el('div', 'th');
+    if (f.isPdf) {
+      const box = el('div');
+      box.style.cssText = 'width:100%;height:100%;border-radius:8px;background:#f2f4f7;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center;padding:4px;box-sizing:border-box;overflow:hidden';
+      box.innerHTML = '📄<br>' + (f.name || 'PDF');
+      wrap.appendChild(box);
+    } else {
+      const img = el('img'); img.src = f.url; img.alt = '';
+      wrap.appendChild(img);
+    }
+    const x = el('button', 'th-x', '×');
+    x.type = 'button';
+    x.setAttribute('aria-label', 'Quitar');
+    x.addEventListener('click', () => { dsFiles.splice(i, 1); dsRenderGrid(); });
+    wrap.appendChild(x);
+    grid.appendChild(wrap);
+  });
+}
+
+$('#ds-files')?.addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  for (const f of files) {
+    try {
+      if (f.type === 'application/pdf') {
+        const url = await uploadPlainFileToBucket(f, DS_BUCKET);
+        dsFiles.push({ url, name: f.name, isPdf: true });
+      } else if (f.type.startsWith('image/')) {
+        const url = await uploadImageToBucket(f, DS_BUCKET, 1600);
+        dsFiles.push({ url, name: f.name, isPdf: false });
+      }
+    } catch (err) { console.error('Error al subir archivo de referencia:', err); }
+  }
+  dsRenderGrid();
+});
+
+const desarrolloModal = $('#desarrolloModal');
+const openDesarrolloModal = () => {
+  desarrolloModal.hidden = false;
+  $('#dsNote').hidden = true;
+  $('#ds-nombre').value = '';
+  $('#ds-telefono').value = '';
+  $('#ds-correo').value = '';
+  $('#ds-tipo').value = '';
+  $('#ds-ubicacion').value = '';
+  $('#ds-m2').value = '';
+  $('#ds-valor').value = '';
+  $('#ds-fecha-inicio').value = '';
+  $('#ds-descripcion').value = '';
+  $('#ds-files').value = '';
+  dsFiles = [];
+  dsRenderGrid();
+};
+const closeDesarrolloModal = () => { desarrolloModal.hidden = true; };
+const svDesarrolloBtn = $('#svDesarrolloBtn');
+if (svDesarrolloBtn) {
+  svDesarrolloBtn.addEventListener('click', openDesarrolloModal);
+  svDesarrolloBtn.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDesarrolloModal(); } });
+}
+$('#desarrolloClose')?.addEventListener('click', closeDesarrolloModal);
+$('#desarrolloScrim')?.addEventListener('click', closeDesarrolloModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && desarrolloModal && !desarrolloModal.hidden) closeDesarrolloModal(); });
+
+$('#dsSend')?.addEventListener('click', async () => {
+  const nombre = $('#ds-nombre')?.value.trim();
+  if (!nombre) {
+    alert('Por favor escribe el nombre completo.');
+    return;
+  }
+  const row = {
+    nombre_completo: nombre,
+    telefono: $('#ds-telefono')?.value.trim() || null,
+    correo: $('#ds-correo')?.value.trim() || null,
+    tipo_proyecto: $('#ds-tipo')?.value.trim() || null,
+    ubicacion: $('#ds-ubicacion')?.value.trim() || null,
+    metros_cuadrados: $('#ds-m2')?.value ? Number($('#ds-m2').value) : null,
+    presupuesto_estimado: $('#ds-valor')?.value.trim() || null,
+    fecha_inicio_estimada: $('#ds-fecha-inicio')?.value || null,
+    descripcion: $('#ds-descripcion')?.value.trim() || null,
+    archivos: dsFiles.map((f) => f.url)
+  };
+
+  const { error } = await supabaseClient.from('solicitudes_desarrollo').insert(row);
+
+  if (error) {
+    console.error('Error al guardar solicitud de desarrollo:', error);
+    alert('No pudimos enviar tu solicitud. Intenta de nuevo.');
+    return;
+  }
+
+  $('#dsNote').hidden = false;
 });
 
 /* Propiedades: ubicaciones, imágenes y vista (se guardan en este navegador) */
@@ -4055,6 +4168,63 @@ const SOL_ESTADOS = [
 ];
 const solEstadoInfo = (v) => SOL_ESTADOS.find((e) => e.v === v) || SOL_ESTADOS[0];
 
+/* Estado genérico para las solicitudes de los otros 5 bloques de "Servicios"
+   (Compramos tu propiedad, Adaptamos tu presupuesto, Remodelamos tu propiedad,
+   Construimos en tu terreno, Desarrollamos tu proyecto). */
+const ESTADO_GEN = [
+  { v: 'solicitado', l: 'Solicitado', bg: '#e6eef5', fg: '#2b4a66' },
+  { v: 'aprobado', l: 'Aprobado', bg: '#dcefe0', fg: '#1f7a43' },
+  { v: 'no_aprobado', l: 'No aprobado', bg: '#fbdede', fg: '#b42318' },
+  { v: 'en_proceso', l: 'En proceso', bg: '#dde8fb', fg: '#1d4ed8' },
+  { v: 'finalizado', l: 'Finalizado', bg: '#c9eed2', fg: '#0f5132' },
+  { v: 'eliminado', l: 'Eliminado', bg: '#e7e9ec', fg: '#56667a' }
+];
+const estadoGenInfo = (v) => ESTADO_GEN.find((e) => e.v === v) || ESTADO_GEN[0];
+
+/* Configuración de los 5 tipos de solicitud que se consultan desde el panel
+   consolidado "Buscar Solicitudes" (el sexto, "Rentamos o vendemos", ya tiene
+   su propio panel "Buscar Servicio" con otra estructura, descrito arriba). */
+const SOLICITUD_TIPOS = [
+  {
+    v: 'comprar', label: 'Compramos tu propiedad', tabla: 'ventas_requisitos',
+    campoNombre: null, campoTel: null,
+    resumen: (r) => 'Solicitud de venta #' + r.id
+  },
+  {
+    v: 'presupuesto', label: 'Adaptamos tu presupuesto', tabla: 'solicitudes_presupuesto',
+    campoNombre: 'nombre_cliente', campoTel: 'telefono_cliente',
+    resumen: (r) => r.nombre_cliente || ('#' + r.id)
+  },
+  {
+    v: 'remodelacion', label: 'Remodelamos tu propiedad', tabla: 'solicitudes_remodelacion',
+    campoNombre: 'nombre_cliente', campoTel: null,
+    resumen: (r) => r.nombre_cliente || ('#' + r.id)
+  },
+  {
+    v: 'construccion', label: 'Construimos en tu terreno', tabla: 'solicitudes_construccion',
+    campoNombre: 'nombre_completo', campoTel: null,
+    resumen: (r) => r.nombre_completo || ('#' + r.id)
+  },
+  {
+    v: 'desarrollo', label: 'Desarrollamos tu proyecto', tabla: 'solicitudes_desarrollo',
+    campoNombre: 'nombre_completo', campoTel: 'telefono',
+    resumen: (r) => r.nombre_completo || ('#' + r.id)
+  }
+];
+const solicitudTipoInfo = (v) => SOLICITUD_TIPOS.find((t) => t.v === v) || null;
+
+function solicitudTipoFecha(r) {
+  return r.created_at || r.fecha_solicitud || null;
+}
+
+function solicitudTipoTelefono(tipo, r) {
+  return tipo.campoTel ? (r[tipo.campoTel] || '—') : '—';
+}
+
+function solicitudTipoNombre(tipo, r) {
+  return tipo.campoNombre ? (r[tipo.campoNombre] || '—') : tipo.resumen(r);
+}
+
 function solServicioActual() {
   const sel = $('#sol-servicio-sel');
   const v = sel ? parseInt(sel.value, 10) : 0;
@@ -4889,3 +5059,264 @@ async function mostrarQBuscarRegDetalle() {
 }
 
 $('#qBuscarRegMostrarBtn')?.addEventListener('click', () => mostrarQBuscarRegDetalle());
+
+/* Botón "📋 Buscar Solicitudes" (dentro de Servicios): panel consolidado,
+   visible solo para Administrador/Super administrador, para consultar los
+   registros de los otros 5 bloques de servicios (Compramos tu propiedad,
+   Adaptamos tu presupuesto, Remodelamos tu propiedad, Construimos en tu
+   terreno, Desarrollamos tu proyecto), con un selector de tipo de solicitud
+   y uno de estado, igual estilo que el panel "Buscar Servicio". */
+function actualizarVisibilidadBuscarSol() {
+  const esAdmin = esAdminOSuperAdmin();
+  const btn = $('#qBuscarSolBtn');
+  if (btn) btn.hidden = !esAdmin;
+  if (!esAdmin) {
+    qBuscarSolAbierto = false;
+    const panel = $('#qBuscarSolPanel');
+    if (panel) panel.hidden = true;
+    const result = $('#qBuscarSolResult');
+    if (result) { result.hidden = true; result.innerHTML = ''; }
+  }
+}
+actualizarVisibilidadBuscarSol();
+
+function poblarQBuscarSolTipoSel() {
+  const sel = $('#qBuscarSolTipoSel');
+  if (!sel || sel.options.length) return;
+  SOLICITUD_TIPOS.forEach((tipo) => {
+    const opt = document.createElement('option');
+    opt.value = tipo.v;
+    opt.textContent = tipo.label;
+    sel.appendChild(opt);
+  });
+}
+
+function poblarQBuscarSolEstadoSel() {
+  const sel = $('#qBuscarSolEstadoSel');
+  if (!sel || sel.options.length) return;
+  const optTodos = document.createElement('option');
+  optTodos.value = '';
+  optTodos.textContent = 'Todos los estados';
+  sel.appendChild(optTodos);
+  ESTADO_GEN.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v;
+    opt.textContent = e.l;
+    opt.style.color = e.fg;
+    opt.style.backgroundColor = e.bg;
+    sel.appendChild(opt);
+  });
+}
+
+async function cargarQBuscarSolLista() {
+  const listaSel = $('#qBuscarSolListaSel');
+  const hint = $('#qBuscarSolHint');
+  if (!listaSel) return;
+  listaSel.innerHTML = '';
+  const tipoSel = $('#qBuscarSolTipoSel');
+  const tipo = solicitudTipoInfo(tipoSel ? tipoSel.value : null);
+  if (!tipo) {
+    if (hint) hint.textContent = '';
+    return;
+  }
+  if (hint) hint.textContent = 'Cargando…';
+  const estadoSel = $('#qBuscarSolEstadoSel');
+  const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
+  try {
+    let query = supabaseClient.from(tipo.tabla).select('*').order('id', { ascending: false }).limit(200);
+    if (estadoVal !== null) query = query.eq('estado', estadoVal);
+    const { data, error } = await query;
+    if (error) throw error;
+    const filas = data || [];
+    if (!filas.length) {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'Sin solicitudes registradas';
+      listaSel.appendChild(opt);
+      if (hint) hint.textContent = '';
+      return;
+    }
+    const optTodosReg = document.createElement('option');
+    optTodosReg.value = QBUSCARREG_TODOS;
+    optTodosReg.textContent = 'Todos los registros (' + filas.length + ')';
+    listaSel.appendChild(optTodosReg);
+    filas.forEach((r) => {
+      const opt = document.createElement('option');
+      opt.value = String(r.id);
+      const fecha = formatQBuscarRegFecha(solicitudTipoFecha(r));
+      opt.textContent = solicitudTipoNombre(tipo, r) + ' · ' + fecha;
+      listaSel.appendChild(opt);
+    });
+    if (hint) hint.textContent = filas.length + (filas.length === 1 ? ' solicitud encontrada' : ' solicitudes encontradas');
+  } catch (e) {
+    console.error('Error cargando solicitudes (' + tipo.tabla + '):', e);
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = 'Error al cargar';
+    listaSel.appendChild(opt);
+    if (hint) hint.textContent = 'No se pudo cargar la lista.';
+  }
+}
+
+$('#qBuscarSolBtn')?.addEventListener('click', () => {
+  const panel = $('#qBuscarSolPanel');
+  if (!panel) return;
+  const mostrar = panel.hidden;
+  panel.hidden = !mostrar;
+  qBuscarSolAbierto = mostrar;
+  if (mostrar) {
+    poblarQBuscarSolTipoSel();
+    poblarQBuscarSolEstadoSel();
+    cargarQBuscarSolLista();
+  } else {
+    const result = $('#qBuscarSolResult');
+    if (result) { result.hidden = true; result.innerHTML = ''; }
+  }
+});
+$('#qBuscarSolTipoSel')?.addEventListener('change', () => {
+  cargarQBuscarSolLista();
+  const result = $('#qBuscarSolResult');
+  if (result) { result.hidden = true; result.innerHTML = ''; }
+});
+$('#qBuscarSolEstadoSel')?.addEventListener('change', () => {
+  cargarQBuscarSolLista();
+  const result = $('#qBuscarSolResult');
+  if (result) { result.hidden = true; result.innerHTML = ''; }
+});
+
+function solqBuildRow(tipo, r) {
+  const row = el('div', 'sol-row solq-row');
+  solqRenderRowView(row, tipo, r);
+  return row;
+}
+
+function solqRenderRowView(row, tipo, r) {
+  row.innerHTML = '';
+  const info = estadoGenInfo(r.estado);
+  const estBadge = el('span', 'sol-badge', info.l);
+  estBadge.style.background = info.bg;
+  estBadge.style.color = info.fg;
+  const actions = el('div', 'sol-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+  row.append(
+    labeledCell('Solicitud', el('strong', 'sol-num', solicitudTipoNombre(tipo, r))),
+    labeledCell('Fecha', el('span', 'sol-cli', formatQBuscarRegFecha(solicitudTipoFecha(r)))),
+    labeledCell('Estado', estBadge),
+    labeledCell('Fecha cambio de estado / Usuario', el('span', 'sol-cli', (r.estado_fecha ? formatQBuscarRegFecha(r.estado_fecha) : '—') + (r.estado_usuario ? (' · ' + r.estado_usuario) : ''))),
+    actions
+  );
+  modBtn.addEventListener('click', () => solqRenderRowEdit(row, tipo, r));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm('¿Eliminar esta solicitud? Esta acción no se puede deshacer.')) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from(tipo.tabla).delete().eq('id', r.id);
+      if (error) throw error;
+      await cargarQBuscarSolLista();
+      mostrarQBuscarSolDetalle();
+    } catch (e) {
+      console.error('Error eliminando la solicitud:', e);
+      alert('No se pudo eliminar la solicitud.');
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function solqRenderRowEdit(row, tipo, r) {
+  row.innerHTML = '';
+  const estadoSel = document.createElement('select');
+  ESTADO_GEN.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v;
+    opt.textContent = e.l;
+    if (e.v === r.estado) opt.selected = true;
+    estadoSel.appendChild(opt);
+  });
+  const actions = el('div', 'sol-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+  row.append(
+    labeledCell('Solicitud', el('strong', 'sol-num', solicitudTipoNombre(tipo, r))),
+    labeledCell('Fecha', el('span', 'sol-cli', formatQBuscarRegFecha(solicitudTipoFecha(r)))),
+    labeledCell('Estado', estadoSel),
+    labeledCell('Fecha cambio de estado / Usuario', el('span', 'sol-cli', (r.estado_fecha ? formatQBuscarRegFecha(r.estado_fecha) : '—') + (r.estado_usuario ? (' · ' + r.estado_usuario) : ''))),
+    actions
+  );
+  cancelBtn.addEventListener('click', () => solqRenderRowView(row, tipo, r));
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    try {
+      const miUsuario = localStorage.getItem(LOGIN_STORE) || null;
+      const payload = { estado: estadoSel.value, estado_fecha: new Date().toISOString(), estado_usuario: miUsuario };
+      const { error } = await supabaseClient.from(tipo.tabla).update(payload).eq('id', r.id);
+      if (error) throw error;
+      r.estado = payload.estado; r.estado_fecha = payload.estado_fecha; r.estado_usuario = payload.estado_usuario;
+      solqRenderRowView(row, tipo, r);
+    } catch (e) {
+      console.error('Error actualizando la solicitud:', e);
+      alert('No se pudo guardar el cambio.');
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+async function mostrarQBuscarSolDetalle() {
+  const result = $('#qBuscarSolResult');
+  const listaSel = $('#qBuscarSolListaSel');
+  const tipoSel = $('#qBuscarSolTipoSel');
+  if (!result || !listaSel) return;
+  const tipo = solicitudTipoInfo(tipoSel ? tipoSel.value : null);
+  const id = listaSel.value;
+  result.hidden = false;
+  if (!tipo || !id) {
+    result.innerHTML = '<p class="qbr-empty">Elige un tipo y una solicitud de la lista para ver su información.</p>';
+    return;
+  }
+
+  if (id === QBUSCARREG_TODOS) {
+    result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+    try {
+      const estadoSel = $('#qBuscarSolEstadoSel');
+      const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
+      let query = supabaseClient.from(tipo.tabla).select('*').order('id', { ascending: false }).limit(200);
+      if (estadoVal !== null) query = query.eq('estado', estadoVal);
+      const { data, error } = await query;
+      if (error) throw error;
+      const filas = data || [];
+      if (!filas.length) {
+        result.innerHTML = '<p class="qbr-empty">No hay solicitudes que coincidan con la búsqueda.</p>';
+        return;
+      }
+      result.innerHTML = '';
+      const table = el('div', 'sol-table');
+      filas.forEach((r) => table.appendChild(solqBuildRow(tipo, r)));
+      result.appendChild(table);
+    } catch (e) {
+      console.error('Error cargando todas las solicitudes:', e);
+      result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de las solicitudes.</p>';
+    }
+    return;
+  }
+
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    const { data: r, error } = await supabaseClient.from(tipo.tabla).select('*').eq('id', id).maybeSingle();
+    if (error) throw error;
+    if (!r) {
+      result.innerHTML = '<p class="qbr-empty">No se encontró la solicitud.</p>';
+      return;
+    }
+    result.innerHTML = '';
+    const table = el('div', 'sol-table');
+    table.appendChild(solqBuildRow(tipo, r));
+    result.appendChild(table);
+  } catch (e) {
+    console.error('Error cargando el detalle de la solicitud:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de la solicitud.</p>';
+  }
+}
+
+$('#qBuscarSolMostrarBtn')?.addEventListener('click', () => mostrarQBuscarSolDetalle());
