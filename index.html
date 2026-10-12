@@ -39,9 +39,9 @@
         <div class="nav-admin-drop" id="navAdminDrop" hidden>
           <button class="btn btn-line btn-sm nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false">Administración<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
           <div class="nav-admin-menu" id="navAdminMenu" hidden>
-            <a href="#propiedades">Administrar Propiedades</a>
-            <a href="#proyectos">Administrar Proyectos</a>
-            <a href="#servicios">Administrar servicios</a>
+            <a href="#propiedades">Propiedades</a>
+            <button type="button" id="navAdminProyectosBtn">Proyectos</button>
+            <a href="#servicios">Servicios</a>
           </div>
         </div>
       </div>
@@ -1124,6 +1124,16 @@
                   <datalist id="pVendedorList"></datalist>
                 </div>
               </div>
+              <div class="x-row">
+                <div class="fld">
+                  <label for="p-comision">% Comisión</label>
+                  <input id="p-comision" type="number" min="0" max="100" step="0.1" placeholder="Ej. 5">
+                </div>
+                <div class="fld">
+                  <span class="lbl">Valor de comisión</span>
+                  <p style="margin-top:9px;font-weight:700;color:var(--ink)" id="pComisionValor">—</p>
+                </div>
+              </div>
               <div class="loc-admin-meta">
                 <span>Fecha cambio de estado: <strong id="pEstadoFecha">—</strong></span>
                 <span>Usuario que cambia el estado: <strong id="pEstadoUsuario">—</strong></span>
@@ -1642,6 +1652,15 @@
       </ol>
       <p class="hint" style="margin-top:8px">Para tu caso particular, te recomendamos confirmar los pasos exactos con un profesional colegiado o con nuestro equipo.</p>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="adminProyectosModal" hidden>
+  <button class="scrim" type="button" id="adminProyectosScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="adminProyectosCard" role="dialog" aria-modal="true" aria-labelledby="adminProyectosTitle">
+    <button class="mx" type="button" id="adminProyectosClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminProyectosTitle">Proyectos — Listado de propiedades</h2><p class="ph-sub">Estado, seguimiento y comisión de cada ubicación registrada.</p></div>
+    <div id="adminProyectosList" class="proy-list"></div>
   </div>
 </div>
 

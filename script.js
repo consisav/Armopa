@@ -415,6 +415,58 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarNavAdminMenu(); });
 $$('.nav-admin-menu a').forEach((a) => a.addEventListener('click', () => { cerrarNavAdminMenu(); navwrap.classList.remove('open'); }));
 
+/* "Proyectos" dentro del menú Administración: en vez de saltar a una sección,
+   abre un listado vertical con todas las propiedades (de todas las
+   ciudades), su estado, fecha/usuario del último cambio, vendedor asignado
+   y su comisión (% y valor calculado). Lee directamente de la variable
+   "data" ya cargada desde Supabase para las propiedades. */
+function construirProyCard(city, c) {
+  const card = el('div', 'proy-card');
+  const info = ubicEstadoInfo(c.estado);
+  const badge = el('span', 'sol-badge', info.l);
+  badge.style.background = info.bg;
+  badge.style.color = info.fg;
+  const head = el('div', 'proy-card-h');
+  head.append(el('span', 'proy-name', (c.name || 'Sin nombre') + ' · ' + city), badge);
+  card.append(
+    head,
+    labeledCell('Fecha de cambio', el('span', '', c.estadoFecha ? formatQBuscarRegFecha(c.estadoFecha) : '—')),
+    labeledCell('Usuario que cambia', el('span', '', c.estadoUsuario || '—')),
+    labeledCell('Vendedor asignado', el('span', '', c.vendedorAsignado || '—')),
+    labeledCell('% Comisión', el('span', '', c.comisionPorcentaje ? (c.comisionPorcentaje + '%') : '—')),
+    labeledCell('Valor de comisión', el('span', '', formatQ(comisionValorCalc(c))))
+  );
+  return card;
+}
+
+function pintarAdminProyectosList() {
+  const list = $('#adminProyectosList');
+  if (!list) return;
+  list.innerHTML = '';
+  const ciudades = Object.keys(data).sort((a, b) => a.localeCompare(b, 'es'));
+  let total = 0;
+  ciudades.forEach((city) => {
+    (data[city] || []).forEach((c) => { list.appendChild(construirProyCard(city, c)); total++; });
+  });
+  if (!total) list.innerHTML = '<p class="proy-empty">Todavía no hay propiedades registradas.</p>';
+}
+
+const adminProyectosModal = $('#adminProyectosModal');
+function abrirAdminProyectosModal() {
+  if (!adminProyectosModal) return;
+  pintarAdminProyectosList();
+  adminProyectosModal.hidden = false;
+}
+function cerrarAdminProyectosModal() { if (adminProyectosModal) adminProyectosModal.hidden = true; }
+$('#navAdminProyectosBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminProyectosModal();
+});
+$('#adminProyectosClose')?.addEventListener('click', cerrarAdminProyectosModal);
+$('#adminProyectosScrim')?.addEventListener('click', cerrarAdminProyectosModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminProyectosModal && !adminProyectosModal.hidden) cerrarAdminProyectosModal(); });
+
 /* Carrusel de propiedades */
 const car = $('#car');
 let idx = 0;
@@ -2278,7 +2330,7 @@ function renderLocTabs() {
   add.addEventListener('click', () => {
     if (!estaConectado()) return;
     const l = list();
-    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '', estado: 'activa', estadoFecha: '', estadoUsuario: '', vendedorAsignado: '' });
+    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '', estado: 'activa', estadoFecha: '', estadoUsuario: '', vendedorAsignado: '', comisionPorcentaje: '' });
     sel = l.length - 1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; descOpen = true;
     note(persist() ? '' : t.storeErr);
     render();
@@ -2346,6 +2398,8 @@ function renderEdit() {
       badge.style.color = info.fg;
       fillDatalist($('#pVendedorList'), vendedoresConocidos());
       $('#p-vendedor-asignado').value = c.vendedorAsignado || '';
+      $('#p-comision').value = c.comisionPorcentaje || '';
+      $('#pComisionValor').textContent = formatQ(comisionValorCalc(c));
       $('#pEstadoFecha').textContent = c.estadoFecha ? formatQBuscarRegFecha(c.estadoFecha) : '—';
       $('#pEstadoUsuario').textContent = c.estadoUsuario || '—';
     }
@@ -2711,6 +2765,30 @@ function extractNumber(str) {
   const num = parseFloat(cleaned);
   return isNaN(num) ? null : num;
 }
+
+/* Precio base de una ubicación para calcular su comisión: el de venta si se
+   vende (o si aplica ambos y hay precio de venta), si no el de alquiler. */
+function precioBaseComision(c) {
+  const op = c.op || 'renta';
+  if (op === 'venta') return extractNumber(c.pSale);
+  if (op === 'renta') return extractNumber(c.pRent);
+  // 'ambos': prioriza el precio de venta si existe
+  return extractNumber(c.pSale) ?? extractNumber(c.pRent);
+}
+
+/* Valor de comisión = % de comisión × precio base de la ubicación. Se
+   calcula siempre al vuelo (no se guarda), a partir del % que sí se guarda. */
+function comisionValorCalc(c) {
+  const pct = extractNumber(c.comisionPorcentaje);
+  const precio = precioBaseComision(c);
+  if (pct == null || precio == null) return null;
+  return (pct / 100) * precio;
+}
+
+function formatQ(n) {
+  if (n == null || !Number.isFinite(n)) return '—';
+  return 'Q ' + n.toLocaleString('es-GT', { maximumFractionDigits: 2 });
+}
 function buildSearchMenu() {
   if (!cityQuickMenu) return;
   const prevCity = cityQuickMenu.querySelector('.cq-select') ? cityQuickMenu.querySelector('.cq-select').value : '';
@@ -2930,6 +3008,13 @@ $('#p-estado')?.addEventListener('change', () => {
 $('#p-vendedor-asignado')?.addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
   c.vendedorAsignado = $('#p-vendedor-asignado').value;
+  note(persist() ? '' : T[lang].storeErr);
+});
+$('#p-comision')?.addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.comisionPorcentaje = $('#p-comision').value;
+  const valorEl = $('#pComisionValor');
+  if (valorEl) valorEl.textContent = formatQ(comisionValorCalc(c));
   note(persist() ? '' : T[lang].storeErr);
 });
 $('#p-sphoto').addEventListener('change', async (e) => {
@@ -3991,6 +4076,7 @@ function toSupaRow(cityName, l) {
     estado_ubicacion_fecha: l.estadoFecha || null,
     estado_ubicacion_usuario: l.estadoUsuario || null,
     vendedor_asignado: l.vendedorAsignado || null,
+    comision_porcentaje: l.comisionPorcentaje || null,
     activo: true
   };
 }
@@ -4051,7 +4137,8 @@ async function cargarPropiedadesArmopa() {
         estado: row.estado_ubicacion || 'activa',
         estadoFecha: row.estado_ubicacion_fecha || '',
         estadoUsuario: row.estado_ubicacion_usuario || '',
-        vendedorAsignado: row.vendedor_asignado || ''
+        vendedorAsignado: row.vendedor_asignado || '',
+        comisionPorcentaje: row.comision_porcentaje != null ? String(row.comision_porcentaje) : ''
       });
     });
     data = nuevo;
