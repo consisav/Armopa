@@ -419,41 +419,221 @@ $$('.nav-admin-menu a').forEach((a) => a.addEventListener('click', () => { cerra
    sección, abre un listado vertical con todas las propiedades (de todas las
    ciudades), su estado, fecha/usuario del último cambio, vendedor asignado
    y su comisión (% y valor calculado). Lee directamente de la variable
-   "data" ya cargada desde Supabase para las propiedades. */
-function construirProyCard(city, c) {
-  const card = el('div', 'proy-card');
+   "data" ya cargada desde Supabase para las propiedades, y permite
+   Modificar/Guardar/Eliminar cada una sin salir del listado. */
+function proyCardHead(city, c) {
   const info = ubicEstadoInfo(c.estado);
   const badge = el('span', 'sol-badge', info.l);
   badge.style.background = info.bg;
   badge.style.color = info.fg;
   const head = el('div', 'proy-card-h');
-  head.append(el('span', 'proy-name', (c.name || 'Sin nombre') + ' · ' + city), badge);
+  const nameWrap = el('div', 'proy-name-wrap');
+  const nameEl = el('div', 'proy-name', c.name || 'Sin nombre');
+  nameEl.title = c.name || '';
+  nameWrap.append(nameEl, el('div', 'proy-city', city));
+  head.append(nameWrap, badge);
+  return head;
+}
+
+function proyRenderView(card, city, c) {
+  card.innerHTML = '';
+  card.classList.remove('proy-card-edit');
+  const actions = el('div', 'proy-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
   card.append(
-    head,
+    proyCardHead(city, c),
+    el('div', 'proy-grid') // placeholder reemplazado abajo
+  );
+  const grid = card.querySelector('.proy-grid');
+  grid.append(
     labeledCell('Fecha de cambio', el('span', '', c.estadoFecha ? formatQBuscarRegFecha(c.estadoFecha) : '—')),
     labeledCell('Usuario que cambia', el('span', '', c.estadoUsuario || '—')),
     labeledCell('Vendedor asignado', el('span', '', c.vendedorAsignado || '—')),
     labeledCell('% Comisión', el('span', '', c.comisionPorcentaje ? (c.comisionPorcentaje + '%') : '—')),
-    labeledCell('Valor de comisión', el('span', '', formatQ(comisionValorCalc(c))))
+    labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(comisionValorCalc(c))))
   );
-  return card;
+  card.appendChild(actions);
+
+  modBtn.addEventListener('click', () => proyRenderEdit(card, city, c));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm('¿Eliminar esta ubicación? Esta acción no se puede deshacer.')) return;
+    delBtn.disabled = true;
+    try {
+      await eliminarUbicacionDesdeListado(city, c);
+      card.remove();
+      if (!$('#adminProyectosList').children.length) pintarAdminProyectosList();
+    } catch (e) {
+      console.error('Error eliminando la ubicación:', e);
+      alert('No se pudo eliminar la ubicación.');
+      delBtn.disabled = false;
+    }
+  });
 }
 
-function pintarAdminProyectosList() {
+function proyRenderEdit(card, city, c) {
+  card.innerHTML = '';
+  card.classList.add('proy-card-edit');
+
+  const estadoSel = document.createElement('select');
+  UBIC_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v; opt.textContent = e.l;
+    if (e.v === c.estado) opt.selected = true;
+    estadoSel.appendChild(opt);
+  });
+
+  const vendedorInput = document.createElement('input');
+  vendedorInput.type = 'text';
+  vendedorInput.value = c.vendedorAsignado || '';
+  vendedorInput.placeholder = 'Vendedor asignado';
+  const vendedorList = document.createElement('datalist');
+  vendedorList.id = 'proyVendedorList-' + c.id;
+  fillDatalist(vendedorList, vendedoresConocidos());
+  vendedorInput.setAttribute('list', vendedorList.id);
+
+  const comisionInput = document.createElement('input');
+  comisionInput.type = 'number';
+  comisionInput.min = '0'; comisionInput.max = '100'; comisionInput.step = '0.1';
+  comisionInput.value = c.comisionPorcentaje || '';
+  comisionInput.placeholder = '%';
+
+  const valorPreview = el('strong', 'proy-valor', formatQ(comisionValorCalc(c)));
+  comisionInput.addEventListener('input', () => {
+    valorPreview.textContent = formatQ(comisionValorCalc({ ...c, comisionPorcentaje: comisionInput.value }));
+  });
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+
+  card.append(proyCardHead(city, c));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('Estado de ubicación', estadoSel),
+    labeledCell('Vendedor asignado', vendedorInput),
+    labeledCell('% Comisión', comisionInput),
+    labeledCell('Valor de comisión', valorPreview)
+  );
+  card.append(grid, vendedorList, actions);
+
+  cancelBtn.addEventListener('click', () => proyRenderView(card, city, c));
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    try {
+      await guardarUbicacionDesdeListado(city, c, estadoSel.value, vendedorInput.value.trim(), comisionInput.value);
+      proyRenderView(card, city, c);
+    } catch (e) {
+      console.error('Error guardando la ubicación:', e);
+      alert('No se pudo guardar el cambio.');
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+async function guardarUbicacionDesdeListado(city, c, nuevoEstado, nuevoVendedor, nuevaComision) {
+  c.estado = nuevoEstado;
+  c.vendedorAsignado = nuevoVendedor;
+  c.comisionPorcentaje = nuevaComision;
+  c.estadoFecha = new Date().toISOString();
+  c.estadoUsuario = localStorage.getItem(LOGIN_STORE) || '';
+  persistLocalOnly();
+  const row = toSupaRow(city, c);
+  const { error } = await supabaseClient.from('propiedades').upsert(row, { onConflict: 'ciudad,local_id' });
+  if (error) throw error;
+}
+
+async function eliminarUbicacionDesdeListado(city, c) {
+  const arr = data[city];
+  if (arr) {
+    const idx = arr.findIndex((x) => x.id === c.id);
+    if (idx !== -1) arr.splice(idx, 1);
+  }
+  persistLocalOnly();
+  const { error } = await supabaseClient.from('propiedades').delete().eq('ciudad', city).eq('local_id', c.id);
+  if (error) throw error;
+}
+
+function proyCiudadesOrdenadas() {
+  return Object.keys(data).sort((a, b) => a.localeCompare(b, 'es'));
+}
+
+/* Lista de ubicaciones de todas las ciudades (o solo de una, si se indica),
+   cada una con su ciudad, para poblar el selector de ubicación. */
+function proyUbicacionesPlano(cityFiltro) {
+  const out = [];
+  const ciudades = cityFiltro ? [cityFiltro] : proyCiudadesOrdenadas();
+  ciudades.forEach((city) => {
+    (data[city] || []).forEach((c) => out.push({ city, c }));
+  });
+  return out;
+}
+
+function poblarAdminPropCiudadSel() {
+  const sel = $('#adminPropCiudadSel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const optTodas = document.createElement('option');
+  optTodas.value = ''; optTodas.textContent = 'Todas las ciudades';
+  sel.appendChild(optTodas);
+  proyCiudadesOrdenadas().forEach((city) => {
+    const opt = document.createElement('option');
+    opt.value = city; opt.textContent = city;
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
+function poblarAdminPropUbicacionSel() {
+  const sel = $('#adminPropUbicacionSel');
+  const ciudadSel = $('#adminPropCiudadSel');
+  if (!sel) return;
+  const ciudadFiltro = ciudadSel ? ciudadSel.value : '';
+  sel.innerHTML = '';
+  const optTodas = document.createElement('option');
+  optTodas.value = ''; optTodas.textContent = 'Todas las ubicaciones';
+  sel.appendChild(optTodas);
+  proyUbicacionesPlano(ciudadFiltro || null).forEach(({ city, c }) => {
+    const opt = document.createElement('option');
+    opt.value = city + '::' + c.id;
+    opt.textContent = (c.name || 'Sin nombre') + (ciudadFiltro ? '' : (' · ' + city));
+    sel.appendChild(opt);
+  });
+}
+
+$('#adminPropCiudadSel')?.addEventListener('change', () => poblarAdminPropUbicacionSel());
+
+function pintarAdminProyectosList(cityFiltro, ubicacionFiltro) {
   const list = $('#adminProyectosList');
   if (!list) return;
   list.innerHTML = '';
-  const ciudades = Object.keys(data).sort((a, b) => a.localeCompare(b, 'es'));
   let total = 0;
-  ciudades.forEach((city) => {
-    (data[city] || []).forEach((c) => { list.appendChild(construirProyCard(city, c)); total++; });
+  proyUbicacionesPlano(cityFiltro || null).forEach(({ city, c }) => {
+    if (ubicacionFiltro && (city + '::' + c.id) !== ubicacionFiltro) return;
+    const card = el('div', 'proy-card');
+    proyRenderView(card, city, c);
+    list.appendChild(card);
+    total++;
   });
-  if (!total) list.innerHTML = '<p class="proy-empty">Todavía no hay propiedades registradas.</p>';
+  if (!total) list.innerHTML = '<p class="proy-empty">No hay ubicaciones que coincidan con la búsqueda.</p>';
 }
+
+$('#adminPropMostrarBtn')?.addEventListener('click', () => {
+  const ciudadFiltro = $('#adminPropCiudadSel')?.value || '';
+  const ubicacionFiltro = $('#adminPropUbicacionSel')?.value || '';
+  pintarAdminProyectosList(ciudadFiltro, ubicacionFiltro);
+});
 
 const adminProyectosModal = $('#adminProyectosModal');
 function abrirAdminProyectosModal() {
   if (!adminProyectosModal) return;
+  poblarAdminPropCiudadSel();
+  poblarAdminPropUbicacionSel();
+  if ($('#adminPropCiudadSel')) $('#adminPropCiudadSel').value = '';
+  if ($('#adminPropUbicacionSel')) $('#adminPropUbicacionSel').value = '';
   pintarAdminProyectosList();
   adminProyectosModal.hidden = false;
 }
