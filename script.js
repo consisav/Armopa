@@ -647,6 +647,225 @@ $('#adminProyectosClose')?.addEventListener('click', cerrarAdminProyectosModal);
 $('#adminProyectosScrim')?.addEventListener('click', cerrarAdminProyectosModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminProyectosModal && !adminProyectosModal.hidden) cerrarAdminProyectosModal(); });
 
+/* "Proyectos" dentro del menú Administración: mismo concepto que
+   "Propiedades" (listado vertical, filtros y Modificar/Guardar/Eliminar sin
+   salir del listado), aplicado a las solicitudes de servicio (tabla
+   solicitudes_servicio). A diferencia de las propiedades, estas no están
+   precargadas en el cliente, así que se consultan a Supabase cada vez que se
+   abre el modal. Los filtros son por propiedad (columna "direccion") y por
+   estado (SOL_ESTADOS). */
+let adminSolData = [];
+
+function solCardHead(r) {
+  const info = solEstadoInfo(r.estado);
+  const badge = el('span', 'sol-badge', info.l);
+  badge.style.background = info.bg;
+  badge.style.color = info.fg;
+  const head = el('div', 'proy-card-h');
+  const nameWrap = el('div', 'proy-name-wrap');
+  const nameEl = el('div', 'proy-name', r.servicio || 'Servicio sin especificar');
+  nameEl.title = r.servicio || '';
+  nameWrap.append(nameEl, el('div', 'proy-city', r.direccion || 'Sin propiedad asignada'));
+  head.append(nameWrap, badge);
+  return head;
+}
+
+function solRenderView(card, r) {
+  card.innerHTML = '';
+  card.classList.remove('proy-card-edit');
+  const actions = el('div', 'proy-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+  card.append(
+    solCardHead(r),
+    el('div', 'proy-grid') // placeholder reemplazado abajo
+  );
+  const grid = card.querySelector('.proy-grid');
+  grid.append(
+    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
+    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
+    labeledCell('Teléfono', el('span', '', r.telefono_cliente || '—')),
+    labeledCell('Prioridad', el('span', '', r.prioridad ? (r.prioridad.charAt(0).toUpperCase() + r.prioridad.slice(1)) : '—')),
+    labeledCell('Tiempo estimado', el('span', '', r.tiempo_estimado || '—')),
+    labeledCell('Fecha estimada de inicio', el('span', '', r.fecha_inicio ? formatQBuscarRegFecha(r.fecha_inicio) : '—'))
+  );
+  card.appendChild(actions);
+
+  modBtn.addEventListener('click', () => solRenderEdit(card, r));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm('¿Eliminar esta solicitud de servicio? Esta acción no se puede deshacer.')) return;
+    delBtn.disabled = true;
+    try {
+      await eliminarSolicitudDesdeListado(r);
+      card.remove();
+      if (!$('#adminSolicitudesList').children.length) pintarAdminSolicitudesList();
+    } catch (e) {
+      console.error('Error eliminando la solicitud de servicio:', e);
+      alert('No se pudo eliminar la solicitud.');
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function solRenderEdit(card, r) {
+  card.innerHTML = '';
+  card.classList.add('proy-card-edit');
+
+  const estadoSel = document.createElement('select');
+  SOL_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v; opt.textContent = e.l;
+    if (e.v === r.estado) opt.selected = true;
+    estadoSel.appendChild(opt);
+  });
+
+  const prioridadSel = document.createElement('select');
+  [{ v: '', l: 'Sin definir' }, { v: 'alta', l: 'Alta' }, { v: 'media', l: 'Media' }, { v: 'baja', l: 'Baja' }].forEach((p) => {
+    const opt = document.createElement('option');
+    opt.value = p.v; opt.textContent = p.l;
+    if (p.v === (r.prioridad || '')) opt.selected = true;
+    prioridadSel.appendChild(opt);
+  });
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+
+  card.append(solCardHead(r));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
+    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
+    labeledCell('Estado', estadoSel),
+    labeledCell('Prioridad', prioridadSel)
+  );
+  card.append(grid, actions);
+
+  cancelBtn.addEventListener('click', () => solRenderView(card, r));
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    try {
+      await guardarSolicitudDesdeListado(r, estadoSel.value, prioridadSel.value);
+      solRenderView(card, r);
+    } catch (e) {
+      console.error('Error guardando la solicitud de servicio:', e);
+      alert('No se pudo guardar el cambio.');
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+async function guardarSolicitudDesdeListado(r, nuevoEstado, nuevaPrioridad) {
+  const payload = { estado: nuevoEstado, prioridad: nuevaPrioridad || null };
+  const { error } = await supabaseClient.from('solicitudes_servicio').update(payload).eq('id', r.id);
+  if (error) throw error;
+  r.estado = nuevoEstado;
+  r.prioridad = nuevaPrioridad || null;
+}
+
+async function eliminarSolicitudDesdeListado(r) {
+  const { error } = await supabaseClient.from('solicitudes_servicio').delete().eq('id', r.id);
+  if (error) throw error;
+  const idx = adminSolData.findIndex((x) => x.id === r.id);
+  if (idx !== -1) adminSolData.splice(idx, 1);
+}
+
+function solPropiedadesUnicas() {
+  const set = new Set();
+  adminSolData.forEach((r) => { if (r.direccion) set.add(r.direccion); });
+  return [...set].sort((a, b) => a.localeCompare(b, 'es'));
+}
+
+function poblarAdminSolPropiedadSel() {
+  const sel = $('#adminSolPropiedadSel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const optTodas = document.createElement('option');
+  optTodas.value = ''; optTodas.textContent = 'Todas las propiedades';
+  sel.appendChild(optTodas);
+  solPropiedadesUnicas().forEach((dir) => {
+    const opt = document.createElement('option');
+    opt.value = dir; opt.textContent = dir;
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
+function poblarAdminSolEstadoSel() {
+  const sel = $('#adminSolEstadoSel');
+  if (!sel || sel.options.length) return;
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los estados';
+  sel.appendChild(optTodos);
+  SOL_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v; opt.textContent = e.l;
+    sel.appendChild(opt);
+  });
+}
+
+function pintarAdminSolicitudesList(propiedadFiltro, estadoFiltro) {
+  const list = $('#adminSolicitudesList');
+  if (!list) return;
+  list.innerHTML = '';
+  let total = 0;
+  adminSolData.forEach((r) => {
+    if (propiedadFiltro && r.direccion !== propiedadFiltro) return;
+    if (estadoFiltro && r.estado !== estadoFiltro) return;
+    const card = el('div', 'proy-card');
+    solRenderView(card, r);
+    list.appendChild(card);
+    total++;
+  });
+  if (!total) list.innerHTML = '<p class="proy-empty">No hay solicitudes que coincidan con la búsqueda.</p>';
+}
+
+$('#adminSolMostrarBtn')?.addEventListener('click', () => {
+  const propiedadFiltro = $('#adminSolPropiedadSel')?.value || '';
+  const estadoFiltro = $('#adminSolEstadoSel')?.value || '';
+  pintarAdminSolicitudesList(propiedadFiltro, estadoFiltro);
+});
+
+async function cargarAdminSolData() {
+  const list = $('#adminSolicitudesList');
+  if (list) list.innerHTML = '<p class="proy-empty">Cargando…</p>';
+  try {
+    const { data: rows, error } = await supabaseClient
+      .from('solicitudes_servicio')
+      .select('id, servicio, direccion, nombre_cliente, telefono_cliente, prioridad, tiempo_estimado, fecha_inicio, estado, numero_solicitud, cliente_codigo, fecha_cotizacion')
+      .order('id', { ascending: false });
+    if (error) throw error;
+    adminSolData = rows || [];
+  } catch (e) {
+    console.error('Error cargando las solicitudes de servicio:', e);
+    adminSolData = [];
+  }
+  poblarAdminSolPropiedadSel();
+  if ($('#adminSolPropiedadSel')) $('#adminSolPropiedadSel').value = '';
+  if ($('#adminSolEstadoSel')) $('#adminSolEstadoSel').value = '';
+  pintarAdminSolicitudesList();
+}
+
+const adminSolicitudesModal = $('#adminSolicitudesModal');
+function abrirAdminSolicitudesModal() {
+  if (!adminSolicitudesModal) return;
+  poblarAdminSolEstadoSel();
+  adminSolicitudesModal.hidden = false;
+  cargarAdminSolData();
+}
+function cerrarAdminSolicitudesModal() { if (adminSolicitudesModal) adminSolicitudesModal.hidden = true; }
+$('#navAdminProyectosBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminSolicitudesModal();
+});
+$('#adminSolicitudesClose')?.addEventListener('click', cerrarAdminSolicitudesModal);
+$('#adminSolicitudesScrim')?.addEventListener('click', cerrarAdminSolicitudesModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminSolicitudesModal && !adminSolicitudesModal.hidden) cerrarAdminSolicitudesModal(); });
+
 /* Carrusel de propiedades */
 const car = $('#car');
 let idx = 0;
