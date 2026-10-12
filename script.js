@@ -421,6 +421,14 @@ $$('.nav-admin-menu a').forEach((a) => a.addEventListener('click', () => { cerra
    y su comisión (% y valor calculado). Lee directamente de la variable
    "data" ya cargada desde Supabase para las propiedades, y permite
    Modificar/Guardar/Eliminar cada una sin salir del listado. */
+function proyEstadoBadge(c) {
+  const info = ubicEstadoInfo(c.estado);
+  const badge = el('span', 'sol-badge', info.l);
+  badge.style.background = info.bg;
+  badge.style.color = info.fg;
+  return badge;
+}
+
 function proyCardHead(city, c) {
   const info = ubicEstadoInfo(c.estado);
   const badge = el('span', 'sol-badge', info.l);
@@ -448,6 +456,7 @@ function proyRenderView(card, city, c) {
   );
   const grid = card.querySelector('.proy-grid');
   grid.append(
+    labeledCell('Estado', proyEstadoBadge(c)),
     labeledCell('Fecha de cambio', el('span', '', c.estadoFecha ? formatQBuscarRegFecha(c.estadoFecha) : '—')),
     labeledCell('Usuario que cambia', el('span', '', c.estadoUsuario || '—')),
     labeledCell('Vendedor asignado', el('span', '', c.vendedorAsignado || '—')),
@@ -606,13 +615,28 @@ function poblarAdminPropUbicacionSel() {
 
 $('#adminPropCiudadSel')?.addEventListener('change', () => poblarAdminPropUbicacionSel());
 
-function pintarAdminProyectosList(cityFiltro, ubicacionFiltro) {
+function poblarAdminPropEstadoSel() {
+  const sel = $('#adminPropEstadoSel');
+  if (!sel || sel.options.length) return;
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los estados';
+  sel.appendChild(optTodos);
+  UBIC_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v; opt.textContent = e.l;
+    opt.style.color = e.fg; opt.style.backgroundColor = e.bg;
+    sel.appendChild(opt);
+  });
+}
+
+function pintarAdminProyectosList(cityFiltro, ubicacionFiltro, estadoFiltro) {
   const list = $('#adminProyectosList');
   if (!list) return;
   list.innerHTML = '';
   let total = 0;
   proyUbicacionesPlano(cityFiltro || null).forEach(({ city, c }) => {
     if (ubicacionFiltro && (city + '::' + c.id) !== ubicacionFiltro) return;
+    if (estadoFiltro && c.estado !== estadoFiltro) return;
     const card = el('div', 'proy-card');
     proyRenderView(card, city, c);
     list.appendChild(card);
@@ -624,7 +648,8 @@ function pintarAdminProyectosList(cityFiltro, ubicacionFiltro) {
 $('#adminPropMostrarBtn')?.addEventListener('click', () => {
   const ciudadFiltro = $('#adminPropCiudadSel')?.value || '';
   const ubicacionFiltro = $('#adminPropUbicacionSel')?.value || '';
-  pintarAdminProyectosList(ciudadFiltro, ubicacionFiltro);
+  const estadoFiltro = $('#adminPropEstadoSel')?.value || '';
+  pintarAdminProyectosList(ciudadFiltro, ubicacionFiltro, estadoFiltro);
 });
 
 const adminProyectosModal = $('#adminProyectosModal');
@@ -632,8 +657,10 @@ function abrirAdminProyectosModal() {
   if (!adminProyectosModal) return;
   poblarAdminPropCiudadSel();
   poblarAdminPropUbicacionSel();
+  poblarAdminPropEstadoSel();
   if ($('#adminPropCiudadSel')) $('#adminPropCiudadSel').value = '';
   if ($('#adminPropUbicacionSel')) $('#adminPropUbicacionSel').value = '';
+  if ($('#adminPropEstadoSel')) $('#adminPropEstadoSel').value = '';
   pintarAdminProyectosList();
   adminProyectosModal.hidden = false;
 }
