@@ -40,7 +40,7 @@
           <button class="btn btn-line btn-sm nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false">Administración<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
           <div class="nav-admin-menu" id="navAdminMenu" hidden>
             <button type="button" id="navAdminPropiedadesBtn">Propiedades</button>
-            <a href="#proyectos">Proyectos</a>
+            <button type="button" id="navAdminProyectosBtn">Proyectos</button>
             <a href="#servicios">Servicios</a>
           </div>
         </div>
@@ -1666,6 +1666,20 @@
       <button class="btn btn-dark btn-sm" type="button" id="adminPropMostrarBtn">Mostrar</button>
     </div>
     <div id="adminProyectosList" class="proy-list"></div>
+  </div>
+</div>
+
+<div class="modal" id="adminSolicitudesModal" hidden>
+  <button class="scrim" type="button" id="adminSolicitudesScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="adminSolicitudesCard" role="dialog" aria-modal="true" aria-labelledby="adminSolicitudesTitle">
+    <button class="mx" type="button" id="adminSolicitudesClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminSolicitudesTitle">Proyectos — Listado general</h2><p class="ph-sub">Seguimiento de cada solicitud de servicio registrada, por propiedad y estado.</p></div>
+    <div class="q-buscar-fields" style="margin-bottom:18px">
+      <select id="adminSolPropiedadSel" aria-label="Propiedad"></select>
+      <select id="adminSolEstadoSel" aria-label="Estado"></select>
+      <button class="btn btn-dark btn-sm" type="button" id="adminSolMostrarBtn">Mostrar</button>
+    </div>
+    <div id="adminSolicitudesList" class="proy-list"></div>
   </div>
 </div>
 
