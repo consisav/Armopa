@@ -31,17 +31,17 @@
         <button class="lg" type="button" data-lang="en">EN</button>
         <span id="userBadge" hidden style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink)">
           <span id="userBadgeName"></span>
-          <button class="btn btn-line btn-sm" type="button" id="adminUsuariosBtn" hidden>Administrar usuarios</button>
-          <button class="btn btn-line btn-sm" type="button" id="logoutBtn">Salir</button>
+          <button class="btn btn-line btn-sm" type="button" id="adminUsuariosBtn" data-i18n="adminUsersBtn" hidden></button>
+          <button class="btn btn-line btn-sm" type="button" id="logoutBtn" data-i18n="logoutBtn"></button>
         </span>
-        <button class="btn btn-line" type="button" id="openLoginBtn">Conectarse</button>
+        <button class="btn btn-line" type="button" id="openLoginBtn" data-i18n="connectBtn"></button>
         <button class="btn btn-line" type="button" id="openClient" data-i18n="client" hidden></button>
         <div class="nav-admin-drop" id="navAdminDrop" hidden>
-          <button class="btn btn-line btn-sm nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false">Administración<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <button class="btn btn-line btn-sm nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false"><span data-i18n="adminMenuBtn"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
           <div class="nav-admin-menu" id="navAdminMenu" hidden>
-            <button type="button" id="navAdminPropiedadesBtn">Propiedades</button>
-            <button type="button" id="navAdminProyectosBtn">Proyectos</button>
-            <button type="button" id="navAdminServiciosBtn">Servicios</button>
+            <button type="button" id="navAdminPropiedadesBtn" data-i18n="adminMenuProp"></button>
+            <button type="button" id="navAdminProyectosBtn" data-i18n="adminMenuProy"></button>
+            <button type="button" id="navAdminServiciosBtn" data-i18n="adminMenuServ"></button>
           </div>
         </div>
       </div>
@@ -82,54 +82,54 @@
         <div class="mv-card">
           <div class="mv-card-head">
             <span class="mv-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
-            <div class="mv-card-title">Nuestra Visión <span class="mv-sep">|</span> <span class="mv-brand">ARMOPA GROUP</span></div>
+            <div class="mv-card-title"><span data-i18n="visionTitle"></span> <span class="mv-sep">|</span> <span class="mv-brand">ARMOPA GROUP</span></div>
           </div>
-          <p class="mv-lead">Ser un grupo inmobiliario de referencia, reconocido por la integridad, transparencia y excelencia en la gestión de bienes inmuebles, ofreciendo soluciones integrales que protejan y fortalezcan el patrimonio de nuestros clientes.</p>
-          <p class="mv-body">Desde 2001, construimos relaciones de confianza mediante servicios de compra, venta, renta, administración, asesoría legal, construcción y remodelación, extendiendo nuestra experiencia a nuestros paisanos en el extranjero para facilitar la gestión y el crecimiento de su patrimonio en Guatemala.</p>
+          <p class="mv-lead" data-i18n="visionLead"></p>
+          <p class="mv-body" data-i18n="visionBody"></p>
         </div>
 
         <div class="mv-card">
           <div class="mv-card-head">
             <span class="mv-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle></svg></span>
-            <div class="mv-card-title">Nuestra Misión <span class="mv-sep">|</span> <span class="mv-brand">ARMOPA GROUP</span></div>
+            <div class="mv-card-title"><span data-i18n="missionTitle"></span> <span class="mv-sep">|</span> <span class="mv-brand">ARMOPA GROUP</span></div>
           </div>
-          <p class="mv-lead">Brindar soluciones inmobiliarias integrales con excelencia, transparencia e integridad, acompañando a nuestros clientes en cada etapa de sus proyectos.</p>
-          <p class="mv-body">Protegemos, transformamos y hacemos crecer su patrimonio, con presencia en Guatemala y proyección internacional.</p>
+          <p class="mv-lead" data-i18n="missionLead"></p>
+          <p class="mv-body" data-i18n="missionBody"></p>
         </div>
       </div>
 
       <div class="about-tx">
         <article class="tx">
           <span class="ic-h ic-logo"><img src="assets/logo.webp" alt="ARMOPA"></span>
-          <div class="tx-head">Decisiones inteligentes.<br>Patrimonios que trascienden.</div>
+          <div class="tx-head" data-i18n-html="txHead1"></div>
           <ul class="tx-list">
-            <li>Consultoría estratégica</li>
-            <li>Inversión inmobiliaria</li>
-            <li>Protección del patrimonio</li>
-            <li>Visión de largo plazo</li>
-            <li>Profesionalismo y confianza</li>
+            <li data-tx1="0"></li>
+            <li data-tx1="1"></li>
+            <li data-tx1="2"></li>
+            <li data-tx1="3"></li>
+            <li data-tx1="4"></li>
           </ul>
         </article>
         <article class="tx">
           <span class="ic-h ic-img"><img src="assets/ia-badge.jpg" alt="" data-i18n-alt="aiAlt"></span>
-          <div class="tx-head">Tecnología que conecta.<br>Personas que te orientan.</div>
+          <div class="tx-head" data-i18n-html="txHead2"></div>
           <ul class="tx-list">
-            <li>Simplificamos tu camino inmobiliario.</li>
-            <li>Encuentra mejor. Decide inteligente.</li>
-            <li>Tu espacio ideal, de forma inteligente.</li>
-            <li>Conectamos oportunidades con tus necesidades.</li>
-            <li>Inteligencia inmobiliaria a tu alcance.</li>
+            <li data-tx2="0"></li>
+            <li data-tx2="1"></li>
+            <li data-tx2="2"></li>
+            <li data-tx2="3"></li>
+            <li data-tx2="4"></li>
           </ul>
         </article>
         <article class="tx">
           <span class="ic-h ic-img"><img src="assets/hogar-badge.jpg" alt="" data-i18n-alt="homeAlt"></span>
-          <div class="tx-head">Hogares que inspiran.<br>Confianza que perdura.</div>
+          <div class="tx-head" data-i18n-html="txHead3"></div>
           <ul class="tx-list">
-            <li>Mucho más que paredes, tu próximo hogar.</li>
-            <li>Espacios para tus mejores recuerdos.</li>
-            <li>Construyendo el escenario de tu vida.</li>
-            <li>Tu aliado de confianza en cada paso.</li>
-            <li>Asesoría honesta para tu hogar ideal.</li>
+            <li data-tx3="0"></li>
+            <li data-tx3="1"></li>
+            <li data-tx3="2"></li>
+            <li data-tx3="3"></li>
+            <li data-tx3="4"></li>
           </ul>
         </article>
       </div>
@@ -1698,6 +1698,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261012-0007"></script>
+<script src="script.js?v=20261012-0008"></script>
 </body>
 </html>
