@@ -4660,8 +4660,9 @@ function qbrRenderRowView(row, sol, presupuesto) {
     labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
     labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
     labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
-    labeledCell('Código de cliente', el('span', 'sol-cli', sol.cliente_codigo ? ('#' + sol.cliente_codigo) : '—')),
     labeledCell('Estado', estBadge),
+    labeledCell('Fecha cambio de estado', el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
+    labeledCell('Usuario Modifica', el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
     actions
   );
   modBtn.addEventListener('click', () => qbrRenderRowEdit(row, sol, presupuesto));
@@ -4701,18 +4702,26 @@ function qbrRenderRowEdit(row, sol, presupuesto) {
     labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
     labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
     labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
-    labeledCell('Código de cliente', el('span', 'sol-cli', sol.cliente_codigo ? ('#' + sol.cliente_codigo) : '—')),
     labeledCell('Estado', estadoSel),
+    labeledCell('Fecha cambio de estado', el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
+    labeledCell('Usuario Modifica', el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
     actions
   );
   cancelBtn.addEventListener('click', () => qbrRenderRowView(row, sol, presupuesto));
   saveBtn.addEventListener('click', async () => {
     saveBtn.disabled = true;
     try {
-      const payload = { estado: estadoSel.value };
+      const miUsuario = localStorage.getItem(LOGIN_STORE) || null;
+      const payload = {
+        estado: estadoSel.value,
+        estado_actualizado_en: new Date().toISOString(),
+        estado_actualizado_por: miUsuario
+      };
       const { error } = await supabaseClient.from('solicitudes_servicio').update(payload).eq('id', sol.id);
       if (error) throw error;
       sol.estado = payload.estado;
+      sol.estado_actualizado_en = payload.estado_actualizado_en;
+      sol.estado_actualizado_por = payload.estado_actualizado_por;
       qbrRenderRowView(row, sol, presupuesto);
     } catch (e) {
       console.error('Error actualizando la solicitud:', e);
