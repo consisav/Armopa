@@ -78,18 +78,22 @@ section[id]{scroll-margin-top:148px}
 .about-in .h3l{font-size:clamp(21px,2.5vw,33px);line-height:1.3;color:var(--goldtx);margin-top:10px}
 .about-in h2::after{content:"";display:block;width:72px;height:2px;background:var(--gold);margin:30px auto 0}
 
-.mv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;margin:40px 0 54px}
-.mv-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:16px;padding:36px 38px;overflow:hidden;box-shadow:0 1px 3px rgba(16,36,60,.04)}
+.mv-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:30px 0 40px}
+.mv-card{position:relative;background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;overflow:hidden}
 .mv-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--gold2))}
-.mv-card-head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
-.mv-ic{flex:none;width:46px;height:46px;border-radius:50%;border:1px solid var(--gold);background:var(--navy2);display:flex;align-items:center;justify-content:center}
-.mv-ic svg{width:22px;height:22px;stroke:var(--gold2);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.mv-card-title{font-family:'Marcellus',Georgia,serif;font-size:clamp(18px,1.9vw,22px);color:var(--ink);letter-spacing:.01em;line-height:1.3}
+.mv-card-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.mv-ic{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--gold);background:var(--navy2);display:flex;align-items:center;justify-content:center}
+.mv-ic svg{width:16px;height:16px;stroke:var(--gold2);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.mv-card-title{font-size:15px;color:var(--ink);letter-spacing:.01em;line-height:1.3}
 .mv-card-title .mv-sep{color:var(--line);margin:0 3px}
-.mv-card-title .mv-brand{color:var(--gold);font-weight:700;letter-spacing:.04em}
-.mv-lead{font-size:16.5px;line-height:1.72;color:var(--ink);font-weight:600;text-align:justify;text-justify:inter-word;margin:0 0 14px}
-.mv-body{font-size:15px;line-height:1.78;color:var(--muted);text-align:justify;text-justify:inter-word;margin:0}
-@media (max-width:860px){.mv-grid{grid-template-columns:1fr;margin:32px 0 44px}.mv-card{padding:30px 26px}}
+.mv-card-title .mv-brand{color:var(--gold);font-weight:700}
+.mv-lead{font-size:14px;line-height:1.55;color:var(--ink);font-weight:600;text-align:justify;text-justify:inter-word;margin:0 0 8px}
+.mv-body{font-size:13px;line-height:1.6;color:var(--muted);text-align:justify;text-justify:inter-word;margin:0}
+@media (max-width:640px){
+  .mv-grid{grid-template-columns:1fr;gap:14px;margin:24px 0 32px}
+  .mv-card{padding:18px 18px}
+  .mv-lead,.mv-body{text-align:left}
+}
 
 .car{display:flex;align-items:center;gap:14px;--n:3;--gap:20px}
 .car-vp{overflow:hidden;flex:1;min-width:0}
