@@ -304,7 +304,21 @@ const T = {
     send: 'Enviar solicitud', sentMsg: 'Modo demostración: conecta este formulario a tu correo o CRM para recibir solicitudes.',
     fAtt: 'Atención', fFollow: 'Síguenos', rights: 'Todos los derechos reservados.',
     cUser: 'Usuario', cPass: 'Clave', cCode: 'Código / Propiedad', cGo: 'Ingresar',
-    cMsg: 'Acceso de demostración: conecta este formulario a tu sistema de usuarios.'
+    cMsg: 'Acceso de demostración: conecta este formulario a tu sistema de usuarios.',
+    adminUsersBtn: 'Administrar usuarios', logoutBtn: 'Salir', connectBtn: 'Conectarse',
+    adminMenuBtn: 'Administración', adminMenuProp: 'Propiedades', adminMenuProy: 'Proyectos', adminMenuServ: 'Servicios',
+    visionTitle: 'Nuestra Visión',
+    visionLead: 'Ser un grupo inmobiliario de referencia, reconocido por la integridad, transparencia y excelencia en la gestión de bienes inmuebles, ofreciendo soluciones integrales que protejan y fortalezcan el patrimonio de nuestros clientes.',
+    visionBody: 'Desde 2001, construimos relaciones de confianza mediante servicios de compra, venta, renta, administración, asesoría legal, construcción y remodelación, extendiendo nuestra experiencia a nuestros paisanos en el extranjero para facilitar la gestión y el crecimiento de su patrimonio en Guatemala.',
+    missionTitle: 'Nuestra Misión',
+    missionLead: 'Brindar soluciones inmobiliarias integrales con excelencia, transparencia e integridad, acompañando a nuestros clientes en cada etapa de sus proyectos.',
+    missionBody: 'Protegemos, transformamos y hacemos crecer su patrimonio, con presencia en Guatemala y proyección internacional.',
+    txHead1: 'Decisiones inteligentes.<br>Patrimonios que trascienden.',
+    txList1: ['Consultoría estratégica', 'Inversión inmobiliaria', 'Protección del patrimonio', 'Visión de largo plazo', 'Profesionalismo y confianza'],
+    txHead2: 'Tecnología que conecta.<br>Personas que te orientan.',
+    txList2: ['Simplificamos tu camino inmobiliario.', 'Encuentra mejor. Decide inteligente.', 'Tu espacio ideal, de forma inteligente.', 'Conectamos oportunidades con tus necesidades.', 'Inteligencia inmobiliaria a tu alcance.'],
+    txHead3: 'Hogares que inspiran.<br>Confianza que perdura.',
+    txList3: ['Mucho más que paredes, tu próximo hogar.', 'Espacios para tus mejores recuerdos.', 'Construyendo el escenario de tu vida.', 'Tu aliado de confianza en cada paso.', 'Asesoría honesta para tu hogar ideal.']
   },
   en: {
     menu: 'Menu', nInicio: 'Home', nNosotros: 'About', nPropiedades: 'Properties', nServicios: 'Services', nProyectos: 'Projects', nContacto: 'Contact',
@@ -345,7 +359,21 @@ const T = {
     send: 'Send request', sentMsg: 'Demo mode: connect this form to your email or CRM to receive requests.',
     fAtt: 'Contact', fFollow: 'Follow us', rights: 'All rights reserved.',
     cUser: 'Username', cPass: 'Password', cCode: 'Property code', cGo: 'Sign in',
-    cMsg: 'Demo access: connect this form to your user system.'
+    cMsg: 'Demo access: connect this form to your user system.',
+    adminUsersBtn: 'Manage users', logoutBtn: 'Log out', connectBtn: 'Log in',
+    adminMenuBtn: 'Admin', adminMenuProp: 'Properties', adminMenuProy: 'Projects', adminMenuServ: 'Services',
+    visionTitle: 'Our Vision',
+    visionLead: 'To be a leading real estate group, recognized for integrity, transparency and excellence in property management, offering comprehensive solutions that protect and strengthen our clients\' wealth.',
+    visionBody: 'Since 2001, we have built relationships of trust through buying, selling, renting, management, legal advisory, construction and remodeling services, extending our expertise to our fellow citizens abroad to help manage and grow their wealth in Guatemala.',
+    missionTitle: 'Our Mission',
+    missionLead: 'To provide comprehensive real estate solutions with excellence, transparency and integrity, supporting our clients through every stage of their projects.',
+    missionBody: 'We protect, transform and grow your wealth, with a presence in Guatemala and an international outlook.',
+    txHead1: 'Smart decisions.<br>Legacies that endure.',
+    txList1: ['Strategic consulting', 'Real estate investment', 'Wealth protection', 'Long-term vision', 'Professionalism and trust'],
+    txHead2: 'Technology that connects.<br>People who guide you.',
+    txList2: ['We simplify your real estate journey.', 'Find better. Decide smart.', 'Your ideal space, the smart way.', 'We connect opportunities with your needs.', 'Real estate intelligence within reach.'],
+    txHead3: 'Homes that inspire.<br>Trust that lasts.',
+    txList3: ['Much more than walls, your next home.', 'Spaces for your best memories.', 'Building the setting for your life.', 'Your trusted ally every step of the way.', 'Honest advice for your ideal home.']
   }
 };
 
@@ -359,12 +387,16 @@ function setLang(l) {
   const t = T[l];
   document.documentElement.lang = l;
   $$('[data-i18n]').forEach((el) => { el.textContent = t[el.dataset.i18n]; });
+  $$('[data-i18n-html]').forEach((el) => { el.innerHTML = t[el.dataset.i18nHtml]; });
   $$('[data-i18n-label]').forEach((el) => el.setAttribute('aria-label', t[el.dataset.i18nLabel]));
   $$('[data-i18n-alt]').forEach((el) => el.setAttribute('alt', t[el.dataset.i18nAlt]));
   $$('[data-i18n-ph]').forEach((el) => el.setAttribute('placeholder', t[el.dataset.i18nPh]));
   $$('[data-ext]').forEach((el) => { el.textContent = t.ext[+el.dataset.ext]; });
   $$('[data-sv]').forEach((el) => { el.textContent = t.svItems[+el.dataset.sv]; });
   $$('[data-inv]').forEach((el) => { el.textContent = t.invItems[+el.dataset.inv]; });
+  $$('[data-tx1]').forEach((el) => { el.textContent = t.txList1[+el.dataset.tx1]; });
+  $$('[data-tx2]').forEach((el) => { el.textContent = t.txList2[+el.dataset.tx2]; });
+  $$('[data-tx3]').forEach((el) => { el.textContent = t.txList3[+el.dataset.tx3]; });
   $$('.lg').forEach((b) => b.classList.toggle('on', b.dataset.lang === l));
   try { localStorage.setItem('armopaLang', l); } catch (e) {}
   buildDots();
