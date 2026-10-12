@@ -1121,6 +1121,33 @@
               <div class="fld"><label for="p-sname" data-i18n="sellerName"></label><input id="p-sname" type="text"></div>
               <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"><p class="hint" data-i18n="waHint"></p></div>
             </div>
+
+            <div class="loc-admin" id="pLocAdminBlock" hidden>
+              <h3>Gestión interna</h3>
+              <div class="x-row">
+                <div class="fld">
+                  <label for="p-estado">Estado de ubicación</label>
+                  <select id="p-estado">
+                    <option value="activa">Activa</option>
+                    <option value="arrendada">Arrendada</option>
+                    <option value="vendida">Vendida</option>
+                    <option value="suspendida">Suspendida</option>
+                    <option value="baja">Baja</option>
+                  </select>
+                  <span class="loc-estado-badge" id="pEstadoBadge"></span>
+                </div>
+                <div class="fld">
+                  <label for="p-vendedor-asignado">Vendedor asignado</label>
+                  <input id="p-vendedor-asignado" class="fld-list" type="text" list="pVendedorList" placeholder="Elige o escribe un vendedor">
+                  <datalist id="pVendedorList"></datalist>
+                </div>
+              </div>
+              <div class="loc-admin-meta">
+                <span>Fecha cambio de estado: <strong id="pEstadoFecha">—</strong></span>
+                <span>Usuario que cambia el estado: <strong id="pEstadoUsuario">—</strong></span>
+              </div>
+            </div>
+
             <div class="acts" style="margin-top:20px">
               <button class="btn btn-dark" type="button" id="pSaveTop">💾 Guardar</button>
               <button class="btn btn-line-dark" type="button" id="pUpdateTop">🔄 Actualizar</button>
