@@ -4683,10 +4683,6 @@ function qbrRenderRowView(row, sol, presupuesto) {
 
 function qbrRenderRowEdit(row, sol, presupuesto) {
   row.innerHTML = '';
-  const clienteInput = document.createElement('input');
-  clienteInput.type = 'text';
-  clienteInput.value = sol.cliente_codigo || '';
-  clienteInput.placeholder = 'Código de cliente';
   const estadoSel = document.createElement('select');
   SOL_ESTADOS.forEach((e) => {
     const opt = document.createElement('option');
@@ -4705,7 +4701,7 @@ function qbrRenderRowEdit(row, sol, presupuesto) {
     labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
     labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
     labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
-    labeledCell('Código de cliente', clienteInput),
+    labeledCell('Código de cliente', el('span', 'sol-cli', sol.cliente_codigo ? ('#' + sol.cliente_codigo) : '—')),
     labeledCell('Estado', estadoSel),
     actions
   );
@@ -4713,10 +4709,9 @@ function qbrRenderRowEdit(row, sol, presupuesto) {
   saveBtn.addEventListener('click', async () => {
     saveBtn.disabled = true;
     try {
-      const payload = { cliente_codigo: clienteInput.value.trim() || null, estado: estadoSel.value };
+      const payload = { estado: estadoSel.value };
       const { error } = await supabaseClient.from('solicitudes_servicio').update(payload).eq('id', sol.id);
       if (error) throw error;
-      sol.cliente_codigo = payload.cliente_codigo;
       sol.estado = payload.estado;
       qbrRenderRowView(row, sol, presupuesto);
     } catch (e) {
