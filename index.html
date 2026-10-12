@@ -41,7 +41,7 @@
           <div class="nav-admin-menu" id="navAdminMenu" hidden>
             <button type="button" id="navAdminPropiedadesBtn">Propiedades</button>
             <button type="button" id="navAdminProyectosBtn">Proyectos</button>
-            <a href="#servicios">Servicios</a>
+            <button type="button" id="navAdminServiciosBtn">Servicios</button>
           </div>
         </div>
       </div>
@@ -1683,6 +1683,22 @@
   </div>
 </div>
 
+<div class="modal" id="adminServiciosModal" hidden>
+  <button class="scrim" type="button" id="adminServiciosScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="adminServiciosCard" role="dialog" aria-modal="true" aria-labelledby="adminServiciosTitle">
+    <button class="mx" type="button" id="adminServiciosClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminServiciosTitle">Servicios — Listado general</h2><p class="ph-sub">Estado, vendedor y comisión de cada solicitud de servicio.</p></div>
+    <div class="q-buscar-fields" style="margin-bottom:10px">
+      <select id="adminSrvTipoSel" aria-label="Tipo de servicio"></select>
+      <select id="adminSrvEstadoSel" aria-label="Estado"></select>
+      <select id="adminSrvListaSel" aria-label="Lista de registros"></select>
+      <button class="btn btn-dark btn-sm" type="button" id="adminSrvMostrarBtn">Mostrar</button>
+    </div>
+    <p class="hint" id="adminSrvHint" style="margin-top:2px;margin-bottom:12px"></p>
+    <div id="adminServiciosResult" class="qbuscar-result"></div>
+  </div>
+</div>
+
 <div class="modal lb-modal" id="lbModal" hidden>
   <button class="scrim" type="button" id="lbScrim" data-i18n-label="close"></button>
   <button class="mx lb-x" type="button" id="lbClose" data-i18n-label="close">×</button>
@@ -1692,6 +1708,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261012-0004"></script>
+<script src="script.js?v=20261012-0005"></script>
 </body>
 </html>
