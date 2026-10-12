@@ -1950,6 +1950,15 @@ function persistLocalOnly() {
   try { localStorage.setItem(STORE, JSON.stringify({ data })); return true; } catch (e) { return false; }
 }
 function persist() {
+  const c = list()[sel];
+  if (c && esAdminOSuperAdmin()) {
+    c.estadoFecha = new Date().toISOString();
+    c.estadoUsuario = localStorage.getItem(LOGIN_STORE) || '';
+    const fechaEl = $('#pEstadoFecha');
+    const userEl = $('#pEstadoUsuario');
+    if (fechaEl) fechaEl.textContent = formatQBuscarRegFecha(c.estadoFecha);
+    if (userEl) userEl.textContent = c.estadoUsuario || '—';
+  }
   syncLoc();
   return persistLocalOnly();
 }
@@ -3006,6 +3015,7 @@ $('#pDel').addEventListener('click', () => {
 });
 $('#pSaveTop').addEventListener('click', () => saveLocNow('Ubicación guardada con éxito.'));
 $('#pUpdateTop').addEventListener('click', () => saveLocNow('Ubicación actualizada con éxito.'));
+$('#pLocAdminUpdate')?.addEventListener('click', () => saveLocNow('Ubicación actualizada con éxito.'));
 $('#vPrev').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi <= 0 ? n - 1 : vi - 1; renderView(); });
 $('#vNext').addEventListener('click', () => { const n = list()[sel].imgs.length; vi = vi >= n - 1 ? 0 : vi + 1; renderView(); });
 /* Foto del vendedor en tamaño original */
