@@ -25,14 +25,6 @@
         <a href="#proyectos" data-i18n="nServicios"></a>
         <a href="#servicios" data-i18n="nProyectos"></a>
         <a href="#contacto" data-i18n="nContacto"></a>
-        <div class="nav-admin-drop" id="navAdminDrop" hidden>
-          <button class="nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false">Administración<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
-          <div class="nav-admin-menu" id="navAdminMenu" hidden>
-            <a href="#propiedades">Administrar Propiedades</a>
-            <a href="#proyectos">Administrar Proyectos</a>
-            <a href="#servicios">Administrar servicios</a>
-          </div>
-        </div>
       </nav>
       <div class="tools">
         <button class="lg on" type="button" data-lang="es">ES</button>
@@ -43,7 +35,15 @@
           <button class="btn btn-line btn-sm" type="button" id="logoutBtn">Salir</button>
         </span>
         <button class="btn btn-line" type="button" id="openLoginBtn">Conectarse</button>
-        <button class="btn btn-line" type="button" id="openClient" data-i18n="client"></button>
+        <button class="btn btn-line" type="button" id="openClient" data-i18n="client" hidden></button>
+        <div class="nav-admin-drop" id="navAdminDrop" hidden>
+          <button class="btn btn-line btn-sm nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false">Administración<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          <div class="nav-admin-menu" id="navAdminMenu" hidden>
+            <a href="#propiedades">Administrar Propiedades</a>
+            <a href="#proyectos">Administrar Proyectos</a>
+            <a href="#servicios">Administrar servicios</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
