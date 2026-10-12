@@ -2223,7 +2223,7 @@ function renderLocTabs() {
   add.addEventListener('click', () => {
     if (!estaConectado()) return;
     const l = list();
-    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '' });
+    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '', estado: 'activa', estadoFecha: '', estadoUsuario: '', vendedorAsignado: '' });
     sel = l.length - 1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; descOpen = true;
     note(persist() ? '' : t.storeErr);
     render();
@@ -2278,6 +2278,23 @@ function renderEdit() {
   $('#p-sale').value = c.pSale || '';
   $('#p-sname').value = c.sName || '';
   $('#p-swa').value = c.sWa || '';
+  const locAdminBlock = $('#pLocAdminBlock');
+  if (locAdminBlock) {
+    locAdminBlock.hidden = !esAdminOSuperAdmin();
+    if (!locAdminBlock.hidden) {
+      const estadoV = c.estado || 'activa';
+      $('#p-estado').value = estadoV;
+      const info = ubicEstadoInfo(estadoV);
+      const badge = $('#pEstadoBadge');
+      badge.textContent = info.l;
+      badge.style.background = info.bg;
+      badge.style.color = info.fg;
+      fillDatalist($('#pVendedorList'), vendedoresConocidos());
+      $('#p-vendedor-asignado').value = c.vendedorAsignado || '';
+      $('#pEstadoFecha').textContent = c.estadoFecha ? formatQBuscarRegFecha(c.estadoFecha) : '—';
+      $('#pEstadoUsuario').textContent = c.estadoUsuario || '—';
+    }
+  }
   $('#sAvBtn').hidden = !c.sPhoto;
   $('#sAvatarPh').hidden = !!c.sPhoto;
   $('#sRm').hidden = !c.sPhoto;
@@ -2509,6 +2526,22 @@ function typeSuggestions() {
     });
   });
   return TIPO_PROPIEDAD_SEED.concat(Array.from(extra).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' })));
+}
+/* Vendedores ya existentes en la base de datos: se arman a partir de los
+   nombres de vendedor ya guardados (contacto público y vendedor asignado)
+   en cualquier ubicación de cualquier ciudad, para poder elegirlos en vez
+   de volver a escribirlos. */
+function vendedoresConocidos() {
+  const set = new Set();
+  Object.keys(data).forEach((city) => {
+    (data[city] || []).forEach((l) => {
+      const v1 = (l.sName || '').trim();
+      if (v1) set.add(v1);
+      const v2 = (l.vendedorAsignado || '').trim();
+      if (v2) set.add(v2);
+    });
+  });
+  return Array.from(set).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
 }
 function fillDatalist(listEl, values) {
   listEl.innerHTML = '';
@@ -2829,6 +2862,19 @@ $('#p-sname').addEventListener('input', () => {
 $('#p-swa').addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
   c.sWa = $('#p-swa').value;
+  note(persist() ? '' : T[lang].storeErr);
+});
+$('#p-estado')?.addEventListener('change', () => {
+  const c = list()[sel]; if (!c) return;
+  c.estado = $('#p-estado').value;
+  c.estadoFecha = new Date().toISOString();
+  c.estadoUsuario = localStorage.getItem(LOGIN_STORE) || '';
+  note(persist() ? '' : T[lang].storeErr);
+  renderEdit();
+});
+$('#p-vendedor-asignado')?.addEventListener('input', () => {
+  const c = list()[sel]; if (!c) return;
+  c.vendedorAsignado = $('#p-vendedor-asignado').value;
   note(persist() ? '' : T[lang].storeErr);
 });
 $('#p-sphoto').addEventListener('change', async (e) => {
@@ -3885,6 +3931,10 @@ function toSupaRow(cityName, l) {
     vendedor_nombre: l.sName || '',
     vendedor_whatsapp: l.sWa || '',
     vendedor_foto: l.sPhoto || '',
+    estado_ubicacion: l.estado || 'activa',
+    estado_ubicacion_fecha: l.estadoFecha || null,
+    estado_ubicacion_usuario: l.estadoUsuario || null,
+    vendedor_asignado: l.vendedorAsignado || null,
     activo: true
   };
 }
@@ -3941,7 +3991,11 @@ async function cargarPropiedadesArmopa() {
         imgs: row.fotos || [],
         sPhoto: row.vendedor_foto || '',
         sName: row.vendedor_nombre || '',
-        sWa: row.vendedor_whatsapp || ''
+        sWa: row.vendedor_whatsapp || '',
+        estado: row.estado_ubicacion || 'activa',
+        estadoFecha: row.estado_ubicacion_fecha || '',
+        estadoUsuario: row.estado_ubicacion_usuario || '',
+        vendedorAsignado: row.vendedor_asignado || ''
       });
     });
     data = nuevo;
@@ -3968,6 +4022,19 @@ window.cargarPropiedadesArmopa = cargarPropiedadesArmopa;
    (solHashConfirmado, declarado arriba) y se reenvía a cada función de
    Supabase, que la vuelve a verificar del lado del servidor. */
 const SOL_TIPOS_CODIGO = ['ALQ', 'CAM', 'REN', 'MTO', 'PLE', 'JUR', 'PRE', 'MOV', 'ADM'];
+/* Estado interno de cada ubicación (solo visible para Administrador o Super
+   administrador). "Fecha cambio de estado" y "Usuario que cambia el
+   estado" se actualizan automáticamente cada vez que se cambia este
+   selector. */
+const UBIC_ESTADOS = [
+  { v: 'activa', l: 'Activa', bg: '#dcefe0', fg: '#1f7a43' },
+  { v: 'arrendada', l: 'Arrendada', bg: '#dde8fb', fg: '#1d4ed8' },
+  { v: 'vendida', l: 'Vendida', bg: '#fbe9c8', fg: '#8b641d' },
+  { v: 'suspendida', l: 'Suspendida', bg: '#fde8d0', fg: '#b45309' },
+  { v: 'baja', l: 'Baja', bg: '#fbdede', fg: '#b42318' }
+];
+const ubicEstadoInfo = (v) => UBIC_ESTADOS.find((e) => e.v === v) || UBIC_ESTADOS[0];
+
 const SOL_ESTADOS = [
   { v: 'solicitado', l: 'Solicitado', bg: '#e6eef5', fg: '#2b4a66' },
   { v: 'presupuesto_enviado', l: 'Enviado presupuesto', bg: '#fbe9c8', fg: '#8b641d' },

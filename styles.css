@@ -404,6 +404,12 @@ section[id]{scroll-margin-top:148px}
 .vw-desc h4{font-family:'Marcellus',Georgia,serif;font-weight:400;font-size:20px;color:var(--gold2);margin:0 0 8px}
 .vw-desc p{color:#dbe3eb;white-space:pre-line;line-height:1.7}
 .seller{display:flex;flex-direction:column;gap:14px;padding-top:18px;border-top:1px solid var(--line)}
+.loc-admin{display:flex;flex-direction:column;gap:12px;margin-top:20px;padding:16px 18px;border:1px dashed var(--gold);border-radius:12px;background:#fdf8ee}
+.loc-admin h3{margin:0;font-size:14px;color:var(--goldtx);text-transform:uppercase;letter-spacing:.04em}
+.loc-estado-badge{display:inline-flex;align-items:center;width:fit-content;padding:3px 11px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.loc-admin-meta{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.loc-admin-meta strong{color:var(--ink);font-weight:600}
+@media (max-width:640px){.loc-admin-meta{flex-direction:column;gap:4px}}
 .srow{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .avatar{width:112px;height:112px;flex:none;border-radius:50%;object-fit:cover;border:2px solid var(--gold);background:var(--paper);display:block}
 .avatar.ph{display:flex;align-items:center;justify-content:center;border-style:dashed;color:#8fa0b4}
