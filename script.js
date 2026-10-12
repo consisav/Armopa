@@ -670,6 +670,14 @@ function solComisionValorCalc(r) {
   return (pct / 100) * precio;
 }
 
+function solEstadoBadge(r) {
+  const info = solEstadoInfo(r.estado);
+  const badge = el('span', 'sol-badge', info.l);
+  badge.style.background = info.bg;
+  badge.style.color = info.fg;
+  return badge;
+}
+
 function solCardHead(r) {
   const info = solEstadoInfo(r.estado);
   const badge = el('span', 'sol-badge', info.l);
@@ -697,15 +705,16 @@ function solRenderView(card, r) {
   );
   const grid = card.querySelector('.proy-grid');
   grid.append(
+    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
     labeledCell('Descripción a realizar', el('span', '', r.necesidad || '—')),
     labeledCell('Valor', el('strong', '', formatQ(solPresupuestoBase(r)))),
-    labeledCell('Fecha de cambio de estado', el('span', '', r.estado_fecha ? formatQBuscarRegFecha(r.estado_fecha) : '—')),
+    labeledCell('Estado', solEstadoBadge(r)),
+    labeledCell('Prioridad', el('span', '', r.prioridad ? (r.prioridad.charAt(0).toUpperCase() + r.prioridad.slice(1)) : '—')),
+    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
     labeledCell('Vendedor asignado', el('span', '', r.vendedor_asignado || '—')),
     labeledCell('% Comisión', el('span', '', r.comision_porcentaje ? (r.comision_porcentaje + '%') : '—')),
     labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(solComisionValorCalc(r)))),
-    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
-    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
-    labeledCell('Prioridad', el('span', '', r.prioridad ? (r.prioridad.charAt(0).toUpperCase() + r.prioridad.slice(1)) : '—'))
+    labeledCell('Fecha de cambio de estado', el('span', '', r.estado_fecha ? formatQBuscarRegFecha(r.estado_fecha) : '—'))
   );
   card.appendChild(actions);
 
@@ -773,15 +782,15 @@ function solRenderEdit(card, r) {
   card.append(solCardHead(r));
   const grid = el('div', 'proy-grid');
   grid.append(
+    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
     labeledCell('Descripción a realizar', el('span', '', r.necesidad || '—')),
     labeledCell('Valor', el('strong', '', formatQ(solPresupuestoBase(r)))),
     labeledCell('Estado', estadoSel),
     labeledCell('Prioridad', prioridadSel),
+    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
     labeledCell('Vendedor asignado', vendedorInput),
     labeledCell('% Comisión', comisionInput),
-    labeledCell('Valor de comisión', valorPreview),
-    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
-    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—')))
+    labeledCell('Valor de comisión', valorPreview)
   );
   card.append(grid, vendedorList, actions);
 
