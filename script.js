@@ -698,6 +698,7 @@ function solRenderView(card, r) {
   const grid = card.querySelector('.proy-grid');
   grid.append(
     labeledCell('Descripción a realizar', el('span', '', r.necesidad || '—')),
+    labeledCell('Valor', el('strong', '', formatQ(solPresupuestoBase(r)))),
     labeledCell('Fecha de cambio de estado', el('span', '', r.estado_fecha ? formatQBuscarRegFecha(r.estado_fecha) : '—')),
     labeledCell('Vendedor asignado', el('span', '', r.vendedor_asignado || '—')),
     labeledCell('% Comisión', el('span', '', r.comision_porcentaje ? (r.comision_porcentaje + '%') : '—')),
@@ -773,6 +774,7 @@ function solRenderEdit(card, r) {
   const grid = el('div', 'proy-grid');
   grid.append(
     labeledCell('Descripción a realizar', el('span', '', r.necesidad || '—')),
+    labeledCell('Valor', el('strong', '', formatQ(solPresupuestoBase(r)))),
     labeledCell('Estado', estadoSel),
     labeledCell('Prioridad', prioridadSel),
     labeledCell('Vendedor asignado', vendedorInput),
