@@ -4639,7 +4639,7 @@ $('#qBuscarRegEstadoSel')?.addEventListener('change', () => {
    compacta (igual estilo que el panel de administración) con acciones
    de Modificar y Eliminar por fila. */
 function qbrBuildRow(sol, presupuesto) {
-  const row = el('div', 'sol-row sol-row-id');
+  const row = el('div', 'sol-row qbr-row-id');
   qbrRenderRowView(row, sol, presupuesto);
   return row;
 }
@@ -4658,6 +4658,8 @@ function qbrRenderRowView(row, sol, presupuesto) {
   actions.append(modBtn, delBtn);
   row.append(
     labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
+    labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
+    labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
     labeledCell('Código de cliente', el('span', 'sol-cli', sol.cliente_codigo ? ('#' + sol.cliente_codigo) : '—')),
     labeledCell('Estado', estBadge),
     actions
@@ -4701,6 +4703,8 @@ function qbrRenderRowEdit(row, sol, presupuesto) {
   actions.append(saveBtn, cancelBtn);
   row.append(
     labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
+    labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
+    labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
     labeledCell('Código de cliente', clienteInput),
     labeledCell('Estado', estadoSel),
     actions
