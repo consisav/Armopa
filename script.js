@@ -379,7 +379,40 @@ burger.addEventListener('click', () => {
   const open = navwrap.classList.toggle('open');
   burger.setAttribute('aria-expanded', open);
 });
-$$('.links a').forEach((a) => a.addEventListener('click', () => navwrap.classList.remove('open')));
+$$('.links a').forEach((a) => a.addEventListener('click', () => { navwrap.classList.remove('open'); navAdminDrop?.classList.remove('open'); if (navAdminMenu) navAdminMenu.hidden = true; }));
+
+/* Menú "Administración" (solo Super administrador): Administrar Propiedades /
+   Administrar Proyectos / Administrar servicios, cada uno salta a su sección.
+   (cerrarNavAdminMenu() consulta el DOM directamente, sin depender de
+   variables const declaradas más abajo, porque pintarEstadoUsuario() --que
+   la llama-- se ejecuta ya desde la carga inicial de la página, antes de
+   llegar a esta sección del archivo.) */
+function cerrarNavAdminMenu() {
+  const drop = $('#navAdminDrop');
+  const menu = $('#navAdminMenu');
+  const btn = $('#navAdminBtn');
+  if (drop) drop.classList.remove('open');
+  if (menu) menu.hidden = true;
+  if (btn) btn.setAttribute('aria-expanded', 'false');
+}
+const navAdminDrop = $('#navAdminDrop');
+const navAdminBtn = $('#navAdminBtn');
+const navAdminMenu = $('#navAdminMenu');
+navAdminBtn?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const abrir = navAdminMenu.hidden;
+  if (abrir) {
+    navAdminDrop.classList.add('open');
+    navAdminMenu.hidden = false;
+    navAdminBtn.setAttribute('aria-expanded', 'true');
+  } else {
+    cerrarNavAdminMenu();
+  }
+});
+document.addEventListener('click', (e) => {
+  if (navAdminDrop && !navAdminDrop.hidden && !navAdminDrop.contains(e.target)) cerrarNavAdminMenu();
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarNavAdminMenu(); });
 
 /* Carrusel de propiedades */
 const car = $('#car');
@@ -489,6 +522,10 @@ function esAdminOSuperAdmin() {
   return estaConectado() && (tipo === 'administrador' || tipo === 'super_administrador');
 }
 
+function esSuperAdmin() {
+  return estaConectado() && localStorage.getItem(LOGIN_TIPO_STORE) === 'super_administrador';
+}
+
 async function csHashClave(texto) {
   const enc = new TextEncoder().encode(texto);
   const buf = await crypto.subtle.digest('SHA-256', enc);
@@ -506,6 +543,7 @@ function pintarEstadoUsuario() {
   const serviciosSec = $('#serviciosDinamicos');
   const buscarServBtn = $('#abrirBuscarServBtn');
   const aboutRBlock = $('#aboutRBlock');
+  const navAdmin = $('#navAdminDrop');
   if (usuario) {
     const extra = tipo ? ' · ' + (TIPOS_USUARIO_LABEL[tipo] || tipo) + (codigo ? ' #' + codigo : '') : '';
     $('#userBadgeName').textContent = 'Hola, ' + usuario + extra;
@@ -516,6 +554,8 @@ function pintarEstadoUsuario() {
     if (serviciosSec) serviciosSec.hidden = tipo !== 'super_administrador';
     if (buscarServBtn) buscarServBtn.hidden = tipo !== 'super_administrador';
     if (aboutRBlock) aboutRBlock.hidden = false;
+    if (navAdmin) navAdmin.hidden = tipo !== 'super_administrador';
+    if (navAdmin && navAdmin.hidden) cerrarNavAdminMenu();
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
@@ -527,6 +567,8 @@ function pintarEstadoUsuario() {
     if (adminBtn) adminBtn.hidden = true;
     if (serviciosSec) serviciosSec.hidden = true;
     if (aboutRBlock) aboutRBlock.hidden = true;
+    if (navAdmin) navAdmin.hidden = true;
+    cerrarNavAdminMenu();
     solHashConfirmado = null;
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
