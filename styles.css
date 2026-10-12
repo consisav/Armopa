@@ -390,6 +390,8 @@ section[id]{scroll-margin-top:148px}
 .vw-prev{left:14px}
 .vw-next{right:14px}
 .vw-count{position:absolute;right:14px;bottom:12px;background:rgba(4,16,29,.78);color:#fff;font-size:13px;padding:4px 12px;border-radius:999px}
+.vw-stage::after{content:"A R M O P A   ·   S. A.";position:absolute;left:0;right:0;bottom:0;padding:18px 0 13px;text-align:center;font-family:'Marcellus',Georgia,serif;font-size:14px;font-weight:400;letter-spacing:.12em;color:rgba(230,189,97,.9);background:linear-gradient(to top,rgba(4,16,29,.62),rgba(4,16,29,0));pointer-events:none}
+@media (max-width:520px){.vw-stage::after{font-size:12px;padding:12px 0 9px}}
 .vw-thumbs{display:flex;gap:10px;margin-top:12px;overflow-x:auto;padding-bottom:4px}
 .vt{flex:none;width:96px;height:64px;padding:0;border:2px solid transparent;border-radius:8px;overflow:hidden;background:none;cursor:pointer;opacity:.7}
 .vt.on{border-color:var(--gold2);opacity:1}
