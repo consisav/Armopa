@@ -505,6 +505,7 @@ function pintarEstadoUsuario() {
   const adminBtn = $('#adminUsuariosBtn');
   const serviciosSec = $('#serviciosDinamicos');
   const buscarServBtn = $('#abrirBuscarServBtn');
+  const aboutRBlock = $('#aboutRBlock');
   if (usuario) {
     const extra = tipo ? ' · ' + (TIPOS_USUARIO_LABEL[tipo] || tipo) + (codigo ? ' #' + codigo : '') : '';
     $('#userBadgeName').textContent = 'Hola, ' + usuario + extra;
@@ -514,6 +515,7 @@ function pintarEstadoUsuario() {
     if (adminBtn) adminBtn.hidden = tipo !== 'super_administrador';
     if (serviciosSec) serviciosSec.hidden = tipo !== 'super_administrador';
     if (buscarServBtn) buscarServBtn.hidden = tipo !== 'super_administrador';
+    if (aboutRBlock) aboutRBlock.hidden = false;
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
@@ -524,6 +526,7 @@ function pintarEstadoUsuario() {
     if (addCityBtn) addCityBtn.hidden = true;
     if (adminBtn) adminBtn.hidden = true;
     if (serviciosSec) serviciosSec.hidden = true;
+    if (aboutRBlock) aboutRBlock.hidden = true;
     solHashConfirmado = null;
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
