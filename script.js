@@ -1378,15 +1378,8 @@ function estaConectado() {
    Super administrador). Declarada aquí arriba porque pintarEstadoUsuario() la usa. */
 let solHashConfirmado = null;
 
-/* Estado del panel "Buscar registros" (abierto/cerrado). Declarada aquí
-   arriba -- igual que solHashConfirmado -- porque actualizarVisibilidadSolServicio()
-   la usa y esa función se llama desde pintarEstadoUsuario() ya en la carga
-   inicial de la página, antes de llegar a la sección de "Buscar registros"
-   más abajo en el archivo. */
-let qBuscarRegAbierto = false;
-
 /* Valor especial para la opción "Todos los registros" en la lista de
-   solicitudes del buscador. */
+   solicitudes (usado por el listado de Administración > Servicios). */
 const QBUSCARREG_TODOS = '__todos__';
 function esAdminOSuperAdmin() {
   const tipo = localStorage.getItem(LOGIN_TIPO_STORE);
@@ -1432,7 +1425,6 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
-    actualizarVisibilidadBuscarReg();
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
@@ -1447,7 +1439,6 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
-    actualizarVisibilidadBuscarReg();
     if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
@@ -5330,19 +5321,14 @@ $('#sol-servicio-sel')?.addEventListener('change', () => {
 
 actualizarVisibilidadSolicitudes();
 
-/* Solicitudes de servicio de esta cotización (debajo del botón "Buscar
-   registros", solo visible mientras ese panel de búsqueda está abierto):
-   visible solo para Administrador/Super administrador. Pide la clave
-   directamente y luego lista cada solicitud (tabla solicitudes_servicio)
-   ligada a la cotización actual, con No. de solicitud, código de cliente,
-   estado (con su color) y acciones de Modificar/Eliminar.
-   (La variable qBuscarRegAbierto se declara arriba, junto a
-   solHashConfirmado, porque esta función se llama desde pintarEstadoUsuario()
-   ya desde la carga inicial de la página.) */
+/* Solicitudes de servicio de esta cotización: ocultas por ahora, porque
+   solo se mostraban mientras el panel "Buscar Servicio" (ya retirado, su
+   búsqueda y listado se movieron a Administración > Servicios) estaba
+   abierto. El resto de la lógica queda intacta por si se reactivan con otro
+   disparador. */
 function actualizarVisibilidadSolServicio() {
   const bloque = $('#qSolServicioBlock');
-  const esAdmin = esAdminOSuperAdmin();
-  const visible = esAdmin && qBuscarRegAbierto;
+  const visible = false;
   if (bloque) bloque.hidden = !visible;
   if (!visible) return;
   const gate = $('#qSolServicioGate');
@@ -5488,32 +5474,14 @@ function actualizarVisibilidadAccionesCotizacion() {
   if (bloque) bloque.hidden = !esAdminOSuperAdmin();
 }
 
-/* Botón "Buscar registros" y su panel de búsqueda (tipo de servicio, lista
-   de solicitudes y "Mostrar"): no deben verse por visitantes, solo cuando
-   hay sesión iniciada como Administrador o Super administrador. */
-function actualizarVisibilidadBuscarReg() {
-  const esAdmin = esAdminOSuperAdmin();
-  const btn = $('#qBuscarRegBtn');
-  if (btn) btn.hidden = !esAdmin;
-  if (!esAdmin) {
-    qBuscarRegAbierto = false;
-    const panel = $('#qBuscarRegPanel');
-    if (panel) panel.hidden = true;
-    const result = $('#qBuscarRegResult');
-    if (result) { result.hidden = true; result.innerHTML = ''; }
-    actualizarVisibilidadSolServicio();
-  }
-}
-
 actualizarVisibilidadSolServicio();
 actualizarVisibilidadAccionesCotizacion();
-actualizarVisibilidadBuscarReg();
 
-/* Botón "Buscar registros" (esquina superior derecha del bloque "Solicitar
-   cotización"): al presionarlo, despliega un selector de tipo de servicio y
-   un selector con las solicitudes guardadas (tabla solicitudes_servicio,
-   cruzada con cotizaciones para el presupuesto), mostrando por cada una:
-   No. de solicitud, nombre del cliente y presupuesto asignado. */
+/* El botón "Buscar Servicio" y su panel de búsqueda/listado (tipo de
+   servicio, estado, lista de registros y "Mostrar") se retiraron de aquí:
+   esa búsqueda y listado ahora viven en Administración > Servicios. Estos
+   dos formateadores se conservan porque los sigue usando ese nuevo listado
+   (y el de Proyectos). */
 function formatQBuscarRegPresupuesto(v) {
   if (v === null || v === undefined || v === '') return 'Sin presupuesto';
   const n = Number(v);
@@ -5525,318 +5493,3 @@ function formatQBuscarRegFecha(v) {
   const d = new Date(v);
   return Number.isNaN(d.getTime()) ? String(v) : d.toLocaleDateString('es-GT', { year: 'numeric', month: '2-digit', day: '2-digit' });
 }
-
-function poblarQBuscarRegTipoSel() {
-  const sel = $('#qBuscarRegTipoSel');
-  if (!sel || sel.options.length) return;
-  const t = T[lang] || T.es;
-  const optTodos = document.createElement('option');
-  optTodos.value = '';
-  optTodos.textContent = 'Todos los servicios';
-  sel.appendChild(optTodos);
-  t.ext.forEach((name, i) => {
-    const opt = document.createElement('option');
-    opt.value = String(i);
-    opt.textContent = name;
-    sel.appendChild(opt);
-  });
-}
-
-function poblarQBuscarRegEstadoSel() {
-  const sel = $('#qBuscarRegEstadoSel');
-  if (!sel || sel.options.length) return;
-  const optTodos = document.createElement('option');
-  optTodos.value = '';
-  optTodos.textContent = 'Todos los estados';
-  sel.appendChild(optTodos);
-  SOL_ESTADOS.forEach((e) => {
-    const opt = document.createElement('option');
-    opt.value = e.v;
-    opt.textContent = e.l;
-    opt.style.color = e.fg;
-    opt.style.backgroundColor = e.bg;
-    sel.appendChild(opt);
-  });
-}
-
-async function cargarQBuscarRegLista() {
-  const listaSel = $('#qBuscarRegListaSel');
-  const hint = $('#qBuscarRegHint');
-  if (!listaSel) return;
-  listaSel.innerHTML = '';
-  if (hint) hint.textContent = 'Cargando…';
-  const tipoSel = $('#qBuscarRegTipoSel');
-  const estadoSel = $('#qBuscarRegEstadoSel');
-  const t = T[lang] || T.es;
-  const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
-  const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
-  try {
-    let query = supabaseClient
-      .from('solicitudes_servicio')
-      .select('id, numero_solicitud, nombre_cliente, cotizacion_id, created_at, estado')
-      .order('id', { ascending: false })
-      .limit(200);
-    if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
-    if (estadoVal !== null) query = query.eq('estado', estadoVal);
-    let { data, error } = await query;
-    if (error) {
-      // La columna "created_at" puede no existir en esta tabla (según cuándo
-      // se creó); si falla por eso, se reintenta sin pedirla para no romper
-      // la búsqueda, simplemente sin mostrar la fecha.
-      console.error('Error cargando solicitudes (con created_at):', error);
-      let query2 = supabaseClient
-        .from('solicitudes_servicio')
-        .select('id, numero_solicitud, nombre_cliente, cotizacion_id, estado')
-        .order('id', { ascending: false })
-        .limit(200);
-      if (tipoIdx !== null) query2 = query2.eq('servicio', t.ext[tipoIdx]);
-      if (estadoVal !== null) query2 = query2.eq('estado', estadoVal);
-      const retry = await query2;
-      if (retry.error) throw retry.error;
-      data = retry.data;
-    }
-    const filas = data || [];
-    const idsCotizacion = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
-    let presupuestos = {};
-    if (idsCotizacion.length) {
-      const { data: cots, error: errCot } = await supabaseClient
-        .from('cotizaciones')
-        .select('id, presupuesto_asignado')
-        .in('id', idsCotizacion);
-      if (!errCot && cots) {
-        cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
-      }
-    }
-    if (!filas.length) {
-      const opt = document.createElement('option');
-      opt.value = '';
-      opt.textContent = 'Sin solicitudes registradas';
-      listaSel.appendChild(opt);
-      if (hint) hint.textContent = '';
-      return;
-    }
-    const optTodosReg = document.createElement('option');
-    optTodosReg.value = QBUSCARREG_TODOS;
-    optTodosReg.textContent = 'Todos los registros (' + filas.length + ')';
-    listaSel.appendChild(optTodosReg);
-    filas.forEach((r) => {
-      const opt = document.createElement('option');
-      opt.value = String(r.id);
-      const presupuesto = formatQBuscarRegPresupuesto(presupuestos[r.cotizacion_id]);
-      const fecha = formatQBuscarRegFecha(r.created_at);
-      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + fecha + ' · ' + presupuesto;
-      listaSel.appendChild(opt);
-    });
-    if (hint) hint.textContent = filas.length + (filas.length === 1 ? ' solicitud encontrada' : ' solicitudes encontradas');
-  } catch (e) {
-    console.error('Error cargando la lista de solicitudes:', e);
-    const opt = document.createElement('option');
-    opt.value = '';
-    opt.textContent = 'Error al cargar';
-    listaSel.appendChild(opt);
-    if (hint) hint.textContent = 'No se pudo cargar la lista.';
-  }
-}
-
-$('#qBuscarRegBtn')?.addEventListener('click', () => {
-  const panel = $('#qBuscarRegPanel');
-  if (!panel) return;
-  const mostrar = panel.hidden;
-  panel.hidden = !mostrar;
-  qBuscarRegAbierto = mostrar;
-  actualizarVisibilidadSolServicio();
-  if (mostrar) {
-    poblarQBuscarRegTipoSel();
-    poblarQBuscarRegEstadoSel();
-    cargarQBuscarRegLista();
-  } else {
-    const result = $('#qBuscarRegResult');
-    if (result) { result.hidden = true; result.innerHTML = ''; }
-  }
-});
-$('#qBuscarRegTipoSel')?.addEventListener('change', () => {
-  cargarQBuscarRegLista();
-  const result = $('#qBuscarRegResult');
-  if (result) { result.hidden = true; result.innerHTML = ''; }
-});
-$('#qBuscarRegEstadoSel')?.addEventListener('change', () => {
-  cargarQBuscarRegLista();
-  const result = $('#qBuscarRegResult');
-  if (result) { result.hidden = true; result.innerHTML = ''; }
-});
-
-/* Botón "Mostrar": trae y despliega, dentro de este mismo bloque, el
-   registro (o registros) seleccionado(s) en la lista, en una tabla
-   compacta (igual estilo que el panel de administración) con acciones
-   de Modificar y Eliminar por fila. */
-function qbrBuildRow(sol, presupuesto) {
-  const row = el('div', 'sol-row qbr-row-id');
-  qbrRenderRowView(row, sol, presupuesto);
-  return row;
-}
-
-function qbrRenderRowView(row, sol, presupuesto) {
-  row.innerHTML = '';
-  const info = solEstadoInfo(sol.estado);
-  const estBadge = el('span', 'sol-badge', info.l);
-  estBadge.style.background = info.bg;
-  estBadge.style.color = info.fg;
-  const actions = el('div', 'sol-actions');
-  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar');
-  modBtn.type = 'button';
-  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar');
-  delBtn.type = 'button';
-  actions.append(modBtn, delBtn);
-  row.append(
-    labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
-    labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
-    labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
-    labeledCell('Estado', estBadge),
-    labeledCell('Fecha cambio de estado', el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
-    labeledCell('Usuario Modifica', el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
-    actions
-  );
-  modBtn.addEventListener('click', () => qbrRenderRowEdit(row, sol, presupuesto));
-  delBtn.addEventListener('click', async () => {
-    if (!confirm('¿Eliminar esta solicitud de servicio? Esta acción no se puede deshacer.')) return;
-    delBtn.disabled = true;
-    try {
-      const { error } = await supabaseClient.from('solicitudes_servicio').delete().eq('id', sol.id);
-      if (error) throw error;
-      await cargarQBuscarRegLista();
-      mostrarQBuscarRegDetalle();
-    } catch (e) {
-      console.error('Error eliminando la solicitud:', e);
-      alert('No se pudo eliminar la solicitud.');
-      delBtn.disabled = false;
-    }
-  });
-}
-
-function qbrRenderRowEdit(row, sol, presupuesto) {
-  row.innerHTML = '';
-  const estadoSel = document.createElement('select');
-  SOL_ESTADOS.forEach((e) => {
-    const opt = document.createElement('option');
-    opt.value = e.v;
-    opt.textContent = e.l;
-    if (e.v === sol.estado) opt.selected = true;
-    estadoSel.appendChild(opt);
-  });
-  const actions = el('div', 'sol-actions');
-  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar');
-  saveBtn.type = 'button';
-  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar');
-  cancelBtn.type = 'button';
-  actions.append(saveBtn, cancelBtn);
-  row.append(
-    labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
-    labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
-    labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
-    labeledCell('Estado', estadoSel),
-    labeledCell('Fecha cambio de estado', el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
-    labeledCell('Usuario Modifica', el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
-    actions
-  );
-  cancelBtn.addEventListener('click', () => qbrRenderRowView(row, sol, presupuesto));
-  saveBtn.addEventListener('click', async () => {
-    saveBtn.disabled = true;
-    try {
-      const miUsuario = localStorage.getItem(LOGIN_STORE) || null;
-      const payload = {
-        estado: estadoSel.value,
-        estado_actualizado_en: new Date().toISOString(),
-        estado_actualizado_por: miUsuario
-      };
-      const { error } = await supabaseClient.from('solicitudes_servicio').update(payload).eq('id', sol.id);
-      if (error) throw error;
-      sol.estado = payload.estado;
-      sol.estado_actualizado_en = payload.estado_actualizado_en;
-      sol.estado_actualizado_por = payload.estado_actualizado_por;
-      qbrRenderRowView(row, sol, presupuesto);
-    } catch (e) {
-      console.error('Error actualizando la solicitud:', e);
-      alert('No se pudo guardar el cambio.');
-      saveBtn.disabled = false;
-    }
-  });
-}
-
-async function mostrarQBuscarRegDetalle() {
-  const result = $('#qBuscarRegResult');
-  const listaSel = $('#qBuscarRegListaSel');
-  if (!result || !listaSel) return;
-  const id = listaSel.value;
-  result.hidden = false;
-  if (!id) {
-    result.innerHTML = '<p class="qbr-empty">Elige una solicitud de la lista para ver su información.</p>';
-    return;
-  }
-
-  if (id === QBUSCARREG_TODOS) {
-    result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
-    try {
-      const tipoSel = $('#qBuscarRegTipoSel');
-      const estadoSel = $('#qBuscarRegEstadoSel');
-      const t = T[lang] || T.es;
-      const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
-      const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
-      let query = supabaseClient.from('solicitudes_servicio').select('*').order('id', { ascending: false }).limit(200);
-      if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
-      if (estadoVal !== null) query = query.eq('estado', estadoVal);
-      const { data, error } = await query;
-      if (error) throw error;
-      const filas = data || [];
-      if (!filas.length) {
-        result.innerHTML = '<p class="qbr-empty">No hay solicitudes que coincidan con la búsqueda.</p>';
-        return;
-      }
-      const idsCotizacion = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
-      let presupuestos = {};
-      if (idsCotizacion.length) {
-        const { data: cots } = await supabaseClient.from('cotizaciones').select('id, presupuesto_asignado').in('id', idsCotizacion);
-        if (cots) cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
-      }
-      result.innerHTML = '';
-      const table = el('div', 'sol-table');
-      filas.forEach((sol) => table.appendChild(qbrBuildRow(sol, presupuestos[sol.cotizacion_id])));
-      result.appendChild(table);
-    } catch (e) {
-      console.error('Error cargando todas las solicitudes:', e);
-      result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de las solicitudes.</p>';
-    }
-    return;
-  }
-
-  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
-  try {
-    const { data: sol, error } = await supabaseClient
-      .from('solicitudes_servicio')
-      .select('*')
-      .eq('id', id)
-      .maybeSingle();
-    if (error) throw error;
-    if (!sol) {
-      result.innerHTML = '<p class="qbr-empty">No se encontró la solicitud.</p>';
-      return;
-    }
-    let presupuesto = null;
-    if (sol.cotizacion_id != null) {
-      const { data: cot } = await supabaseClient
-        .from('cotizaciones')
-        .select('presupuesto_asignado')
-        .eq('id', sol.cotizacion_id)
-        .maybeSingle();
-      if (cot) presupuesto = cot.presupuesto_asignado;
-    }
-    result.innerHTML = '';
-    const table = el('div', 'sol-table');
-    table.appendChild(qbrBuildRow(sol, presupuesto));
-    result.appendChild(table);
-  } catch (e) {
-    console.error('Error cargando el detalle de la solicitud:', e);
-    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de la solicitud.</p>';
-  }
-}
-
-$('#qBuscarRegMostrarBtn')?.addEventListener('click', () => mostrarQBuscarRegDetalle());
