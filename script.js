@@ -415,8 +415,8 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarNavAdminMenu(); });
 $$('.nav-admin-menu a').forEach((a) => a.addEventListener('click', () => { cerrarNavAdminMenu(); navwrap.classList.remove('open'); }));
 
-/* "Proyectos" dentro del menú Administración: en vez de saltar a una sección,
-   abre un listado vertical con todas las propiedades (de todas las
+/* "Propiedades" dentro del menú Administración: en vez de saltar a una
+   sección, abre un listado vertical con todas las propiedades (de todas las
    ciudades), su estado, fecha/usuario del último cambio, vendedor asignado
    y su comisión (% y valor calculado). Lee directamente de la variable
    "data" ya cargada desde Supabase para las propiedades. */
@@ -458,7 +458,7 @@ function abrirAdminProyectosModal() {
   adminProyectosModal.hidden = false;
 }
 function cerrarAdminProyectosModal() { if (adminProyectosModal) adminProyectosModal.hidden = true; }
-$('#navAdminProyectosBtn')?.addEventListener('click', () => {
+$('#navAdminPropiedadesBtn')?.addEventListener('click', () => {
   cerrarNavAdminMenu();
   navwrap.classList.remove('open');
   abrirAdminProyectosModal();
