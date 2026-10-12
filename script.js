@@ -941,6 +941,323 @@ $('#adminSolicitudesClose')?.addEventListener('click', cerrarAdminSolicitudesMod
 $('#adminSolicitudesScrim')?.addEventListener('click', cerrarAdminSolicitudesModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminSolicitudesModal && !adminSolicitudesModal.hidden) cerrarAdminSolicitudesModal(); });
 
+/* "Servicios" dentro del menú Administración: mismo concepto que
+   "Propiedades"/"Proyectos", pero en formato de tabla (igual estilo que el
+   panel "Buscar Servicio" ya existente dentro de "Solicitar cotización"),
+   con filtros de tipo de servicio, estado y lista de registros, y
+   agregando a cada fila cuatro elementos: Valor del servicio (presupuesto
+   de la cotización relacionada), Vendedor asignado, % Comisión y Valor de
+   comisión (calculado igual que en Proyectos). Usa sus propios
+   identificadores (prefijo adminSrv) para no interferir con el panel
+   "Buscar Servicio" original. */
+function poblarAdminSrvTipoSel() {
+  const sel = $('#adminSrvTipoSel');
+  if (!sel || sel.options.length) return;
+  const t = T[lang] || T.es;
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los servicios';
+  sel.appendChild(optTodos);
+  t.ext.forEach((name, i) => {
+    const opt = document.createElement('option');
+    opt.value = String(i); opt.textContent = name;
+    sel.appendChild(opt);
+  });
+}
+
+function poblarAdminSrvEstadoSel() {
+  const sel = $('#adminSrvEstadoSel');
+  if (!sel || sel.options.length) return;
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los estados';
+  sel.appendChild(optTodos);
+  SOL_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v; opt.textContent = e.l;
+    opt.style.color = e.fg; opt.style.backgroundColor = e.bg;
+    sel.appendChild(opt);
+  });
+}
+
+async function cargarAdminSrvLista() {
+  const listaSel = $('#adminSrvListaSel');
+  const hint = $('#adminSrvHint');
+  if (!listaSel) return;
+  listaSel.innerHTML = '';
+  if (hint) hint.textContent = 'Cargando…';
+  const tipoSel = $('#adminSrvTipoSel');
+  const estadoSel = $('#adminSrvEstadoSel');
+  const t = T[lang] || T.es;
+  const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
+  const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
+  try {
+    let query = supabaseClient
+      .from('solicitudes_servicio')
+      .select('id, numero_solicitud, nombre_cliente, cotizacion_id, created_at, estado')
+      .order('id', { ascending: false })
+      .limit(200);
+    if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
+    if (estadoVal !== null) query = query.eq('estado', estadoVal);
+    const { data, error } = await query;
+    if (error) throw error;
+    const filas = data || [];
+    const idsCotizacion = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
+    let presupuestos = {};
+    if (idsCotizacion.length) {
+      const { data: cots, error: errCot } = await supabaseClient
+        .from('cotizaciones')
+        .select('id, presupuesto_asignado')
+        .in('id', idsCotizacion);
+      if (!errCot && cots) cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
+    }
+    if (!filas.length) {
+      const opt = document.createElement('option');
+      opt.value = ''; opt.textContent = 'Sin solicitudes registradas';
+      listaSel.appendChild(opt);
+      if (hint) hint.textContent = '';
+      return;
+    }
+    const optTodosReg = document.createElement('option');
+    optTodosReg.value = QBUSCARREG_TODOS;
+    optTodosReg.textContent = 'Todos los registros (' + filas.length + ')';
+    listaSel.appendChild(optTodosReg);
+    filas.forEach((r) => {
+      const opt = document.createElement('option');
+      opt.value = String(r.id);
+      const presupuesto = formatQBuscarRegPresupuesto(presupuestos[r.cotizacion_id]);
+      const fecha = formatQBuscarRegFecha(r.created_at);
+      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + fecha + ' · ' + presupuesto;
+      listaSel.appendChild(opt);
+    });
+    if (hint) hint.textContent = filas.length + (filas.length === 1 ? ' solicitud encontrada' : ' solicitudes encontradas');
+  } catch (e) {
+    console.error('Error cargando la lista de servicios:', e);
+    const opt = document.createElement('option');
+    opt.value = ''; opt.textContent = 'Error al cargar';
+    listaSel.appendChild(opt);
+    if (hint) hint.textContent = 'No se pudo cargar la lista.';
+  }
+}
+
+function adminSrvComisionValorCalc(sol, presupuesto) {
+  const pct = extractNumber(sol.comision_porcentaje);
+  const precio = extractNumber(presupuesto);
+  if (pct == null || precio == null) return null;
+  return (pct / 100) * precio;
+}
+
+function adminSrvBuildRow(sol, presupuesto) {
+  const row = el('div', 'sol-row srv-row-id');
+  adminSrvRenderRowView(row, sol, presupuesto);
+  return row;
+}
+
+function adminSrvRenderRowView(row, sol, presupuesto) {
+  row.innerHTML = '';
+  const info = solEstadoInfo(sol.estado);
+  const estBadge = el('span', 'sol-badge', info.l);
+  estBadge.style.background = info.bg;
+  estBadge.style.color = info.fg;
+  const actions = el('div', 'sol-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+  row.append(
+    labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
+    labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
+    labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
+    labeledCell('Estado', estBadge),
+    labeledCell('Fecha cambio de estado', el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
+    labeledCell('Usuario Modifica', el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
+    labeledCell('Valor del servicio', el('strong', 'sol-cli', formatQBuscarRegPresupuesto(presupuesto))),
+    labeledCell('Vendedor asignado', el('span', 'sol-cli', sol.vendedor_asignado || '—')),
+    labeledCell('% Comisión', el('span', 'sol-cli', sol.comision_porcentaje ? (sol.comision_porcentaje + '%') : '—')),
+    labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(adminSrvComisionValorCalc(sol, presupuesto)))),
+    actions
+  );
+  modBtn.addEventListener('click', () => adminSrvRenderRowEdit(row, sol, presupuesto));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm('¿Eliminar esta solicitud de servicio? Esta acción no se puede deshacer.')) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('solicitudes_servicio').delete().eq('id', sol.id);
+      if (error) throw error;
+      await cargarAdminSrvLista();
+      mostrarAdminSrvDetalle();
+    } catch (e) {
+      console.error('Error eliminando la solicitud:', e);
+      alert('No se pudo eliminar la solicitud.');
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function adminSrvRenderRowEdit(row, sol, presupuesto) {
+  row.innerHTML = '';
+  const estadoSel = document.createElement('select');
+  SOL_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v; opt.textContent = e.l;
+    if (e.v === sol.estado) opt.selected = true;
+    estadoSel.appendChild(opt);
+  });
+
+  const vendedorInput = document.createElement('input');
+  vendedorInput.type = 'text';
+  vendedorInput.value = sol.vendedor_asignado || '';
+  vendedorInput.placeholder = 'Vendedor asignado';
+  const vendedorList = document.createElement('datalist');
+  vendedorList.id = 'srvVendedorList-' + sol.id;
+  fillDatalist(vendedorList, vendedoresConocidos());
+  vendedorInput.setAttribute('list', vendedorList.id);
+
+  const comisionInput = document.createElement('input');
+  comisionInput.type = 'number';
+  comisionInput.min = '0'; comisionInput.max = '100'; comisionInput.step = '0.1';
+  comisionInput.value = sol.comision_porcentaje || '';
+  comisionInput.placeholder = '%';
+
+  const valorPreview = el('strong', 'proy-valor', formatQ(adminSrvComisionValorCalc(sol, presupuesto)));
+  comisionInput.addEventListener('input', () => {
+    valorPreview.textContent = formatQ(adminSrvComisionValorCalc({ ...sol, comision_porcentaje: comisionInput.value }, presupuesto));
+  });
+
+  const actions = el('div', 'sol-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+  row.append(
+    labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
+    labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
+    labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
+    labeledCell('Estado', estadoSel),
+    labeledCell('Fecha cambio de estado', el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
+    labeledCell('Usuario Modifica', el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
+    labeledCell('Valor del servicio', el('strong', 'sol-cli', formatQBuscarRegPresupuesto(presupuesto))),
+    labeledCell('Vendedor asignado', vendedorInput),
+    labeledCell('% Comisión', comisionInput),
+    labeledCell('Valor de comisión', valorPreview),
+    actions
+  );
+  row.appendChild(vendedorList);
+  cancelBtn.addEventListener('click', () => adminSrvRenderRowView(row, sol, presupuesto));
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    try {
+      const miUsuario = localStorage.getItem(LOGIN_STORE) || null;
+      const payload = {
+        estado: estadoSel.value,
+        estado_actualizado_en: new Date().toISOString(),
+        estado_actualizado_por: miUsuario,
+        vendedor_asignado: vendedorInput.value.trim() || null,
+        comision_porcentaje: comisionInput.value || null
+      };
+      const { error } = await supabaseClient.from('solicitudes_servicio').update(payload).eq('id', sol.id);
+      if (error) throw error;
+      Object.assign(sol, payload);
+      adminSrvRenderRowView(row, sol, presupuesto);
+    } catch (e) {
+      console.error('Error actualizando la solicitud:', e);
+      alert('No se pudo guardar el cambio.');
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+async function mostrarAdminSrvDetalle() {
+  const result = $('#adminServiciosResult');
+  const listaSel = $('#adminSrvListaSel');
+  if (!result || !listaSel) return;
+  const id = listaSel.value;
+  if (!id) {
+    result.innerHTML = '<p class="qbr-empty">Elige un registro de la lista para ver su información.</p>';
+    return;
+  }
+  if (id === QBUSCARREG_TODOS) {
+    result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+    try {
+      const tipoSel = $('#adminSrvTipoSel');
+      const estadoSel = $('#adminSrvEstadoSel');
+      const t = T[lang] || T.es;
+      const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
+      const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
+      let query = supabaseClient.from('solicitudes_servicio').select('*').order('id', { ascending: false }).limit(200);
+      if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
+      if (estadoVal !== null) query = query.eq('estado', estadoVal);
+      const { data, error } = await query;
+      if (error) throw error;
+      const filas = data || [];
+      if (!filas.length) {
+        result.innerHTML = '<p class="qbr-empty">No hay solicitudes que coincidan con la búsqueda.</p>';
+        return;
+      }
+      const idsCotizacion = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
+      let presupuestos = {};
+      if (idsCotizacion.length) {
+        const { data: cots } = await supabaseClient.from('cotizaciones').select('id, presupuesto_asignado').in('id', idsCotizacion);
+        if (cots) cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
+      }
+      result.innerHTML = '';
+      const table = el('div', 'sol-table');
+      filas.forEach((sol) => table.appendChild(adminSrvBuildRow(sol, presupuestos[sol.cotizacion_id])));
+      result.appendChild(table);
+    } catch (e) {
+      console.error('Error cargando todas las solicitudes de servicio:', e);
+      result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de las solicitudes.</p>';
+    }
+    return;
+  }
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    const { data: sol, error } = await supabaseClient.from('solicitudes_servicio').select('*').eq('id', id).maybeSingle();
+    if (error) throw error;
+    if (!sol) {
+      result.innerHTML = '<p class="qbr-empty">No se encontró la solicitud.</p>';
+      return;
+    }
+    let presupuesto = null;
+    if (sol.cotizacion_id != null) {
+      const { data: cot } = await supabaseClient.from('cotizaciones').select('presupuesto_asignado').eq('id', sol.cotizacion_id).maybeSingle();
+      if (cot) presupuesto = cot.presupuesto_asignado;
+    }
+    result.innerHTML = '';
+    const table = el('div', 'sol-table');
+    table.appendChild(adminSrvBuildRow(sol, presupuesto));
+    result.appendChild(table);
+  } catch (e) {
+    console.error('Error cargando el detalle de la solicitud:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de la solicitud.</p>';
+  }
+}
+
+$('#adminSrvMostrarBtn')?.addEventListener('click', () => mostrarAdminSrvDetalle());
+$('#adminSrvTipoSel')?.addEventListener('change', () => { cargarAdminSrvLista(); });
+$('#adminSrvEstadoSel')?.addEventListener('change', () => { cargarAdminSrvLista(); });
+
+const adminServiciosModal = $('#adminServiciosModal');
+async function abrirAdminServiciosModal() {
+  if (!adminServiciosModal) return;
+  adminServiciosModal.hidden = false;
+  poblarAdminSrvTipoSel();
+  poblarAdminSrvEstadoSel();
+  if ($('#adminSrvTipoSel')) $('#adminSrvTipoSel').value = '';
+  if ($('#adminSrvEstadoSel')) $('#adminSrvEstadoSel').value = '';
+  await cargarAdminSrvLista();
+  const listaSel = $('#adminSrvListaSel');
+  if (listaSel && [...listaSel.options].some((o) => o.value === QBUSCARREG_TODOS)) {
+    listaSel.value = QBUSCARREG_TODOS;
+  }
+  mostrarAdminSrvDetalle();
+}
+function cerrarAdminServiciosModal() { if (adminServiciosModal) adminServiciosModal.hidden = true; }
+$('#navAdminServiciosBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminServiciosModal();
+});
+$('#adminServiciosClose')?.addEventListener('click', cerrarAdminServiciosModal);
+$('#adminServiciosScrim')?.addEventListener('click', cerrarAdminServiciosModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminServiciosModal && !adminServiciosModal.hidden) cerrarAdminServiciosModal(); });
+
 /* Carrusel de propiedades */
 const car = $('#car');
 let idx = 0;
