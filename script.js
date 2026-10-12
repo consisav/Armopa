@@ -379,7 +379,7 @@ burger.addEventListener('click', () => {
   const open = navwrap.classList.toggle('open');
   burger.setAttribute('aria-expanded', open);
 });
-$$('.links a').forEach((a) => a.addEventListener('click', () => { navwrap.classList.remove('open'); navAdminDrop?.classList.remove('open'); if (navAdminMenu) navAdminMenu.hidden = true; }));
+$$('.links a').forEach((a) => a.addEventListener('click', () => navwrap.classList.remove('open')));
 
 /* Menú "Administración" (solo Super administrador): Administrar Propiedades /
    Administrar Proyectos / Administrar servicios, cada uno salta a su sección.
@@ -413,6 +413,7 @@ document.addEventListener('click', (e) => {
   if (navAdminDrop && !navAdminDrop.hidden && !navAdminDrop.contains(e.target)) cerrarNavAdminMenu();
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarNavAdminMenu(); });
+$$('.nav-admin-menu a').forEach((a) => a.addEventListener('click', () => { cerrarNavAdminMenu(); navwrap.classList.remove('open'); }));
 
 /* Carrusel de propiedades */
 const car = $('#car');
@@ -544,6 +545,7 @@ function pintarEstadoUsuario() {
   const buscarServBtn = $('#abrirBuscarServBtn');
   const aboutRBlock = $('#aboutRBlock');
   const navAdmin = $('#navAdminDrop');
+  const openClientBtn = $('#openClient');
   if (usuario) {
     const extra = tipo ? ' · ' + (TIPOS_USUARIO_LABEL[tipo] || tipo) + (codigo ? ' #' + codigo : '') : '';
     $('#userBadgeName').textContent = 'Hola, ' + usuario + extra;
@@ -556,6 +558,7 @@ function pintarEstadoUsuario() {
     if (aboutRBlock) aboutRBlock.hidden = false;
     if (navAdmin) navAdmin.hidden = tipo !== 'super_administrador';
     if (navAdmin && navAdmin.hidden) cerrarNavAdminMenu();
+    if (openClientBtn) openClientBtn.hidden = tipo !== 'super_administrador';
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
@@ -568,6 +571,7 @@ function pintarEstadoUsuario() {
     if (serviciosSec) serviciosSec.hidden = true;
     if (aboutRBlock) aboutRBlock.hidden = true;
     if (navAdmin) navAdmin.hidden = true;
+    if (openClientBtn) openClientBtn.hidden = true;
     cerrarNavAdminMenu();
     solHashConfirmado = null;
     actualizarVisibilidadSolicitudes();
