@@ -652,9 +652,23 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminPro
    salir del listado), aplicado a las solicitudes de servicio (tabla
    solicitudes_servicio). A diferencia de las propiedades, estas no están
    precargadas en el cliente, así que se consultan a Supabase cada vez que se
-   abre el modal. Los filtros son por propiedad (columna "direccion") y por
-   estado (SOL_ESTADOS). */
+   abre el modal. Los filtros son por proyecto (cada solicitud individual) y
+   por estado (SOL_ESTADOS). El valor de comisión se calcula con el
+   porcentaje guardado en la solicitud sobre el presupuesto asignado de la
+   cotización relacionada (tabla "cotizaciones", columna
+   "presupuesto_asignado"), igual que en Propiedades pero usando ese
+   presupuesto en vez del precio de venta/renta. */
 let adminSolData = [];
+
+function solPresupuestoBase(r) {
+  return extractNumber(r.presupuestoCotizacion);
+}
+function solComisionValorCalc(r) {
+  const pct = extractNumber(r.comision_porcentaje);
+  const precio = solPresupuestoBase(r);
+  if (pct == null || precio == null) return null;
+  return (pct / 100) * precio;
+}
 
 function solCardHead(r) {
   const info = solEstadoInfo(r.estado);
@@ -683,12 +697,14 @@ function solRenderView(card, r) {
   );
   const grid = card.querySelector('.proy-grid');
   grid.append(
+    labeledCell('Descripción a realizar', el('span', '', r.necesidad || '—')),
+    labeledCell('Fecha de cambio de estado', el('span', '', r.estado_fecha ? formatQBuscarRegFecha(r.estado_fecha) : '—')),
+    labeledCell('Vendedor asignado', el('span', '', r.vendedor_asignado || '—')),
+    labeledCell('% Comisión', el('span', '', r.comision_porcentaje ? (r.comision_porcentaje + '%') : '—')),
+    labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(solComisionValorCalc(r)))),
     labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
     labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
-    labeledCell('Teléfono', el('span', '', r.telefono_cliente || '—')),
-    labeledCell('Prioridad', el('span', '', r.prioridad ? (r.prioridad.charAt(0).toUpperCase() + r.prioridad.slice(1)) : '—')),
-    labeledCell('Tiempo estimado', el('span', '', r.tiempo_estimado || '—')),
-    labeledCell('Fecha estimada de inicio', el('span', '', r.fecha_inicio ? formatQBuscarRegFecha(r.fecha_inicio) : '—'))
+    labeledCell('Prioridad', el('span', '', r.prioridad ? (r.prioridad.charAt(0).toUpperCase() + r.prioridad.slice(1)) : '—'))
   );
   card.appendChild(actions);
 
@@ -728,6 +744,26 @@ function solRenderEdit(card, r) {
     prioridadSel.appendChild(opt);
   });
 
+  const vendedorInput = document.createElement('input');
+  vendedorInput.type = 'text';
+  vendedorInput.value = r.vendedor_asignado || '';
+  vendedorInput.placeholder = 'Vendedor asignado';
+  const vendedorList = document.createElement('datalist');
+  vendedorList.id = 'solVendedorList-' + r.id;
+  fillDatalist(vendedorList, vendedoresConocidos());
+  vendedorInput.setAttribute('list', vendedorList.id);
+
+  const comisionInput = document.createElement('input');
+  comisionInput.type = 'number';
+  comisionInput.min = '0'; comisionInput.max = '100'; comisionInput.step = '0.1';
+  comisionInput.value = r.comision_porcentaje || '';
+  comisionInput.placeholder = '%';
+
+  const valorPreview = el('strong', 'proy-valor', formatQ(solComisionValorCalc(r)));
+  comisionInput.addEventListener('input', () => {
+    valorPreview.textContent = formatQ(solComisionValorCalc({ ...r, comision_porcentaje: comisionInput.value }));
+  });
+
   const actions = el('div', 'proy-actions');
   const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
   const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
@@ -736,18 +772,22 @@ function solRenderEdit(card, r) {
   card.append(solCardHead(r));
   const grid = el('div', 'proy-grid');
   grid.append(
-    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
-    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
+    labeledCell('Descripción a realizar', el('span', '', r.necesidad || '—')),
     labeledCell('Estado', estadoSel),
-    labeledCell('Prioridad', prioridadSel)
+    labeledCell('Prioridad', prioridadSel),
+    labeledCell('Vendedor asignado', vendedorInput),
+    labeledCell('% Comisión', comisionInput),
+    labeledCell('Valor de comisión', valorPreview),
+    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
+    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—')))
   );
-  card.append(grid, actions);
+  card.append(grid, vendedorList, actions);
 
   cancelBtn.addEventListener('click', () => solRenderView(card, r));
   saveBtn.addEventListener('click', async () => {
     saveBtn.disabled = true;
     try {
-      await guardarSolicitudDesdeListado(r, estadoSel.value, prioridadSel.value);
+      await guardarSolicitudDesdeListado(r, estadoSel.value, prioridadSel.value, vendedorInput.value.trim(), comisionInput.value);
       solRenderView(card, r);
     } catch (e) {
       console.error('Error guardando la solicitud de servicio:', e);
@@ -757,12 +797,21 @@ function solRenderEdit(card, r) {
   });
 }
 
-async function guardarSolicitudDesdeListado(r, nuevoEstado, nuevaPrioridad) {
-  const payload = { estado: nuevoEstado, prioridad: nuevaPrioridad || null };
+async function guardarSolicitudDesdeListado(r, nuevoEstado, nuevaPrioridad, nuevoVendedor, nuevaComision) {
+  const payload = {
+    estado: nuevoEstado,
+    prioridad: nuevaPrioridad || null,
+    vendedor_asignado: nuevoVendedor || null,
+    comision_porcentaje: nuevaComision || null,
+    estado_fecha: new Date().toISOString()
+  };
   const { error } = await supabaseClient.from('solicitudes_servicio').update(payload).eq('id', r.id);
   if (error) throw error;
-  r.estado = nuevoEstado;
-  r.prioridad = nuevaPrioridad || null;
+  r.estado = payload.estado;
+  r.prioridad = payload.prioridad;
+  r.vendedor_asignado = payload.vendedor_asignado;
+  r.comision_porcentaje = payload.comision_porcentaje;
+  r.estado_fecha = payload.estado_fecha;
 }
 
 async function eliminarSolicitudDesdeListado(r) {
@@ -772,23 +821,23 @@ async function eliminarSolicitudDesdeListado(r) {
   if (idx !== -1) adminSolData.splice(idx, 1);
 }
 
-function solPropiedadesUnicas() {
-  const set = new Set();
-  adminSolData.forEach((r) => { if (r.direccion) set.add(r.direccion); });
-  return [...set].sort((a, b) => a.localeCompare(b, 'es'));
+function solEtiquetaProyecto(r) {
+  const num = r.numero_solicitud ? (r.numero_solicitud + ' — ') : '';
+  const dir = r.direccion ? (' · ' + r.direccion) : '';
+  return num + (r.servicio || 'Servicio sin especificar') + dir;
 }
 
-function poblarAdminSolPropiedadSel() {
-  const sel = $('#adminSolPropiedadSel');
+function poblarAdminSolProyectoSel() {
+  const sel = $('#adminSolProyectoSel');
   if (!sel) return;
   const prev = sel.value;
   sel.innerHTML = '';
-  const optTodas = document.createElement('option');
-  optTodas.value = ''; optTodas.textContent = 'Todas las propiedades';
-  sel.appendChild(optTodas);
-  solPropiedadesUnicas().forEach((dir) => {
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los proyectos';
+  sel.appendChild(optTodos);
+  adminSolData.forEach((r) => {
     const opt = document.createElement('option');
-    opt.value = dir; opt.textContent = dir;
+    opt.value = String(r.id); opt.textContent = solEtiquetaProyecto(r);
     sel.appendChild(opt);
   });
   if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
@@ -807,26 +856,26 @@ function poblarAdminSolEstadoSel() {
   });
 }
 
-function pintarAdminSolicitudesList(propiedadFiltro, estadoFiltro) {
+function pintarAdminSolicitudesList(proyectoFiltro, estadoFiltro) {
   const list = $('#adminSolicitudesList');
   if (!list) return;
   list.innerHTML = '';
   let total = 0;
   adminSolData.forEach((r) => {
-    if (propiedadFiltro && r.direccion !== propiedadFiltro) return;
+    if (proyectoFiltro && String(r.id) !== proyectoFiltro) return;
     if (estadoFiltro && r.estado !== estadoFiltro) return;
     const card = el('div', 'proy-card');
     solRenderView(card, r);
     list.appendChild(card);
     total++;
   });
-  if (!total) list.innerHTML = '<p class="proy-empty">No hay solicitudes que coincidan con la búsqueda.</p>';
+  if (!total) list.innerHTML = '<p class="proy-empty">No hay proyectos que coincidan con la búsqueda.</p>';
 }
 
 $('#adminSolMostrarBtn')?.addEventListener('click', () => {
-  const propiedadFiltro = $('#adminSolPropiedadSel')?.value || '';
+  const proyectoFiltro = $('#adminSolProyectoSel')?.value || '';
   const estadoFiltro = $('#adminSolEstadoSel')?.value || '';
-  pintarAdminSolicitudesList(propiedadFiltro, estadoFiltro);
+  pintarAdminSolicitudesList(proyectoFiltro, estadoFiltro);
 });
 
 async function cargarAdminSolData() {
@@ -835,16 +884,31 @@ async function cargarAdminSolData() {
   try {
     const { data: rows, error } = await supabaseClient
       .from('solicitudes_servicio')
-      .select('id, servicio, direccion, nombre_cliente, telefono_cliente, prioridad, tiempo_estimado, fecha_inicio, estado, numero_solicitud, cliente_codigo, fecha_cotizacion')
+      .select('id, servicio, direccion, nombre_cliente, telefono_cliente, prioridad, tiempo_estimado, fecha_inicio, estado, numero_solicitud, cliente_codigo, fecha_cotizacion, necesidad, cotizacion_id, vendedor_asignado, comision_porcentaje, estado_fecha')
       .order('id', { ascending: false });
     if (error) throw error;
     adminSolData = rows || [];
+    // Presupuesto de cada cotización relacionada, para calcular el valor de
+    // comisión (% comisión de la solicitud × presupuesto de su cotización).
+    const cotIds = [...new Set(adminSolData.map((r) => r.cotizacion_id).filter((id) => id != null))];
+    if (cotIds.length) {
+      const { data: cots, error: cotErr } = await supabaseClient
+        .from('cotizaciones')
+        .select('id, presupuesto_asignado')
+        .in('id', cotIds);
+      if (cotErr) throw cotErr;
+      const presupuestoPorCotizacion = {};
+      (cots || []).forEach((c) => { presupuestoPorCotizacion[c.id] = c.presupuesto_asignado; });
+      adminSolData.forEach((r) => {
+        r.presupuestoCotizacion = r.cotizacion_id != null ? presupuestoPorCotizacion[r.cotizacion_id] : null;
+      });
+    }
   } catch (e) {
     console.error('Error cargando las solicitudes de servicio:', e);
     adminSolData = [];
   }
-  poblarAdminSolPropiedadSel();
-  if ($('#adminSolPropiedadSel')) $('#adminSolPropiedadSel').value = '';
+  poblarAdminSolProyectoSel();
+  if ($('#adminSolProyectoSel')) $('#adminSolProyectoSel').value = '';
   if ($('#adminSolEstadoSel')) $('#adminSolEstadoSel').value = '';
   pintarAdminSolicitudesList();
 }
