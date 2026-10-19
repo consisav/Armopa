@@ -1741,6 +1741,7 @@ async function cargarVendedoresCatalogo() {
       $('#adminSolVendedorSel')?.value || ''
     );
   }
+  if (typeof actualizarVisibilidadPromotoresServicio === 'function') actualizarVisibilidadPromotoresServicio();
 }
 
 /* Arma la lista desplegable de "Nombre del vendedor" a partir del
@@ -2748,6 +2749,8 @@ const openRemodelModal = () => {
   $('#fr-detalles').value = '';
   $('#fr-tiempo').value = '';
   $('#fr-presupuesto').value = '';
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
+  actualizarVisibilidadPromotoresServicio();
 };
 const closeRemodelModal = () => { remodelModal.hidden = true; };
 const svRemodelBtn = $('#svRemodelBtn');
@@ -2771,7 +2774,8 @@ $('#frSend')?.addEventListener('click', async () => {
     fotos_actuales: frImgs1,
     fotos_referencia: frImgs2,
     tiempo_estimado: $('#fr-tiempo')?.value || null,
-    presupuesto_estimado: $('#fr-presupuesto')?.value.trim() || null
+    presupuesto_estimado: $('#fr-presupuesto')?.value.trim() || null,
+    promotor_negocio: $('#fr-promotor')?.value || null
   };
 
   const { error } = await supabaseClient.from('solicitudes_remodelacion').insert(row);
@@ -2810,6 +2814,8 @@ const openPresupuestoModal = () => {
   ppOpcion = '';
   ppFileUrl = '';
   $$('#ppOpciones .seg').forEach((b) => { b.classList.remove('on'); b.setAttribute('aria-pressed', 'false'); });
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
+  actualizarVisibilidadPromotoresServicio();
 };
 const closePresupuestoModal = () => { presupuestoModal.hidden = true; };
 const svPresupuestoBtn = $('#svPresupuestoBtn');
@@ -2875,7 +2881,8 @@ $('#ppSend')?.addEventListener('click', async () => {
     valor_presupuesto: $('#pp-valor')?.value.trim() || null,
     opcion: ppOpcion,
     descripcion: $('#pp-descripcion')?.value.trim() || null,
-    ruta_archivo_pdf: ppFileUrl || null
+    ruta_archivo_pdf: ppFileUrl || null,
+    promotor_negocio: $('#pp-promotor')?.value || null
   };
 
   const { error } = await supabaseClient.from('solicitudes_presupuesto').insert(row);
@@ -2968,6 +2975,8 @@ const openConstruirModal = () => {
   $('#csPlanoBox').innerHTML = '';
   $('#csReqBlock').hidden = true;
   $('#csReqBtn')?.setAttribute('aria-expanded', 'false');
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
+  actualizarVisibilidadPromotoresServicio();
 };
 const closeConstruirModal = () => { construirModal.hidden = true; };
 const svConstruirBtn = $('#svConstruirBtn');
@@ -3177,7 +3186,8 @@ $('#csSend')?.addEventListener('click', async () => {
     metros_cuadrados: $('#cs-m2')?.value ? Number($('#cs-m2').value) : null,
     descripcion_diseno: $('#cs-descripcion-diseno')?.value.trim() || null,
     imagen_diseno_url: csDisenoUrl || null,
-    fotos_terreno: csFiles.map((f) => f.url)
+    fotos_terreno: csFiles.map((f) => f.url),
+    promotor_negocio: $('#cs-promotor')?.value || null
   };
 
   const { error } = await supabaseClient.from('solicitudes_construccion').insert(row);
@@ -4657,6 +4667,43 @@ function poblarQPromotorSelect(nombreActual) {
   if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
 }
 
+/* Arma un <select> de "Promotor de Negocios" a partir del catálogo de
+   Vendedores. Se reutiliza en las pantallas de "Adaptamos tu presupuesto",
+   "Remodelamos tu propiedad" y "Construimos en tu terreno". */
+function poblarSelectPromotorNegocios(selectEl) {
+  if (!selectEl) return;
+  const prev = selectEl.value;
+  selectEl.innerHTML = '';
+  const optVacio = document.createElement('option');
+  optVacio.value = ''; optVacio.textContent = 'Selecciona un promotor';
+  selectEl.appendChild(optVacio);
+  vendedoresCatalogo.forEach((v) => {
+    const nombre = (v.nombre || '').trim();
+    if (!nombre) return;
+    const opt = document.createElement('option');
+    opt.value = nombre; opt.textContent = nombre;
+    selectEl.appendChild(opt);
+  });
+  if (prev && [...selectEl.options].some((o) => o.value === prev)) selectEl.value = prev;
+}
+
+/* El "Promotor de Negocios" de estas tres pantallas de Servicios solo lo ve
+   y administra el Administrador o el Super Administrador; para el público
+   general estos campos quedan ocultos. */
+function actualizarVisibilidadPromotoresServicio() {
+  const puede = esAdminOSuperAdmin();
+  [
+    ['#frPromotorField', '#fr-promotor'],
+    ['#ppPromotorField', '#pp-promotor'],
+    ['#csPromotorField', '#cs-promotor']
+  ].forEach(([campoId, selectId]) => {
+    const campo = $(campoId);
+    if (!campo) return;
+    campo.hidden = !puede;
+    if (puede) poblarSelectPromotorNegocios($(selectId));
+  });
+}
+
 /* Solicitar cotización por WhatsApp */
 const WA_NUMBER = '50249183411'; // número de WhatsApp de la página (código de país + número, solo dígitos)
 (function () {
@@ -5990,6 +6037,7 @@ function actualizarVisibilidadAccionesCotizacion() {
      Super Administrador; el público general no lo necesita. */
   const campoPromotor = $('#qPromotorField');
   if (campoPromotor) campoPromotor.hidden = !esAdminOSuperAdmin();
+  actualizarVisibilidadPromotoresServicio();
 }
 
 actualizarVisibilidadSolServicio();

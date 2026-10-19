@@ -1436,6 +1436,8 @@
       <div class="fld"><label for="fr-presupuesto">Presupuesto estimado de remodelación (Q)</label><input id="fr-presupuesto" type="text" placeholder="Ej. 50,000"></div>
     </div>
 
+    <div class="fld" id="frPromotorField" hidden style="margin-top:16px"><label for="fr-promotor">Promotor de Negocios</label><select id="fr-promotor"></select></div>
+
     <div class="acts" style="margin-top:20px">
       <button class="btn btn-dark" type="button" id="frSend">Enviar solicitud</button>
     </div>
@@ -1459,6 +1461,8 @@
     </div>
 
     <div class="fld" style="margin-top:16px"><label for="pp-fecha">Fecha</label><input id="pp-fecha" type="text" readonly></div>
+
+    <div class="fld" id="ppPromotorField" hidden style="margin-top:16px"><label for="pp-promotor">Promotor de Negocios</label><select id="pp-promotor"></select></div>
 
     <div class="fld" style="margin-top:16px">
       <span class="lbl">¿Qué deseas realizar con una propiedad?</span>
@@ -1592,6 +1596,8 @@
       <div class="fld"><label for="cs-fecha-inicio">Fecha de Inicio estimada</label><input id="cs-fecha-inicio" type="date"></div>
     </div>
 
+    <div class="fld" id="csPromotorField" hidden style="margin-top:16px"><label for="cs-promotor">Promotor de Negocios</label><select id="cs-promotor"></select></div>
+
     <div class="fld" style="margin-top:16px"><label for="cs-que-hacer">Describe qué deseas hacer en la construcción</label><textarea id="cs-que-hacer" rows="3" placeholder="Ej. Construir mi casa de habitación en un terreno propio de 300 mts2…"></textarea></div>
 
     <div class="fld" style="margin-top:16px"><label for="cs-m2">Metros cuadrados</label><input id="cs-m2" type="number" min="0" step="1" placeholder="Ej. 200"></div>
@@ -1713,6 +1719,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261019-0012"></script>
+<script src="script.js?v=20261019-0013"></script>
 </body>
 </html>
