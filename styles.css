@@ -580,9 +580,12 @@ section[id]{scroll-margin-top:148px}
 .com-text-input{width:110px;padding:5px 7px;border:1px solid var(--line);border-radius:7px;font-size:13px;font-family:inherit}
 .com-date-input{width:124px;padding:5px 6px;border:1px solid var(--line);border-radius:7px;font-size:13px;font-family:inherit}
 .com-text-input:focus,.com-date-input:focus{outline:2px solid var(--gold);outline-offset:1px}
-.com-table-scroll{width:100%;overflow-x:auto}
-.com-table-gen{min-width:1180px}
 @media (max-width:720px){.com-table{font-size:12.5px}.com-table th,.com-table td{padding:9px 10px}}
+.com-valor{color:var(--goldtx)}
+.com-pay-summary{margin-top:26px;padding-top:18px;border-top:2px solid var(--line)}
+.com-pay-card::before{background:linear-gradient(180deg,var(--navy),var(--navy2))}
+.com-pay-card .proy-actions{align-items:center}
+.com-pay-card .hint{color:var(--muted);font-size:13px}
 .q-summary{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:grid;gap:8px;font-size:14px}
 .q-summary>div{display:flex;justify-content:flex-start;gap:6px}
 .q-summary span{color:var(--muted)}

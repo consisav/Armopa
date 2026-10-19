@@ -2328,7 +2328,11 @@ async function mostrarAdminComisiones() {
       let q = supabaseClient
         .from('propiedades')
         .select('ciudad, local_id, nombre, tipo_operacion, valor_renta, valor_venta, vendedor_asignado, comision_porcentaje, creado_en, comision_pagar, comision_estado')
-        .eq('activo', true);
+        .eq('activo', true)
+        // Esta pantalla es para GENERAR comisiones: solo se listan las que
+        // aún están Pendientes de pago (las ya generadas/pagadas,
+        // suspendidas o anuladas no vuelven a aparecer aquí).
+        .or('comision_estado.eq.pendiente,comision_estado.is.null');
       if (vendedorVal) q = q.eq('vendedor_asignado', vendedorVal);
       if (fechaDesdeVal) q = q.gte('creado_en', fechaDesdeVal + 'T00:00:00');
       if (fechaHastaVal) q = q.lte('creado_en', fechaHastaVal + 'T23:59:59');
@@ -2360,7 +2364,9 @@ async function mostrarAdminComisiones() {
     if (tipoVal === '' || tipoVal === 'proyectos' || tipoVal === 'servicios') {
       let q = supabaseClient
         .from('solicitudes_servicio')
-        .select('id, numero_solicitud, servicio, created_at, vendedor_asignado, comision_porcentaje, cotizacion_id, comision_pagar, comision_estado');
+        .select('id, numero_solicitud, servicio, created_at, vendedor_asignado, comision_porcentaje, cotizacion_id, comision_pagar, comision_estado')
+        // Igual que en Propiedades: solo las Pendientes de pago.
+        .or('comision_estado.eq.pendiente,comision_estado.is.null');
       if (vendedorVal) q = q.eq('vendedor_asignado', vendedorVal);
       if (fechaDesdeVal) q = q.gte('created_at', fechaDesdeVal + 'T00:00:00');
       if (fechaHastaVal) q = q.lte('created_at', fechaHastaVal + 'T23:59:59');
@@ -2541,19 +2547,19 @@ function adminComGenCampoTexto(td, id, campo, valorTxt) {
   }
 }
 
+/* Tarjeta de una comisión generada (mismo lenguaje visual que Vendedores /
+   Tipos de comisión: .proy-card + .proy-grid), para que la información se
+   lea completa sin necesitar scroll horizontal en ningún ancho de
+   pantalla. */
 function adminComGenBuildFila(r) {
-  const tr = document.createElement('tr');
-  const tdDetalle = el('td', '', r.detalle || '—');
-  const tdVendedor = el('td', '', r.vendedor || '—');
-  const tdFecha = el('td', '', r.fecha_comision ? formatQBuscarRegFecha(r.fecha_comision) : '—');
-  const tdPct = el('td', 'num', r.porcentaje_comision != null && r.porcentaje_comision !== '' ? (r.porcentaje_comision + '%') : '—');
-  const tdValor = el('td', 'num com-valor', formatQ(r.valor_comision));
-  const tdEstado = el('td');
-  const tdFechaPago = el('td');
-  const tdBanco = el('td');
-  const tdCuenta = el('td');
-  const tdFechaOp = el('td');
-  const tdUsuario = el('td');
+  const card = el('div', 'proy-card');
+  const head = el('div', 'proy-card-h');
+  const nameWrap = el('div', 'proy-name-wrap');
+  nameWrap.append(el('div', 'proy-name', r.detalle || 'Comisión'));
+  head.append(nameWrap);
+  const estadoWrap = el('div');
+  head.append(estadoWrap);
+  card.append(head);
 
   if (esSuperAdmin()) {
     const sel = document.createElement('select');
@@ -2583,19 +2589,126 @@ function adminComGenBuildFila(r) {
         sel.disabled = false;
       }
     });
-    tdEstado.appendChild(sel);
+    estadoWrap.appendChild(sel);
   } else {
-    tdEstado.appendChild(adminComEstadoBadge(r.estado || 'pendiente'));
+    estadoWrap.appendChild(adminComEstadoBadge(r.estado || 'pendiente'));
   }
 
-  adminComGenCampoFecha(tdFechaPago, r.id, 'fecha_pago', r.fecha_pago);
-  adminComGenCampoTexto(tdBanco, r.id, 'banco', r.banco);
-  adminComGenCampoTexto(tdCuenta, r.id, 'cuenta_bancaria', r.cuenta_bancaria);
-  adminComGenCampoFecha(tdFechaOp, r.id, 'fecha_operacion', r.fecha_operacion);
-  adminComGenCampoTexto(tdUsuario, r.id, 'usuario_banco', r.usuario_banco);
+  const campoFechaWrap = (campo, valorIso) => { const w = el('div'); adminComGenCampoFecha(w, r.id, campo, valorIso); return w; };
+  const campoTextoWrap = (campo, valorTxt) => { const w = el('div'); adminComGenCampoTexto(w, r.id, campo, valorTxt); return w; };
 
-  tr.append(tdDetalle, tdVendedor, tdFecha, tdPct, tdValor, tdEstado, tdFechaPago, tdBanco, tdCuenta, tdFechaOp, tdUsuario);
-  return tr;
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('Vendedor', el('span', '', r.vendedor || '—')),
+    labeledCell('Fecha generada', el('span', '', r.fecha_comision ? formatQBuscarRegFecha(r.fecha_comision) : '—')),
+    labeledCell('% Comisión', el('span', '', r.porcentaje_comision != null && r.porcentaje_comision !== '' ? (r.porcentaje_comision + '%') : '—')),
+    labeledCell('Valor de comisión', el('strong', 'com-valor', formatQ(r.valor_comision))),
+    labeledCell('Fecha de pago', campoFechaWrap('fecha_pago', r.fecha_pago)),
+    labeledCell('Banco', campoTextoWrap('banco', r.banco)),
+    labeledCell('Cuenta bancaria', campoTextoWrap('cuenta_bancaria', r.cuenta_bancaria)),
+    labeledCell('Fecha operación', campoFechaWrap('fecha_operacion', r.fecha_operacion)),
+    labeledCell('Usuario que paga', campoTextoWrap('usuario_banco', r.usuario_banco))
+  );
+  card.append(grid);
+  return card;
+}
+
+function fechaHoyIso() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+}
+
+/* Al final del listado: un resumen con el total pendiente de pago de cada
+   vendedor, con su banco y cuenta bancaria tomados automáticamente de su
+   ficha en Vendedores (editables aquí por si hay que usar otros datos para
+   este pago en particular). Al presionar "Pagar" se actualizan de una vez
+   todas las comisiones pendientes de ese vendedor dentro del resultado
+   actual: quedan en estado Pagado con la fecha, banco, cuenta y usuario
+   indicados. Solo lo ve y lo usa el super administrador. */
+function construirResumenPagoPorVendedor(data) {
+  if (!esSuperAdmin()) return null;
+  const pendientes = data.filter((r) => (r.estado || 'pendiente') === 'pendiente');
+  if (!pendientes.length) return null;
+
+  const porVendedor = {};
+  pendientes.forEach((r) => {
+    const key = r.vendedor || '(Sin vendedor)';
+    if (!porVendedor[key]) porVendedor[key] = { total: 0, ids: [] };
+    porVendedor[key].total += (r.valor_comision || 0);
+    porVendedor[key].ids.push(r.id);
+  });
+
+  const wrap = el('div', 'com-group com-pay-summary');
+  wrap.append(el('h3', 'com-group-title', 'Resumen de pago por vendedor'));
+  const list = el('div', 'proy-list');
+
+  Object.keys(porVendedor).sort().forEach((vendedorNombre) => {
+    const { total, ids } = porVendedor[vendedorNombre];
+    const catalogo = vendedoresCatalogo.find((v) => (v.nombre || '').trim() === vendedorNombre) || {};
+
+    const card = el('div', 'proy-card com-pay-card');
+    const head = el('div', 'proy-card-h');
+    head.append(el('div', 'proy-name', vendedorNombre));
+    card.append(head);
+
+    const grid = el('div', 'proy-grid');
+    grid.append(labeledCell('Total pendiente', el('strong', 'com-valor', formatQ(total))));
+
+    const bancoSel = document.createElement('select');
+    const optVacio = document.createElement('option'); optVacio.value = ''; optVacio.textContent = 'Selecciona…';
+    bancoSel.appendChild(optVacio);
+    BANCOS_GT.forEach((b) => { const o = document.createElement('option'); o.value = b; o.textContent = b; bancoSel.appendChild(o); });
+    bancoSel.value = catalogo.banco_pago || '';
+    grid.append(labeledCell('Banco', bancoSel));
+
+    const cuentaInput = document.createElement('input');
+    cuentaInput.type = 'text'; cuentaInput.value = catalogo.numero_cuenta_bancaria || ''; cuentaInput.placeholder = 'Número de cuenta';
+    grid.append(labeledCell('Cuenta bancaria', cuentaInput));
+
+    const hoyIso = fechaHoyIso();
+    const fechaPagoInput = document.createElement('input'); fechaPagoInput.type = 'date'; fechaPagoInput.value = hoyIso;
+    grid.append(labeledCell('Fecha de pago', fechaPagoInput));
+
+    const fechaOpInput = document.createElement('input'); fechaOpInput.type = 'date'; fechaOpInput.value = hoyIso;
+    grid.append(labeledCell('Fecha de operación', fechaOpInput));
+
+    card.append(grid);
+
+    const actions = el('div', 'proy-actions');
+    const status = el('p', 'hint', ''); status.style.margin = '0'; status.style.marginRight = 'auto';
+    const pagarBtn = el('button', 'btn btn-gold btn-sm', 'Pagar'); pagarBtn.type = 'button';
+    actions.append(status, pagarBtn);
+    card.append(actions);
+
+    pagarBtn.addEventListener('click', async () => {
+      if (!confirm('¿Confirmas el pago de ' + ids.length + ' comisión(es) a ' + vendedorNombre + ' por un total de ' + formatQ(total) + '?')) return;
+      pagarBtn.disabled = true;
+      status.textContent = 'Procesando…';
+      try {
+        const usuario = localStorage.getItem(LOGIN_STORE) || null;
+        const { error } = await supabaseClient.from('comisiones_pagadas').update({
+          estado: 'pagado',
+          fecha_pago: fechaPagoInput.value || hoyIso,
+          banco: bancoSel.value || null,
+          cuenta_bancaria: cuentaInput.value.trim() || null,
+          fecha_operacion: fechaOpInput.value || hoyIso,
+          usuario_banco: usuario
+        }).in('id', ids);
+        if (error) throw error;
+        status.textContent = 'Pago registrado.';
+        mostrarComisionesGeneradas();
+      } catch (e) {
+        console.error('Error registrando el pago por vendedor:', e);
+        status.textContent = 'No se pudo registrar el pago.';
+        pagarBtn.disabled = false;
+      }
+    });
+
+    list.appendChild(card);
+  });
+
+  wrap.appendChild(list);
+  return wrap;
 }
 
 async function mostrarComisionesGeneradas() {
@@ -2606,7 +2719,7 @@ async function mostrarComisionesGeneradas() {
   const fechaHastaVal = $('#adminComGenFechaHasta')?.value || '';
   result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
   try {
-    let q = supabaseClient.from('comisiones_pagadas').select('*').order('fecha_pago', { ascending: false });
+    let q = supabaseClient.from('comisiones_pagadas').select('*').order('vendedor', { ascending: true }).order('fecha_pago', { ascending: false });
     if (vendedorVal) q = q.eq('vendedor', vendedorVal);
     if (fechaDesdeVal) q = q.gte('fecha_pago', fechaDesdeVal + 'T00:00:00');
     if (fechaHastaVal) q = q.lte('fecha_pago', fechaHastaVal + 'T23:59:59');
@@ -2617,16 +2730,29 @@ async function mostrarComisionesGeneradas() {
       result.innerHTML = '<p class="qbr-empty">No hay comisiones generadas que coincidan con la búsqueda.</p>';
       return;
     }
-    const scrollWrap = el('div', 'com-table-scroll');
-    const table = document.createElement('table');
-    table.className = 'com-table com-table-gen';
-    const thead = document.createElement('thead');
-    thead.innerHTML = '<tr><th>Detalle</th><th>Vendedor</th><th>Fecha generada</th><th class="num">% Comisión</th><th class="num">Valor de comisión</th><th>Estado</th><th>Fecha de pago</th><th>Banco</th><th>Cuenta bancaria</th><th>Fecha operación</th><th>Usuario que paga</th></tr>';
-    const tbody = document.createElement('tbody');
-    data.forEach((r) => tbody.appendChild(adminComGenBuildFila(r)));
-    table.append(thead, tbody);
-    scrollWrap.appendChild(table);
-    result.appendChild(scrollWrap);
+
+    // Agrupadas por vendedor, para una lectura ordenada (igual criterio que
+    // Comisiones Ventas).
+    const porVendedor = {};
+    data.forEach((r) => {
+      const key = r.vendedor || '(Sin vendedor)';
+      if (!porVendedor[key]) porVendedor[key] = [];
+      porVendedor[key].push(r);
+    });
+    Object.keys(porVendedor).sort().forEach((vendedorNombre) => {
+      const filas = porVendedor[vendedorNombre];
+      const wrap = el('div', 'com-group');
+      const h = el('h3', 'com-group-title');
+      h.append(document.createTextNode(vendedorNombre), el('span', 'com-count', '(' + filas.length + ')'));
+      wrap.append(h);
+      const list = el('div', 'proy-list');
+      filas.forEach((r) => list.appendChild(adminComGenBuildFila(r)));
+      wrap.append(list);
+      result.appendChild(wrap);
+    });
+
+    const resumen = construirResumenPagoPorVendedor(data);
+    if (resumen) result.appendChild(resumen);
   } catch (e) {
     console.error('Error cargando comisiones generadas:', e);
     result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de comisiones generadas.</p>';
@@ -2642,10 +2768,14 @@ function abrirAdminComisionesGeneradasModal() {
   adminComisionesGeneradasModal.hidden = false;
   poblarAdminComGenVendedorSel();
   if ($('#adminComGenVendedorSel')) $('#adminComGenVendedorSel').value = '';
-  if ($('#adminComGenFechaDesde')) $('#adminComGenFechaDesde').value = '';
-  if ($('#adminComGenFechaHasta')) $('#adminComGenFechaHasta').value = '';
-  const result = $('#adminComisionesGeneradasResult');
-  if (result) result.innerHTML = '<p class="qbr-empty">Elige los parámetros y presiona Mostrar.</p>';
+  // Por defecto: del primero al último día del mes actual.
+  const hoy = new Date();
+  const primerDia = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+  const ultimoDia = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
+  const aIso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  if ($('#adminComGenFechaDesde')) $('#adminComGenFechaDesde').value = aIso(primerDia);
+  if ($('#adminComGenFechaHasta')) $('#adminComGenFechaHasta').value = aIso(ultimoDia);
+  mostrarComisionesGeneradas();
 }
 function cerrarAdminComisionesGeneradasModal() { if (adminComisionesGeneradasModal) adminComisionesGeneradasModal.hidden = true; }
 $('#navAdminComisionesGeneradasBtn')?.addEventListener('click', () => {
@@ -2667,7 +2797,7 @@ let vendedoresCatalogo = [];
 let vendedoresCatalogoCargado = false;
 async function cargarVendedoresCatalogo() {
   try {
-    const { data: rows, error } = await supabaseClient.from('vendedores').select('id, nombre, telefono, foto_url').order('nombre', { ascending: true });
+    const { data: rows, error } = await supabaseClient.from('vendedores').select('id, nombre, telefono, foto_url, banco_pago, numero_cuenta_bancaria').order('nombre', { ascending: true });
     if (error) throw error;
     vendedoresCatalogo = rows || [];
   } catch (e) {
