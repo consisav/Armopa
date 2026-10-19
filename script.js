@@ -2703,6 +2703,11 @@ function construirResumenPagoPorVendedor(data) {
     const fechaOpInput = document.createElement('input'); fechaOpInput.type = 'date'; fechaOpInput.value = hoyIso;
     grid.append(labeledCell('Fecha de operación', fechaOpInput));
 
+    // Usuario que procesa el pago: se toma solo de la sesión actual, no se
+    // escribe a mano (igual criterio que "Usuario" en Vendedores).
+    const usuarioActual = localStorage.getItem(LOGIN_STORE) || 'usuario actual';
+    grid.append(labeledCell('Usuario que paga', el('span', '', usuarioActual)));
+
     card.append(grid);
 
     // Campos según la forma de pago. El banco se autocompleta del catálogo
