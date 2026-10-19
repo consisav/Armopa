@@ -1473,8 +1473,11 @@ function vendRenderEdit(card, v, isNew) {
   const dirInput = document.createElement('input');
   dirInput.type = 'text'; dirInput.value = v.direccion || ''; dirInput.placeholder = 'Dirección';
 
+  // Al registrar un vendedor nuevo, "Fecha inicio" se completa sola con la
+  // fecha de hoy (sigue editable, por si el inicio real fue otro día).
   const fechaInput = document.createElement('input');
-  fechaInput.type = 'date'; fechaInput.value = v.fecha_inicio || '';
+  fechaInput.type = 'date';
+  fechaInput.value = v.fecha_inicio || (isNew ? new Date().toISOString().slice(0, 10) : '');
 
   // El % de comisión por ventas lo escribe el Super Administrador (único
   // que llega a ver este formulario); "Usuario" y "Fecha de grabación" ya
