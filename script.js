@@ -1747,6 +1747,157 @@ $('#adminVendedoresClose')?.addEventListener('click', cerrarAdminVendedoresModal
 $('#adminVendedoresScrim')?.addEventListener('click', cerrarAdminVendedoresModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminVendedoresModal && !adminVendedoresModal.hidden) cerrarAdminVendedoresModal(); });
 
+/* "Comisiones Ventas" dentro del menú Administración: resumen de
+   comisiones por vendedor, a partir de una fecha inicial, y por tipo
+   (Propiedades, Proyectos, Servicios o Todas). "Proyectos" y "Servicios"
+   ya se presentan en Administración como dos listados distintos de la
+   MISMA tabla solicitudes_servicio, así que aquí comparten el mismo
+   origen de datos (para no duplicar comisiones al elegir "Todas"), y
+   solo cambia el título con el que se agrupa el resultado. */
+function poblarAdminComVendedorSel() {
+  const sel = $('#adminComVendedorSel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  sel.appendChild(optTodos);
+  vendedoresCatalogo.forEach((v) => {
+    const nombre = (v.nombre || '').trim();
+    if (!nombre) return;
+    const opt = document.createElement('option');
+    opt.value = nombre; opt.textContent = nombre;
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
+function adminComPrecioBase(op, valorVenta, valorRenta) {
+  if (op === 'venta') return extractNumber(valorVenta);
+  if (op === 'renta') return extractNumber(valorRenta);
+  const v = extractNumber(valorVenta);
+  return v != null ? v : extractNumber(valorRenta);
+}
+
+function adminComValorCalc(pct, precio) {
+  const p = extractNumber(pct);
+  if (p == null || precio == null) return null;
+  return (p / 100) * precio;
+}
+
+function adminComBuildPropRow(row) {
+  const precio = adminComPrecioBase(row.tipo_operacion, row.valor_venta, row.valor_renta);
+  const valor = adminComValorCalc(row.comision_porcentaje, precio);
+  const r = el('div', 'sol-row');
+  r.append(
+    labeledCell('Origen', el('span', 'sol-badge', 'Propiedad')),
+    labeledCell('Ubicación', el('span', 'sol-cli', (row.ciudad || '') + (row.nombre ? ' · ' + row.nombre : ''))),
+    labeledCell('Fecha', el('span', 'sol-cli', row.creado_en ? formatQBuscarRegFecha(row.creado_en) : '—')),
+    labeledCell('Vendedor', el('span', 'sol-cli', row.vendedor_asignado || '—')),
+    labeledCell('% Comisión', el('span', 'sol-cli', row.comision_porcentaje ? (row.comision_porcentaje + '%') : '—')),
+    labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(valor)))
+  );
+  return r;
+}
+
+function adminComBuildSrvRow(row, presupuesto) {
+  const valor = adminSrvComisionValorCalc(row, presupuesto);
+  const r = el('div', 'sol-row');
+  r.append(
+    labeledCell('Origen', el('span', 'sol-badge', 'Proyecto / Servicio')),
+    labeledCell('No. de solicitud', el('strong', 'sol-num', row.numero_solicitud || ('#' + row.id))),
+    labeledCell('Servicio', el('span', 'sol-cli', row.servicio || '—')),
+    labeledCell('Fecha', el('span', 'sol-cli', formatQBuscarRegFecha(row.created_at))),
+    labeledCell('Vendedor', el('span', 'sol-cli', row.vendedor_asignado || '—')),
+    labeledCell('% Comisión', el('span', 'sol-cli', row.comision_porcentaje ? (row.comision_porcentaje + '%') : '—')),
+    labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(valor)))
+  );
+  return r;
+}
+
+async function mostrarAdminComisiones() {
+  const result = $('#adminComisionesResult');
+  if (!result) return;
+  const vendedorVal = $('#adminComVendedorSel')?.value || '';
+  const fechaDesdeVal = $('#adminComFechaDesde')?.value || '';
+  const tipoVal = $('#adminComTipoSel')?.value || '';
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    const bloques = [];
+
+    if (tipoVal === '' || tipoVal === 'propiedades') {
+      let q = supabaseClient
+        .from('propiedades')
+        .select('ciudad, nombre, tipo_operacion, valor_renta, valor_venta, vendedor_asignado, comision_porcentaje, creado_en')
+        .eq('activo', true);
+      if (vendedorVal) q = q.eq('vendedor_asignado', vendedorVal);
+      if (fechaDesdeVal) q = q.gte('creado_en', fechaDesdeVal + 'T00:00:00');
+      const { data: propRows, error: propErr } = await q;
+      if (propErr) throw propErr;
+      bloques.push({ titulo: 'Propiedades', filas: (propRows || []).map((r) => adminComBuildPropRow(r)) });
+    }
+
+    if (tipoVal === '' || tipoVal === 'proyectos' || tipoVal === 'servicios') {
+      let q = supabaseClient
+        .from('solicitudes_servicio')
+        .select('id, numero_solicitud, servicio, created_at, vendedor_asignado, comision_porcentaje, cotizacion_id');
+      if (vendedorVal) q = q.eq('vendedor_asignado', vendedorVal);
+      if (fechaDesdeVal) q = q.gte('created_at', fechaDesdeVal + 'T00:00:00');
+      const { data: srvRows, error: srvErr } = await q;
+      if (srvErr) throw srvErr;
+      const filas = srvRows || [];
+      const idsCot = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
+      let presupuestos = {};
+      if (idsCot.length) {
+        const { data: cots } = await supabaseClient.from('cotizaciones').select('id, presupuesto_asignado').in('id', idsCot);
+        if (cots) cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
+      }
+      const titulo = tipoVal === 'proyectos' ? 'Proyectos' : tipoVal === 'servicios' ? 'Servicios' : 'Proyectos y Servicios';
+      bloques.push({ titulo, filas: filas.map((r) => adminComBuildSrvRow(r, presupuestos[r.cotizacion_id])) });
+    }
+
+    result.innerHTML = '';
+    let totalFilas = 0;
+    bloques.forEach((b) => {
+      totalFilas += b.filas.length;
+      if (!b.filas.length) return;
+      const h = el('h3', '', b.titulo + ' (' + b.filas.length + ')');
+      h.style.margin = '18px 0 10px';
+      const table = el('div', 'sol-table');
+      b.filas.forEach((f) => table.appendChild(f));
+      result.append(h, table);
+    });
+    if (!totalFilas) result.innerHTML = '<p class="qbr-empty">No hay comisiones que coincidan con la búsqueda.</p>';
+  } catch (e) {
+    console.error('Error cargando las comisiones de ventas:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de comisiones.</p>';
+  }
+}
+
+$('#adminComMostrarBtn')?.addEventListener('click', () => mostrarAdminComisiones());
+
+const adminComisionesModal = $('#adminComisionesModal');
+function abrirAdminComisionesModal() {
+  if (!adminComisionesModal) return;
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
+  adminComisionesModal.hidden = false;
+  poblarAdminComVendedorSel();
+  if ($('#adminComVendedorSel')) $('#adminComVendedorSel').value = '';
+  if ($('#adminComFechaDesde')) $('#adminComFechaDesde').value = '';
+  if ($('#adminComTipoSel')) $('#adminComTipoSel').value = '';
+  const result = $('#adminComisionesResult');
+  if (result) result.innerHTML = '<p class="qbr-empty">Elige los parámetros y presiona Mostrar.</p>';
+}
+function cerrarAdminComisionesModal() { if (adminComisionesModal) adminComisionesModal.hidden = true; }
+$('#navAdminComisionesBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminComisionesModal();
+});
+$('#adminComisionesClose')?.addEventListener('click', cerrarAdminComisionesModal);
+$('#adminComisionesScrim')?.addEventListener('click', cerrarAdminComisionesModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminComisionesModal && !adminComisionesModal.hidden) cerrarAdminComisionesModal(); });
+
 /* Catálogo de vendedores (tabla "vendedores") para que el campo "Nombre
    del vendedor" de cada ubicación (sección "Vendedor" del formulario de
    edición de propiedad) sea una lista real de los vendedores ya
@@ -1788,6 +1939,9 @@ async function cargarVendedoresCatalogo() {
   if (typeof adminServiciosModal !== 'undefined' && adminServiciosModal && !adminServiciosModal.hidden) {
     poblarAdminSrvPromotorSel();
     cargarAdminSrvLista();
+  }
+  if (typeof adminComisionesModal !== 'undefined' && adminComisionesModal && !adminComisionesModal.hidden) {
+    poblarAdminComVendedorSel();
   }
 }
 

@@ -43,6 +43,7 @@
             <button type="button" id="navAdminProyectosBtn" data-i18n="adminMenuProy"></button>
             <button type="button" id="navAdminServiciosBtn" data-i18n="adminMenuServ"></button>
             <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
+            <button type="button" id="navAdminComisionesBtn">Comisiones Ventas</button>
           </div>
         </div>
       </div>
@@ -1713,6 +1714,26 @@
   </div>
 </div>
 
+<div class="modal" id="adminComisionesModal" hidden>
+  <button class="scrim" type="button" id="adminComisionesScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="adminComisionesCard" role="dialog" aria-modal="true" aria-labelledby="adminComisionesTitle">
+    <button class="mx" type="button" id="adminComisionesClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminComisionesTitle">Comisiones Ventas — Listado general</h2><p class="ph-sub">Comisiones por vendedor, a partir de una fecha y por tipo.</p></div>
+    <div class="q-buscar-fields" style="margin-bottom:10px">
+      <select id="adminComVendedorSel" aria-label="Vendedor"></select>
+      <input type="date" id="adminComFechaDesde" aria-label="Fecha inicial">
+      <select id="adminComTipoSel" aria-label="Tipo de comisión">
+        <option value="">Todas</option>
+        <option value="propiedades">Propiedades</option>
+        <option value="proyectos">Proyectos</option>
+        <option value="servicios">Servicios</option>
+      </select>
+      <button class="btn btn-dark btn-sm" type="button" id="adminComMostrarBtn">Mostrar</button>
+    </div>
+    <div id="adminComisionesResult" class="qbuscar-result"></div>
+  </div>
+</div>
+
 <div class="modal lb-modal" id="lbModal" hidden>
   <button class="scrim" type="button" id="lbScrim" data-i18n-label="close"></button>
   <button class="mx lb-x" type="button" id="lbClose" data-i18n-label="close">×</button>
@@ -1722,6 +1743,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261019-0014"></script>
+<script src="script.js?v=20261019-0015"></script>
 </body>
 </html>
