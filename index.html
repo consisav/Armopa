@@ -42,6 +42,7 @@
             <button type="button" id="navAdminPropiedadesBtn" data-i18n="adminMenuProp"></button>
             <button type="button" id="navAdminProyectosBtn" data-i18n="adminMenuProy"></button>
             <button type="button" id="navAdminServiciosBtn" data-i18n="adminMenuServ"></button>
+            <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
           </div>
         </div>
       </div>
@@ -1155,7 +1156,7 @@
                   <button class="btn btn-danger btn-sm" type="button" id="sRm" data-i18n="sellerRm" hidden></button>
                 </div>
               </div>
-              <div class="fld"><label for="p-sname" data-i18n="sellerName"></label><input id="p-sname" type="text"></div>
+              <div class="fld"><label for="p-sname" data-i18n="sellerName"></label><input id="p-sname" class="fld-list" type="text" list="pSnameList"><datalist id="pSnameList"></datalist></div>
               <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"><p class="hint" data-i18n="waHint"></p></div>
             </div>
 
@@ -1690,6 +1691,20 @@
   </div>
 </div>
 
+<div class="modal" id="adminVendedoresModal" hidden>
+  <button class="scrim" type="button" id="adminVendedoresScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="adminVendedoresCard" role="dialog" aria-modal="true" aria-labelledby="adminVendedoresTitle">
+    <button class="mx" type="button" id="adminVendedoresClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminVendedoresTitle">Vendedores — Listado general</h2><p class="ph-sub">Código, contacto y fotografía de cada vendedor registrado.</p></div>
+    <div class="q-buscar-fields" style="margin-bottom:18px">
+      <input type="text" id="adminVendBuscarInput" class="cq-input" placeholder="Buscar por nombre">
+      <button class="btn btn-dark btn-sm" type="button" id="adminVendMostrarBtn">Mostrar</button>
+      <button class="btn btn-gold btn-sm" type="button" id="adminVendNuevoBtn">+ Agregar vendedor</button>
+    </div>
+    <div id="adminVendedoresList" class="proy-list"></div>
+  </div>
+</div>
+
 <div class="modal lb-modal" id="lbModal" hidden>
   <button class="scrim" type="button" id="lbScrim" data-i18n-label="close"></button>
   <button class="mx lb-x" type="button" id="lbClose" data-i18n-label="close">×</button>
@@ -1699,6 +1714,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261019-0001"></script>
+<script src="script.js?v=20261019-0002"></script>
 </body>
 </html>

@@ -306,7 +306,7 @@ const T = {
     cUser: 'Usuario', cPass: 'Clave', cCode: 'Código / Propiedad', cGo: 'Ingresar',
     cMsg: 'Acceso de demostración: conecta este formulario a tu sistema de usuarios.',
     adminUsersBtn: 'Administrar usuarios', logoutBtn: 'Salir', connectBtn: 'Conectarse',
-    adminMenuBtn: 'Administración', adminMenuProp: 'Propiedades', adminMenuProy: 'Proyectos', adminMenuServ: 'Servicios',
+    adminMenuBtn: 'Administración', adminMenuProp: 'Propiedades', adminMenuProy: 'Proyectos', adminMenuServ: 'Servicios', adminMenuVend: 'Vendedores',
     visionTitle: 'Nuestra Visión',
     visionLead: 'Ser un grupo inmobiliario de referencia, reconocido por la integridad, transparencia y excelencia en la gestión de bienes inmuebles, ofreciendo soluciones integrales que protejan y fortalezcan el patrimonio de nuestros clientes.',
     visionBody: 'Desde 2001, construimos relaciones de confianza mediante servicios de compra, venta, renta, administración, asesoría legal, construcción y remodelación, extendiendo nuestra experiencia a nuestros paisanos en el extranjero para facilitar la gestión y el crecimiento de su patrimonio en Guatemala.',
@@ -361,7 +361,7 @@ const T = {
     cUser: 'Username', cPass: 'Password', cCode: 'Property code', cGo: 'Sign in',
     cMsg: 'Demo access: connect this form to your user system.',
     adminUsersBtn: 'Manage users', logoutBtn: 'Log out', connectBtn: 'Log in',
-    adminMenuBtn: 'Admin', adminMenuProp: 'Properties', adminMenuProy: 'Projects', adminMenuServ: 'Services',
+    adminMenuBtn: 'Admin', adminMenuProp: 'Properties', adminMenuProy: 'Projects', adminMenuServ: 'Services', adminMenuVend: 'Vendors',
     visionTitle: 'Our Vision',
     visionLead: 'To be a leading real estate group, recognized for integrity, transparency and excellence in property management, offering comprehensive solutions that protect and strengthen our clients\' wealth.',
     visionBody: 'Since 2001, we have built relationships of trust through buying, selling, renting, management, legal advisory, construction and remodeling services, extending our expertise to our fellow citizens abroad to help manage and grow their wealth in Guatemala.',
@@ -1336,6 +1336,297 @@ $('#navAdminServiciosBtn')?.addEventListener('click', () => {
 $('#adminServiciosClose')?.addEventListener('click', cerrarAdminServiciosModal);
 $('#adminServiciosScrim')?.addEventListener('click', cerrarAdminServiciosModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminServiciosModal && !adminServiciosModal.hidden) cerrarAdminServiciosModal(); });
+
+/* "Vendedores" dentro del menú Administración: catálogo centralizado de
+   vendedores (tabla propia en Supabase, independiente de "vendedor
+   asignado" en Propiedades/Proyectos/Servicios, que sigue siendo texto
+   libre). Cada vendedor tiene un código correlativo automático (su id),
+   nombre, teléfono, dirección, fecha de inicio, usuario y fotografía.
+   El listado reutiliza el mismo estilo de tarjeta vertical (.proy-card)
+   que Propiedades y Proyectos, con un botón "+ Agregar vendedor" que abre
+   una tarjeta nueva en modo edición. */
+let adminVendData = [];
+
+function vendCodigo(v) {
+  return v && v.id != null ? ('V-' + String(v.id).padStart(4, '0')) : 'Se asigna al guardar';
+}
+
+function vendAvatarEl(v) {
+  const wrap = el('div', 'srow');
+  const img = document.createElement('img');
+  img.className = 'avatar'; img.alt = v.nombre || '';
+  const ph = el('div', 'avatar ph');
+  ph.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg>';
+  img.hidden = !v.foto_url;
+  ph.hidden = !!v.foto_url;
+  if (v.foto_url) img.src = v.foto_url;
+  wrap.append(img, ph);
+  return wrap;
+}
+
+function vendCardHead(v) {
+  const head = el('div', 'proy-card-h');
+  const nameWrap = el('div', 'proy-name-wrap');
+  const nameEl = el('div', 'proy-name', v.nombre || 'Vendedor sin nombre');
+  nameWrap.append(nameEl, el('div', 'proy-city', vendCodigo(v)));
+  head.append(nameWrap);
+  return head;
+}
+
+function vendRenderView(card, v) {
+  card.innerHTML = '';
+  card.classList.remove('proy-card-edit');
+  const actions = el('div', 'proy-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+
+  card.append(vendCardHead(v));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('Foto', vendAvatarEl(v)),
+    labeledCell('Código de vendedor', el('strong', '', vendCodigo(v))),
+    labeledCell('Nombre', el('span', '', v.nombre || '—')),
+    labeledCell('Teléfono', el('span', '', v.telefono || '—')),
+    labeledCell('Dirección', el('span', '', v.direccion || '—')),
+    labeledCell('Fecha inicio', el('span', '', v.fecha_inicio ? formatQBuscarRegFecha(v.fecha_inicio) : '—')),
+    labeledCell('Usuario', el('span', '', v.usuario || '—'))
+  );
+  card.append(grid, actions);
+
+  modBtn.addEventListener('click', () => vendRenderEdit(card, v, false));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm('¿Eliminar este vendedor? Esta acción no se puede deshacer.')) return;
+    delBtn.disabled = true;
+    try {
+      await eliminarVendedorDesdeListado(v);
+      adminVendData = adminVendData.filter((x) => x.id !== v.id);
+      card.remove();
+      if (!$('#adminVendedoresList').children.length) pintarAdminVendedoresList();
+    } catch (e) {
+      console.error('Error eliminando el vendedor:', e);
+      alert('No se pudo eliminar el vendedor.');
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function vendRenderEdit(card, v, isNew) {
+  card.innerHTML = '';
+  card.classList.add('proy-card-edit');
+
+  let fotoUrl = v.foto_url || '';
+  const avImg = document.createElement('img');
+  avImg.className = 'avatar'; avImg.alt = '';
+  const avPh = el('div', 'avatar ph');
+  avPh.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg>';
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.className = 'sr';
+  fileInput.id = 'vendFoto-' + (v.id || 'nuevo') + '-' + Date.now();
+  const fileLabel = document.createElement('label');
+  fileLabel.className = 'btn btn-gold btn-sm'; fileLabel.htmlFor = fileInput.id; fileLabel.textContent = 'Subir foto';
+  const rmBtn = el('button', 'btn btn-danger btn-sm', 'Quitar foto'); rmBtn.type = 'button';
+  const actsPhoto = el('div', 'acts');
+  actsPhoto.append(fileInput, fileLabel, rmBtn);
+  const avWrap = el('div', 'srow');
+  avWrap.append(avImg, avPh, actsPhoto);
+
+  function refreshAvatar() {
+    avImg.hidden = !fotoUrl;
+    avPh.hidden = !!fotoUrl;
+    rmBtn.hidden = !fotoUrl;
+    if (fotoUrl) avImg.src = fotoUrl;
+  }
+  refreshAvatar();
+
+  fileInput.addEventListener('change', async () => {
+    const f = fileInput.files && fileInput.files[0];
+    if (!f) return;
+    const prevLabel = fileLabel.textContent;
+    fileLabel.textContent = 'Subiendo…';
+    try {
+      fotoUrl = await uploadPropFile(f, 600);
+      refreshAvatar();
+    } catch (e) {
+      console.error('Error subiendo la foto del vendedor:', e);
+      alert('No se pudo subir la foto.');
+    } finally {
+      fileLabel.textContent = prevLabel;
+      fileInput.value = '';
+    }
+  });
+  rmBtn.addEventListener('click', () => { fotoUrl = ''; refreshAvatar(); });
+
+  const nombreInput = document.createElement('input');
+  nombreInput.type = 'text'; nombreInput.value = v.nombre || ''; nombreInput.placeholder = 'Nombre del vendedor';
+
+  const telInput = document.createElement('input');
+  telInput.type = 'tel'; telInput.value = v.telefono || ''; telInput.placeholder = '+502 0000 0000';
+
+  const dirInput = document.createElement('input');
+  dirInput.type = 'text'; dirInput.value = v.direccion || ''; dirInput.placeholder = 'Dirección';
+
+  const fechaInput = document.createElement('input');
+  fechaInput.type = 'date'; fechaInput.value = v.fecha_inicio || '';
+
+  const usuarioInput = document.createElement('input');
+  usuarioInput.type = 'text'; usuarioInput.value = v.usuario || ''; usuarioInput.placeholder = 'Usuario';
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+
+  card.append(vendCardHead(v));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('Foto', avWrap),
+    labeledCell('Código de vendedor', el('strong', '', isNew ? 'Se asigna automáticamente al guardar' : vendCodigo(v))),
+    labeledCell('Nombre', nombreInput),
+    labeledCell('Teléfono', telInput),
+    labeledCell('Dirección', dirInput),
+    labeledCell('Fecha inicio', fechaInput),
+    labeledCell('Usuario', usuarioInput)
+  );
+  card.append(grid, actions);
+
+  cancelBtn.addEventListener('click', () => {
+    if (isNew) {
+      card.remove();
+      if (!$('#adminVendedoresList').children.length) pintarAdminVendedoresList();
+    } else {
+      vendRenderView(card, v);
+    }
+  });
+  saveBtn.addEventListener('click', async () => {
+    const nombre = nombreInput.value.trim();
+    if (!nombre) { alert('Escribe el nombre del vendedor.'); return; }
+    saveBtn.disabled = true;
+    const payload = {
+      nombre,
+      telefono: telInput.value.trim() || null,
+      direccion: dirInput.value.trim() || null,
+      fecha_inicio: fechaInput.value || null,
+      usuario: usuarioInput.value.trim() || null,
+      foto_url: fotoUrl || null
+    };
+    try {
+      if (isNew) {
+        const nuevo = await crearVendedor(payload);
+        adminVendData.unshift(nuevo);
+        vendRenderView(card, nuevo);
+      } else {
+        await guardarVendedorDesdeListado(v, payload);
+        vendRenderView(card, v);
+      }
+      vendedoresCatalogoCargado = false; // el catálogo del formulario de propiedades se refresca en su próximo uso
+    } catch (e) {
+      console.error('Error guardando el vendedor:', e);
+      alert('No se pudo guardar el vendedor.');
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+async function crearVendedor(payload) {
+  const { data: row, error } = await supabaseClient.from('vendedores').insert(payload).select().single();
+  if (error) throw error;
+  return row;
+}
+
+async function guardarVendedorDesdeListado(v, payload) {
+  const { error } = await supabaseClient.from('vendedores').update(payload).eq('id', v.id);
+  if (error) throw error;
+  Object.assign(v, payload);
+}
+
+async function eliminarVendedorDesdeListado(v) {
+  const { error } = await supabaseClient.from('vendedores').delete().eq('id', v.id);
+  if (error) throw error;
+}
+
+function pintarAdminVendedoresList() {
+  const list = $('#adminVendedoresList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!adminVendData.length) { list.innerHTML = '<p class="proy-empty">No hay vendedores que coincidan con la búsqueda.</p>'; return; }
+  adminVendData.forEach((v) => {
+    const card = el('div', 'proy-card');
+    vendRenderView(card, v);
+    list.appendChild(card);
+  });
+}
+
+async function cargarAdminVendData(filtroNombre) {
+  const list = $('#adminVendedoresList');
+  if (list) list.innerHTML = '<p class="proy-empty">Cargando…</p>';
+  try {
+    let query = supabaseClient.from('vendedores').select('*').order('id', { ascending: false });
+    if (filtroNombre) query = query.ilike('nombre', '%' + filtroNombre + '%');
+    const { data: rows, error } = await query;
+    if (error) throw error;
+    adminVendData = rows || [];
+  } catch (e) {
+    console.error('Error cargando los vendedores:', e);
+    adminVendData = [];
+  }
+  pintarAdminVendedoresList();
+}
+
+$('#adminVendMostrarBtn')?.addEventListener('click', () => {
+  cargarAdminVendData(($('#adminVendBuscarInput')?.value || '').trim());
+});
+$('#adminVendBuscarInput')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); $('#adminVendMostrarBtn')?.click(); }
+});
+$('#adminVendNuevoBtn')?.addEventListener('click', () => {
+  const list = $('#adminVendedoresList');
+  if (!list) return;
+  if (list.querySelector('.proy-card-edit')) return;
+  const emptyMsg = list.querySelector('.proy-empty');
+  if (emptyMsg) emptyMsg.remove();
+  const card = el('div', 'proy-card');
+  list.prepend(card);
+  vendRenderEdit(card, {}, true);
+});
+
+const adminVendedoresModal = $('#adminVendedoresModal');
+function abrirAdminVendedoresModal() {
+  if (!adminVendedoresModal) return;
+  if ($('#adminVendBuscarInput')) $('#adminVendBuscarInput').value = '';
+  adminVendedoresModal.hidden = false;
+  cargarAdminVendData();
+}
+function cerrarAdminVendedoresModal() { if (adminVendedoresModal) adminVendedoresModal.hidden = true; }
+$('#navAdminVendedoresBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminVendedoresModal();
+});
+$('#adminVendedoresClose')?.addEventListener('click', cerrarAdminVendedoresModal);
+$('#adminVendedoresScrim')?.addEventListener('click', cerrarAdminVendedoresModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminVendedoresModal && !adminVendedoresModal.hidden) cerrarAdminVendedoresModal(); });
+
+/* Catálogo de vendedores (tabla "vendedores") para sugerir nombres en el
+   campo "Nombre del vendedor" de cada ubicación (sección "Vendedor" del
+   formulario de edición de propiedad) y autocompletar su WhatsApp y foto
+   cuando el nombre coincide exactamente con un vendedor registrado. Se
+   carga de forma perezosa, la primera vez que se muestra el bloque de
+   administración de una ubicación. */
+let vendedoresCatalogo = [];
+let vendedoresCatalogoCargado = false;
+async function cargarVendedoresCatalogo() {
+  try {
+    const { data: rows, error } = await supabaseClient.from('vendedores').select('id, nombre, telefono, foto_url').order('nombre', { ascending: true });
+    if (error) throw error;
+    vendedoresCatalogo = rows || [];
+  } catch (e) {
+    console.error('Error cargando el catálogo de vendedores:', e);
+    vendedoresCatalogo = [];
+  }
+  vendedoresCatalogoCargado = true;
+  if (typeof render === 'function' && pModal && !pModal.hidden) render();
+}
 
 /* Carrusel de propiedades */
 const car = $('#car');
@@ -3258,6 +3549,8 @@ function renderEdit() {
       badge.style.background = info.bg;
       badge.style.color = info.fg;
       fillDatalist($('#pVendedorList'), vendedoresConocidos());
+      fillDatalist($('#pSnameList'), vendedoresCatalogo.map((v) => v.nombre));
+      if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
       $('#p-vendedor-asignado').value = c.vendedorAsignado || '';
       $('#p-comision').value = c.comisionPorcentaje || '';
       $('#pComisionValor').textContent = formatQ(comisionValorCalc(c));
@@ -3852,6 +4145,24 @@ $('#p-sname').addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
   c.sName = $('#p-sname').value;
   note(persist() ? '' : T[lang].storeErr);
+});
+/* Si el nombre escrito coincide con un vendedor ya registrado en el
+   catálogo de Administración > Vendedores, se completan su WhatsApp y su
+   foto automáticamente (solo si esta ubicación todavía no tiene los
+   suyos), para no tener que volver a cargarlos a mano. */
+$('#p-sname').addEventListener('change', () => {
+  const c = list()[sel]; if (!c) return;
+  const nombre = (c.sName || '').trim().toLowerCase();
+  if (!nombre) return;
+  const match = vendedoresCatalogo.find((v) => (v.nombre || '').trim().toLowerCase() === nombre);
+  if (!match) return;
+  let changed = false;
+  if (!c.sWa && match.telefono) { c.sWa = match.telefono; changed = true; }
+  if (!c.sPhoto && match.foto_url) { c.sPhoto = match.foto_url; changed = true; }
+  if (changed) {
+    note(persist() ? T[lang].saved : T[lang].storeErr);
+    renderEdit();
+  }
 });
 $('#p-swa').addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
