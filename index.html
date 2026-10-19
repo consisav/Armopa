@@ -39,12 +39,28 @@
         <div class="nav-admin-drop" id="navAdminDrop" hidden>
           <button class="btn btn-line btn-sm nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false"><span data-i18n="adminMenuBtn"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
           <div class="nav-admin-menu" id="navAdminMenu" hidden>
-            <button type="button" id="navAdminPropiedadesBtn" data-i18n="adminMenuProp"></button>
-            <button type="button" id="navAdminProyectosBtn" data-i18n="adminMenuProy"></button>
-            <button type="button" id="navAdminServiciosBtn" data-i18n="adminMenuServ"></button>
-            <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
-            <button type="button" id="navAdminComisionesBtn">Comisiones Ventas</button>
-            <button type="button" id="navAdminComisionesGeneradasBtn">Comisiones Generadas</button>
+            <div class="nav-admin-group" data-grp="catalogos">
+              <button type="button" class="nav-admin-group-h" aria-expanded="false">Catálogos<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <div class="nav-admin-group-items" hidden>
+                <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
+                <button type="button" id="navAdminTiposComisionBtn">Tipos de comisión</button>
+              </div>
+            </div>
+            <div class="nav-admin-group" data-grp="negocios">
+              <button type="button" class="nav-admin-group-h" aria-expanded="false">Negocios<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <div class="nav-admin-group-items" hidden>
+                <button type="button" id="navAdminPropiedadesBtn" data-i18n="adminMenuProp"></button>
+                <button type="button" id="navAdminProyectosBtn" data-i18n="adminMenuProy"></button>
+                <button type="button" id="navAdminServiciosBtn" data-i18n="adminMenuServ"></button>
+              </div>
+            </div>
+            <div class="nav-admin-group" data-grp="comisiones">
+              <button type="button" class="nav-admin-group-h" aria-expanded="false">Comisiones<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <div class="nav-admin-group-items" hidden>
+                <button type="button" id="navAdminComisionesBtn">Comisiones Ventas</button>
+                <button type="button" id="navAdminComisionesGeneradasBtn">Comisiones Generadas</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1715,6 +1731,25 @@
   </div>
 </div>
 
+<div class="modal" id="adminTiposComisionModal" hidden>
+  <button class="scrim" type="button" id="adminTiposComisionScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="adminTiposComisionCard" role="dialog" aria-modal="true" aria-labelledby="adminTiposComisionTitle">
+    <button class="mx" type="button" id="adminTiposComisionClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminTiposComisionTitle">Tipos de comisión — Catálogo</h2><p class="ph-sub">Tipos de comisión según el negocio: Propiedades, Proyectos o Servicios.</p></div>
+    <div class="q-buscar-fields" style="margin-bottom:18px">
+      <select id="adminTipoComNegocioSel" aria-label="Negocio">
+        <option value="">Todos los negocios</option>
+        <option value="propiedades">Propiedades</option>
+        <option value="proyectos">Proyectos</option>
+        <option value="servicios">Servicios</option>
+      </select>
+      <button class="btn btn-dark btn-sm" type="button" id="adminTipoComMostrarBtn">Mostrar</button>
+      <button class="btn btn-gold btn-sm" type="button" id="adminTipoComNuevoBtn">+ Agregar tipo de comisión</button>
+    </div>
+    <div id="adminTiposComisionList" class="proy-list"></div>
+  </div>
+</div>
+
 <div class="modal" id="adminComisionesModal" hidden>
   <button class="scrim" type="button" id="adminComisionesScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminComisionesCard" role="dialog" aria-modal="true" aria-labelledby="adminComisionesTitle">
@@ -1760,6 +1795,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261019-0019"></script>
+<script src="script.js?v=20261019-0020"></script>
 </body>
 </html>

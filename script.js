@@ -426,6 +426,10 @@ function cerrarNavAdminMenu() {
   if (drop) drop.classList.remove('open');
   if (menu) menu.hidden = true;
   if (btn) btn.setAttribute('aria-expanded', 'false');
+  // Colapsa los 3 grupos (Catálogos / Negocios / Comisiones) para que el
+  // menú vuelva a abrir "cerrado" la próxima vez.
+  document.querySelectorAll('.nav-admin-group-items').forEach((it) => { it.hidden = true; });
+  document.querySelectorAll('.nav-admin-group-h').forEach((h) => h.setAttribute('aria-expanded', 'false'));
 }
 const navAdminDrop = $('#navAdminDrop');
 const navAdminBtn = $('#navAdminBtn');
@@ -446,6 +450,29 @@ document.addEventListener('click', (e) => {
 });
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarNavAdminMenu(); });
 $$('.nav-admin-menu a').forEach((a) => a.addEventListener('click', () => { cerrarNavAdminMenu(); navwrap.classList.remove('open'); }));
+
+/* Los 3 grupos del menú Administración (Catálogos / Negocios / Comisiones)
+   se abren como acordeón: al presionar uno se muestran sus elementos y
+   se cierran los demás grupos, para no mostrar todo de una vez. */
+$$('.nav-admin-group-h').forEach((h) => {
+  h.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const grupo = h.closest('.nav-admin-group');
+    const items = grupo?.querySelector('.nav-admin-group-items');
+    if (!items) return;
+    const abrir = items.hidden;
+    $$('.nav-admin-group').forEach((g) => {
+      if (g !== grupo) {
+        const otrosItems = g.querySelector('.nav-admin-group-items');
+        const otroH = g.querySelector('.nav-admin-group-h');
+        if (otrosItems) otrosItems.hidden = true;
+        if (otroH) otroH.setAttribute('aria-expanded', 'false');
+      }
+    });
+    items.hidden = !abrir;
+    h.setAttribute('aria-expanded', String(abrir));
+  });
+});
 
 /* "Propiedades" dentro del menú Administración: en vez de saltar a una
    sección, abre un listado vertical con todas las propiedades (de todas las
@@ -1713,6 +1740,192 @@ function vendRenderEdit(card, v, isNew) {
     }
   });
 }
+
+/* ===== Tipos de comisión (catálogo) =====
+   Catálogo simple de tipos de comisión agrupados por negocio (Propiedades,
+   Proyectos o Servicios), con un % de comisión por defecto de referencia.
+   Mismo patrón de tarjetas que el catálogo de Vendedores. */
+const NEGOCIOS_TIPO = [
+  { v: 'propiedades', l: 'Propiedades' },
+  { v: 'proyectos', l: 'Proyectos' },
+  { v: 'servicios', l: 'Servicios' }
+];
+const negocioLabel = (v) => (NEGOCIOS_TIPO.find((n) => n.v === v) || {}).l || v || '—';
+
+let adminTipoComData = [];
+
+function tipoComCardHead(t) {
+  const head = el('div', 'proy-card-h');
+  head.append(el('div', 'proy-name', t.nombre || 'Tipo sin nombre'));
+  return head;
+}
+
+function tipoComRenderView(card, t) {
+  card.innerHTML = '';
+  card.classList.remove('proy-card-edit');
+  const actions = el('div', 'proy-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+
+  card.append(tipoComCardHead(t));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('Negocio', el('span', '', negocioLabel(t.negocio))),
+    labeledCell('Nombre', el('span', '', t.nombre || '—')),
+    labeledCell('% Comisión por defecto', el('span', '', t.porcentaje_default != null && t.porcentaje_default !== '' ? (t.porcentaje_default + '%') : '—'))
+  );
+  card.append(grid, actions);
+
+  modBtn.addEventListener('click', () => tipoComRenderEdit(card, t, false));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm('¿Eliminar este tipo de comisión? Esta acción no se puede deshacer.')) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('tipos_comision').delete().eq('id', t.id);
+      if (error) throw error;
+      adminTipoComData = adminTipoComData.filter((x) => x.id !== t.id);
+      card.remove();
+      if (!$('#adminTiposComisionList').children.length) pintarAdminTiposComisionList();
+    } catch (e) {
+      console.error('Error eliminando el tipo de comisión:', e);
+      alert('No se pudo eliminar el tipo de comisión.');
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function tipoComRenderEdit(card, t, isNew) {
+  card.innerHTML = '';
+  card.classList.add('proy-card-edit');
+
+  const negocioSel = document.createElement('select');
+  const optVacio = document.createElement('option'); optVacio.value = ''; optVacio.textContent = 'Selecciona…';
+  negocioSel.appendChild(optVacio);
+  NEGOCIOS_TIPO.forEach((n) => {
+    const opt = document.createElement('option'); opt.value = n.v; opt.textContent = n.l;
+    negocioSel.appendChild(opt);
+  });
+  negocioSel.value = t.negocio || '';
+
+  const nombreInput = document.createElement('input');
+  nombreInput.type = 'text'; nombreInput.value = t.nombre || ''; nombreInput.placeholder = 'Ej. Venta directa, Remodelación…';
+
+  const pctInput = document.createElement('input');
+  pctInput.type = 'number'; pctInput.min = '0'; pctInput.max = '100'; pctInput.step = '0.1';
+  pctInput.value = t.porcentaje_default != null ? t.porcentaje_default : ''; pctInput.placeholder = '%';
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+
+  card.append(tipoComCardHead(t));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('Negocio', negocioSel),
+    labeledCell('Nombre', nombreInput),
+    labeledCell('% Comisión por defecto', pctInput)
+  );
+  card.append(grid, actions);
+
+  cancelBtn.addEventListener('click', () => {
+    if (isNew) {
+      card.remove();
+      if (!$('#adminTiposComisionList').children.length) pintarAdminTiposComisionList();
+    } else {
+      tipoComRenderView(card, t);
+    }
+  });
+  saveBtn.addEventListener('click', async () => {
+    const nombre = nombreInput.value.trim();
+    if (!nombre) { alert('Escribe el nombre del tipo de comisión.'); return; }
+    if (!negocioSel.value) { alert('Selecciona el negocio.'); return; }
+    saveBtn.disabled = true;
+    const payload = {
+      nombre,
+      negocio: negocioSel.value,
+      porcentaje_default: pctInput.value !== '' ? pctInput.value : null,
+      usuario: localStorage.getItem(LOGIN_STORE) || null
+    };
+    try {
+      if (isNew) {
+        const { data: row, error } = await supabaseClient.from('tipos_comision').insert(payload).select().single();
+        if (error) throw error;
+        adminTipoComData.unshift(row);
+        tipoComRenderView(card, row);
+      } else {
+        const { error } = await supabaseClient.from('tipos_comision').update(payload).eq('id', t.id);
+        if (error) throw error;
+        Object.assign(t, payload);
+        tipoComRenderView(card, t);
+      }
+    } catch (e) {
+      console.error('Error guardando el tipo de comisión:', e);
+      alert('No se pudo guardar el tipo de comisión.');
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+function pintarAdminTiposComisionList() {
+  const list = $('#adminTiposComisionList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!adminTipoComData.length) { list.innerHTML = '<p class="proy-empty">No hay tipos de comisión que coincidan con la búsqueda.</p>'; return; }
+  adminTipoComData.forEach((t) => {
+    const card = el('div', 'proy-card');
+    tipoComRenderView(card, t);
+    list.appendChild(card);
+  });
+}
+
+async function cargarAdminTipoComData(filtroNegocio) {
+  const list = $('#adminTiposComisionList');
+  if (list) list.innerHTML = '<p class="proy-empty">Cargando…</p>';
+  try {
+    let q = supabaseClient.from('tipos_comision').select('*').order('negocio', { ascending: true }).order('nombre', { ascending: true });
+    if (filtroNegocio) q = q.eq('negocio', filtroNegocio);
+    const { data, error } = await q;
+    if (error) throw error;
+    adminTipoComData = data || [];
+  } catch (e) {
+    console.error('Error cargando los tipos de comisión:', e);
+    adminTipoComData = [];
+  }
+  pintarAdminTiposComisionList();
+}
+
+$('#adminTipoComMostrarBtn')?.addEventListener('click', () => {
+  cargarAdminTipoComData($('#adminTipoComNegocioSel')?.value || '');
+});
+$('#adminTipoComNuevoBtn')?.addEventListener('click', () => {
+  const list = $('#adminTiposComisionList');
+  if (!list) return;
+  if (list.querySelector('.proy-card-edit')) return;
+  const emptyMsg = list.querySelector('.proy-empty');
+  if (emptyMsg) emptyMsg.remove();
+  const card = el('div', 'proy-card');
+  list.prepend(card);
+  tipoComRenderEdit(card, {}, true);
+});
+
+const adminTiposComisionModal = $('#adminTiposComisionModal');
+function abrirAdminTiposComisionModal() {
+  if (!adminTiposComisionModal) return;
+  if ($('#adminTipoComNegocioSel')) $('#adminTipoComNegocioSel').value = '';
+  adminTiposComisionModal.hidden = false;
+  cargarAdminTipoComData();
+}
+function cerrarAdminTiposComisionModal() { if (adminTiposComisionModal) adminTiposComisionModal.hidden = true; }
+$('#navAdminTiposComisionBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminTiposComisionModal();
+});
+$('#adminTiposComisionClose')?.addEventListener('click', cerrarAdminTiposComisionModal);
+$('#adminTiposComisionScrim')?.addEventListener('click', cerrarAdminTiposComisionModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminTiposComisionModal && !adminTiposComisionModal.hidden) cerrarAdminTiposComisionModal(); });
 
 async function crearVendedor(payload) {
   const { data: row, error } = await supabaseClient.from('vendedores').insert(payload).select().single();
