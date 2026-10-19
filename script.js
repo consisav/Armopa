@@ -1785,53 +1785,86 @@ function adminComValorCalc(pct, precio) {
   return (p / 100) * precio;
 }
 
-/* Lleva el registro de las filas de comisión actualmente dibujadas (cada
-   una con su función getValor()), para poder recalcular el subtotal de su
-   grupo y el total general cada vez que el super administrador cambia un
-   % de comisión, sin tener que volver a consultar Supabase. */
+/* Estados de pago de una comisión, con colores propios (igual criterio que
+   SOL_ESTADOS). "pendiente" es el que queda por defecto. */
+const COM_ESTADOS = [
+  { v: 'pendiente', l: 'Pendiente de pago', bg: '#e6eef5', fg: '#2b4a66' },
+  { v: 'pagado', l: 'Pagado', bg: '#dcefe0', fg: '#1f7a43' },
+  { v: 'suspendido', l: 'Suspendido', bg: '#fbe9c8', fg: '#8b641d' },
+  { v: 'anulado', l: 'Anulado', bg: '#fbdede', fg: '#b42318' }
+];
+const comEstadoInfo = (v) => COM_ESTADOS.find((e) => e.v === v) || COM_ESTADOS[0];
+function adminComEstadoBadge(valor) {
+  const info = comEstadoInfo(valor);
+  const span = el('span', 'sol-badge', info.l);
+  span.style.background = info.bg;
+  span.style.color = info.fg;
+  return span;
+}
+
+/* Lleva el registro de las filas de comisión actualmente dibujadas, para
+   poder recalcular el subtotal de su grupo, el total general y el total
+   "a pagar" cada vez que el super administrador cambia un % de comisión,
+   un estado, o marca/desmarca el check "Pagar comisión", sin tener que
+   volver a consultar Supabase. */
 let comFilasActivas = [];
 
 function adminComRecalcularTotales() {
   const porGrupo = {};
+  let totalGenerado = 0;
+  let totalAPagar = 0;
   comFilasActivas.forEach((f) => {
-    porGrupo[f.grupo] = (porGrupo[f.grupo] || 0) + (f.getValor() || 0);
+    const valor = f.getValor() || 0;
+    porGrupo[f.grupo] = (porGrupo[f.grupo] || 0) + valor;
+    totalGenerado += valor;
+    if (f.isChecked() && f.getEstado() !== 'pagado') totalAPagar += valor;
   });
   comFilasActivas.forEach((f) => {
     if (f.subtotalEl) f.subtotalEl.textContent = formatQ(porGrupo[f.grupo] || 0);
   });
-  const total = Object.values(porGrupo).reduce((a, b) => a + b, 0);
   const totalEl = $('#adminComTotalValor');
-  if (totalEl) totalEl.textContent = formatQ(total);
+  if (totalEl) totalEl.textContent = formatQ(totalGenerado);
+  const totalPagarEl = $('#adminComTotalPagarValor');
+  if (totalPagarEl) totalPagarEl.textContent = formatQ(totalAPagar);
+  const pagarBtn = $('#adminComPagarBtn');
+  if (pagarBtn) pagarBtn.disabled = totalAPagar <= 0;
 }
 
-/* Construye una fila <tr> de la tabla de comisiones. precioBase es el
-   valor contra el que se calcula la comisión (precio de la propiedad o
-   presupuesto de la cotización). guardarPct(nuevoValor) persiste el % de
-   comisión en Supabase; solo se usa cuando el super administrador edita
-   el campo. */
-function adminComBuildFila(detalleNode, fechaTxt, vendedorTxt, pctInicial, precioBase, guardarPct) {
+/* Construye una fila <tr> de la tabla de comisiones a partir de un
+   descriptor d con: detalleNode, detalleTexto, fechaTxt, fechaIso,
+   vendedorTxt, pctInicial, precioBase, estadoInicial, pagarInicial,
+   origen, referencia, guardarPct/guardarEstado/guardarPagar/
+   guardarPagoCompleto (funciones que persisten cada campo en Supabase;
+   solo se usan y se muestran como editables cuando es super
+   administrador). */
+function adminComBuildFila(d) {
   const tr = document.createElement('tr');
-  const tdDetalle = el('td'); tdDetalle.appendChild(detalleNode);
-  const tdFecha = el('td', '', fechaTxt);
-  const tdVendedor = el('td', '', vendedorTxt || '—');
+  const tdDetalle = el('td'); tdDetalle.appendChild(d.detalleNode);
+  const tdFecha = el('td', '', d.fechaTxt);
+  const tdVendedor = el('td', '', d.vendedorTxt || '—');
   const tdPct = el('td', 'num');
   const tdValor = el('td', 'num com-valor');
+  const tdEstado = el('td');
+  const tdPagar = el('td', 'com-pagar-cell');
 
-  let pctActual = pctInicial;
+  let pctActual = d.pctInicial;
+  let estadoActual = d.estadoInicial || 'pendiente';
+
   function pintarValor() {
-    tdValor.textContent = formatQ(adminComValorCalc(pctActual, precioBase));
+    tdValor.textContent = formatQ(adminComValorCalc(pctActual, d.precioBase));
   }
 
-  if (esSuperAdmin() && typeof guardarPct === 'function') {
+  // % Comisión
+  if (esSuperAdmin() && typeof d.guardarPct === 'function') {
     const input = document.createElement('input');
     input.type = 'number'; input.min = '0'; input.max = '100'; input.step = '0.1';
     input.className = 'com-pct-input';
-    input.value = pctInicial != null && pctInicial !== '' ? pctInicial : '';
+    input.value = d.pctInicial != null && d.pctInicial !== '' ? d.pctInicial : '';
     input.addEventListener('input', () => { pctActual = input.value; pintarValor(); adminComRecalcularTotales(); });
     input.addEventListener('change', async () => {
       input.disabled = true;
       try {
-        const { error } = await guardarPct(input.value || null);
+        const { error } = await d.guardarPct(input.value || null);
         if (error) throw error;
       } catch (e) {
         console.error('Error guardando el % de comisión:', e);
@@ -1842,12 +1875,89 @@ function adminComBuildFila(detalleNode, fechaTxt, vendedorTxt, pctInicial, preci
     });
     tdPct.append(input, document.createTextNode(' %'));
   } else {
-    tdPct.textContent = pctInicial ? (pctInicial + '%') : '—';
+    tdPct.textContent = d.pctInicial ? (d.pctInicial + '%') : '—';
   }
+
+  // Estado (lista con colores propios; editable solo para super admin)
+  function repintarEstado() {
+    tdEstado.innerHTML = '';
+    if (esSuperAdmin() && typeof d.guardarEstado === 'function') {
+      const sel = document.createElement('select');
+      sel.className = 'com-estado-sel';
+      COM_ESTADOS.forEach((e) => {
+        const opt = document.createElement('option');
+        opt.value = e.v; opt.textContent = e.l;
+        if (e.v === estadoActual) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      const colorear = () => {
+        const info = comEstadoInfo(sel.value);
+        sel.style.background = info.bg; sel.style.color = info.fg;
+      };
+      colorear();
+      sel.addEventListener('change', async () => {
+        const anterior = estadoActual;
+        sel.disabled = true;
+        try {
+          const { error } = await d.guardarEstado(sel.value);
+          if (error) throw error;
+          estadoActual = sel.value;
+          colorear();
+          adminComRecalcularTotales();
+        } catch (e) {
+          console.error('Error guardando el estado de la comisión:', e);
+          alert('No se pudo guardar el estado.');
+          sel.value = anterior;
+          colorear();
+        } finally {
+          sel.disabled = false;
+        }
+      });
+      tdEstado.appendChild(sel);
+    } else {
+      tdEstado.appendChild(adminComEstadoBadge(estadoActual));
+    }
+  }
+  repintarEstado();
+
+  // Pagar comisión (check): marca la fila para incluirla en el total "a
+  // pagar" y, al presionar el botón Pagar, en el historial de pagadas.
+  const checkbox = document.createElement('input');
+  checkbox.type = 'checkbox';
+  checkbox.className = 'com-pagar-check';
+  checkbox.checked = !!d.pagarInicial;
+  checkbox.disabled = !esSuperAdmin();
+  checkbox.addEventListener('change', async () => {
+    adminComRecalcularTotales();
+    if (esSuperAdmin() && typeof d.guardarPagar === 'function') {
+      try {
+        const { error } = await d.guardarPagar(checkbox.checked);
+        if (error) throw error;
+      } catch (e) {
+        console.error('Error guardando "Pagar comisión":', e);
+      }
+    }
+  });
+  tdPagar.appendChild(checkbox);
+
   pintarValor();
 
-  tr.append(tdDetalle, tdFecha, tdVendedor, tdPct, tdValor);
-  return { tr, getValor: () => adminComValorCalc(pctActual, precioBase) };
+  tr.append(tdDetalle, tdFecha, tdVendedor, tdPct, tdValor, tdEstado, tdPagar);
+
+  return {
+    tr,
+    getValor: () => adminComValorCalc(pctActual, d.precioBase),
+    getPct: () => pctActual,
+    getEstado: () => estadoActual,
+    isChecked: () => checkbox.checked,
+    marcarPagada: () => { estadoActual = 'pagado'; repintarEstado(); checkbox.disabled = true; },
+    origen: d.origen,
+    referencia: d.referencia,
+    detalleTexto: d.detalleTexto,
+    fechaIso: d.fechaIso,
+    vendedorTxt: d.vendedorTxt,
+    guardarPagoCompleto: d.guardarPagoCompleto
+  };
 }
 
 function adminComBuildGrupo(titulo, filasDescriptor) {
@@ -1857,27 +1967,87 @@ function adminComBuildGrupo(titulo, filasDescriptor) {
   const table = document.createElement('table');
   table.className = 'com-table';
   const thead = document.createElement('thead');
-  thead.innerHTML = '<tr><th>Detalle</th><th>Fecha</th><th>Vendedor</th><th class="num">% Comisión</th><th class="num">Valor de comisión</th></tr>';
+  thead.innerHTML = '<tr><th>Detalle</th><th>Fecha</th><th>Vendedor</th><th class="num">% Comisión</th><th class="num">Valor de comisión</th><th>Estado</th><th>Pagar comisión</th></tr>';
   const tbody = document.createElement('tbody');
   const tfoot = document.createElement('tfoot');
-  const subtotalTd = el('td', '', '');
+  const subtotalTd = el('td', 'num', '');
   const subtotalRow = el('tr', 'com-subtotal');
   const labelTd = el('td', '', 'Subtotal ' + titulo);
   labelTd.colSpan = 4;
-  subtotalRow.append(labelTd, subtotalTd);
+  const colaTd = el('td', '', '');
+  colaTd.colSpan = 2;
+  subtotalRow.append(labelTd, subtotalTd, colaTd);
   tfoot.appendChild(subtotalRow);
   table.append(thead, tbody, tfoot);
   wrap.append(h, table);
 
   const grupoKey = titulo;
   filasDescriptor.forEach((d) => {
-    const { tr, getValor } = adminComBuildFila(d.detalleNode, d.fechaTxt, d.vendedorTxt, d.pctInicial, d.precioBase, d.guardarPct);
-    tbody.appendChild(tr);
-    comFilasActivas.push({ grupo: grupoKey, getValor, subtotalEl: subtotalTd });
+    const fila = adminComBuildFila(d);
+    tbody.appendChild(fila.tr);
+    comFilasActivas.push({ ...fila, grupo: grupoKey, subtotalEl: subtotalTd });
   });
   subtotalTd.textContent = formatQ(filasDescriptor.reduce((a, d) => a + (adminComValorCalc(d.pctInicial, d.precioBase) || 0), 0));
 
   return wrap;
+}
+
+/* Botón "Pagar": toma únicamente las filas marcadas con el check "Pagar
+   comisión" (y que aún no estén en estado "Pagado"), las registra en el
+   historial comisiones_pagadas —incluyendo tanto sus propios datos como
+   los parámetros de búsqueda (vendedor, fecha inicial, fecha final, tipo)
+   usados en ese momento— y actualiza su estado a "Pagado" en la tabla de
+   origen (Propiedades o Proyectos/Servicios). */
+async function adminComProcesarPago(filtros) {
+  const status = $('#adminComPagarStatus');
+  const seleccionadas = comFilasActivas.filter((f) => f.isChecked() && f.getEstado() !== 'pagado');
+  if (!seleccionadas.length) {
+    if (status) status.textContent = 'No hay comisiones marcadas para pagar.';
+    return;
+  }
+  const totalPagar = seleccionadas.reduce((a, f) => a + (f.getValor() || 0), 0);
+  if (!confirm('¿Confirmas el pago de ' + seleccionadas.length + ' comisión(es) por un total de ' + formatQ(totalPagar) + '?')) return;
+
+  const btn = $('#adminComPagarBtn');
+  if (btn) btn.disabled = true;
+  if (status) status.textContent = 'Procesando pago…';
+  const usuario = localStorage.getItem(LOGIN_STORE) || null;
+  const ahora = new Date().toISOString();
+  try {
+    const filas = seleccionadas.map((f) => ({
+      origen: f.origen,
+      referencia: f.referencia,
+      detalle: f.detalleTexto,
+      fecha_comision: f.fechaIso || null,
+      vendedor: f.vendedorTxt || null,
+      porcentaje_comision: f.getPct() || null,
+      valor_comision: f.getValor(),
+      estado: 'pagado',
+      vendedor_filtro: filtros.vendedorVal || null,
+      fecha_desde_filtro: filtros.fechaDesdeVal || null,
+      fecha_hasta_filtro: filtros.fechaHastaVal || null,
+      tipo_filtro: filtros.tipoVal || null,
+      fecha_pago: ahora,
+      usuario_pago: usuario
+    }));
+    const { error: insertError } = await supabaseClient.from('comisiones_pagadas').insert(filas);
+    if (insertError) throw insertError;
+
+    for (const f of seleccionadas) {
+      if (typeof f.guardarPagoCompleto === 'function') {
+        const { error } = await f.guardarPagoCompleto();
+        if (error) console.error('Error actualizando el estado de la comisión pagada:', error);
+      }
+      f.marcarPagada();
+    }
+    adminComRecalcularTotales();
+    if (status) status.textContent = 'Se registraron ' + seleccionadas.length + ' comisión(es) como pagadas.';
+  } catch (e) {
+    console.error('Error registrando el pago de comisiones:', e);
+    if (status) status.textContent = 'No se pudo registrar el pago. Intenta de nuevo.';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
 }
 
 async function mostrarAdminComisiones() {
@@ -1895,28 +2065,40 @@ async function mostrarAdminComisiones() {
     if (tipoVal === '' || tipoVal === 'propiedades') {
       let q = supabaseClient
         .from('propiedades')
-        .select('ciudad, local_id, nombre, tipo_operacion, valor_renta, valor_venta, vendedor_asignado, comision_porcentaje, creado_en')
+        .select('ciudad, local_id, nombre, tipo_operacion, valor_renta, valor_venta, vendedor_asignado, comision_porcentaje, creado_en, comision_pagar, comision_estado')
         .eq('activo', true);
       if (vendedorVal) q = q.eq('vendedor_asignado', vendedorVal);
       if (fechaDesdeVal) q = q.gte('creado_en', fechaDesdeVal + 'T00:00:00');
       if (fechaHastaVal) q = q.lte('creado_en', fechaHastaVal + 'T23:59:59');
       const { data: propRows, error: propErr } = await q;
       if (propErr) throw propErr;
-      const filasDescriptor = (propRows || []).map((r) => ({
-        detalleNode: el('span', '', (r.ciudad || '') + (r.nombre ? ' · ' + r.nombre : '')),
-        fechaTxt: r.creado_en ? formatQBuscarRegFecha(r.creado_en) : '—',
-        vendedorTxt: r.vendedor_asignado,
-        pctInicial: r.comision_porcentaje,
-        precioBase: adminComPrecioBase(r.tipo_operacion, r.valor_venta, r.valor_renta),
-        guardarPct: (nuevoPct) => supabaseClient.from('propiedades').update({ comision_porcentaje: nuevoPct }).eq('ciudad', r.ciudad).eq('local_id', r.local_id)
-      }));
+      const filasDescriptor = (propRows || []).map((r) => {
+        const detalleTexto = (r.ciudad || '') + (r.nombre ? ' · ' + r.nombre : '');
+        return {
+          detalleNode: el('span', '', detalleTexto),
+          detalleTexto,
+          fechaTxt: r.creado_en ? formatQBuscarRegFecha(r.creado_en) : '—',
+          fechaIso: r.creado_en || null,
+          vendedorTxt: r.vendedor_asignado,
+          pctInicial: r.comision_porcentaje,
+          precioBase: adminComPrecioBase(r.tipo_operacion, r.valor_venta, r.valor_renta),
+          estadoInicial: r.comision_estado || 'pendiente',
+          pagarInicial: !!r.comision_pagar,
+          origen: 'propiedades',
+          referencia: r.ciudad + '|' + r.local_id,
+          guardarPct: (nuevoPct) => supabaseClient.from('propiedades').update({ comision_porcentaje: nuevoPct }).eq('ciudad', r.ciudad).eq('local_id', r.local_id),
+          guardarEstado: (nuevoEstado) => supabaseClient.from('propiedades').update({ comision_estado: nuevoEstado }).eq('ciudad', r.ciudad).eq('local_id', r.local_id),
+          guardarPagar: (nuevoPagar) => supabaseClient.from('propiedades').update({ comision_pagar: nuevoPagar }).eq('ciudad', r.ciudad).eq('local_id', r.local_id),
+          guardarPagoCompleto: () => supabaseClient.from('propiedades').update({ comision_pagar: true, comision_estado: 'pagado' }).eq('ciudad', r.ciudad).eq('local_id', r.local_id)
+        };
+      });
       grupos.push({ titulo: 'Propiedades', filasDescriptor });
     }
 
     if (tipoVal === '' || tipoVal === 'proyectos' || tipoVal === 'servicios') {
       let q = supabaseClient
         .from('solicitudes_servicio')
-        .select('id, numero_solicitud, servicio, created_at, vendedor_asignado, comision_porcentaje, cotizacion_id');
+        .select('id, numero_solicitud, servicio, created_at, vendedor_asignado, comision_porcentaje, cotizacion_id, comision_pagar, comision_estado');
       if (vendedorVal) q = q.eq('vendedor_asignado', vendedorVal);
       if (fechaDesdeVal) q = q.gte('created_at', fechaDesdeVal + 'T00:00:00');
       if (fechaHastaVal) q = q.lte('created_at', fechaHastaVal + 'T23:59:59');
@@ -1930,14 +2112,26 @@ async function mostrarAdminComisiones() {
         if (cots) cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
       }
       const titulo = tipoVal === 'proyectos' ? 'Proyectos' : tipoVal === 'servicios' ? 'Servicios' : 'Proyectos y Servicios';
-      const filasDescriptor = filas.map((r) => ({
-        detalleNode: el('span', '', (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.servicio || '—')),
-        fechaTxt: formatQBuscarRegFecha(r.created_at),
-        vendedorTxt: r.vendedor_asignado,
-        pctInicial: r.comision_porcentaje,
-        precioBase: extractNumber(presupuestos[r.cotizacion_id]),
-        guardarPct: (nuevoPct) => supabaseClient.from('solicitudes_servicio').update({ comision_porcentaje: nuevoPct }).eq('id', r.id)
-      }));
+      const filasDescriptor = filas.map((r) => {
+        const detalleTexto = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.servicio || '—');
+        return {
+          detalleNode: el('span', '', detalleTexto),
+          detalleTexto,
+          fechaTxt: formatQBuscarRegFecha(r.created_at),
+          fechaIso: r.created_at || null,
+          vendedorTxt: r.vendedor_asignado,
+          pctInicial: r.comision_porcentaje,
+          precioBase: extractNumber(presupuestos[r.cotizacion_id]),
+          estadoInicial: r.comision_estado || 'pendiente',
+          pagarInicial: !!r.comision_pagar,
+          origen: 'proyectos_servicios',
+          referencia: String(r.id),
+          guardarPct: (nuevoPct) => supabaseClient.from('solicitudes_servicio').update({ comision_porcentaje: nuevoPct }).eq('id', r.id),
+          guardarEstado: (nuevoEstado) => supabaseClient.from('solicitudes_servicio').update({ comision_estado: nuevoEstado }).eq('id', r.id),
+          guardarPagar: (nuevoPagar) => supabaseClient.from('solicitudes_servicio').update({ comision_pagar: nuevoPagar }).eq('id', r.id),
+          guardarPagoCompleto: () => supabaseClient.from('solicitudes_servicio').update({ comision_pagar: true, comision_estado: 'pagado' }).eq('id', r.id)
+        };
+      });
       grupos.push({ titulo, filasDescriptor });
     }
 
@@ -1952,12 +2146,30 @@ async function mostrarAdminComisiones() {
       result.innerHTML = '<p class="qbr-empty">No hay comisiones que coincidan con la búsqueda.</p>';
       return;
     }
+
     const totalBar = el('div', 'com-total-bar');
     totalBar.append(
       el('span', 'com-total-label', 'Total de comisiones generadas'),
       (() => { const v = el('strong', 'com-total-value'); v.id = 'adminComTotalValor'; return v; })()
     );
     result.appendChild(totalBar);
+
+    const pagarBar = el('div', 'com-total-bar com-pagar-bar');
+    pagarBar.append(
+      el('span', 'com-total-label', 'Total de comisiones a pagar'),
+      (() => { const v = el('strong', 'com-total-value'); v.id = 'adminComTotalPagarValor'; return v; })()
+    );
+    result.appendChild(pagarBar);
+
+    const pagarWrap = el('div', 'com-pagar-btn-wrap');
+    const pagarBtn = document.createElement('button');
+    pagarBtn.type = 'button'; pagarBtn.id = 'adminComPagarBtn'; pagarBtn.className = 'btn btn-gold btn-sm';
+    pagarBtn.textContent = 'Pagar';
+    pagarBtn.addEventListener('click', () => adminComProcesarPago({ vendedorVal, fechaDesdeVal, fechaHastaVal, tipoVal }));
+    const pagarStatus = el('p', 'hint', ''); pagarStatus.id = 'adminComPagarStatus';
+    pagarWrap.append(pagarBtn, pagarStatus);
+    result.appendChild(pagarWrap);
+
     adminComRecalcularTotales();
   } catch (e) {
     console.error('Error cargando las comisiones de ventas:', e);

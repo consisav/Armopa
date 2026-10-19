@@ -561,6 +561,12 @@ section[id]{scroll-margin-top:148px}
 .com-total-bar{margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 20px;border-radius:12px;background:var(--navy);color:#fff}
 .com-total-bar .com-total-label{font-size:14px;font-weight:600;letter-spacing:.02em}
 .com-total-bar .com-total-value{font-size:22px;font-weight:800;color:var(--gold2)}
+.com-pagar-bar{margin-top:10px;background:var(--navy2)}
+.com-estado-sel{padding:5px 8px;border:1px solid var(--line);border-radius:999px;font-size:12.5px;font-weight:700;font-family:inherit;cursor:pointer}
+.com-pagar-cell{text-align:center}
+.com-pagar-check{width:18px;height:18px;cursor:pointer;accent-color:var(--gold)}
+.com-pagar-btn-wrap{margin-top:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.com-pagar-btn-wrap .hint{margin:0}
 @media (max-width:720px){.com-table{font-size:12.5px}.com-table th,.com-table td{padding:9px 10px}}
 .q-summary{margin-top:22px;padding-top:18px;border-top:1px solid var(--line);display:grid;gap:8px;font-size:14px}
 .q-summary>div{display:flex;justify-content:flex-start;gap:6px}
