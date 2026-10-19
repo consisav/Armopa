@@ -1517,6 +1517,14 @@ const BANCOS_GT = [
   'Otro'
 ];
 
+/* Tipo de cuenta bancaria del vendedor, para el depósito de sus
+   comisiones. */
+const TIPOS_CUENTA_BANCARIA = [
+  { v: 'monetaria', l: 'Monetaria' },
+  { v: 'ahorros', l: 'Ahorros' }
+];
+const tipoCuentaLabel = (v) => (TIPOS_CUENTA_BANCARIA.find((t) => t.v === v) || {}).l || '—';
+
 function vendAvatarEl(v) {
   const wrap = el('div', 'srow');
   const img = document.createElement('img');
@@ -1559,7 +1567,8 @@ function vendRenderView(card, v) {
     labeledCell('Fecha de grabación', el('span', '', v.created_at ? formatQBuscarRegFecha(v.created_at) : '—')),
     labeledCell('Usuario', el('span', '', v.usuario || '—')),
     labeledCell('Banco de pago', el('span', '', v.banco_pago || '—')),
-    labeledCell('Número de cuenta bancaria', el('span', '', v.numero_cuenta_bancaria || '—'))
+    labeledCell('Número de cuenta bancaria', el('span', '', v.numero_cuenta_bancaria || '—')),
+    labeledCell('Tipo de cuenta', el('span', '', tipoCuentaLabel(v.tipo_cuenta_bancaria)))
   );
   // El % de comisión por ventas solo lo ve y administra el Super
   // Administrador (el resto de la modal ya está detrás de ese mismo
@@ -1655,6 +1664,17 @@ function vendRenderEdit(card, v, isNew) {
   const cuentaInput = document.createElement('input');
   cuentaInput.type = 'text'; cuentaInput.value = v.numero_cuenta_bancaria || ''; cuentaInput.placeholder = 'Número de cuenta';
 
+  const tipoCuentaSel = document.createElement('select');
+  const tipoCuentaOptVacio = document.createElement('option');
+  tipoCuentaOptVacio.value = ''; tipoCuentaOptVacio.textContent = 'Selecciona…';
+  tipoCuentaSel.appendChild(tipoCuentaOptVacio);
+  TIPOS_CUENTA_BANCARIA.forEach((t) => {
+    const opt = document.createElement('option');
+    opt.value = t.v; opt.textContent = t.l;
+    tipoCuentaSel.appendChild(opt);
+  });
+  tipoCuentaSel.value = v.tipo_cuenta_bancaria || '';
+
   // "Fecha inicio" se graba sola con la fecha de hoy al registrar un
   // vendedor nuevo; ya no se escribe a mano (ver más abajo, junto con
   // "Usuario" y "Fecha de grabación").
@@ -1689,7 +1709,8 @@ function vendRenderEdit(card, v, isNew) {
     labeledCell('Fecha de grabación', el('span', '', isNew ? 'Se asigna automáticamente al guardar' : (v.created_at ? formatQBuscarRegFecha(v.created_at) : '—'))),
     labeledCell('Usuario', el('span', '', 'Se graba automáticamente (' + (localStorage.getItem(LOGIN_STORE) || 'usuario actual') + ')')),
     labeledCell('Banco de pago', bancoSel),
-    labeledCell('Número de cuenta bancaria', cuentaInput)
+    labeledCell('Número de cuenta bancaria', cuentaInput),
+    labeledCell('Tipo de cuenta', tipoCuentaSel)
   );
   if (esSuperAdmin()) {
     grid.appendChild(labeledCell('% Comisión por ventas', comisionInput));
@@ -1718,7 +1739,8 @@ function vendRenderEdit(card, v, isNew) {
       usuario: localStorage.getItem(LOGIN_STORE) || null,
       foto_url: fotoUrl || null,
       banco_pago: bancoSel.value || null,
-      numero_cuenta_bancaria: cuentaInput.value.trim() || null
+      numero_cuenta_bancaria: cuentaInput.value.trim() || null,
+      tipo_cuenta_bancaria: tipoCuentaSel.value || null
     };
     if (esSuperAdmin()) {
       payload.comision_porcentaje = comisionInput.value !== '' ? comisionInput.value : null;
