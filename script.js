@@ -1390,8 +1390,15 @@ function vendRenderView(card, v) {
     labeledCell('Teléfono', el('span', '', v.telefono || '—')),
     labeledCell('Dirección', el('span', '', v.direccion || '—')),
     labeledCell('Fecha inicio', el('span', '', v.fecha_inicio ? formatQBuscarRegFecha(v.fecha_inicio) : '—')),
+    labeledCell('Fecha de grabación', el('span', '', v.created_at ? formatQBuscarRegFecha(v.created_at) : '—')),
     labeledCell('Usuario', el('span', '', v.usuario || '—'))
   );
+  // El % de comisión por ventas solo lo ve y administra el Super
+  // Administrador (el resto de la modal ya está detrás de ese mismo
+  // candado, pero se repite aquí por si ese candado cambia más adelante).
+  if (esSuperAdmin()) {
+    grid.appendChild(labeledCell('% Comisión por ventas', el('span', '', v.comision_porcentaje != null && v.comision_porcentaje !== '' ? (v.comision_porcentaje + '%') : '—')));
+  }
   card.append(grid, actions);
 
   modBtn.addEventListener('click', () => vendRenderEdit(card, v, false));
@@ -1469,8 +1476,12 @@ function vendRenderEdit(card, v, isNew) {
   const fechaInput = document.createElement('input');
   fechaInput.type = 'date'; fechaInput.value = v.fecha_inicio || '';
 
-  const usuarioInput = document.createElement('input');
-  usuarioInput.type = 'text'; usuarioInput.value = v.usuario || ''; usuarioInput.placeholder = 'Usuario';
+  // El % de comisión por ventas lo escribe el Super Administrador (único
+  // que llega a ver este formulario); "Usuario" y "Fecha de grabación" ya
+  // no se escriben a mano, se graban solos al guardar (ver más abajo).
+  const comisionInput = document.createElement('input');
+  comisionInput.type = 'number'; comisionInput.min = '0'; comisionInput.max = '100'; comisionInput.step = '0.1';
+  comisionInput.value = v.comision_porcentaje != null ? v.comision_porcentaje : ''; comisionInput.placeholder = '%';
 
   const actions = el('div', 'proy-actions');
   const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
@@ -1486,8 +1497,12 @@ function vendRenderEdit(card, v, isNew) {
     labeledCell('Teléfono', telInput),
     labeledCell('Dirección', dirInput),
     labeledCell('Fecha inicio', fechaInput),
-    labeledCell('Usuario', usuarioInput)
+    labeledCell('Fecha de grabación', el('span', '', isNew ? 'Se asigna automáticamente al guardar' : (v.created_at ? formatQBuscarRegFecha(v.created_at) : '—'))),
+    labeledCell('Usuario', el('span', '', 'Se graba automáticamente (' + (localStorage.getItem(LOGIN_STORE) || 'usuario actual') + ')'))
   );
+  if (esSuperAdmin()) {
+    grid.appendChild(labeledCell('% Comisión por ventas', comisionInput));
+  }
   card.append(grid, actions);
 
   cancelBtn.addEventListener('click', () => {
@@ -1507,9 +1522,13 @@ function vendRenderEdit(card, v, isNew) {
       telefono: telInput.value.trim() || null,
       direccion: dirInput.value.trim() || null,
       fecha_inicio: fechaInput.value || null,
-      usuario: usuarioInput.value.trim() || null,
+      // Se graban solos, nunca se escriben a mano:
+      usuario: localStorage.getItem(LOGIN_STORE) || null,
       foto_url: fotoUrl || null
     };
+    if (esSuperAdmin()) {
+      payload.comision_porcentaje = comisionInput.value !== '' ? comisionInput.value : null;
+    }
     try {
       if (isNew) {
         const nuevo = await crearVendedor(payload);
