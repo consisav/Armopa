@@ -281,7 +281,7 @@ const T = {
     goTo: 'Ir a la posición ',
     openProp: 'Ver ubicaciones de ', noLocs: 'Sin ubicaciones todavía', oneLoc: '1 ubicación', locsWord: 'ubicaciones',
     addLoc: 'Agregar ubicación', locDefault: 'Ubicación', emptyH: 'Aún no hay ubicaciones', emptyP: 'Agrega la primera para subir sus imágenes y su dirección.',
-    nameL: 'Nombre de la ubicación', zoom: 'Ver foto del vendedor en tamaño original', zoomToggle: 'Alternar entre ajustar a la pantalla y tamaño real', opL: 'Tipo de operación', opRent: 'Renta', opSale: 'Venta', opBoth: 'Renta o venta', rentL: 'Valor de renta', saleL: 'Valor de la propiedad (venta)', rentPh: 'Ej. Q 4,500 al mes', salePh: 'Ej. Q 850,000', opHint: 'Elige el tipo de operación para indicar los valores.', viewOpRent: 'En renta', viewOpSale: 'En venta', viewOpBoth: 'En renta o venta', rentView: 'Renta', saleView: 'Precio de venta', sellerH: 'Vendedor', sellerUp: 'Subir foto del vendedor', sellerRm: 'Quitar foto', sellerName: 'Nombre del vendedor', sellerWa: 'WhatsApp del vendedor', waHint: 'Incluye el código de país, por ejemplo +502. Si escribes 8 dígitos se agrega el 502 automáticamente.', sellerLabel: 'Contacto del vendedor', waBtn: 'Contactar por WhatsApp', waMsg: 'Hola, me interesa la propiedad: ', descL: 'Descripción de la propiedad', descPh: 'Características, habitaciones, amenidades, precio y cualquier detalle importante…', descH: 'Descripción', addrL: 'Dirección o enlace de Google Maps', photo: 'Imagen ', photosH: 'Imágenes de la ubicación', upload: 'Subir imágenes',
+    nameL: 'Nombre de la ubicación', zoom: 'Ver foto del vendedor en tamaño original', zoomToggle: 'Alternar entre ajustar a la pantalla y tamaño real', opL: 'Tipo de operación', opRent: 'Renta', opSale: 'Venta', opBoth: 'Renta o venta', rentL: 'Valor de renta', saleL: 'Valor de la propiedad (venta)', rentPh: 'Ej. Q 4,500 al mes', salePh: 'Ej. Q 850,000', opHint: 'Elige el tipo de operación para indicar los valores.', viewOpRent: 'En renta', viewOpSale: 'En venta', viewOpBoth: 'En renta o venta', rentView: 'Renta', saleView: 'Precio de venta', sellerH: 'Vendedor', sellerFotoHint: 'La fotografía se completa automáticamente al elegir el vendedor de la lista.', sellerSuperAdminHint: 'Solo el super administrador puede modificar el vendedor de esta ubicación.', sellerName: 'Nombre del vendedor', sellerWa: 'WhatsApp del vendedor', waHint: 'Incluye el código de país, por ejemplo +502. Si escribes 8 dígitos se agrega el 502 automáticamente.', sellerLabel: 'Contacto del vendedor', waBtn: 'Contactar por WhatsApp', waMsg: 'Hola, me interesa la propiedad: ', descL: 'Descripción de la propiedad', descPh: 'Características, habitaciones, amenidades, precio y cualquier detalle importante…', descH: 'Descripción', addrL: 'Dirección o enlace de Google Maps', photo: 'Imagen ', photosH: 'Imágenes de la ubicación', upload: 'Subir imágenes',
     uploadHint: 'Puedes seleccionar varias imágenes (JPG o PNG).', remove: 'Quitar imagen', uploaded: 'Imágenes agregadas.', saved: 'Cambios guardados.',
     del: 'Eliminar ubicación', delSure: '¿Confirmar eliminación?', view: 'Ver fotografías', edit: 'Volver a editar', mapOpen: 'Ver en Google Maps',
     prevImg: 'Imagen anterior', nextImg: 'Imagen siguiente', noImgs: 'Esta ubicación aún no tiene imágenes.',
@@ -336,7 +336,7 @@ const T = {
     goTo: 'Go to position ',
     openProp: 'View locations in ', noLocs: 'No locations yet', oneLoc: '1 location', locsWord: 'locations',
     addLoc: 'Add location', locDefault: 'Location', emptyH: 'No locations yet', emptyP: 'Add the first one to upload its images and address.',
-    nameL: 'Location name', zoom: 'View seller photo at original size', zoomToggle: 'Toggle between fit to screen and actual size', opL: 'Type of listing', opRent: 'Rent', opSale: 'Sale', opBoth: 'Rent or sale', rentL: 'Rent value', saleL: 'Property value (sale)', rentPh: 'e.g. Q 4,500 per month', salePh: 'e.g. Q 850,000', opHint: 'Choose the listing type to enter the values.', viewOpRent: 'For rent', viewOpSale: 'For sale', viewOpBoth: 'For rent or sale', rentView: 'Rent', saleView: 'Sale price', sellerH: 'Seller', sellerUp: 'Upload seller photo', sellerRm: 'Remove photo', sellerName: 'Seller name', sellerWa: 'Seller WhatsApp', waHint: 'Include the country code, for example +502. If you type 8 digits, 502 is added automatically.', sellerLabel: 'Seller contact', waBtn: 'Contact on WhatsApp', waMsg: 'Hello, I am interested in the property: ', descL: 'Property description', descPh: 'Features, rooms, amenities, price and any important details…', descH: 'Description', addrL: 'Address or Google Maps link', photo: 'Image ', photosH: 'Location images', upload: 'Upload images',
+    nameL: 'Location name', zoom: 'View seller photo at original size', zoomToggle: 'Toggle between fit to screen and actual size', opL: 'Type of listing', opRent: 'Rent', opSale: 'Sale', opBoth: 'Rent or sale', rentL: 'Rent value', saleL: 'Property value (sale)', rentPh: 'e.g. Q 4,500 per month', salePh: 'e.g. Q 850,000', opHint: 'Choose the listing type to enter the values.', viewOpRent: 'For rent', viewOpSale: 'For sale', viewOpBoth: 'For rent or sale', rentView: 'Rent', saleView: 'Sale price', sellerH: 'Seller', sellerFotoHint: 'The photo is filled in automatically when you choose the seller from the list.', sellerSuperAdminHint: 'Only the super administrator can change the seller for this location.', sellerName: 'Seller name', sellerWa: 'Seller WhatsApp', waHint: 'Include the country code, for example +502. If you type 8 digits, 502 is added automatically.', sellerLabel: 'Seller contact', waBtn: 'Contact on WhatsApp', waMsg: 'Hello, I am interested in the property: ', descL: 'Property description', descPh: 'Features, rooms, amenities, price and any important details…', descH: 'Description', addrL: 'Address or Google Maps link', photo: 'Image ', photosH: 'Location images', upload: 'Upload images',
     uploadHint: 'You can select several images (JPG or PNG).', remove: 'Remove image', uploaded: 'Images added.', saved: 'Changes saved.',
     del: 'Delete location', delSure: 'Confirm deletion?', view: 'Preview', edit: 'Back to editing', mapOpen: 'View on Google Maps',
     prevImg: 'Previous image', nextImg: 'Next image', noImgs: 'This location has no images yet.',
@@ -3590,6 +3590,11 @@ function renderEdit() {
   $('#p-sale').value = c.pSale || '';
   poblarPSnameSelect(c.sName || '');
   $('#p-swa').value = c.sWa || '';
+  const puedeEditarVendedorLoc = esSuperAdmin();
+  $('#p-sname').disabled = !puedeEditarVendedorLoc;
+  $('#p-swa').disabled = !puedeEditarVendedorLoc;
+  const sellerSuperAdminHint = $('#sellerSuperAdminHint');
+  if (sellerSuperAdminHint) sellerSuperAdminHint.hidden = puedeEditarVendedorLoc;
   if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
   const locAdminBlock = $('#pLocAdminBlock');
   if (locAdminBlock) {
@@ -3612,7 +3617,6 @@ function renderEdit() {
   }
   $('#sAvBtn').hidden = !c.sPhoto;
   $('#sAvatarPh').hidden = !!c.sPhoto;
-  $('#sRm').hidden = !c.sPhoto;
   if (c.sPhoto) $('#sAvatar').src = c.sPhoto;
   $('#pMap').href = mapUrl(c);
   const del = $('#pDel');
@@ -4200,7 +4204,7 @@ $('#p-desc').addEventListener('input', () => {
    hubiera antes en esta ubicación, porque es justo lo que se acaba de
    elegir). */
 $('#p-sname').addEventListener('change', () => {
-  const c = list()[sel]; if (!c) return;
+  const c = list()[sel]; if (!c || !esSuperAdmin()) return;
   c.sName = $('#p-sname').value;
   const nombre = c.sName.trim();
   const match = nombre ? vendedoresCatalogo.find((v) => (v.nombre || '').trim() === nombre) : null;
@@ -4212,7 +4216,7 @@ $('#p-sname').addEventListener('change', () => {
   renderEdit();
 });
 $('#p-swa').addEventListener('input', () => {
-  const c = list()[sel]; if (!c) return;
+  const c = list()[sel]; if (!c || !esSuperAdmin()) return;
   c.sWa = $('#p-swa').value;
   note(persist() ? '' : T[lang].storeErr);
 });
@@ -4235,20 +4239,6 @@ $('#p-comision')?.addEventListener('input', () => {
   const valorEl = $('#pComisionValor');
   if (valorEl) valorEl.textContent = formatQ(comisionValorCalc(c));
   note(persist() ? '' : T[lang].storeErr);
-});
-$('#p-sphoto').addEventListener('change', async (e) => {
-  const f = (e.target.files || [])[0];
-  e.target.value = '';
-  const c = list()[sel]; if (!c || !f) return;
-  try { c.sPhoto = await uploadPropFile(f, 1600); } catch (err) { return; }
-  note(persist() ? T[lang].saved : T[lang].storeErr);
-  renderEdit();
-});
-$('#sRm').addEventListener('click', () => {
-  const c = list()[sel]; if (!c) return;
-  c.sPhoto = '';
-  note(persist() ? T[lang].saved : T[lang].storeErr);
-  renderEdit();
 });
 $$('#pOps .seg').forEach((b) => b.addEventListener('click', () => {
   const c = list()[sel]; if (!c) return;
