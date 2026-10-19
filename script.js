@@ -1127,6 +1127,27 @@ function poblarAdminSrvEstadoSel() {
   });
 }
 
+/* Lista dinámica de "Promotor de negocio" para el filtro de Servicios,
+   armada a partir del catálogo de Vendedores (igual que en Propiedades y
+   Proyectos). */
+function poblarAdminSrvPromotorSel() {
+  const sel = $('#adminSrvPromotorSel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los promotores de negocio';
+  sel.appendChild(optTodos);
+  vendedoresCatalogo.forEach((v) => {
+    const nombre = (v.nombre || '').trim();
+    if (!nombre) return;
+    const opt = document.createElement('option');
+    opt.value = nombre; opt.textContent = nombre;
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
 async function cargarAdminSrvLista() {
   const listaSel = $('#adminSrvListaSel');
   const hint = $('#adminSrvHint');
@@ -1135,9 +1156,13 @@ async function cargarAdminSrvLista() {
   if (hint) hint.textContent = 'Cargando…';
   const tipoSel = $('#adminSrvTipoSel');
   const estadoSel = $('#adminSrvEstadoSel');
+  const promotorSel = $('#adminSrvPromotorSel');
+  const fechaDesdeVal = $('#adminSrvFechaDesde')?.value || null;
+  const fechaHastaVal = $('#adminSrvFechaHasta')?.value || null;
   const t = T[lang] || T.es;
   const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
   const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
+  const promotorVal = promotorSel && promotorSel.value !== '' ? promotorSel.value : null;
   try {
     let query = supabaseClient
       .from('solicitudes_servicio')
@@ -1146,6 +1171,9 @@ async function cargarAdminSrvLista() {
       .limit(200);
     if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
     if (estadoVal !== null) query = query.eq('estado', estadoVal);
+    if (promotorVal !== null) query = query.eq('promotor_negocio', promotorVal);
+    if (fechaDesdeVal) query = query.gte('created_at', fechaDesdeVal + 'T00:00:00');
+    if (fechaHastaVal) query = query.lte('created_at', fechaHastaVal + 'T23:59:59');
     const { data, error } = await query;
     if (error) throw error;
     const filas = data || [];
@@ -1326,12 +1354,19 @@ async function mostrarAdminSrvDetalle() {
     try {
       const tipoSel = $('#adminSrvTipoSel');
       const estadoSel = $('#adminSrvEstadoSel');
+      const promotorSel = $('#adminSrvPromotorSel');
+      const fechaDesdeVal = $('#adminSrvFechaDesde')?.value || null;
+      const fechaHastaVal = $('#adminSrvFechaHasta')?.value || null;
       const t = T[lang] || T.es;
       const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
       const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
+      const promotorVal = promotorSel && promotorSel.value !== '' ? promotorSel.value : null;
       let query = supabaseClient.from('solicitudes_servicio').select('*').order('id', { ascending: false }).limit(200);
       if (tipoIdx !== null) query = query.eq('servicio', t.ext[tipoIdx]);
       if (estadoVal !== null) query = query.eq('estado', estadoVal);
+      if (promotorVal !== null) query = query.eq('promotor_negocio', promotorVal);
+      if (fechaDesdeVal) query = query.gte('created_at', fechaDesdeVal + 'T00:00:00');
+      if (fechaHastaVal) query = query.lte('created_at', fechaHastaVal + 'T23:59:59');
       const { data, error } = await query;
       if (error) throw error;
       const filas = data || [];
@@ -1381,15 +1416,23 @@ async function mostrarAdminSrvDetalle() {
 $('#adminSrvMostrarBtn')?.addEventListener('click', () => mostrarAdminSrvDetalle());
 $('#adminSrvTipoSel')?.addEventListener('change', () => { cargarAdminSrvLista(); });
 $('#adminSrvEstadoSel')?.addEventListener('change', () => { cargarAdminSrvLista(); });
+$('#adminSrvPromotorSel')?.addEventListener('change', () => { cargarAdminSrvLista(); });
+$('#adminSrvFechaDesde')?.addEventListener('change', () => { cargarAdminSrvLista(); });
+$('#adminSrvFechaHasta')?.addEventListener('change', () => { cargarAdminSrvLista(); });
 
 const adminServiciosModal = $('#adminServiciosModal');
 async function abrirAdminServiciosModal() {
   if (!adminServiciosModal) return;
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
   adminServiciosModal.hidden = false;
   poblarAdminSrvTipoSel();
   poblarAdminSrvEstadoSel();
+  poblarAdminSrvPromotorSel();
   if ($('#adminSrvTipoSel')) $('#adminSrvTipoSel').value = '';
   if ($('#adminSrvEstadoSel')) $('#adminSrvEstadoSel').value = '';
+  if ($('#adminSrvPromotorSel')) $('#adminSrvPromotorSel').value = '';
+  if ($('#adminSrvFechaDesde')) $('#adminSrvFechaDesde').value = '';
+  if ($('#adminSrvFechaHasta')) $('#adminSrvFechaHasta').value = '';
   await cargarAdminSrvLista();
   const listaSel = $('#adminSrvListaSel');
   if (listaSel && [...listaSel.options].some((o) => o.value === QBUSCARREG_TODOS)) {
@@ -1742,6 +1785,10 @@ async function cargarVendedoresCatalogo() {
     );
   }
   if (typeof actualizarVisibilidadPromotoresServicio === 'function') actualizarVisibilidadPromotoresServicio();
+  if (typeof adminServiciosModal !== 'undefined' && adminServiciosModal && !adminServiciosModal.hidden) {
+    poblarAdminSrvPromotorSel();
+    cargarAdminSrvLista();
+  }
 }
 
 /* Arma la lista desplegable de "Nombre del vendedor" a partir del
