@@ -1473,11 +1473,15 @@ function vendRenderEdit(card, v, isNew) {
   const dirInput = document.createElement('input');
   dirInput.type = 'text'; dirInput.value = v.direccion || ''; dirInput.placeholder = 'Dirección';
 
-  // Al registrar un vendedor nuevo, "Fecha inicio" se completa sola con la
-  // fecha de hoy (sigue editable, por si el inicio real fue otro día).
-  const fechaInput = document.createElement('input');
-  fechaInput.type = 'date';
-  fechaInput.value = v.fecha_inicio || (isNew ? new Date().toISOString().slice(0, 10) : '');
+  // "Fecha inicio" se graba sola con la fecha de hoy al registrar un
+  // vendedor nuevo; ya no se escribe a mano (ver más abajo, junto con
+  // "Usuario" y "Fecha de grabación").
+  // Se arma a partir de la hora LOCAL del navegador (no con toISOString(),
+  // que usa UTC y en Guatemala —varias horas detrás— puede mostrar/guardar
+  // el día anterior durante la madrugada).
+  const hoyDate = new Date();
+  const hoyISO = hoyDate.getFullYear() + '-' + String(hoyDate.getMonth() + 1).padStart(2, '0') + '-' + String(hoyDate.getDate()).padStart(2, '0');
+  const hoyDisplay = hoyDate.toLocaleDateString('es-GT', { year: 'numeric', month: '2-digit', day: '2-digit' });
 
   // El % de comisión por ventas lo escribe el Super Administrador (único
   // que llega a ver este formulario); "Usuario" y "Fecha de grabación" ya
@@ -1499,7 +1503,7 @@ function vendRenderEdit(card, v, isNew) {
     labeledCell('Nombre', nombreInput),
     labeledCell('Teléfono', telInput),
     labeledCell('Dirección', dirInput),
-    labeledCell('Fecha inicio', fechaInput),
+    labeledCell('Fecha inicio', el('span', '', isNew ? 'Se asigna automáticamente al guardar (' + hoyDisplay + ')' : (v.fecha_inicio ? formatQBuscarRegFecha(v.fecha_inicio) : '—'))),
     labeledCell('Fecha de grabación', el('span', '', isNew ? 'Se asigna automáticamente al guardar' : (v.created_at ? formatQBuscarRegFecha(v.created_at) : '—'))),
     labeledCell('Usuario', el('span', '', 'Se graba automáticamente (' + (localStorage.getItem(LOGIN_STORE) || 'usuario actual') + ')'))
   );
@@ -1524,8 +1528,9 @@ function vendRenderEdit(card, v, isNew) {
       nombre,
       telefono: telInput.value.trim() || null,
       direccion: dirInput.value.trim() || null,
-      fecha_inicio: fechaInput.value || null,
-      // Se graban solos, nunca se escriben a mano:
+      // Se graban solos, nunca se escriben a mano. "Fecha inicio" solo se
+      // fija la primera vez (al crear); si ya existía, se conserva.
+      fecha_inicio: isNew ? hoyISO : (v.fecha_inicio || null),
       usuario: localStorage.getItem(LOGIN_STORE) || null,
       foto_url: fotoUrl || null
     };
