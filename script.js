@@ -2006,11 +2006,11 @@ async function adminComProcesarPago(filtros) {
     return;
   }
   const totalPagar = seleccionadas.reduce((a, f) => a + (f.getValor() || 0), 0);
-  if (!confirm('¿Confirmas el pago de ' + seleccionadas.length + ' comisión(es) por un total de ' + formatQ(totalPagar) + '?')) return;
+  if (!confirm('¿Confirmas generar ' + seleccionadas.length + ' comisión(es) por un total de ' + formatQ(totalPagar) + '?')) return;
 
   const btn = $('#adminComPagarBtn');
   if (btn) btn.disabled = true;
-  if (status) status.textContent = 'Procesando pago…';
+  if (status) status.textContent = 'Generando comisiones…';
   const usuario = localStorage.getItem(LOGIN_STORE) || null;
   const ahora = new Date().toISOString();
   try {
@@ -2022,7 +2022,10 @@ async function adminComProcesarPago(filtros) {
       vendedor: f.vendedorTxt || null,
       porcentaje_comision: f.getPct() || null,
       valor_comision: f.getValor(),
-      estado: 'pagado',
+      // Queda "Pendiente de pago": generar la comisión ya no significa que
+      // se pagó -- el pago bancario se gestiona después en la pantalla
+      // "Comisiones Generadas".
+      estado: 'pendiente',
       vendedor_filtro: filtros.vendedorVal || null,
       fecha_desde_filtro: filtros.fechaDesdeVal || null,
       fecha_hasta_filtro: filtros.fechaHastaVal || null,
@@ -2041,10 +2044,10 @@ async function adminComProcesarPago(filtros) {
       f.marcarPagada();
     }
     adminComRecalcularTotales();
-    if (status) status.textContent = 'Se registraron ' + seleccionadas.length + ' comisión(es) como pagadas.';
+    if (status) status.textContent = 'Se generaron ' + seleccionadas.length + ' comisión(es). Da seguimiento al pago en Comisiones Generadas.';
   } catch (e) {
-    console.error('Error registrando el pago de comisiones:', e);
-    if (status) status.textContent = 'No se pudo registrar el pago. Intenta de nuevo.';
+    console.error('Error generando comisiones:', e);
+    if (status) status.textContent = 'No se pudo generar la comisión. Intenta de nuevo.';
   } finally {
     if (btn) btn.disabled = false;
   }
@@ -2164,7 +2167,7 @@ async function mostrarAdminComisiones() {
     const pagarWrap = el('div', 'com-pagar-btn-wrap');
     const pagarBtn = document.createElement('button');
     pagarBtn.type = 'button'; pagarBtn.id = 'adminComPagarBtn'; pagarBtn.className = 'btn btn-gold btn-sm';
-    pagarBtn.textContent = 'Pagar';
+    pagarBtn.textContent = 'Generar Comisiones';
     pagarBtn.addEventListener('click', () => adminComProcesarPago({ vendedorVal, fechaDesdeVal, fechaHastaVal, tipoVal }));
     const pagarStatus = el('p', 'hint', ''); pagarStatus.id = 'adminComPagarStatus';
     pagarWrap.append(pagarBtn, pagarStatus);
@@ -2201,6 +2204,199 @@ $('#navAdminComisionesBtn')?.addEventListener('click', () => {
 $('#adminComisionesClose')?.addEventListener('click', cerrarAdminComisionesModal);
 $('#adminComisionesScrim')?.addEventListener('click', cerrarAdminComisionesModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminComisionesModal && !adminComisionesModal.hidden) cerrarAdminComisionesModal(); });
+
+/* ===== Comisiones Generadas =====
+   Listado de las comisiones ya generadas (tabla comisiones_pagadas),
+   filtrable por vendedor y por fecha (inicial/final) de generación, con
+   el estado de pago y los datos de la operación bancaria con la que se
+   liquidó cada una. El % y el valor de la comisión quedan fijos (son el
+   histórico de lo generado); lo editable aquí -solo para super
+   administrador- es el estado y los datos del pago bancario. */
+function poblarAdminComGenVendedorSel() {
+  const sel = $('#adminComGenVendedorSel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  sel.appendChild(optTodos);
+  vendedoresCatalogo.forEach((v) => {
+    const nombre = (v.nombre || '').trim();
+    if (!nombre) return;
+    const opt = document.createElement('option');
+    opt.value = nombre; opt.textContent = nombre;
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
+function adminComGenGuardarCampo(id, campo, valor) {
+  return supabaseClient.from('comisiones_pagadas').update({ [campo]: valor }).eq('id', id);
+}
+
+function adminComGenCampoFecha(td, id, campo, valorIso) {
+  if (esSuperAdmin()) {
+    const input = document.createElement('input');
+    input.type = 'date';
+    input.className = 'com-date-input';
+    input.value = valorIso ? String(valorIso).substring(0, 10) : '';
+    input.addEventListener('change', async () => {
+      input.disabled = true;
+      try {
+        const { error } = await adminComGenGuardarCampo(id, campo, input.value || null);
+        if (error) throw error;
+      } catch (e) {
+        console.error('Error guardando ' + campo + ':', e);
+        alert('No se pudo guardar el cambio.');
+      } finally {
+        input.disabled = false;
+      }
+    });
+    td.appendChild(input);
+  } else {
+    td.textContent = valorIso ? formatQBuscarRegFecha(valorIso) : '—';
+  }
+}
+
+function adminComGenCampoTexto(td, id, campo, valorTxt) {
+  if (esSuperAdmin()) {
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'com-text-input';
+    input.value = valorTxt || '';
+    input.addEventListener('change', async () => {
+      input.disabled = true;
+      try {
+        const { error } = await adminComGenGuardarCampo(id, campo, input.value || null);
+        if (error) throw error;
+      } catch (e) {
+        console.error('Error guardando ' + campo + ':', e);
+        alert('No se pudo guardar el cambio.');
+      } finally {
+        input.disabled = false;
+      }
+    });
+    td.appendChild(input);
+  } else {
+    td.textContent = valorTxt || '—';
+  }
+}
+
+function adminComGenBuildFila(r) {
+  const tr = document.createElement('tr');
+  const tdDetalle = el('td', '', r.detalle || '—');
+  const tdVendedor = el('td', '', r.vendedor || '—');
+  const tdFecha = el('td', '', r.fecha_comision ? formatQBuscarRegFecha(r.fecha_comision) : '—');
+  const tdPct = el('td', 'num', r.porcentaje_comision != null && r.porcentaje_comision !== '' ? (r.porcentaje_comision + '%') : '—');
+  const tdValor = el('td', 'num com-valor', formatQ(r.valor_comision));
+  const tdEstado = el('td');
+  const tdFechaPago = el('td');
+  const tdBanco = el('td');
+  const tdCuenta = el('td');
+  const tdFechaOp = el('td');
+  const tdUsuario = el('td');
+
+  if (esSuperAdmin()) {
+    const sel = document.createElement('select');
+    sel.className = 'com-estado-sel';
+    COM_ESTADOS.forEach((e) => {
+      const opt = document.createElement('option');
+      opt.value = e.v; opt.textContent = e.l;
+      if (e.v === (r.estado || 'pendiente')) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    const colorear = () => { const info = comEstadoInfo(sel.value); sel.style.background = info.bg; sel.style.color = info.fg; };
+    colorear();
+    sel.addEventListener('change', async () => {
+      const anterior = r.estado;
+      sel.disabled = true;
+      try {
+        const { error } = await adminComGenGuardarCampo(r.id, 'estado', sel.value);
+        if (error) throw error;
+        r.estado = sel.value;
+        colorear();
+      } catch (e) {
+        console.error('Error guardando el estado:', e);
+        alert('No se pudo guardar el estado.');
+        sel.value = anterior;
+        colorear();
+      } finally {
+        sel.disabled = false;
+      }
+    });
+    tdEstado.appendChild(sel);
+  } else {
+    tdEstado.appendChild(adminComEstadoBadge(r.estado || 'pendiente'));
+  }
+
+  adminComGenCampoFecha(tdFechaPago, r.id, 'fecha_pago', r.fecha_pago);
+  adminComGenCampoTexto(tdBanco, r.id, 'banco', r.banco);
+  adminComGenCampoTexto(tdCuenta, r.id, 'cuenta_bancaria', r.cuenta_bancaria);
+  adminComGenCampoFecha(tdFechaOp, r.id, 'fecha_operacion', r.fecha_operacion);
+  adminComGenCampoTexto(tdUsuario, r.id, 'usuario_banco', r.usuario_banco);
+
+  tr.append(tdDetalle, tdVendedor, tdFecha, tdPct, tdValor, tdEstado, tdFechaPago, tdBanco, tdCuenta, tdFechaOp, tdUsuario);
+  return tr;
+}
+
+async function mostrarComisionesGeneradas() {
+  const result = $('#adminComisionesGeneradasResult');
+  if (!result) return;
+  const vendedorVal = $('#adminComGenVendedorSel')?.value || '';
+  const fechaDesdeVal = $('#adminComGenFechaDesde')?.value || '';
+  const fechaHastaVal = $('#adminComGenFechaHasta')?.value || '';
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    let q = supabaseClient.from('comisiones_pagadas').select('*').order('fecha_pago', { ascending: false });
+    if (vendedorVal) q = q.eq('vendedor', vendedorVal);
+    if (fechaDesdeVal) q = q.gte('fecha_pago', fechaDesdeVal + 'T00:00:00');
+    if (fechaHastaVal) q = q.lte('fecha_pago', fechaHastaVal + 'T23:59:59');
+    const { data, error } = await q;
+    if (error) throw error;
+    result.innerHTML = '';
+    if (!data || !data.length) {
+      result.innerHTML = '<p class="qbr-empty">No hay comisiones generadas que coincidan con la búsqueda.</p>';
+      return;
+    }
+    const scrollWrap = el('div', 'com-table-scroll');
+    const table = document.createElement('table');
+    table.className = 'com-table com-table-gen';
+    const thead = document.createElement('thead');
+    thead.innerHTML = '<tr><th>Detalle</th><th>Vendedor</th><th>Fecha generada</th><th class="num">% Comisión</th><th class="num">Valor de comisión</th><th>Estado</th><th>Fecha de pago</th><th>Banco</th><th>Cuenta bancaria</th><th>Fecha operación</th><th>Usuario que paga</th></tr>';
+    const tbody = document.createElement('tbody');
+    data.forEach((r) => tbody.appendChild(adminComGenBuildFila(r)));
+    table.append(thead, tbody);
+    scrollWrap.appendChild(table);
+    result.appendChild(scrollWrap);
+  } catch (e) {
+    console.error('Error cargando comisiones generadas:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de comisiones generadas.</p>';
+  }
+}
+
+$('#adminComGenMostrarBtn')?.addEventListener('click', () => mostrarComisionesGeneradas());
+
+const adminComisionesGeneradasModal = $('#adminComisionesGeneradasModal');
+function abrirAdminComisionesGeneradasModal() {
+  if (!adminComisionesGeneradasModal) return;
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
+  adminComisionesGeneradasModal.hidden = false;
+  poblarAdminComGenVendedorSel();
+  if ($('#adminComGenVendedorSel')) $('#adminComGenVendedorSel').value = '';
+  if ($('#adminComGenFechaDesde')) $('#adminComGenFechaDesde').value = '';
+  if ($('#adminComGenFechaHasta')) $('#adminComGenFechaHasta').value = '';
+  const result = $('#adminComisionesGeneradasResult');
+  if (result) result.innerHTML = '<p class="qbr-empty">Elige los parámetros y presiona Mostrar.</p>';
+}
+function cerrarAdminComisionesGeneradasModal() { if (adminComisionesGeneradasModal) adminComisionesGeneradasModal.hidden = true; }
+$('#navAdminComisionesGeneradasBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminComisionesGeneradasModal();
+});
+$('#adminComisionesGeneradasClose')?.addEventListener('click', cerrarAdminComisionesGeneradasModal);
+$('#adminComisionesGeneradasScrim')?.addEventListener('click', cerrarAdminComisionesGeneradasModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminComisionesGeneradasModal && !adminComisionesGeneradasModal.hidden) cerrarAdminComisionesGeneradasModal(); });
 
 /* Catálogo de vendedores (tabla "vendedores") para que el campo "Nombre
    del vendedor" de cada ubicación (sección "Vendedor" del formulario de
@@ -2246,6 +2442,9 @@ async function cargarVendedoresCatalogo() {
   }
   if (typeof adminComisionesModal !== 'undefined' && adminComisionesModal && !adminComisionesModal.hidden) {
     poblarAdminComVendedorSel();
+  }
+  if (typeof adminComisionesGeneradasModal !== 'undefined' && adminComisionesGeneradasModal && !adminComisionesGeneradasModal.hidden) {
+    poblarAdminComGenVendedorSel();
   }
 }
 

@@ -44,6 +44,7 @@
             <button type="button" id="navAdminServiciosBtn" data-i18n="adminMenuServ"></button>
             <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
             <button type="button" id="navAdminComisionesBtn">Comisiones Ventas</button>
+            <button type="button" id="navAdminComisionesGeneradasBtn">Comisiones Generadas</button>
           </div>
         </div>
       </div>
@@ -1735,6 +1736,21 @@
   </div>
 </div>
 
+<div class="modal" id="adminComisionesGeneradasModal" hidden>
+  <button class="scrim" type="button" id="adminComisionesGeneradasScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="adminComisionesGeneradasCard" role="dialog" aria-modal="true" aria-labelledby="adminComisionesGeneradasTitle">
+    <button class="mx" type="button" id="adminComisionesGeneradasClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminComisionesGeneradasTitle">Comisiones Generadas — Listado general</h2><p class="ph-sub">Comisiones ya generadas, su estado de pago y los datos de la operación bancaria.</p></div>
+    <div class="q-buscar-fields" style="margin-bottom:10px">
+      <select id="adminComGenVendedorSel" aria-label="Vendedor"></select>
+      <input type="date" id="adminComGenFechaDesde" aria-label="Fecha inicial">
+      <input type="date" id="adminComGenFechaHasta" aria-label="Fecha final">
+      <button class="btn btn-dark btn-sm" type="button" id="adminComGenMostrarBtn">Mostrar</button>
+    </div>
+    <div id="adminComisionesGeneradasResult" class="qbuscar-result"></div>
+  </div>
+</div>
+
 <div class="modal lb-modal" id="lbModal" hidden>
   <button class="scrim" type="button" id="lbScrim" data-i18n-label="close"></button>
   <button class="mx lb-x" type="button" id="lbClose" data-i18n-label="close">×</button>
@@ -1744,6 +1760,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261019-0017"></script>
+<script src="script.js?v=20261019-0018"></script>
 </body>
 </html>
