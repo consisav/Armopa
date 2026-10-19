@@ -1525,6 +1525,14 @@ const TIPOS_CUENTA_BANCARIA = [
 ];
 const tipoCuentaLabel = (v) => (TIPOS_CUENTA_BANCARIA.find((t) => t.v === v) || {}).l || '—';
 
+/* Forma de pago de una comisión generada, usada en el resumen de pago por
+   vendedor de Comisiones Generadas. */
+const FORMAS_PAGO = [
+  { v: 'transferencia', l: 'Transferencia' },
+  { v: 'cheque', l: 'Cheque' },
+  { v: 'efectivo', l: 'Efectivo' }
+];
+
 function vendAvatarEl(v) {
   const wrap = el('div', 'srow');
   const img = document.createElement('img');
@@ -2676,16 +2684,17 @@ function construirResumenPagoPorVendedor(data) {
     const grid = el('div', 'proy-grid');
     grid.append(labeledCell('Total pendiente', el('strong', 'com-valor', formatQ(total))));
 
-    const bancoSel = document.createElement('select');
-    const optVacio = document.createElement('option'); optVacio.value = ''; optVacio.textContent = 'Selecciona…';
-    bancoSel.appendChild(optVacio);
-    BANCOS_GT.forEach((b) => { const o = document.createElement('option'); o.value = b; o.textContent = b; bancoSel.appendChild(o); });
-    bancoSel.value = catalogo.banco_pago || '';
-    grid.append(labeledCell('Banco', bancoSel));
-
-    const cuentaInput = document.createElement('input');
-    cuentaInput.type = 'text'; cuentaInput.value = catalogo.numero_cuenta_bancaria || ''; cuentaInput.placeholder = 'Número de cuenta';
-    grid.append(labeledCell('Cuenta bancaria', cuentaInput));
+    // Forma de pago: según la que se elija, se muestran solo los campos que
+    // correspondan (Transferencia → Banco + Cuenta bancaria; Cheque →
+    // Banco + Número de cheque; Efectivo → ninguno).
+    const formaPagoSel = document.createElement('select');
+    FORMAS_PAGO.forEach((f) => {
+      const opt = document.createElement('option');
+      opt.value = f.v; opt.textContent = f.l;
+      formaPagoSel.appendChild(opt);
+    });
+    formaPagoSel.value = 'transferencia';
+    grid.append(labeledCell('Forma de pago', formaPagoSel));
 
     const hoyIso = fechaHoyIso();
     const fechaPagoInput = document.createElement('input'); fechaPagoInput.type = 'date'; fechaPagoInput.value = hoyIso;
@@ -2695,6 +2704,37 @@ function construirResumenPagoPorVendedor(data) {
     grid.append(labeledCell('Fecha de operación', fechaOpInput));
 
     card.append(grid);
+
+    // Campos según la forma de pago. El banco se autocompleta del catálogo
+    // de Vendedores, pero queda editable por si este pago en particular usa
+    // otro banco.
+    const camposPago = el('div', 'proy-grid com-pay-campos');
+    const bancoSel = document.createElement('select');
+    const optVacio = document.createElement('option'); optVacio.value = ''; optVacio.textContent = 'Selecciona…';
+    bancoSel.appendChild(optVacio);
+    BANCOS_GT.forEach((b) => { const o = document.createElement('option'); o.value = b; o.textContent = b; bancoSel.appendChild(o); });
+    bancoSel.value = catalogo.banco_pago || '';
+    const bancoCell = labeledCell('Banco', bancoSel);
+
+    const cuentaInput = document.createElement('input');
+    cuentaInput.type = 'text'; cuentaInput.value = catalogo.numero_cuenta_bancaria || ''; cuentaInput.placeholder = 'Número de cuenta';
+    const cuentaCell = labeledCell('Cuenta bancaria', cuentaInput);
+
+    const chequeInput = document.createElement('input');
+    chequeInput.type = 'text'; chequeInput.placeholder = 'Número de cheque';
+    const chequeCell = labeledCell('Número de cheque', chequeInput);
+
+    camposPago.append(bancoCell, cuentaCell, chequeCell);
+    card.append(camposPago);
+
+    function actualizarCamposPago() {
+      const forma = formaPagoSel.value;
+      bancoCell.hidden = forma === 'efectivo';
+      cuentaCell.hidden = forma !== 'transferencia';
+      chequeCell.hidden = forma !== 'cheque';
+    }
+    formaPagoSel.addEventListener('change', actualizarCamposPago);
+    actualizarCamposPago();
 
     const actions = el('div', 'proy-actions');
     const status = el('p', 'hint', ''); status.style.margin = '0'; status.style.marginRight = 'auto';
@@ -2708,11 +2748,14 @@ function construirResumenPagoPorVendedor(data) {
       status.textContent = 'Procesando…';
       try {
         const usuario = localStorage.getItem(LOGIN_STORE) || null;
+        const forma = formaPagoSel.value;
         const { error } = await supabaseClient.from('comisiones_pagadas').update({
           estado: 'pagado',
+          forma_pago: forma,
           fecha_pago: fechaPagoInput.value || hoyIso,
-          banco: bancoSel.value || null,
-          cuenta_bancaria: cuentaInput.value.trim() || null,
+          banco: forma === 'efectivo' ? null : (bancoSel.value || null),
+          cuenta_bancaria: forma === 'transferencia' ? (cuentaInput.value.trim() || null) : null,
+          numero_cheque: forma === 'cheque' ? (chequeInput.value.trim() || null) : null,
           fecha_operacion: fechaOpInput.value || hoyIso,
           usuario_banco: usuario
         }).in('id', ids);
