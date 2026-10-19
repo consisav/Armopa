@@ -5919,6 +5919,10 @@ $('#qSolServicioClave')?.addEventListener('keydown', (e) => { if (e.key === 'Ent
 function actualizarVisibilidadAccionesCotizacion() {
   const bloque = $('#qAccionesAdminBlock');
   if (bloque) bloque.hidden = !esAdminOSuperAdmin();
+  /* El "Promotor de negocio" solo lo ve y elige el Administrador o el
+     Super Administrador; el público general no lo necesita. */
+  const campoPromotor = $('#qPromotorField');
+  if (campoPromotor) campoPromotor.hidden = !esAdminOSuperAdmin();
 }
 
 actualizarVisibilidadSolServicio();
