@@ -661,6 +661,10 @@ function poblarAdminPropEstadoSel() {
   });
 }
 
+/* La lista de vendedores de este filtro viene del catálogo de
+   Administración > Vendedores (no de texto libre harvesteado de las
+   propiedades), para que solo aparezcan los vendedores realmente
+   registrados. */
 function poblarAdminPropVendedorSel() {
   const sel = $('#adminPropVendedorSel');
   if (!sel) return;
@@ -669,9 +673,11 @@ function poblarAdminPropVendedorSel() {
   const optTodos = document.createElement('option');
   optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
   sel.appendChild(optTodos);
-  vendedoresConocidos().forEach((v) => {
+  vendedoresCatalogo.forEach((v) => {
+    const nombre = (v.nombre || '').trim();
+    if (!nombre) return;
     const opt = document.createElement('option');
-    opt.value = v; opt.textContent = v;
+    opt.value = nombre; opt.textContent = nombre;
     sel.appendChild(opt);
   });
   if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
@@ -685,7 +691,11 @@ function pintarAdminProyectosList(cityFiltro, ubicacionFiltro, estadoFiltro, ven
   proyUbicacionesPlano(cityFiltro || null).forEach(({ city, c }) => {
     if (ubicacionFiltro && (city + '::' + c.id) !== ubicacionFiltro) return;
     if (estadoFiltro && c.estado !== estadoFiltro) return;
-    if (vendedorFiltro && (c.vendedorAsignado || '').trim() !== vendedorFiltro) return;
+    if (vendedorFiltro) {
+      const nombreVendedorAsignado = (c.vendedorAsignado || '').trim();
+      const nombreVendedorLoc = (c.sName || '').trim();
+      if (nombreVendedorAsignado !== vendedorFiltro && nombreVendedorLoc !== vendedorFiltro) return;
+    }
     const card = el('div', 'proy-card');
     proyRenderView(card, city, c);
     list.appendChild(card);
@@ -705,6 +715,7 @@ $('#adminPropMostrarBtn')?.addEventListener('click', () => {
 const adminProyectosModal = $('#adminProyectosModal');
 function abrirAdminProyectosModal() {
   if (!adminProyectosModal) return;
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
   poblarAdminPropCiudadSel();
   poblarAdminPropUbicacionSel();
   poblarAdminPropEstadoSel();
@@ -1653,6 +1664,15 @@ async function cargarVendedoresCatalogo() {
   }
   vendedoresCatalogoCargado = true;
   if (typeof render === 'function' && pModal && !pModal.hidden) render();
+  if (adminProyectosModal && !adminProyectosModal.hidden) {
+    poblarAdminPropVendedorSel();
+    pintarAdminProyectosList(
+      $('#adminPropCiudadSel')?.value || '',
+      $('#adminPropUbicacionSel')?.value || '',
+      $('#adminPropEstadoSel')?.value || '',
+      $('#adminPropVendedorSel')?.value || ''
+    );
+  }
 }
 
 /* Arma la lista desplegable de "Nombre del vendedor" a partir del
