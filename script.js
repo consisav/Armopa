@@ -806,6 +806,11 @@ function solRenderView(card, r) {
     labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(solComisionValorCalc(r)))),
     labeledCell('Fecha de cambio de estado', el('span', '', r.estado_fecha ? formatQBuscarRegFecha(r.estado_fecha) : '—'))
   );
+  // El Promotor de Negocios (del catálogo de Vendedores) solo lo ve y
+  // administra el Administrador o el Super Administrador.
+  if (esAdminOSuperAdmin()) {
+    grid.appendChild(labeledCell('Promotor de Negocios', el('span', '', r.promotor_negocio || '—')));
+  }
   card.appendChild(actions);
 
   modBtn.addEventListener('click', () => solRenderEdit(card, r));
@@ -864,6 +869,31 @@ function solRenderEdit(card, r) {
     valorPreview.textContent = formatQ(solComisionValorCalc({ ...r, comision_porcentaje: comisionInput.value }));
   });
 
+  // El Promotor de Negocios (del catálogo de Vendedores) solo lo ve y
+  // administra el Administrador o el Super Administrador.
+  const puedeEditarPromotor = esAdminOSuperAdmin();
+  let promotorSel = null;
+  if (puedeEditarPromotor) {
+    promotorSel = document.createElement('select');
+    const optVacio = document.createElement('option');
+    optVacio.value = ''; optVacio.textContent = 'Selecciona un promotor';
+    promotorSel.appendChild(optVacio);
+    vendedoresCatalogo.forEach((v) => {
+      const nombre = (v.nombre || '').trim();
+      if (!nombre) return;
+      const opt = document.createElement('option');
+      opt.value = nombre; opt.textContent = nombre;
+      promotorSel.appendChild(opt);
+    });
+    const actual = (r.promotor_negocio || '').trim();
+    if (actual && ![...promotorSel.options].some((o) => o.value === actual)) {
+      const opt = document.createElement('option');
+      opt.value = actual; opt.textContent = actual + ' (no está en Vendedores)';
+      promotorSel.appendChild(opt);
+    }
+    promotorSel.value = actual;
+  }
+
   const actions = el('div', 'proy-actions');
   const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
   const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
@@ -882,13 +912,14 @@ function solRenderEdit(card, r) {
     labeledCell('% Comisión', comisionInput),
     labeledCell('Valor de comisión', valorPreview)
   );
+  if (promotorSel) grid.appendChild(labeledCell('Promotor de Negocios', promotorSel));
   card.append(grid, vendedorList, actions);
 
   cancelBtn.addEventListener('click', () => solRenderView(card, r));
   saveBtn.addEventListener('click', async () => {
     saveBtn.disabled = true;
     try {
-      await guardarSolicitudDesdeListado(r, estadoSel.value, prioridadSel.value, vendedorInput.value.trim(), comisionInput.value);
+      await guardarSolicitudDesdeListado(r, estadoSel.value, prioridadSel.value, vendedorInput.value.trim(), comisionInput.value, promotorSel ? promotorSel.value : r.promotor_negocio);
       solRenderView(card, r);
     } catch (e) {
       console.error('Error guardando la solicitud de servicio:', e);
@@ -898,12 +929,13 @@ function solRenderEdit(card, r) {
   });
 }
 
-async function guardarSolicitudDesdeListado(r, nuevoEstado, nuevaPrioridad, nuevoVendedor, nuevaComision) {
+async function guardarSolicitudDesdeListado(r, nuevoEstado, nuevaPrioridad, nuevoVendedor, nuevaComision, nuevoPromotor) {
   const payload = {
     estado: nuevoEstado,
     prioridad: nuevaPrioridad || null,
     vendedor_asignado: nuevoVendedor || null,
     comision_porcentaje: nuevaComision || null,
+    promotor_negocio: nuevoPromotor || null,
     estado_fecha: new Date().toISOString()
   };
   const { error } = await supabaseClient.from('solicitudes_servicio').update(payload).eq('id', r.id);
@@ -912,6 +944,7 @@ async function guardarSolicitudDesdeListado(r, nuevoEstado, nuevaPrioridad, nuev
   r.prioridad = payload.prioridad;
   r.vendedor_asignado = payload.vendedor_asignado;
   r.comision_porcentaje = payload.comision_porcentaje;
+  r.promotor_negocio = payload.promotor_negocio;
   r.estado_fecha = payload.estado_fecha;
 }
 
@@ -957,7 +990,28 @@ function poblarAdminSolEstadoSel() {
   });
 }
 
-function pintarAdminSolicitudesList(proyectoFiltro, estadoFiltro) {
+/* La lista de vendedores/promotores de negocio de este filtro viene del
+   catálogo de Administración > Vendedores, igual que en el filtro de
+   Propiedades. */
+function poblarAdminSolVendedorSel() {
+  const sel = $('#adminSolVendedorSel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  sel.appendChild(optTodos);
+  vendedoresCatalogo.forEach((v) => {
+    const nombre = (v.nombre || '').trim();
+    if (!nombre) return;
+    const opt = document.createElement('option');
+    opt.value = nombre; opt.textContent = nombre;
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
+function pintarAdminSolicitudesList(proyectoFiltro, estadoFiltro, vendedorFiltro) {
   const list = $('#adminSolicitudesList');
   if (!list) return;
   list.innerHTML = '';
@@ -965,6 +1019,7 @@ function pintarAdminSolicitudesList(proyectoFiltro, estadoFiltro) {
   adminSolData.forEach((r) => {
     if (proyectoFiltro && String(r.id) !== proyectoFiltro) return;
     if (estadoFiltro && r.estado !== estadoFiltro) return;
+    if (vendedorFiltro && (r.vendedor_asignado || '').trim() !== vendedorFiltro) return;
     const card = el('div', 'proy-card');
     solRenderView(card, r);
     list.appendChild(card);
@@ -976,7 +1031,8 @@ function pintarAdminSolicitudesList(proyectoFiltro, estadoFiltro) {
 $('#adminSolMostrarBtn')?.addEventListener('click', () => {
   const proyectoFiltro = $('#adminSolProyectoSel')?.value || '';
   const estadoFiltro = $('#adminSolEstadoSel')?.value || '';
-  pintarAdminSolicitudesList(proyectoFiltro, estadoFiltro);
+  const vendedorFiltro = $('#adminSolVendedorSel')?.value || '';
+  pintarAdminSolicitudesList(proyectoFiltro, estadoFiltro, vendedorFiltro);
 });
 
 async function cargarAdminSolData() {
@@ -985,7 +1041,7 @@ async function cargarAdminSolData() {
   try {
     const { data: rows, error } = await supabaseClient
       .from('solicitudes_servicio')
-      .select('id, servicio, direccion, nombre_cliente, telefono_cliente, prioridad, tiempo_estimado, fecha_inicio, estado, numero_solicitud, cliente_codigo, fecha_cotizacion, necesidad, cotizacion_id, vendedor_asignado, comision_porcentaje, estado_fecha')
+      .select('id, servicio, direccion, nombre_cliente, telefono_cliente, prioridad, tiempo_estimado, fecha_inicio, estado, numero_solicitud, cliente_codigo, fecha_cotizacion, necesidad, cotizacion_id, vendedor_asignado, comision_porcentaje, promotor_negocio, estado_fecha')
       .order('id', { ascending: false });
     if (error) throw error;
     adminSolData = rows || [];
@@ -1009,14 +1065,17 @@ async function cargarAdminSolData() {
     adminSolData = [];
   }
   poblarAdminSolProyectoSel();
+  poblarAdminSolVendedorSel();
   if ($('#adminSolProyectoSel')) $('#adminSolProyectoSel').value = '';
   if ($('#adminSolEstadoSel')) $('#adminSolEstadoSel').value = '';
+  if ($('#adminSolVendedorSel')) $('#adminSolVendedorSel').value = '';
   pintarAdminSolicitudesList();
 }
 
 const adminSolicitudesModal = $('#adminSolicitudesModal');
 function abrirAdminSolicitudesModal() {
   if (!adminSolicitudesModal) return;
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
   poblarAdminSolEstadoSel();
   adminSolicitudesModal.hidden = false;
   cargarAdminSolData();
@@ -1672,6 +1731,14 @@ async function cargarVendedoresCatalogo() {
       $('#adminPropUbicacionSel')?.value || '',
       $('#adminPropEstadoSel')?.value || '',
       $('#adminPropVendedorSel')?.value || ''
+    );
+  }
+  if (typeof adminSolicitudesModal !== 'undefined' && adminSolicitudesModal && !adminSolicitudesModal.hidden) {
+    poblarAdminSolVendedorSel();
+    pintarAdminSolicitudesList(
+      $('#adminSolProyectoSel')?.value || '',
+      $('#adminSolEstadoSel')?.value || '',
+      $('#adminSolVendedorSel')?.value || ''
     );
   }
 }
