@@ -661,7 +661,23 @@ function poblarAdminPropEstadoSel() {
   });
 }
 
-function pintarAdminProyectosList(cityFiltro, ubicacionFiltro, estadoFiltro) {
+function poblarAdminPropVendedorSel() {
+  const sel = $('#adminPropVendedorSel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  sel.appendChild(optTodos);
+  vendedoresConocidos().forEach((v) => {
+    const opt = document.createElement('option');
+    opt.value = v; opt.textContent = v;
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
+function pintarAdminProyectosList(cityFiltro, ubicacionFiltro, estadoFiltro, vendedorFiltro) {
   const list = $('#adminProyectosList');
   if (!list) return;
   list.innerHTML = '';
@@ -669,6 +685,7 @@ function pintarAdminProyectosList(cityFiltro, ubicacionFiltro, estadoFiltro) {
   proyUbicacionesPlano(cityFiltro || null).forEach(({ city, c }) => {
     if (ubicacionFiltro && (city + '::' + c.id) !== ubicacionFiltro) return;
     if (estadoFiltro && c.estado !== estadoFiltro) return;
+    if (vendedorFiltro && (c.vendedorAsignado || '').trim() !== vendedorFiltro) return;
     const card = el('div', 'proy-card');
     proyRenderView(card, city, c);
     list.appendChild(card);
@@ -681,7 +698,8 @@ $('#adminPropMostrarBtn')?.addEventListener('click', () => {
   const ciudadFiltro = $('#adminPropCiudadSel')?.value || '';
   const ubicacionFiltro = $('#adminPropUbicacionSel')?.value || '';
   const estadoFiltro = $('#adminPropEstadoSel')?.value || '';
-  pintarAdminProyectosList(ciudadFiltro, ubicacionFiltro, estadoFiltro);
+  const vendedorFiltro = $('#adminPropVendedorSel')?.value || '';
+  pintarAdminProyectosList(ciudadFiltro, ubicacionFiltro, estadoFiltro, vendedorFiltro);
 });
 
 const adminProyectosModal = $('#adminProyectosModal');
@@ -690,9 +708,11 @@ function abrirAdminProyectosModal() {
   poblarAdminPropCiudadSel();
   poblarAdminPropUbicacionSel();
   poblarAdminPropEstadoSel();
+  poblarAdminPropVendedorSel();
   if ($('#adminPropCiudadSel')) $('#adminPropCiudadSel').value = '';
   if ($('#adminPropUbicacionSel')) $('#adminPropUbicacionSel').value = '';
   if ($('#adminPropEstadoSel')) $('#adminPropEstadoSel').value = '';
+  if ($('#adminPropVendedorSel')) $('#adminPropVendedorSel').value = '';
   pintarAdminProyectosList();
   adminProyectosModal.hidden = false;
 }
