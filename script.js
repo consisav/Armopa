@@ -1634,12 +1634,12 @@ $('#adminVendedoresClose')?.addEventListener('click', cerrarAdminVendedoresModal
 $('#adminVendedoresScrim')?.addEventListener('click', cerrarAdminVendedoresModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminVendedoresModal && !adminVendedoresModal.hidden) cerrarAdminVendedoresModal(); });
 
-/* Catálogo de vendedores (tabla "vendedores") para sugerir nombres en el
-   campo "Nombre del vendedor" de cada ubicación (sección "Vendedor" del
-   formulario de edición de propiedad) y autocompletar su WhatsApp y foto
-   cuando el nombre coincide exactamente con un vendedor registrado. Se
-   carga de forma perezosa, la primera vez que se muestra el bloque de
-   administración de una ubicación. */
+/* Catálogo de vendedores (tabla "vendedores") para que el campo "Nombre
+   del vendedor" de cada ubicación (sección "Vendedor" del formulario de
+   edición de propiedad) sea una lista real de los vendedores ya
+   registrados en Administración > Vendedores, en vez de texto libre, y
+   para autocompletar su WhatsApp y foto al elegir uno. Se carga de forma
+   perezosa, la primera vez que se abre una ubicación en modo edición. */
 let vendedoresCatalogo = [];
 let vendedoresCatalogoCargado = false;
 async function cargarVendedoresCatalogo() {
@@ -1653,6 +1653,32 @@ async function cargarVendedoresCatalogo() {
   }
   vendedoresCatalogoCargado = true;
   if (typeof render === 'function' && pModal && !pModal.hidden) render();
+}
+
+/* Arma la lista desplegable de "Nombre del vendedor" a partir del
+   catálogo de Vendedores y selecciona el nombre actual de la ubicación.
+   Si ese nombre no está en el catálogo (texto libre que se haya escrito
+   antes de este cambio), se agrega como una opción aparte para no
+   perderlo, marcada como que no está en el catálogo. */
+function poblarPSnameSelect(nombreActual) {
+  const sel = $('#p-sname');
+  if (!sel) return;
+  sel.innerHTML = '';
+  const optVacio = document.createElement('option');
+  optVacio.value = ''; optVacio.textContent = 'Selecciona un vendedor';
+  sel.appendChild(optVacio);
+  vendedoresCatalogo.forEach((v) => {
+    const opt = document.createElement('option');
+    opt.value = v.nombre; opt.textContent = v.nombre;
+    sel.appendChild(opt);
+  });
+  const nombre = (nombreActual || '').trim();
+  if (nombre && !vendedoresCatalogo.some((v) => (v.nombre || '').trim() === nombre)) {
+    const opt = document.createElement('option');
+    opt.value = nombre; opt.textContent = nombre + ' (no está en Vendedores)';
+    sel.appendChild(opt);
+  }
+  sel.value = nombre;
 }
 
 /* Carrusel de propiedades */
@@ -3562,8 +3588,9 @@ function renderEdit() {
   $('#fSale').hidden = !(op === 'venta' || op === 'ambos');
   $('#p-rent').value = c.pRent || '';
   $('#p-sale').value = c.pSale || '';
-  $('#p-sname').value = c.sName || '';
+  poblarPSnameSelect(c.sName || '');
   $('#p-swa').value = c.sWa || '';
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
   const locAdminBlock = $('#pLocAdminBlock');
   if (locAdminBlock) {
     locAdminBlock.hidden = !esAdminOSuperAdmin();
@@ -3576,8 +3603,6 @@ function renderEdit() {
       badge.style.background = info.bg;
       badge.style.color = info.fg;
       fillDatalist($('#pVendedorList'), vendedoresConocidos());
-      fillDatalist($('#pSnameList'), vendedoresCatalogo.map((v) => v.nombre));
-      if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
       $('#p-vendedor-asignado').value = c.vendedorAsignado || '';
       $('#p-comision').value = c.comisionPorcentaje || '';
       $('#pComisionValor').textContent = formatQ(comisionValorCalc(c));
@@ -4168,28 +4193,23 @@ $('#p-desc').addEventListener('input', () => {
   c.desc = $('#p-desc').value;
   note(persist() ? '' : T[lang].storeErr);
 });
-$('#p-sname').addEventListener('input', () => {
-  const c = list()[sel]; if (!c) return;
-  c.sName = $('#p-sname').value;
-  note(persist() ? '' : T[lang].storeErr);
-});
-/* Si el nombre escrito coincide con un vendedor ya registrado en el
-   catálogo de Administración > Vendedores, se completan su WhatsApp y su
-   foto automáticamente (solo si esta ubicación todavía no tiene los
-   suyos), para no tener que volver a cargarlos a mano. */
+/* "Nombre del vendedor" es ahora una lista de los vendedores de
+   Administración > Vendedores (ya no texto libre), así que cada selección
+   siempre corresponde con uno de ellos: se guarda su nombre y, de una
+   vez, se insertan su WhatsApp y su foto automáticamente (pisando lo que
+   hubiera antes en esta ubicación, porque es justo lo que se acaba de
+   elegir). */
 $('#p-sname').addEventListener('change', () => {
   const c = list()[sel]; if (!c) return;
-  const nombre = (c.sName || '').trim().toLowerCase();
-  if (!nombre) return;
-  const match = vendedoresCatalogo.find((v) => (v.nombre || '').trim().toLowerCase() === nombre);
-  if (!match) return;
-  let changed = false;
-  if (!c.sWa && match.telefono) { c.sWa = match.telefono; changed = true; }
-  if (!c.sPhoto && match.foto_url) { c.sPhoto = match.foto_url; changed = true; }
-  if (changed) {
-    note(persist() ? T[lang].saved : T[lang].storeErr);
-    renderEdit();
+  c.sName = $('#p-sname').value;
+  const nombre = c.sName.trim();
+  const match = nombre ? vendedoresCatalogo.find((v) => (v.nombre || '').trim() === nombre) : null;
+  if (match) {
+    c.sWa = match.telefono || '';
+    c.sPhoto = match.foto_url || '';
   }
+  note(persist() ? T[lang].saved : T[lang].storeErr);
+  renderEdit();
 });
 $('#p-swa').addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
