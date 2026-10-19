@@ -1464,6 +1464,32 @@ function vendCodigo(v) {
   return v && v.id != null ? ('V-' + String(v.id).padStart(4, '0')) : 'Se asigna al guardar';
 }
 
+/* Lista de bancos de Guatemala, igual a la usada en "Datos para
+   precalificar un préstamo" (#pq-banco / #pqj-banco), para que el banco
+   de pago del vendedor se elija de la misma lista estándar. */
+const BANCOS_GT = [
+  'Crédito Hipotecario Nacional de Guatemala (CHN)',
+  'Banco de los Trabajadores (Bantrab)',
+  'Banco Cuscatlán Guatemala',
+  'Banco Industrial',
+  'Banco de Desarrollo Rural (Banrural)',
+  'Banco Internacional',
+  'Citibank, N.A. Sucursal Guatemala',
+  'Vivibanco',
+  'Banco Ficohsa Guatemala',
+  'Banco Promerica',
+  'Banco de Antigua',
+  'Banco de América Central (BAC)',
+  'Banco Agromercantil de Guatemala (BAM)',
+  'Banco G&T Continental',
+  'Banco Azteca de Guatemala',
+  'Banco INV',
+  'Banco Credicorp',
+  'Banco Nexa',
+  'Banco Multimoney',
+  'Otro'
+];
+
 function vendAvatarEl(v) {
   const wrap = el('div', 'srow');
   const img = document.createElement('img');
@@ -1504,7 +1530,9 @@ function vendRenderView(card, v) {
     labeledCell('Dirección', el('span', '', v.direccion || '—')),
     labeledCell('Fecha inicio', el('span', '', v.fecha_inicio ? formatQBuscarRegFecha(v.fecha_inicio) : '—')),
     labeledCell('Fecha de grabación', el('span', '', v.created_at ? formatQBuscarRegFecha(v.created_at) : '—')),
-    labeledCell('Usuario', el('span', '', v.usuario || '—'))
+    labeledCell('Usuario', el('span', '', v.usuario || '—')),
+    labeledCell('Banco de pago', el('span', '', v.banco_pago || '—')),
+    labeledCell('Número de cuenta bancaria', el('span', '', v.numero_cuenta_bancaria || '—'))
   );
   // El % de comisión por ventas solo lo ve y administra el Super
   // Administrador (el resto de la modal ya está detrás de ese mismo
@@ -1586,6 +1614,20 @@ function vendRenderEdit(card, v, isNew) {
   const dirInput = document.createElement('input');
   dirInput.type = 'text'; dirInput.value = v.direccion || ''; dirInput.placeholder = 'Dirección';
 
+  const bancoSel = document.createElement('select');
+  const bancoOptVacio = document.createElement('option');
+  bancoOptVacio.value = ''; bancoOptVacio.textContent = 'Selecciona…';
+  bancoSel.appendChild(bancoOptVacio);
+  BANCOS_GT.forEach((nombreBanco) => {
+    const opt = document.createElement('option');
+    opt.value = nombreBanco; opt.textContent = nombreBanco;
+    bancoSel.appendChild(opt);
+  });
+  bancoSel.value = v.banco_pago || '';
+
+  const cuentaInput = document.createElement('input');
+  cuentaInput.type = 'text'; cuentaInput.value = v.numero_cuenta_bancaria || ''; cuentaInput.placeholder = 'Número de cuenta';
+
   // "Fecha inicio" se graba sola con la fecha de hoy al registrar un
   // vendedor nuevo; ya no se escribe a mano (ver más abajo, junto con
   // "Usuario" y "Fecha de grabación").
@@ -1618,7 +1660,9 @@ function vendRenderEdit(card, v, isNew) {
     labeledCell('Dirección', dirInput),
     labeledCell('Fecha inicio', el('span', '', isNew ? 'Se asigna automáticamente al guardar (' + hoyDisplay + ')' : (v.fecha_inicio ? formatQBuscarRegFecha(v.fecha_inicio) : '—'))),
     labeledCell('Fecha de grabación', el('span', '', isNew ? 'Se asigna automáticamente al guardar' : (v.created_at ? formatQBuscarRegFecha(v.created_at) : '—'))),
-    labeledCell('Usuario', el('span', '', 'Se graba automáticamente (' + (localStorage.getItem(LOGIN_STORE) || 'usuario actual') + ')'))
+    labeledCell('Usuario', el('span', '', 'Se graba automáticamente (' + (localStorage.getItem(LOGIN_STORE) || 'usuario actual') + ')')),
+    labeledCell('Banco de pago', bancoSel),
+    labeledCell('Número de cuenta bancaria', cuentaInput)
   );
   if (esSuperAdmin()) {
     grid.appendChild(labeledCell('% Comisión por ventas', comisionInput));
@@ -1645,7 +1689,9 @@ function vendRenderEdit(card, v, isNew) {
       // fija la primera vez (al crear); si ya existía, se conserva.
       fecha_inicio: isNew ? hoyISO : (v.fecha_inicio || null),
       usuario: localStorage.getItem(LOGIN_STORE) || null,
-      foto_url: fotoUrl || null
+      foto_url: fotoUrl || null,
+      banco_pago: bancoSel.value || null,
+      numero_cuenta_bancaria: cuentaInput.value.trim() || null
     };
     if (esSuperAdmin()) {
       payload.comision_porcentaje = comisionInput.value !== '' ? comisionInput.value : null;
