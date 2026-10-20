@@ -2577,6 +2577,46 @@ function adminComGenCampoTexto(td, id, campo, valorTxt) {
   }
 }
 
+/* Campo "Forma de pago" de una comisión individual: select editable (solo
+   super admin) que al cambiar guarda de inmediato y además muestra u
+   oculta los campos relacionados (Banco, Cuenta bancaria, Número de
+   cheque) según corresponda — mismo criterio que el resumen de pago por
+   vendedor. */
+function adminComGenCampoFormaPago(td, r, camposRelacionados) {
+  if (esSuperAdmin()) {
+    const sel = document.createElement('select');
+    sel.className = 'com-text-input';
+    FORMAS_PAGO.forEach((f) => {
+      const opt = document.createElement('option');
+      opt.value = f.v; opt.textContent = f.l;
+      if (f.v === (r.forma_pago || 'transferencia')) opt.selected = true;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', async () => {
+      const anterior = r.forma_pago;
+      camposRelacionados(sel.value);
+      sel.disabled = true;
+      try {
+        const { error } = await adminComGenGuardarCampo(r.id, 'forma_pago', sel.value);
+        if (error) throw error;
+        r.forma_pago = sel.value;
+      } catch (e) {
+        console.error('Error guardando forma_pago:', e);
+        alert('No se pudo guardar el cambio.');
+        sel.value = anterior || 'transferencia';
+        camposRelacionados(sel.value);
+      } finally {
+        sel.disabled = false;
+      }
+    });
+    td.appendChild(sel);
+    camposRelacionados(sel.value);
+  } else {
+    const info = FORMAS_PAGO.find((f) => f.v === r.forma_pago) || FORMAS_PAGO[0];
+    td.textContent = info.l;
+  }
+}
+
 /* Tarjeta de una comisión generada (mismo lenguaje visual que Vendedores /
    Tipos de comisión: .proy-card + .proy-grid), para que la información se
    lea completa sin necesitar scroll horizontal en ningún ancho de
@@ -2628,18 +2668,35 @@ function adminComGenBuildFila(r) {
   const campoTextoWrap = (campo, valorTxt) => { const w = el('div'); adminComGenCampoTexto(w, r.id, campo, valorTxt); return w; };
 
   const grid = el('div', 'proy-grid');
+  const formaPagoWrap = el('div');
+  const bancoWrap = el('div'); adminComGenCampoTexto(bancoWrap, r.id, 'banco', r.banco);
+  const cuentaWrap = el('div'); adminComGenCampoTexto(cuentaWrap, r.id, 'cuenta_bancaria', r.cuenta_bancaria);
+  const chequeWrap = el('div'); adminComGenCampoTexto(chequeWrap, r.id, 'numero_cheque', r.numero_cheque);
+  const bancoCell = labeledCell('Banco', bancoWrap);
+  const cuentaCell = labeledCell('Cuenta bancaria', cuentaWrap);
+  const chequeCell = labeledCell('Número de cheque', chequeWrap);
+
   grid.append(
     labeledCell('Vendedor', el('span', '', r.vendedor || '—')),
     labeledCell('Fecha generada', el('span', '', r.fecha_comision ? formatQBuscarRegFecha(r.fecha_comision) : '—')),
     labeledCell('% Comisión', el('span', '', r.porcentaje_comision != null && r.porcentaje_comision !== '' ? (r.porcentaje_comision + '%') : '—')),
     labeledCell('Valor de comisión', el('strong', 'com-valor', formatQ(r.valor_comision))),
+    labeledCell('Forma de pago', formaPagoWrap),
     labeledCell('Fecha de pago', campoFechaWrap('fecha_pago', r.fecha_pago)),
-    labeledCell('Banco', campoTextoWrap('banco', r.banco)),
-    labeledCell('Cuenta bancaria', campoTextoWrap('cuenta_bancaria', r.cuenta_bancaria)),
+    bancoCell,
+    cuentaCell,
+    chequeCell,
     labeledCell('Fecha operación', campoFechaWrap('fecha_operacion', r.fecha_operacion)),
     labeledCell('Usuario que paga', campoTextoWrap('usuario_banco', r.usuario_banco))
   );
   card.append(grid);
+
+  adminComGenCampoFormaPago(formaPagoWrap, r, (forma) => {
+    bancoCell.hidden = forma === 'efectivo';
+    cuentaCell.hidden = forma !== 'transferencia';
+    chequeCell.hidden = forma !== 'cheque';
+  });
+
   return card;
 }
 
