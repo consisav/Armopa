@@ -2914,6 +2914,115 @@ $('#adminComisionesGeneradasClose')?.addEventListener('click', cerrarAdminComisi
 $('#adminComisionesGeneradasScrim')?.addEventListener('click', cerrarAdminComisionesGeneradasModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminComisionesGeneradasModal && !adminComisionesGeneradasModal.hidden) cerrarAdminComisionesGeneradasModal(); });
 
+/* ===== Comisiones Pagadas =====
+   Historial de comisiones (misma tabla comisiones_pagadas), filtrable por
+   vendedor, por fecha (inicial/final) y por estado -incluyendo "Todas"
+   para cada filtro-. Reutiliza la misma tarjeta (adminComGenBuildFila) que
+   Comisiones Generadas. */
+function poblarAdminComPagVendedorSel() {
+  const sel = $('#adminComPagVendedorSel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  sel.appendChild(optTodos);
+  vendedoresCatalogo.forEach((v) => {
+    const nombre = (v.nombre || '').trim();
+    if (!nombre) return;
+    const opt = document.createElement('option');
+    opt.value = nombre; opt.textContent = nombre;
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
+function poblarAdminComPagEstadoSel() {
+  const sel = $('#adminComPagEstadoSel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '';
+  const optTodas = document.createElement('option');
+  optTodas.value = ''; optTodas.textContent = 'Todos los estados';
+  sel.appendChild(optTodas);
+  COM_ESTADOS.forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v; opt.textContent = e.l;
+    sel.appendChild(opt);
+  });
+  if (prev && [...sel.options].some((o) => o.value === prev)) sel.value = prev;
+}
+
+async function mostrarComisionesPagadas() {
+  const result = $('#adminComisionesPagadasResult');
+  if (!result) return;
+  const vendedorVal = $('#adminComPagVendedorSel')?.value || '';
+  const fechaDesdeVal = $('#adminComPagFechaDesde')?.value || '';
+  const fechaHastaVal = $('#adminComPagFechaHasta')?.value || '';
+  const estadoVal = $('#adminComPagEstadoSel')?.value || '';
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    let q = supabaseClient.from('comisiones_pagadas').select('*').order('vendedor', { ascending: true }).order('fecha_pago', { ascending: false });
+    if (vendedorVal) q = q.eq('vendedor', vendedorVal);
+    if (fechaDesdeVal) q = q.gte('fecha_pago', fechaDesdeVal + 'T00:00:00');
+    if (fechaHastaVal) q = q.lte('fecha_pago', fechaHastaVal + 'T23:59:59');
+    if (estadoVal) q = q.eq('estado', estadoVal);
+    const { data, error } = await q;
+    if (error) throw error;
+    result.innerHTML = '';
+    if (!data || !data.length) {
+      result.innerHTML = '<p class="qbr-empty">No hay comisiones que coincidan con la búsqueda.</p>';
+      return;
+    }
+
+    const porVendedor = {};
+    data.forEach((r) => {
+      const key = r.vendedor || '(Sin vendedor)';
+      if (!porVendedor[key]) porVendedor[key] = [];
+      porVendedor[key].push(r);
+    });
+    Object.keys(porVendedor).sort().forEach((vendedorNombre) => {
+      const filas = porVendedor[vendedorNombre];
+      const wrap = el('div', 'com-group');
+      const h = el('h3', 'com-group-title');
+      h.append(document.createTextNode(vendedorNombre), el('span', 'com-count', '(' + filas.length + ')'));
+      wrap.append(h);
+      const list = el('div', 'proy-list');
+      filas.forEach((r) => list.appendChild(adminComGenBuildFila(r)));
+      wrap.append(list);
+      result.appendChild(wrap);
+    });
+  } catch (e) {
+    console.error('Error cargando comisiones pagadas:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de comisiones pagadas.</p>';
+  }
+}
+
+$('#adminComPagMostrarBtn')?.addEventListener('click', () => mostrarComisionesPagadas());
+
+const adminComisionesPagadasModal = $('#adminComisionesPagadasModal');
+function abrirAdminComisionesPagadasModal() {
+  if (!adminComisionesPagadasModal) return;
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
+  adminComisionesPagadasModal.hidden = false;
+  poblarAdminComPagVendedorSel();
+  poblarAdminComPagEstadoSel();
+  if ($('#adminComPagVendedorSel')) $('#adminComPagVendedorSel').value = '';
+  if ($('#adminComPagEstadoSel')) $('#adminComPagEstadoSel').value = '';
+  if ($('#adminComPagFechaDesde')) $('#adminComPagFechaDesde').value = '';
+  if ($('#adminComPagFechaHasta')) $('#adminComPagFechaHasta').value = '';
+  mostrarComisionesPagadas();
+}
+function cerrarAdminComisionesPagadasModal() { if (adminComisionesPagadasModal) adminComisionesPagadasModal.hidden = true; }
+$('#navAdminComisionesPagadasBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminComisionesPagadasModal();
+});
+$('#adminComisionesPagadasClose')?.addEventListener('click', cerrarAdminComisionesPagadasModal);
+$('#adminComisionesPagadasScrim')?.addEventListener('click', cerrarAdminComisionesPagadasModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminComisionesPagadasModal && !adminComisionesPagadasModal.hidden) cerrarAdminComisionesPagadasModal(); });
+
 /* Catálogo de vendedores (tabla "vendedores") para que el campo "Nombre
    del vendedor" de cada ubicación (sección "Vendedor" del formulario de
    edición de propiedad) sea una lista real de los vendedores ya
