@@ -8,19 +8,16 @@ a{color:inherit;text-decoration:none}
 button,input,select,textarea{font-family:inherit}
 :focus-visible{outline:2px solid var(--gold2);outline-offset:3px}
 
-/* Sello de agua "ARMOPA, S.A." sobre cada foto del sitio, visible solo
-   mientras hay una sesión iniciada (ver pintarEstadoUsuario() en
-   script.js, que alterna la clase wm-on en <body>). .wm-wrap envuelve
-   cada <img> (inyectado por aplicarSelloAguaFotos() en script.js) y
-   .wm-hero se agrega directamente al bloque de portada, que ya tiene su
-   propio tamaño. El sello se repite en mosaico mediante un fondo SVG en
-   data-URI, para no depender de ningún archivo de imagen adicional. */
+/* Sello de agua "ARMOPA, S.A." sobre cada foto del sitio: un solo sello,
+   centrado en la parte inferior, color blanco, tamaño medio, visible
+   siempre (se esté conectado o no). .wm-wrap envuelve cada <img>
+   (inyectado por aplicarSelloAguaFotos() en script.js) y .hero lo recibe
+   directamente, ya que es su propio bloque de tamaño fijo. Texto vía SVG
+   en data-URI, para no depender de ningún archivo de imagen adicional. */
 .wm-wrap{position:relative;display:inline-block;line-height:0}
 .wm-wrap>img{display:block}
 .wm-wrap::after,
-.hero::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:0;background-repeat:repeat;background-size:220px 110px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='110'%3E%3Ctext x='110' y='60' font-family='Georgia,serif' font-size='16' fill='%23ffffff' fill-opacity='0.55' text-anchor='middle' transform='rotate(-28 110 55)'%3EARMOPA, S.A.%3C/text%3E%3C/svg%3E")}
-body.wm-on .wm-wrap::after,
-body.wm-on .hero::after{opacity:1}
+.hero::after{content:'';position:absolute;left:0;right:0;bottom:6%;height:13%;min-height:16px;pointer-events:none;background-repeat:no-repeat;background-position:center;background-size:contain;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='34'%3E%3Ctext x='130' y='24' font-family='Georgia,serif' font-size='20' fill='%23ffffff' fill-opacity='0.85' text-anchor='middle'%3EARMOPA, S.A.%3C/text%3E%3C/svg%3E")}
 .hero{position:relative}
 
 .wrap{width:min(1180px,90%);margin:0 auto}
