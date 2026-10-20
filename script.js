@@ -3255,7 +3255,54 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadAccionesCotizacion();
     if (buscarServBtn) buscarServBtn.hidden = true;
   }
+  document.body.classList.toggle('wm-on', !!usuario);
+  aplicarSelloAguaFotos();
 }
+
+/* Sello de agua "ARMOPA, S.A." visible sobre todas las fotos del sitio
+   mientras hay una sesión iniciada (ver body.wm-on y el CSS .wm-wrap /
+   .hero en styles.css). En vez de tocar cada lugar del código que crea
+   un <img> (son muchos: propiedades, proyectos, servicios, vendedores,
+   galería, lightbox, etc.), se envuelve automáticamente cualquier <img>
+   que todavía no tenga su envoltorio, y se reaplica cada vez que se
+   agrega contenido nuevo al DOM (tarjetas, carruseles, modales). El
+   bloque de portada (.hero) no se envuelve -ya tiene su propio tamaño y
+   fondo- así que solo necesita la clase wm-on en <body> (el CSS ya
+   apunta a .hero directamente). */
+function selloAguaDebeOmitir(img) {
+  // Logo de la marca y los íconos/insignias decorativos del sitio (no son
+  // fotos del negocio) quedan fuera del sello de agua.
+  if ((img.getAttribute('src') || '').includes('logo.webp')) return true;
+  if (img.closest('.brand, .ic-h, .sv-ic')) return true;
+  return false;
+}
+
+function aplicarSelloAguaFotos(raiz) {
+  const base = raiz || document;
+  base.querySelectorAll('img').forEach((img) => {
+    if (img.closest('.wm-wrap')) return;
+    if (selloAguaDebeOmitir(img)) return;
+    const wrap = document.createElement('span');
+    wrap.className = 'wm-wrap';
+    img.parentNode.insertBefore(wrap, img);
+    wrap.appendChild(img);
+  });
+}
+
+const wmObserver = new MutationObserver((mutaciones) => {
+  if (!document.body.classList.contains('wm-on')) return;
+  for (const m of mutaciones) {
+    if (m.addedNodes && m.addedNodes.length) {
+      m.addedNodes.forEach((n) => {
+        if (n.nodeType !== 1) return;
+        if (n.tagName === 'IMG') aplicarSelloAguaFotos(n.parentNode || document);
+        else if (n.querySelector && n.querySelector('img')) aplicarSelloAguaFotos(n);
+      });
+    }
+  }
+});
+wmObserver.observe(document.body, { childList: true, subtree: true });
+
 pintarEstadoUsuario();
 
 const loginModal = $('#loginModal');
