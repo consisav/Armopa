@@ -3738,29 +3738,55 @@ function poblarPSnameSelect(nombreActual) {
   sel.value = nombre;
 }
 
-/* Carrusel de propiedades */
+/* Carrusel de propiedades: rotación visual 3D por ciudad (solo ciudades
+   con propiedades); al presionar una ciudad se abre su listado. */
 const car = $('#car');
 let idx = 0;
 let total = 0;
-const visible = () => (window.innerWidth <= 640 ? 1 : window.innerWidth <= 1000 ? 2 : 3);
-const maxIdx = () => total - visible();
+let carTimer = null;
 function buildDots() {
   const box = $('#dots');
   box.innerHTML = '';
-  for (let i = 0; i <= maxIdx(); i++) {
+  for (let i = 0; i < total; i++) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'dot' + (i === idx ? ' on' : '');
     b.setAttribute('aria-label', T[lang].goTo + (i + 1));
-    b.addEventListener('click', () => { idx = i; update(); });
+    b.addEventListener('click', () => { idx = i; update(); carStart(); });
     box.appendChild(b);
   }
 }
 function update() {
-  idx = Math.max(0, Math.min(idx, maxIdx()));
-  car.style.setProperty('--i', idx);
+  if (!total) return;
+  idx = ((idx % total) + total) % total;
+  const cards = [...$('#carTrack').children];
+  cards.forEach((card, i) => {
+    let offset = i - idx;
+    offset = ((offset % total) + total) % total;
+    if (offset > total / 2) offset -= total;
+    const abs = Math.abs(offset);
+    if (abs > 3) {
+      card.style.opacity = '0';
+      card.style.pointerEvents = 'none';
+      card.style.transform = 'translate3d(0,0,-600px)';
+      return;
+    }
+    const spacing = 150;
+    const rotateY = offset * -22;
+    const translateX = offset * spacing;
+    const translateZ = -abs * 110;
+    const scale = abs === 0 ? 1 : 0.82;
+    card.style.opacity = abs === 0 ? '1' : String(Math.max(0.35, 0.85 - abs * 0.2));
+    card.style.pointerEvents = abs === 0 ? 'auto' : 'none';
+    card.style.zIndex = String(100 - abs);
+    card.style.filter = abs === 0 ? 'none' : 'brightness(.72)';
+    card.style.transform = 'translate3d(' + translateX + 'px,0,' + translateZ + 'px) rotateY(' + rotateY + 'deg) scale(' + scale + ')';
+  });
   $$('.dot').forEach((d, i) => d.classList.toggle('on', i === idx));
 }
+function carNext() { if (total) { idx = (idx + 1) % total; update(); } }
+function carStart() { carStop(); if (total > 1) carTimer = setInterval(carNext, 3200); }
+function carStop() { if (carTimer) { clearInterval(carTimer); carTimer = null; } }
 let cityCovers = {};
 function openCity(name) {
   cur = name; panelView = 'locs'; mode = estaConectado() ? 'edit' : 'view'; confirmDel = false; mk = null; descOpen = true;
@@ -3779,8 +3805,9 @@ function openLocationDirect(name, locIndex) {
 function buildCityCards() {
   const track = $('#carTrack');
   track.innerHTML = '';
-  const names = cityNames();
-  names.forEach((name) => {
+  carStop();
+  const names = cityNames().filter((name) => (data[name] || []).length > 0);
+  names.forEach((name, i) => {
     const article = el('article', 'pc');
     const btn = el('button', 'pc-img');
     btn.type = 'button';
@@ -3796,14 +3823,15 @@ function buildCityCards() {
     track.appendChild(article);
   });
   total = names.length;
-  idx = Math.min(idx, maxIdx());
+  idx = 0;
   buildDots();
   update();
+  carStart();
   if (typeof buildSearchMenu === 'function') buildSearchMenu();
 }
-$('#prev').addEventListener('click', () => { idx = idx <= 0 ? maxIdx() : idx - 1; update(); });
-$('#next').addEventListener('click', () => { idx = idx >= maxIdx() ? 0 : idx + 1; update(); });
-window.addEventListener('resize', () => { buildDots(); update(); });
+$('#prev').addEventListener('click', () => { idx = idx <= 0 ? total - 1 : idx - 1; update(); carStart(); });
+$('#next').addEventListener('click', () => { idx = idx >= total - 1 ? 0 : idx + 1; update(); carStart(); });
+window.addEventListener('resize', update);
 
 /* Área de Clientes (demostración) */
 const modal = $('#clientModal');
