@@ -782,3 +782,10 @@ section[id]{scroll-margin-top:148px}
   .rep-list{overflow-x:auto}
   .rep-row{grid-template-columns:34px 160px 110px 90px 85px 85px 90px 55px;min-width:760px}
 }
+
+/* Reporte Estado de Servicios: mismo lenguaje visual del listado general
+   (sin tarjetas), pero con 10 columnas propias. */
+.rep-row-serv{grid-template-columns:40px 1.3fr 1.1fr .9fr 1fr .8fr .9fr .9fr .9fr 1fr}
+@media (max-width:1100px){
+  .rep-row-serv{grid-template-columns:34px 150px 130px 100px 110px 85px 95px 95px 95px 110px;min-width:1000px}
+}

@@ -3172,6 +3172,7 @@ function imprimirReporte(tituloReporte, resultSelector) {
     '.rep-row-no{color:#8b641d;font-weight:700}' +
     '.rep-row-valor{color:#8b641d}' +
     '.rep-row-fotos{text-align:center;font-weight:700}' +
+    '.rep-row-serv{grid-template-columns:36px 1.3fr 1.1fr .9fr 1fr .8fr .9fr .9fr .9fr 1fr}' +
     '@media print{ @page{margin:14mm} .rep-row{break-inside:avoid} }' +
     '</style></head><body>' +
     '<div class="rep-print-head">' +
@@ -3243,34 +3244,30 @@ function poblarRepServFiltros() {
   }
 }
 
-function repServBuildFila(r) {
-  const card = el('div', 'proy-card');
-  const head = el('div', 'proy-card-h');
-  const nameWrap = el('div', 'proy-name-wrap');
-  nameWrap.append(el('div', 'proy-name', r.servicio || 'Servicio'));
-  head.append(nameWrap);
-  const estadoWrap = el('div');
-  const info = solEstadoInfo(r.estado);
-  const badge = el('span', '', info.l);
-  badge.style.cssText = 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:' + info.bg + ';color:' + info.fg;
-  estadoWrap.appendChild(badge);
-  head.append(estadoWrap);
-  card.append(head);
+function repServEstadoBadge(estadoVal) {
+  const info = solEstadoInfo(estadoVal);
+  const b = el('span', '', info.l);
+  b.style.cssText = 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:' + info.bg + ';color:' + info.fg;
+  return b;
+}
 
+function repServBuildFila(r, correlativo) {
+  const row = el('div', 'rep-row rep-row-serv');
   const prioInfo = REP_SERV_PRIORIDAD.find((p) => p.v === r.prioridad);
 
-  const grid = el('div', 'proy-grid');
-  grid.append(
-    labeledCell('Cliente', el('span', '', r.nombre_cliente || '—')),
-    labeledCell('Teléfono', el('span', '', r.telefono_cliente || '—')),
-    labeledCell('N.° de solicitud', el('span', '', r.numero_solicitud || '—')),
-    labeledCell('Prioridad', el('span', '', prioInfo ? prioInfo.l : '—')),
-    labeledCell('Fecha de inicio', el('span', '', r.fecha_inicio ? formatQBuscarRegFecha(r.fecha_inicio) : '—')),
-    labeledCell('Fecha de solicitud', el('span', '', r.fecha_creacion ? formatQBuscarRegFecha(r.fecha_creacion) : '—')),
-    labeledCell('Vendedor asignado', el('span', '', r.vendedor_asignado || '—'))
+  row.append(
+    el('span', 'rep-row-no', String(correlativo)),
+    el('span', 'rep-row-nombre', r.servicio || 'Servicio'),
+    el('span', '', r.nombre_cliente || '—'),
+    el('span', '', r.telefono_cliente || '—'),
+    el('span', '', r.numero_solicitud || '—'),
+    el('span', '', prioInfo ? prioInfo.l : '—'),
+    repServEstadoBadge(r.estado),
+    el('span', '', r.fecha_inicio ? formatQBuscarRegFecha(r.fecha_inicio) : '—'),
+    el('span', '', r.fecha_creacion ? formatQBuscarRegFecha(r.fecha_creacion) : '—'),
+    el('span', '', r.vendedor_asignado || '—')
   );
-  card.append(grid);
-  return card;
+  return row;
 }
 
 async function mostrarRepServicios() {
@@ -3282,7 +3279,7 @@ async function mostrarRepServicios() {
   const fechaHastaVal = $('#repServFechaHasta')?.value || '';
   result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
   try {
-    let q = supabaseClient.from('solicitudes_servicio').select('*').order('fecha_creacion', { ascending: false });
+    let q = supabaseClient.from('solicitudes_servicio').select('*').order('fecha_creacion', { ascending: true });
     if (estadoVal) q = q.eq('estado', estadoVal);
     if (prioridadVal) q = q.eq('prioridad', prioridadVal);
     if (fechaDesdeVal) q = q.gte('fecha_creacion', fechaDesdeVal + 'T00:00:00');
@@ -3294,23 +3291,23 @@ async function mostrarRepServicios() {
       result.innerHTML = '<p class="qbr-empty">No hay solicitudes de servicio que coincidan con la búsqueda.</p>';
       return;
     }
-    const porEstado = {};
-    rows.forEach((r) => {
-      const key = solEstadoInfo(r.estado).l;
-      if (!porEstado[key]) porEstado[key] = [];
-      porEstado[key].push(r);
-    });
-    SOL_ESTADOS.map((e) => e.l).filter((l) => porEstado[l]).forEach((estadoLabel) => {
-      const filas = porEstado[estadoLabel];
-      const wrap = el('div', 'com-group');
-      const h = el('h3', 'com-group-title');
-      h.append(document.createTextNode(estadoLabel), el('span', 'com-count', '(' + filas.length + ')'));
-      wrap.append(h);
-      const list = el('div', 'proy-list');
-      filas.forEach((r) => list.appendChild(repServBuildFila(r)));
-      wrap.append(list);
-      result.appendChild(wrap);
-    });
+    const wrap = el('div', 'rep-list');
+    const head = el('div', 'rep-row rep-row-serv rep-row-head');
+    head.append(
+      el('span', '', 'No.'),
+      el('span', '', 'Servicio'),
+      el('span', '', 'Cliente'),
+      el('span', '', 'Teléfono'),
+      el('span', '', 'N.° de solicitud'),
+      el('span', '', 'Prioridad'),
+      el('span', '', 'Estado'),
+      el('span', '', 'Fecha de inicio'),
+      el('span', '', 'Fecha de solicitud'),
+      el('span', '', 'Vendedor asignado')
+    );
+    wrap.append(head);
+    rows.forEach((r, idx) => wrap.appendChild(repServBuildFila(r, idx + 1)));
+    result.appendChild(wrap);
   } catch (e) {
     console.error('Error cargando reporte de servicios:', e);
     result.innerHTML = '<p class="qbr-empty">No se pudo cargar el estado de servicios.</p>';
@@ -3318,6 +3315,7 @@ async function mostrarRepServicios() {
 }
 
 $('#repServMostrarBtn')?.addEventListener('click', () => mostrarRepServicios());
+$('#repServImprimirBtn')?.addEventListener('click', () => imprimirReporte('Reporte — Estado de Servicios', '#repServiciosResult'));
 
 const repServiciosModal = $('#repServiciosModal');
 function abrirRepServiciosModal() {
