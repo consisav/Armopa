@@ -1477,6 +1477,107 @@ $('#adminServiciosClose')?.addEventListener('click', cerrarAdminServiciosModal);
 $('#adminServiciosScrim')?.addEventListener('click', cerrarAdminServiciosModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminServiciosModal && !adminServiciosModal.hidden) cerrarAdminServiciosModal(); });
 
+/* "Rotación Visual" (Negocios): carrusel 3D con la imagen inicial (primera
+   fotografía) de cada propiedad activa, girando automáticamente sola -una
+   tarjeta central de frente y las demás distribuidas en círculo alrededor,
+   en perspectiva-, igual al estilo de referencia de tarjetas inclinadas. */
+let rotVisualItems = [];
+let rotVisualIdx = 0;
+let rotVisualTimer = null;
+
+function rotVisualLayout() {
+  const track = $('#rotVisualTrack');
+  if (!track) return;
+  const n = rotVisualItems.length;
+  if (!n) return;
+  const cards = [...track.children];
+  const visibleSpan = Math.min(n, 7);
+  cards.forEach((card, i) => {
+    let offset = i - rotVisualIdx;
+    offset = ((offset % n) + n) % n;
+    if (offset > n / 2) offset -= n;
+    const abs = Math.abs(offset);
+    if (abs > 3) {
+      card.style.opacity = '0';
+      card.style.pointerEvents = 'none';
+      card.style.transform = 'translate3d(0,0,-600px)';
+      return;
+    }
+    const spacing = 150;
+    const rotateY = offset * -22;
+    const translateX = offset * spacing;
+    const translateZ = -abs * 110;
+    const scale = abs === 0 ? 1 : 0.82;
+    card.style.opacity = abs === 0 ? '1' : String(Math.max(0.35, 0.85 - abs * 0.2));
+    card.style.pointerEvents = abs === 0 ? 'auto' : 'none';
+    card.style.zIndex = String(100 - abs);
+    card.style.filter = abs === 0 ? 'none' : 'brightness(.72)';
+    card.style.transform = 'translate3d(' + translateX + 'px,0,' + translateZ + 'px) rotateY(' + rotateY + 'deg) scale(' + scale + ')';
+  });
+}
+
+function rotVisualNext() {
+  if (!rotVisualItems.length) return;
+  rotVisualIdx = (rotVisualIdx + 1) % rotVisualItems.length;
+  rotVisualLayout();
+}
+
+function rotVisualStart() {
+  rotVisualStop();
+  if (rotVisualItems.length > 1) rotVisualTimer = setInterval(rotVisualNext, 2600);
+}
+function rotVisualStop() {
+  if (rotVisualTimer) { clearInterval(rotVisualTimer); rotVisualTimer = null; }
+}
+
+async function abrirRotVisualModal() {
+  const modal = $('#rotVisualModal');
+  const track = $('#rotVisualTrack');
+  const empty = $('#rotVisualEmpty');
+  if (!modal || !track) return;
+  modal.hidden = false;
+  track.innerHTML = '';
+  if (empty) empty.hidden = true;
+  rotVisualStop();
+  try {
+    const { data: rows, error } = await supabaseClient.from('propiedades').select('nombre,fotos').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
+    if (error) throw error;
+    rotVisualItems = (rows || []).filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0] }));
+    if (!rotVisualItems.length) {
+      if (empty) empty.hidden = false;
+      return;
+    }
+    rotVisualItems.forEach((it) => {
+      const card = el('div', 'rotv-item');
+      const img = document.createElement('img');
+      img.src = it.foto;
+      img.alt = it.nombre;
+      img.loading = 'lazy';
+      card.append(img, el('div', 'rotv-name', it.nombre));
+      track.appendChild(card);
+    });
+    rotVisualIdx = 0;
+    rotVisualLayout();
+    rotVisualStart();
+  } catch (e) {
+    console.error('Error cargando la rotación visual de propiedades:', e);
+    if (empty) { empty.hidden = false; empty.textContent = 'No se pudo cargar la rotación visual.'; }
+  }
+}
+function cerrarRotVisualModal() {
+  const modal = $('#rotVisualModal');
+  if (modal) modal.hidden = true;
+  rotVisualStop();
+}
+$('#navAdminRotacionVisualBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirRotVisualModal();
+});
+$('#rotVisualClose')?.addEventListener('click', cerrarRotVisualModal);
+$('#rotVisualScrim')?.addEventListener('click', cerrarRotVisualModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#rotVisualModal') && !$('#rotVisualModal').hidden) cerrarRotVisualModal(); });
+
 /* "Vendedores" dentro del menú Administración: catálogo centralizado de
    vendedores (tabla propia en Supabase, independiente de "vendedor
    asignado" en Propiedades/Proyectos/Servicios, que sigue siendo texto

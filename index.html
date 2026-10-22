@@ -52,6 +52,7 @@
                 <button type="button" id="navAdminPropiedadesBtn" data-i18n="adminMenuProp"></button>
                 <button type="button" id="navAdminProyectosBtn" data-i18n="adminMenuProy"></button>
                 <button type="button" id="navAdminServiciosBtn" data-i18n="adminMenuServ"></button>
+                <button type="button" id="navAdminRotacionVisualBtn">Rotación Visual</button>
               </div>
             </div>
             <div class="nav-admin-group" data-grp="comisiones">
@@ -1692,6 +1693,18 @@
   </div>
 </div>
 
+<div class="modal" id="rotVisualModal" hidden>
+  <button class="scrim" type="button" id="rotVisualScrim" data-i18n-label="close"></button>
+  <div class="pcard rotv-card" id="rotVisualCard" role="dialog" aria-modal="true" aria-labelledby="rotVisualTitle">
+    <button class="mx" type="button" id="rotVisualClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="rotVisualTitle">Rotación Visual</h2><p class="ph-sub">Imagen inicial de cada propiedad, en rotación automática.</p></div>
+    <div id="rotVisualStage" class="rotv-stage">
+      <div id="rotVisualTrack" class="rotv-track"></div>
+    </div>
+    <p id="rotVisualEmpty" class="qbr-empty" hidden>No hay propiedades con fotografías para mostrar.</p>
+  </div>
+</div>
+
 <div class="modal" id="adminSolicitudesModal" hidden>
   <button class="scrim" type="button" id="adminSolicitudesScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminSolicitudesCard" role="dialog" aria-modal="true" aria-labelledby="adminSolicitudesTitle">
@@ -1866,6 +1879,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261022-0043"></script>
+<script src="script.js?v=20261022-0044"></script>
 </body>
 </html>
