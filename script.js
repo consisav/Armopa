@@ -1484,6 +1484,9 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminSer
 let rotVisualItems = [];
 let rotVisualIdx = 0;
 let rotVisualTimer = null;
+let rotVisualAllRows = [];
+let rotVisualCiudadSel = '';
+let rotVisualTipoSel = '';
 
 function rotVisualLayout() {
   const track = $('#rotVisualTrack');
@@ -1530,6 +1533,66 @@ function rotVisualStop() {
   if (rotVisualTimer) { clearInterval(rotVisualTimer); rotVisualTimer = null; }
 }
 
+function rotVisualBuildTab(container, label, value, selectedGetter, onSelect) {
+  const tab = el('button', 'loc-tab' + (selectedGetter() === value ? ' on' : ''), label);
+  tab.type = 'button';
+  tab.addEventListener('click', () => onSelect(value));
+  container.appendChild(tab);
+}
+
+function rotVisualPoblarFiltros() {
+  const ciudadWrap = $('#rotVisualCiudadTabs');
+  const tipoWrap = $('#rotVisualTipoTabs');
+  if (!ciudadWrap || !tipoWrap) return;
+  const ciudades = [...new Set(rotVisualAllRows.map((r) => r.ciudad).filter(Boolean))].sort();
+  const tipos = [...new Set(rotVisualAllRows.map((r) => r.tipo_propiedad).filter(Boolean))].sort();
+
+  ciudadWrap.innerHTML = '';
+  rotVisualBuildTab(ciudadWrap, 'Todas', '', () => rotVisualCiudadSel, (v) => { rotVisualCiudadSel = v; rotVisualAplicarFiltro(); });
+  ciudades.forEach((c) => rotVisualBuildTab(ciudadWrap, c, c, () => rotVisualCiudadSel, (v) => { rotVisualCiudadSel = v; rotVisualAplicarFiltro(); }));
+
+  tipoWrap.innerHTML = '';
+  rotVisualBuildTab(tipoWrap, 'Todas', '', () => rotVisualTipoSel, (v) => { rotVisualTipoSel = v; rotVisualAplicarFiltro(); });
+  tipos.forEach((t) => rotVisualBuildTab(tipoWrap, t, t, () => rotVisualTipoSel, (v) => { rotVisualTipoSel = v; rotVisualAplicarFiltro(); }));
+}
+
+function rotVisualAplicarFiltro() {
+  const track = $('#rotVisualTrack');
+  const empty = $('#rotVisualEmpty');
+  if (!track) return;
+  rotVisualStop();
+  track.innerHTML = '';
+
+  // Reconstruir las pestañas refleja la selección activa (clase "on") sin
+  // tener que recalcular por índice qué botón corresponde a qué valor.
+  rotVisualPoblarFiltros();
+
+  const filtradas = rotVisualAllRows.filter((r) => {
+    if (rotVisualCiudadSel && r.ciudad !== rotVisualCiudadSel) return false;
+    if (rotVisualTipoSel && r.tipo_propiedad !== rotVisualTipoSel) return false;
+    return true;
+  });
+  rotVisualItems = filtradas.filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0] }));
+
+  if (!rotVisualItems.length) {
+    if (empty) { empty.hidden = false; empty.textContent = 'No hay propiedades con fotografías para mostrar.'; }
+    return;
+  }
+  if (empty) empty.hidden = true;
+  rotVisualItems.forEach((it) => {
+    const card = el('div', 'rotv-item');
+    const img = document.createElement('img');
+    img.src = it.foto;
+    img.alt = it.nombre;
+    img.loading = 'lazy';
+    card.append(img, el('div', 'rotv-name', it.nombre));
+    track.appendChild(card);
+  });
+  rotVisualIdx = 0;
+  rotVisualLayout();
+  rotVisualStart();
+}
+
 async function abrirRotVisualModal() {
   const modal = $('#rotVisualModal');
   const track = $('#rotVisualTrack');
@@ -1539,26 +1602,13 @@ async function abrirRotVisualModal() {
   track.innerHTML = '';
   if (empty) empty.hidden = true;
   rotVisualStop();
+  rotVisualCiudadSel = '';
+  rotVisualTipoSel = '';
   try {
-    const { data: rows, error } = await supabaseClient.from('propiedades').select('nombre,fotos').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
+    const { data: rows, error } = await supabaseClient.from('propiedades').select('nombre,fotos,ciudad,tipo_propiedad').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
     if (error) throw error;
-    rotVisualItems = (rows || []).filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0] }));
-    if (!rotVisualItems.length) {
-      if (empty) empty.hidden = false;
-      return;
-    }
-    rotVisualItems.forEach((it) => {
-      const card = el('div', 'rotv-item');
-      const img = document.createElement('img');
-      img.src = it.foto;
-      img.alt = it.nombre;
-      img.loading = 'lazy';
-      card.append(img, el('div', 'rotv-name', it.nombre));
-      track.appendChild(card);
-    });
-    rotVisualIdx = 0;
-    rotVisualLayout();
-    rotVisualStart();
+    rotVisualAllRows = rows || [];
+    rotVisualAplicarFiltro();
   } catch (e) {
     console.error('Error cargando la rotación visual de propiedades:', e);
     if (empty) { empty.hidden = false; empty.textContent = 'No se pudo cargar la rotación visual.'; }
