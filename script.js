@@ -1556,6 +1556,21 @@ function rotVisualPoblarFiltros() {
   tipos.forEach((t) => rotVisualBuildTab(tipoWrap, t, t, () => rotVisualTipoSel, (v) => { rotVisualTipoSel = v; rotVisualAplicarFiltro(); }));
 }
 
+/* Texto del valor de una propiedad para mostrarlo junto al nombre en la
+   Rotación Visual, tal como el admin lo escribió (con su propio símbolo de
+   moneda, Q o $): usa el valor de venta si la operación es venta, el de
+   renta si es renta, y si es "ambos" prioriza venta y si no hay, renta. */
+function rotVisualValorTexto(r) {
+  const op = r.tipo_operacion || '';
+  const renta = (r.valor_renta || '').toString().trim();
+  const venta = (r.valor_venta || '').toString().trim();
+  let v = '';
+  if (op === 'venta') v = venta;
+  else if (op === 'renta') v = renta;
+  else v = venta || renta;
+  return v;
+}
+
 function rotVisualAplicarFiltro() {
   const track = $('#rotVisualTrack');
   const empty = $('#rotVisualEmpty');
@@ -1572,7 +1587,7 @@ function rotVisualAplicarFiltro() {
     if (rotVisualTipoSel && r.tipo_propiedad !== rotVisualTipoSel) return false;
     return true;
   });
-  rotVisualItems = filtradas.filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0], fotos: r.fotos, ciudad: r.ciudad || '' }));
+  rotVisualItems = filtradas.filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0], fotos: r.fotos, ciudad: r.ciudad || '', valor: rotVisualValorTexto(r) }));
 
   if (!rotVisualItems.length) {
     if (empty) { empty.hidden = false; empty.textContent = 'No hay propiedades con fotografías para mostrar.'; }
@@ -1587,7 +1602,8 @@ function rotVisualAplicarFiltro() {
     img.src = it.foto;
     img.alt = it.nombre;
     img.loading = 'lazy';
-    card.append(img, el('div', 'rotv-name', it.nombre));
+    const etiqueta = it.valor ? (it.nombre + ' — ' + it.valor) : it.nombre;
+    card.append(img, el('div', 'rotv-name', etiqueta));
     card.addEventListener('click', () => {
       // Al presionar cualquier propiedad (esté centrada o no), se abre
       // de inmediato la rotación con todas sus fotografías.
@@ -1616,6 +1632,7 @@ function rotVisualMostrarFotos(item) {
   if (backBtn) backBtn.textContent = '← Volver a todas las propiedades';
 
   const totalFotos = fotos.length;
+  const nombreConValor = item.valor ? (item.nombre + ' — ' + item.valor) : item.nombre;
   rotVisualItems = fotos.map((f) => ({ nombre: item.nombre, foto: f }));
   rotVisualItems.forEach((it, i) => {
     const card = el('div', 'rotv-item');
@@ -1623,7 +1640,7 @@ function rotVisualMostrarFotos(item) {
     img.src = it.foto;
     img.alt = it.nombre + ' — foto ' + (i + 1);
     img.loading = 'lazy';
-    const etiqueta = totalFotos > 1 ? (it.nombre + ' · Foto ' + (i + 1) + ' de ' + totalFotos) : it.nombre;
+    const etiqueta = totalFotos > 1 ? (nombreConValor + ' · Foto ' + (i + 1) + ' de ' + totalFotos) : nombreConValor;
     card.append(img, el('div', 'rotv-name', etiqueta));
     card.addEventListener('click', () => {
       if (i !== rotVisualIdx) {
@@ -1651,7 +1668,7 @@ async function abrirRotVisualModal() {
   rotVisualCiudadSel = '';
   rotVisualTipoSel = '';
   try {
-    const { data: rows, error } = await supabaseClient.from('propiedades').select('nombre,fotos,ciudad,tipo_propiedad').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
+    const { data: rows, error } = await supabaseClient.from('propiedades').select('nombre,fotos,ciudad,tipo_propiedad,tipo_operacion,valor_renta,valor_venta').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
     if (error) throw error;
     rotVisualAllRows = rows || [];
     rotVisualAplicarFiltro();
