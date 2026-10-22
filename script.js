@@ -3172,7 +3172,7 @@ function imprimirReporte(tituloReporte, resultSelector) {
     '.rep-row-no{color:#8b641d;font-weight:700}' +
     '.rep-row-valor{color:#8b641d}' +
     '.rep-row-fotos{text-align:center;font-weight:700}' +
-    '.rep-row-serv{grid-template-columns:28px 1.3fr .9fr 1fr .7fr .9fr .85fr .95fr 1fr;font-size:10px}' +
+    '.rep-row-serv{grid-template-columns:26px 1.15fr .8fr .9fr .6fr .8fr .85fr .75fr .8fr .9fr;font-size:9.5px}' +
     '.rep-row-serv>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
     '@media print{ @page{margin:14mm} .rep-row{break-inside:avoid} }' +
     '</style></head><body>' +
@@ -3252,9 +3252,10 @@ function repServEstadoBadge(estadoVal) {
   return b;
 }
 
-function repServBuildFila(r, correlativo) {
+function repServBuildFila(r, correlativo, valor) {
   const row = el('div', 'rep-row rep-row-serv');
   const prioInfo = REP_SERV_PRIORIDAD.find((p) => p.v === r.prioridad);
+  const valorTxt = (valor !== null && valor !== undefined && valor !== '') ? formatQBuscarRegPresupuesto(valor) : '—';
 
   row.append(
     el('span', 'rep-row-no', String(correlativo)),
@@ -3263,6 +3264,7 @@ function repServBuildFila(r, correlativo) {
     el('span', '', r.numero_solicitud || '—'),
     el('span', '', prioInfo ? prioInfo.l : '—'),
     repServEstadoBadge(r.estado),
+    el('strong', 'rep-row-valor', valorTxt),
     el('span', '', r.fecha_inicio ? formatQBuscarRegFecha(r.fecha_inicio) : '—'),
     el('span', '', r.fecha_creacion ? formatQBuscarRegFecha(r.fecha_creacion) : '—'),
     el('span', '', r.vendedor_asignado || '—')
@@ -3291,6 +3293,15 @@ async function mostrarRepServicios() {
       result.innerHTML = '<p class="qbr-empty">No hay solicitudes de servicio que coincidan con la búsqueda.</p>';
       return;
     }
+    const cotizacionIds = [...new Set(rows.map((r) => r.cotizacion_id).filter((v) => v !== null && v !== undefined))];
+    const valorPorCotizacion = {};
+    if (cotizacionIds.length) {
+      const { data: cotRows, error: cotError } = await supabaseClient.from('cotizaciones').select('id,presupuesto_asignado').in('id', cotizacionIds);
+      if (cotError) {
+        console.error('Error cargando el valor (presupuesto_asignado) de las cotizaciones:', cotError);
+      }
+      (cotRows || []).forEach((c) => { valorPorCotizacion[c.id] = c.presupuesto_asignado; });
+    }
     const porServicio = {};
     rows.forEach((r) => {
       const key = r.servicio || '(Sin tipo de servicio)';
@@ -3313,12 +3324,13 @@ async function mostrarRepServicios() {
         el('span', '', 'N.° de solicitud'),
         el('span', '', 'Prioridad'),
         el('span', '', 'Estado'),
-        el('span', '', 'Fecha de inicio'),
+        el('span', '', 'Valor'),
+        el('span', '', 'Inicio'),
         el('span', '', 'Fecha de solicitud'),
         el('span', '', 'Vendedor')
       );
       list.append(head);
-      filas.forEach((r, idx) => list.appendChild(repServBuildFila(r, idx + 1)));
+      filas.forEach((r, idx) => list.appendChild(repServBuildFila(r, idx + 1, valorPorCotizacion[r.cotizacion_id])));
       groupWrap.append(list);
       result.appendChild(groupWrap);
     });

@@ -785,7 +785,7 @@ section[id]{scroll-margin-top:148px}
 
 /* Reporte Estado de Servicios: agrupado por tipo de servicio (el nombre ya
    aparece en el título de cada grupo, por lo que no se repite por fila);
-   9 columnas con proporciones flexibles para que cada registro se vea
+   10 columnas con proporciones flexibles para que cada registro se vea
    completo en una sola línea, sin scroll horizontal del detalle. */
-.rep-row-serv{grid-template-columns:34px 1.3fr .9fr 1fr .7fr .9fr .85fr .95fr 1fr}
+.rep-row-serv{grid-template-columns:30px 1.15fr .8fr .9fr .6fr .8fr .85fr .75fr .8fr .9fr}
 .rep-row-serv>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
