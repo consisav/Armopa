@@ -3172,7 +3172,7 @@ function imprimirReporte(tituloReporte, resultSelector) {
     '.rep-row-no{color:#8b641d;font-weight:700}' +
     '.rep-row-valor{color:#8b641d}' +
     '.rep-row-fotos{text-align:center;font-weight:700}' +
-    '.rep-row-serv{grid-template-columns:28px 130px 100px 75px 85px 55px 70px 65px 75px 90px;font-size:9.5px}' +
+    '.rep-row-serv{grid-template-columns:28px 1.3fr .9fr 1fr .7fr .9fr .85fr .95fr 1fr;font-size:10px}' +
     '.rep-row-serv>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
     '@media print{ @page{margin:14mm} .rep-row{break-inside:avoid} }' +
     '</style></head><body>' +
@@ -3258,7 +3258,6 @@ function repServBuildFila(r, correlativo) {
 
   row.append(
     el('span', 'rep-row-no', String(correlativo)),
-    el('span', 'rep-row-nombre', r.servicio || 'Servicio'),
     el('span', '', r.nombre_cliente || '—'),
     el('span', '', r.telefono_cliente || '—'),
     el('span', '', r.numero_solicitud || '—'),
@@ -3309,7 +3308,6 @@ async function mostrarRepServicios() {
       const head = el('div', 'rep-row rep-row-serv rep-row-head');
       head.append(
         el('span', '', 'No.'),
-        el('span', '', 'Servicio'),
         el('span', '', 'Cliente'),
         el('span', '', 'Teléfono'),
         el('span', '', 'N.° de solicitud'),
@@ -3317,7 +3315,7 @@ async function mostrarRepServicios() {
         el('span', '', 'Estado'),
         el('span', '', 'Fecha de inicio'),
         el('span', '', 'Fecha de solicitud'),
-        el('span', '', 'Vendedor asignado')
+        el('span', '', 'Vendedor')
       );
       list.append(head);
       filas.forEach((r, idx) => list.appendChild(repServBuildFila(r, idx + 1)));

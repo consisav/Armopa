@@ -783,10 +783,9 @@ section[id]{scroll-margin-top:148px}
   .rep-row{grid-template-columns:34px 160px 110px 90px 85px 85px 90px 55px;min-width:760px}
 }
 
-/* Reporte Estado de Servicios: mismo lenguaje visual del listado general
-   (sin tarjetas), con 10 columnas de ancho fijo y scroll horizontal en el
-   contenedor -así cada registro se mantiene siempre en una sola línea, sin
-   que las columnas se envuelvan a una segunda fila-. */
-#repServiciosResult .rep-list{overflow-x:auto}
-.rep-row-serv{grid-template-columns:34px 170px 140px 100px 120px 80px 100px 95px 110px 130px;min-width:1079px}
-.rep-row-serv>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Reporte Estado de Servicios: agrupado por tipo de servicio (el nombre ya
+   aparece en el título de cada grupo, por lo que no se repite por fila);
+   9 columnas con proporciones flexibles para que cada registro se vea
+   completo en una sola línea, sin scroll horizontal del detalle. */
+.rep-row-serv{grid-template-columns:34px 1.3fr .9fr 1fr .7fr .9fr .85fr .95fr 1fr}
+.rep-row-serv>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
