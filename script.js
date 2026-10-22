@@ -3078,6 +3078,8 @@ function repPropBuildFila(r, correlativo) {
   const operacionInfo = REP_PROP_OPERACION.find((o) => o.v === r.tipo_operacion);
   const valor = r.tipo_operacion === 'venta' ? r.valor_venta : (r.tipo_operacion === 'renta' ? r.valor_renta : [r.valor_venta, r.valor_renta].filter(Boolean).join(' / '));
 
+  const cantFotos = Array.isArray(r.fotos) ? r.fotos.length : 0;
+
   row.append(
     el('span', 'rep-row-no', String(correlativo)),
     el('span', 'rep-row-nombre', r.nombre || '—'),
@@ -3085,7 +3087,8 @@ function repPropBuildFila(r, correlativo) {
     el('span', 'rep-row-operacion', operacionInfo ? operacionInfo.l : '—'),
     el('strong', 'rep-row-valor', valor || '—'),
     repPropEstadoBadge(r.estado_ubicacion || 'activa'),
-    el('span', 'rep-row-fecha', r.creado_en ? formatQBuscarRegFecha(r.creado_en) : '—')
+    el('span', 'rep-row-fecha', r.creado_en ? formatQBuscarRegFecha(r.creado_en) : '—'),
+    el('span', 'rep-row-fotos', String(cantFotos))
   );
   return row;
 }
@@ -3118,7 +3121,8 @@ async function mostrarRepPropiedades() {
       el('span', '', 'Tipo de operación'),
       el('span', '', 'Valor'),
       el('span', '', 'Estado'),
-      el('span', '', 'Fecha de creación')
+      el('span', '', 'Fecha de creación'),
+      el('span', '', 'Fotos')
     );
     wrap.append(head);
     rows.forEach((r, idx) => wrap.appendChild(repPropBuildFila(r, idx + 1)));
@@ -3162,11 +3166,12 @@ function imprimirReporte(tituloReporte, resultSelector) {
     '.lbl{display:block;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:#56667a;margin-bottom:2px}' +
     '.com-valor{color:#8b641d}' +
     '.rep-list{display:flex;flex-direction:column;border:1px solid #d5dbe4;border-radius:8px;overflow:hidden}' +
-    '.rep-row{display:grid;grid-template-columns:48px 2fr 1.3fr 1fr .9fr .9fr 1fr;gap:8px;align-items:center;padding:7px 10px;border-bottom:1px solid #e3e8ef;font-size:11.5px}' +
+    '.rep-row{display:grid;grid-template-columns:40px 2fr 1.2fr .9fr .85fr .85fr .9fr 50px;gap:8px;align-items:center;padding:7px 10px;border-bottom:1px solid #e3e8ef;font-size:11.5px}' +
     '.rep-row:last-child{border-bottom:none}' +
     '.rep-row-head{background:#f4f6f9;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#56667a;font-weight:700;break-inside:avoid}' +
     '.rep-row-no{color:#8b641d;font-weight:700}' +
     '.rep-row-valor{color:#8b641d}' +
+    '.rep-row-fotos{text-align:center;font-weight:700}' +
     '@media print{ @page{margin:14mm} .rep-row{break-inside:avoid} }' +
     '</style></head><body>' +
     '<div class="rep-print-head">' +
