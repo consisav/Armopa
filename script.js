@@ -3078,23 +3078,14 @@ function repPropBuildFila(r) {
   const nameWrap = el('div', 'proy-name-wrap');
   nameWrap.append(el('div', 'proy-name', r.nombre || 'Propiedad'));
   head.append(nameWrap);
-  const estadoWrap = el('div');
-  estadoWrap.appendChild(repPropEstadoBadge(r.estado_ubicacion || 'activa'));
-  head.append(estadoWrap);
   card.append(head);
-
-  const operacionInfo = REP_PROP_OPERACION.find((o) => o.v === r.tipo_operacion);
-  const valor = r.tipo_operacion === 'venta' ? r.valor_venta : (r.tipo_operacion === 'renta' ? r.valor_renta : [r.valor_venta, r.valor_renta].filter(Boolean).join(' / '));
 
   const grid = el('div', 'proy-grid');
   grid.append(
-    labeledCell('Ciudad', el('span', '', r.ciudad || '—')),
-    labeledCell('Dirección', el('span', '', r.direccion || '—')),
-    labeledCell('Tipo', el('span', '', r.tipo_propiedad || '—')),
-    labeledCell('Operación', el('span', '', operacionInfo ? operacionInfo.l : '—')),
-    labeledCell('Valor', el('strong', 'com-valor', valor || '—')),
+    labeledCell('Correlativo', el('span', '', r.local_id != null ? String(r.local_id) : '—')),
+    labeledCell('Nombre de ubicación', el('span', '', r.nombre || '—')),
     labeledCell('Vendedor', el('span', '', r.vendedor_nombre || r.vendedor_asignado || '—')),
-    labeledCell('Fecha de registro', el('span', '', r.creado_en ? formatQBuscarRegFecha(r.creado_en) : '—'))
+    labeledCell('Estado', repPropEstadoBadge(r.estado_ubicacion || 'activa'))
   );
   card.append(grid);
   return card;
