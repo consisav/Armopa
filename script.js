@@ -3073,28 +3073,21 @@ function poblarRepPropFiltros(ciudades) {
 }
 
 function repPropBuildFila(r, correlativo) {
-  const card = el('div', 'proy-card');
-  const head = el('div', 'proy-card-h');
-  const nameWrap = el('div', 'proy-name-wrap');
-  nameWrap.append(el('div', 'proy-name', r.nombre || 'Propiedad'));
-  head.append(nameWrap);
-  card.append(head);
+  const row = el('div', 'rep-row');
 
   const operacionInfo = REP_PROP_OPERACION.find((o) => o.v === r.tipo_operacion);
   const valor = r.tipo_operacion === 'venta' ? r.valor_venta : (r.tipo_operacion === 'renta' ? r.valor_renta : [r.valor_venta, r.valor_renta].filter(Boolean).join(' / '));
 
-  const grid = el('div', 'proy-grid');
-  grid.append(
-    labeledCell('Correlativo', el('span', '', String(correlativo))),
-    labeledCell('Nombre de ubicación', el('span', 'rep-prop-nombre', r.nombre || '—')),
-    labeledCell('Vendedor', el('span', '', r.vendedor_nombre || r.vendedor_asignado || '—')),
-    labeledCell('Tipo de operación', el('span', '', operacionInfo ? operacionInfo.l : '—')),
-    labeledCell('Valor', el('strong', 'com-valor', valor || '—')),
-    labeledCell('Estado', repPropEstadoBadge(r.estado_ubicacion || 'activa')),
-    labeledCell('Fecha de creación', el('span', '', r.creado_en ? formatQBuscarRegFecha(r.creado_en) : '—'))
+  row.append(
+    el('span', 'rep-row-no', String(correlativo)),
+    el('span', 'rep-row-nombre', r.nombre || '—'),
+    el('span', 'rep-row-vendedor', r.vendedor_nombre || r.vendedor_asignado || '—'),
+    el('span', 'rep-row-operacion', operacionInfo ? operacionInfo.l : '—'),
+    el('strong', 'rep-row-valor', valor || '—'),
+    repPropEstadoBadge(r.estado_ubicacion || 'activa'),
+    el('span', 'rep-row-fecha', r.creado_en ? formatQBuscarRegFecha(r.creado_en) : '—')
   );
-  card.append(grid);
-  return card;
+  return row;
 }
 
 async function mostrarRepPropiedades() {
@@ -3105,7 +3098,7 @@ async function mostrarRepPropiedades() {
   const estadoVal = $('#repPropEstadoSel')?.value || '';
   result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
   try {
-    let q = supabaseClient.from('propiedades').select('*').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
+    let q = supabaseClient.from('propiedades').select('*').eq('activo', true).order('creado_en', { ascending: true });
     if (ciudadVal) q = q.eq('ciudad', ciudadVal);
     if (operacionVal) q = q.eq('tipo_operacion', operacionVal);
     if (estadoVal) q = q.eq('estado_ubicacion', estadoVal);
@@ -3116,23 +3109,20 @@ async function mostrarRepPropiedades() {
       result.innerHTML = '<p class="qbr-empty">No hay propiedades que coincidan con la búsqueda.</p>';
       return;
     }
-    const porCiudad = {};
-    rows.forEach((r) => {
-      const key = r.ciudad || '(Sin ciudad)';
-      if (!porCiudad[key]) porCiudad[key] = [];
-      porCiudad[key].push(r);
-    });
-    Object.keys(porCiudad).sort().forEach((ciudadNombre) => {
-      const filas = porCiudad[ciudadNombre];
-      const wrap = el('div', 'com-group');
-      const h = el('h3', 'com-group-title');
-      h.append(document.createTextNode(ciudadNombre), el('span', 'com-count', '(' + filas.length + ')'));
-      wrap.append(h);
-      const list = el('div', 'proy-list');
-      filas.forEach((r, idx) => list.appendChild(repPropBuildFila(r, idx + 1)));
-      wrap.append(list);
-      result.appendChild(wrap);
-    });
+    const wrap = el('div', 'rep-list');
+    const head = el('div', 'rep-row rep-row-head');
+    head.append(
+      el('span', '', 'No.'),
+      el('span', '', 'Nombre de ubicación'),
+      el('span', '', 'Vendedor'),
+      el('span', '', 'Tipo de operación'),
+      el('span', '', 'Valor'),
+      el('span', '', 'Estado'),
+      el('span', '', 'Fecha de creación')
+    );
+    wrap.append(head);
+    rows.forEach((r, idx) => wrap.appendChild(repPropBuildFila(r, idx + 1)));
+    result.appendChild(wrap);
   } catch (e) {
     console.error('Error cargando reporte de propiedades:', e);
     result.innerHTML = '<p class="qbr-empty">No se pudo cargar el listado de propiedades.</p>';
@@ -3171,7 +3161,13 @@ function imprimirReporte(tituloReporte, resultSelector) {
     '.proy-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}' +
     '.lbl{display:block;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:#56667a;margin-bottom:2px}' +
     '.com-valor{color:#8b641d}' +
-    '@media print{ @page{margin:14mm} }' +
+    '.rep-list{display:flex;flex-direction:column;border:1px solid #d5dbe4;border-radius:8px;overflow:hidden}' +
+    '.rep-row{display:grid;grid-template-columns:48px 2fr 1.3fr 1fr .9fr .9fr 1fr;gap:8px;align-items:center;padding:7px 10px;border-bottom:1px solid #e3e8ef;font-size:11.5px}' +
+    '.rep-row:last-child{border-bottom:none}' +
+    '.rep-row-head{background:#f4f6f9;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:#56667a;font-weight:700;break-inside:avoid}' +
+    '.rep-row-no{color:#8b641d;font-weight:700}' +
+    '.rep-row-valor{color:#8b641d}' +
+    '@media print{ @page{margin:14mm} .rep-row{break-inside:avoid} }' +
     '</style></head><body>' +
     '<div class="rep-print-head">' +
     '<img src="' + logoUrl + '" alt="ARMOPA">' +

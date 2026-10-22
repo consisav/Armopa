@@ -767,7 +767,17 @@ section[id]{scroll-margin-top:148px}
   .loc-search-wrap{max-width:none;flex-basis:100%}
 }
 
-/* Reporte Listado de Propiedades: el nombre de ubicación repetido dentro
-   de la cuadrícula va más pequeño que el resto de valores, ya que el
-   mismo texto completo ya aparece grande en el título de la tarjeta. */
-.proy-grid span.rep-prop-nombre{font-size:12.5px;line-height:1.35;display:block}
+/* Reporte Listado de Propiedades: listado general en una sola línea por
+   registro (sin tarjetas ni agrupación por ciudad), ordenado por fecha
+   de creación ascendente. */
+.rep-list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+.rep-row{display:grid;grid-template-columns:44px 2fr 1.3fr 1fr .9fr .9fr 1fr;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--paper);font-size:13px;color:var(--ink)}
+.rep-row:last-child{border-bottom:none}
+.rep-row-head{background:var(--paper);font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;padding:9px 14px}
+.rep-row-no{color:var(--gold);font-weight:700}
+.rep-row-nombre{overflow-wrap:anywhere}
+.rep-row-valor{color:var(--gold);font-weight:700}
+@media (max-width:860px){
+  .rep-list{overflow-x:auto}
+  .rep-row{grid-template-columns:36px 160px 120px 100px 90px 90px 100px;min-width:700px}
+}
