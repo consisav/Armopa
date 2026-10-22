@@ -3803,18 +3803,11 @@ function openLocationDirect(name, locIndex) {
   render();
   pModal.hidden = false;
 }
-/* Orden del carrusel de ciudades: "Ciudad de Guatemala" siempre primero
-   (si tiene propiedades), luego el resto en orden alfabético. */
-function rotCityOrder(names) {
-  const capital = names.find((n) => n.trim().toLowerCase() === 'ciudad de guatemala');
-  const resto = names.filter((n) => n !== capital).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
-  return capital ? [capital, ...resto] : resto;
-}
 function buildCityCards() {
   const track = $('#carTrack');
   track.innerHTML = '';
   carStop();
-  const names = rotCityOrder(cityNames().filter((name) => (data[name] || []).length > 0));
+  const names = cityNames();
   names.forEach((name, i) => {
     const article = el('article', 'pc');
     const btn = el('button', 'pc-img');
