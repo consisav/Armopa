@@ -3086,10 +3086,12 @@ function repPropBuildFila(r, correlativo) {
   const grid = el('div', 'proy-grid');
   grid.append(
     labeledCell('Correlativo', el('span', '', String(correlativo))),
-    labeledCell('Nombre de ubicación', el('span', '', r.nombre || '—')),
+    labeledCell('Nombre de ubicación', el('span', 'rep-prop-nombre', r.nombre || '—')),
     labeledCell('Vendedor', el('span', '', r.vendedor_nombre || r.vendedor_asignado || '—')),
     labeledCell('Tipo de operación', el('span', '', operacionInfo ? operacionInfo.l : '—')),
-    labeledCell('Valor', el('strong', 'com-valor', valor || '—'))
+    labeledCell('Valor', el('strong', 'com-valor', valor || '—')),
+    labeledCell('Estado', repPropEstadoBadge(r.estado_ubicacion || 'activa')),
+    labeledCell('Fecha de creación', el('span', '', r.creado_en ? formatQBuscarRegFecha(r.creado_en) : '—'))
   );
   card.append(grid);
   return card;
