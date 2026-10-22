@@ -3080,12 +3080,16 @@ function repPropBuildFila(r) {
   head.append(nameWrap);
   card.append(head);
 
+  const operacionInfo = REP_PROP_OPERACION.find((o) => o.v === r.tipo_operacion);
+  const valor = r.tipo_operacion === 'venta' ? r.valor_venta : (r.tipo_operacion === 'renta' ? r.valor_renta : [r.valor_venta, r.valor_renta].filter(Boolean).join(' / '));
+
   const grid = el('div', 'proy-grid');
   grid.append(
     labeledCell('Correlativo', el('span', '', r.local_id != null ? String(r.local_id) : '—')),
     labeledCell('Nombre de ubicación', el('span', '', r.nombre || '—')),
     labeledCell('Vendedor', el('span', '', r.vendedor_nombre || r.vendedor_asignado || '—')),
-    labeledCell('Estado', repPropEstadoBadge(r.estado_ubicacion || 'activa'))
+    labeledCell('Tipo de operación', el('span', '', operacionInfo ? operacionInfo.l : '—')),
+    labeledCell('Valor', el('strong', 'com-valor', valor || '—'))
   );
   card.append(grid);
   return card;
