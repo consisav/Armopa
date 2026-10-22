@@ -1589,16 +1589,9 @@ function rotVisualAplicarFiltro() {
     img.loading = 'lazy';
     card.append(img, el('div', 'rotv-name', it.nombre));
     card.addEventListener('click', () => {
-      // Solo la tarjeta central (al frente) abre la rotación de todas sus
-      // fotos; las laterales primero se traen al centro con un click,
-      // igual que un carrusel.
-      if (i === rotVisualIdx) {
-        rotVisualMostrarFotos(it);
-      } else {
-        rotVisualIdx = i;
-        rotVisualLayout();
-        rotVisualStart();
-      }
+      // Al presionar cualquier propiedad (esté centrada o no), se abre
+      // de inmediato la rotación con todas sus fotografías.
+      rotVisualMostrarFotos(it);
     });
     track.appendChild(card);
   });
@@ -1607,9 +1600,9 @@ function rotVisualAplicarFiltro() {
   rotVisualStart();
 }
 
-/* Al presionar la propiedad central, se reemplaza el carrusel general por
-   uno con TODAS las fotografías de esa propiedad (mismo efecto de rotación
-   3D), con un botón para volver al listado general de propiedades. */
+/* Al presionar una propiedad, se reemplaza el carrusel general por uno con
+   TODAS las fotografías de esa propiedad (mismo efecto de rotación 3D),
+   con un botón para volver al listado general de propiedades. */
 function rotVisualMostrarFotos(item) {
   const track = $('#rotVisualTrack');
   const empty = $('#rotVisualEmpty');
