@@ -3172,7 +3172,8 @@ function imprimirReporte(tituloReporte, resultSelector) {
     '.rep-row-no{color:#8b641d;font-weight:700}' +
     '.rep-row-valor{color:#8b641d}' +
     '.rep-row-fotos{text-align:center;font-weight:700}' +
-    '.rep-row-serv{grid-template-columns:36px 1.3fr 1.1fr .9fr 1fr .8fr .9fr .9fr .9fr 1fr}' +
+    '.rep-row-serv{grid-template-columns:28px 130px 100px 75px 85px 55px 70px 65px 75px 90px;font-size:9.5px}' +
+    '.rep-row-serv>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
     '@media print{ @page{margin:14mm} .rep-row{break-inside:avoid} }' +
     '</style></head><body>' +
     '<div class="rep-print-head">' +
@@ -3291,23 +3292,38 @@ async function mostrarRepServicios() {
       result.innerHTML = '<p class="qbr-empty">No hay solicitudes de servicio que coincidan con la búsqueda.</p>';
       return;
     }
-    const wrap = el('div', 'rep-list');
-    const head = el('div', 'rep-row rep-row-serv rep-row-head');
-    head.append(
-      el('span', '', 'No.'),
-      el('span', '', 'Servicio'),
-      el('span', '', 'Cliente'),
-      el('span', '', 'Teléfono'),
-      el('span', '', 'N.° de solicitud'),
-      el('span', '', 'Prioridad'),
-      el('span', '', 'Estado'),
-      el('span', '', 'Fecha de inicio'),
-      el('span', '', 'Fecha de solicitud'),
-      el('span', '', 'Vendedor asignado')
-    );
-    wrap.append(head);
-    rows.forEach((r, idx) => wrap.appendChild(repServBuildFila(r, idx + 1)));
-    result.appendChild(wrap);
+    const porServicio = {};
+    rows.forEach((r) => {
+      const key = r.servicio || '(Sin tipo de servicio)';
+      if (!porServicio[key]) porServicio[key] = [];
+      porServicio[key].push(r);
+    });
+    Object.keys(porServicio).sort().forEach((servicioNombre) => {
+      const filas = porServicio[servicioNombre];
+      const groupWrap = el('div', 'com-group');
+      const h = el('h3', 'com-group-title');
+      h.append(document.createTextNode(servicioNombre), el('span', 'com-count', '(' + filas.length + ')'));
+      groupWrap.append(h);
+
+      const list = el('div', 'rep-list');
+      const head = el('div', 'rep-row rep-row-serv rep-row-head');
+      head.append(
+        el('span', '', 'No.'),
+        el('span', '', 'Servicio'),
+        el('span', '', 'Cliente'),
+        el('span', '', 'Teléfono'),
+        el('span', '', 'N.° de solicitud'),
+        el('span', '', 'Prioridad'),
+        el('span', '', 'Estado'),
+        el('span', '', 'Fecha de inicio'),
+        el('span', '', 'Fecha de solicitud'),
+        el('span', '', 'Vendedor asignado')
+      );
+      list.append(head);
+      filas.forEach((r, idx) => list.appendChild(repServBuildFila(r, idx + 1)));
+      groupWrap.append(list);
+      result.appendChild(groupWrap);
+    });
   } catch (e) {
     console.error('Error cargando reporte de servicios:', e);
     result.innerHTML = '<p class="qbr-empty">No se pudo cargar el estado de servicios.</p>';
