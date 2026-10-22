@@ -3023,6 +3023,377 @@ $('#adminComisionesPagadasClose')?.addEventListener('click', cerrarAdminComision
 $('#adminComisionesPagadasScrim')?.addEventListener('click', cerrarAdminComisionesPagadasModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminComisionesPagadasModal && !adminComisionesPagadasModal.hidden) cerrarAdminComisionesPagadasModal(); });
 
+/* ===== Reportes: Listado de Propiedades =====
+   Inventario completo de "propiedades", filtrable por ciudad, tipo de
+   operación y estado de la ubicación. Mismo lenguaje visual que el resto
+   de Administración (.proy-card/.proy-grid), para que la información se
+   lea completa sin scroll horizontal. */
+const REP_PROP_OPERACION = [
+  { v: 'renta', l: 'Renta' },
+  { v: 'venta', l: 'Venta' },
+  { v: 'ambos', l: 'Renta y venta' }
+];
+const REP_PROP_ESTADOS = [
+  { v: 'activa', l: 'Activa', bg: '#dcefe0', fg: '#1f7a43' },
+  { v: 'arrendada', l: 'Arrendada', bg: '#dde8fb', fg: '#1d4ed8' },
+  { v: 'vendida', l: 'Vendida', bg: '#c9eed2', fg: '#0f5132' },
+  { v: 'suspendida', l: 'Suspendida', bg: '#fbe9c8', fg: '#8b641d' },
+  { v: 'baja', l: 'Baja', bg: '#fbdede', fg: '#b42318' }
+];
+const repPropEstadoInfo = (v) => REP_PROP_ESTADOS.find((e) => e.v === v) || REP_PROP_ESTADOS[0];
+function repPropEstadoBadge(v) {
+  const info = repPropEstadoInfo(v);
+  const b = el('span', '', info.l);
+  b.style.cssText = 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:' + info.bg + ';color:' + info.fg;
+  return b;
+}
+
+function poblarRepPropFiltros(ciudades) {
+  const ciudadSel = $('#repPropCiudadSel');
+  if (ciudadSel) {
+    const prev = ciudadSel.value;
+    ciudadSel.innerHTML = '';
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todas las ciudades';
+    ciudadSel.appendChild(optTodas);
+    ciudades.forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = c; ciudadSel.appendChild(o); });
+    if (prev && [...ciudadSel.options].some((o) => o.value === prev)) ciudadSel.value = prev;
+  }
+  const opSel = $('#repPropOperacionSel');
+  if (opSel && !opSel.options.length) {
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todas las operaciones';
+    opSel.appendChild(optTodas);
+    REP_PROP_OPERACION.forEach((o) => { const opt = document.createElement('option'); opt.value = o.v; opt.textContent = o.l; opSel.appendChild(opt); });
+  }
+  const estSel = $('#repPropEstadoSel');
+  if (estSel && !estSel.options.length) {
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todos los estados';
+    estSel.appendChild(optTodas);
+    REP_PROP_ESTADOS.forEach((e) => { const opt = document.createElement('option'); opt.value = e.v; opt.textContent = e.l; estSel.appendChild(opt); });
+  }
+}
+
+function repPropBuildFila(r) {
+  const card = el('div', 'proy-card');
+  const head = el('div', 'proy-card-h');
+  const nameWrap = el('div', 'proy-name-wrap');
+  nameWrap.append(el('div', 'proy-name', r.nombre || 'Propiedad'));
+  head.append(nameWrap);
+  const estadoWrap = el('div');
+  estadoWrap.appendChild(repPropEstadoBadge(r.estado_ubicacion || 'activa'));
+  head.append(estadoWrap);
+  card.append(head);
+
+  const operacionInfo = REP_PROP_OPERACION.find((o) => o.v === r.tipo_operacion);
+  const valor = r.tipo_operacion === 'venta' ? r.valor_venta : (r.tipo_operacion === 'renta' ? r.valor_renta : [r.valor_venta, r.valor_renta].filter(Boolean).join(' / '));
+
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('Ciudad', el('span', '', r.ciudad || '—')),
+    labeledCell('Dirección', el('span', '', r.direccion || '—')),
+    labeledCell('Tipo', el('span', '', r.tipo_propiedad || '—')),
+    labeledCell('Operación', el('span', '', operacionInfo ? operacionInfo.l : '—')),
+    labeledCell('Valor', el('strong', 'com-valor', valor || '—')),
+    labeledCell('Vendedor', el('span', '', r.vendedor_nombre || r.vendedor_asignado || '—')),
+    labeledCell('Fecha de registro', el('span', '', r.creado_en ? formatQBuscarRegFecha(r.creado_en) : '—'))
+  );
+  card.append(grid);
+  return card;
+}
+
+async function mostrarRepPropiedades() {
+  const result = $('#repPropiedadesResult');
+  if (!result) return;
+  const ciudadVal = $('#repPropCiudadSel')?.value || '';
+  const operacionVal = $('#repPropOperacionSel')?.value || '';
+  const estadoVal = $('#repPropEstadoSel')?.value || '';
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    let q = supabaseClient.from('propiedades').select('*').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
+    if (ciudadVal) q = q.eq('ciudad', ciudadVal);
+    if (operacionVal) q = q.eq('tipo_operacion', operacionVal);
+    if (estadoVal) q = q.eq('estado_ubicacion', estadoVal);
+    const { data: rows, error } = await q;
+    if (error) throw error;
+    result.innerHTML = '';
+    if (!rows || !rows.length) {
+      result.innerHTML = '<p class="qbr-empty">No hay propiedades que coincidan con la búsqueda.</p>';
+      return;
+    }
+    const porCiudad = {};
+    rows.forEach((r) => {
+      const key = r.ciudad || '(Sin ciudad)';
+      if (!porCiudad[key]) porCiudad[key] = [];
+      porCiudad[key].push(r);
+    });
+    Object.keys(porCiudad).sort().forEach((ciudadNombre) => {
+      const filas = porCiudad[ciudadNombre];
+      const wrap = el('div', 'com-group');
+      const h = el('h3', 'com-group-title');
+      h.append(document.createTextNode(ciudadNombre), el('span', 'com-count', '(' + filas.length + ')'));
+      wrap.append(h);
+      const list = el('div', 'proy-list');
+      filas.forEach((r) => list.appendChild(repPropBuildFila(r)));
+      wrap.append(list);
+      result.appendChild(wrap);
+    });
+  } catch (e) {
+    console.error('Error cargando reporte de propiedades:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar el listado de propiedades.</p>';
+  }
+}
+
+$('#repPropMostrarBtn')?.addEventListener('click', () => mostrarRepPropiedades());
+
+const repPropiedadesModal = $('#repPropiedadesModal');
+async function abrirRepPropiedadesModal() {
+  if (!repPropiedadesModal) return;
+  repPropiedadesModal.hidden = false;
+  try {
+    const { data: rows, error } = await supabaseClient.from('propiedades').select('ciudad').eq('activo', true);
+    if (error) throw error;
+    const ciudades = [...new Set((rows || []).map((r) => r.ciudad).filter(Boolean))].sort();
+    poblarRepPropFiltros(ciudades);
+  } catch (e) {
+    console.error('Error cargando ciudades para el reporte:', e);
+    poblarRepPropFiltros([]);
+  }
+  if ($('#repPropCiudadSel')) $('#repPropCiudadSel').value = '';
+  if ($('#repPropOperacionSel')) $('#repPropOperacionSel').value = '';
+  if ($('#repPropEstadoSel')) $('#repPropEstadoSel').value = '';
+  mostrarRepPropiedades();
+}
+function cerrarRepPropiedadesModal() { if (repPropiedadesModal) repPropiedadesModal.hidden = true; }
+$('#navAdminRepPropiedadesBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirRepPropiedadesModal();
+});
+$('#repPropiedadesClose')?.addEventListener('click', cerrarRepPropiedadesModal);
+$('#repPropiedadesScrim')?.addEventListener('click', cerrarRepPropiedadesModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && repPropiedadesModal && !repPropiedadesModal.hidden) cerrarRepPropiedadesModal(); });
+
+/* ===== Reportes: Estado de Servicios =====
+   Listado de "solicitudes_servicio", filtrable por estado, prioridad y
+   rango de fechas de creación. Reutiliza SOL_ESTADOS/solEstadoInfo ya
+   definidos para Solicitudes de servicio. */
+const REP_SERV_PRIORIDAD = [
+  { v: 'alta', l: 'Alta' },
+  { v: 'media', l: 'Media' },
+  { v: 'baja', l: 'Baja' }
+];
+
+function poblarRepServFiltros() {
+  const estSel = $('#repServEstadoSel');
+  if (estSel && !estSel.options.length) {
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todos los estados';
+    estSel.appendChild(optTodas);
+    SOL_ESTADOS.forEach((e) => { const opt = document.createElement('option'); opt.value = e.v; opt.textContent = e.l; estSel.appendChild(opt); });
+  }
+  const prioSel = $('#repServPrioridadSel');
+  if (prioSel && !prioSel.options.length) {
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todas las prioridades';
+    prioSel.appendChild(optTodas);
+    REP_SERV_PRIORIDAD.forEach((p) => { const opt = document.createElement('option'); opt.value = p.v; opt.textContent = p.l; prioSel.appendChild(opt); });
+  }
+}
+
+function repServBuildFila(r) {
+  const card = el('div', 'proy-card');
+  const head = el('div', 'proy-card-h');
+  const nameWrap = el('div', 'proy-name-wrap');
+  nameWrap.append(el('div', 'proy-name', r.servicio || 'Servicio'));
+  head.append(nameWrap);
+  const estadoWrap = el('div');
+  const info = solEstadoInfo(r.estado);
+  const badge = el('span', '', info.l);
+  badge.style.cssText = 'display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;background:' + info.bg + ';color:' + info.fg;
+  estadoWrap.appendChild(badge);
+  head.append(estadoWrap);
+  card.append(head);
+
+  const prioInfo = REP_SERV_PRIORIDAD.find((p) => p.v === r.prioridad);
+
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('Cliente', el('span', '', r.nombre_cliente || '—')),
+    labeledCell('Teléfono', el('span', '', r.telefono_cliente || '—')),
+    labeledCell('N.° de solicitud', el('span', '', r.numero_solicitud || '—')),
+    labeledCell('Prioridad', el('span', '', prioInfo ? prioInfo.l : '—')),
+    labeledCell('Fecha de inicio', el('span', '', r.fecha_inicio ? formatQBuscarRegFecha(r.fecha_inicio) : '—')),
+    labeledCell('Fecha de solicitud', el('span', '', r.fecha_creacion ? formatQBuscarRegFecha(r.fecha_creacion) : '—')),
+    labeledCell('Vendedor asignado', el('span', '', r.vendedor_asignado || '—'))
+  );
+  card.append(grid);
+  return card;
+}
+
+async function mostrarRepServicios() {
+  const result = $('#repServiciosResult');
+  if (!result) return;
+  const estadoVal = $('#repServEstadoSel')?.value || '';
+  const prioridadVal = $('#repServPrioridadSel')?.value || '';
+  const fechaDesdeVal = $('#repServFechaDesde')?.value || '';
+  const fechaHastaVal = $('#repServFechaHasta')?.value || '';
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    let q = supabaseClient.from('solicitudes_servicio').select('*').order('fecha_creacion', { ascending: false });
+    if (estadoVal) q = q.eq('estado', estadoVal);
+    if (prioridadVal) q = q.eq('prioridad', prioridadVal);
+    if (fechaDesdeVal) q = q.gte('fecha_creacion', fechaDesdeVal + 'T00:00:00');
+    if (fechaHastaVal) q = q.lte('fecha_creacion', fechaHastaVal + 'T23:59:59');
+    const { data: rows, error } = await q;
+    if (error) throw error;
+    result.innerHTML = '';
+    if (!rows || !rows.length) {
+      result.innerHTML = '<p class="qbr-empty">No hay solicitudes de servicio que coincidan con la búsqueda.</p>';
+      return;
+    }
+    const porEstado = {};
+    rows.forEach((r) => {
+      const key = solEstadoInfo(r.estado).l;
+      if (!porEstado[key]) porEstado[key] = [];
+      porEstado[key].push(r);
+    });
+    SOL_ESTADOS.map((e) => e.l).filter((l) => porEstado[l]).forEach((estadoLabel) => {
+      const filas = porEstado[estadoLabel];
+      const wrap = el('div', 'com-group');
+      const h = el('h3', 'com-group-title');
+      h.append(document.createTextNode(estadoLabel), el('span', 'com-count', '(' + filas.length + ')'));
+      wrap.append(h);
+      const list = el('div', 'proy-list');
+      filas.forEach((r) => list.appendChild(repServBuildFila(r)));
+      wrap.append(list);
+      result.appendChild(wrap);
+    });
+  } catch (e) {
+    console.error('Error cargando reporte de servicios:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar el estado de servicios.</p>';
+  }
+}
+
+$('#repServMostrarBtn')?.addEventListener('click', () => mostrarRepServicios());
+
+const repServiciosModal = $('#repServiciosModal');
+function abrirRepServiciosModal() {
+  if (!repServiciosModal) return;
+  repServiciosModal.hidden = false;
+  poblarRepServFiltros();
+  if ($('#repServEstadoSel')) $('#repServEstadoSel').value = '';
+  if ($('#repServPrioridadSel')) $('#repServPrioridadSel').value = '';
+  if ($('#repServFechaDesde')) $('#repServFechaDesde').value = '';
+  if ($('#repServFechaHasta')) $('#repServFechaHasta').value = '';
+  mostrarRepServicios();
+}
+function cerrarRepServiciosModal() { if (repServiciosModal) repServiciosModal.hidden = true; }
+$('#navAdminRepServiciosBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirRepServiciosModal();
+});
+$('#repServiciosClose')?.addEventListener('click', cerrarRepServiciosModal);
+$('#repServiciosScrim')?.addEventListener('click', cerrarRepServiciosModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && repServiciosModal && !repServiciosModal.hidden) cerrarRepServiciosModal(); });
+
+/* ===== Reportes: Seguimiento Clientes =====
+   Clientes (tabla "usuarios", tipo_usuario = 'usuario_general') con su
+   actividad: cantidad de solicitudes de servicio y de cotizaciones
+   generadas, y la fecha de la más reciente. Filtrable por nombre o
+   usuario. */
+function repCliBuildFila(c) {
+  const card = el('div', 'proy-card');
+  const head = el('div', 'proy-card-h');
+  const nameWrap = el('div', 'proy-name-wrap');
+  nameWrap.append(el('div', 'proy-name', c.usuario || 'Cliente'));
+  head.append(nameWrap);
+  card.append(head);
+
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell('Código', el('span', '', c.codigo_usuario != null ? String(c.codigo_usuario) : '—')),
+    labeledCell('Registrado', el('span', '', c.created_at ? formatQBuscarRegFecha(c.created_at) : '—')),
+    labeledCell('Solicitudes de servicio', el('strong', 'com-valor', String(c.totalSolicitudes || 0))),
+    labeledCell('Cotizaciones', el('strong', 'com-valor', String(c.totalCotizaciones || 0))),
+    labeledCell('Última actividad', el('span', '', c.ultimaActividad ? formatQBuscarRegFecha(c.ultimaActividad) : '—'))
+  );
+  card.append(grid);
+  return card;
+}
+
+async function mostrarRepClientes() {
+  const result = $('#repClientesResult');
+  if (!result) return;
+  const buscarVal = ($('#repCliBuscar')?.value || '').trim().toLowerCase();
+  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  try {
+    const { data: usuarios, error: errUsuarios } = await supabaseClient
+      .from('usuarios').select('usuario, codigo_usuario, created_at')
+      .eq('tipo_usuario', 'usuario_general')
+      .order('usuario', { ascending: true });
+    if (errUsuarios) throw errUsuarios;
+
+    const { data: solicitudes, error: errSol } = await supabaseClient
+      .from('solicitudes_servicio').select('cliente_codigo, nombre_cliente, created_at');
+    if (errSol) throw errSol;
+
+    const { data: cotizaciones, error: errCot } = await supabaseClient
+      .from('cotizaciones').select('nombre_cliente, fecha_creacion');
+    if (errCot) throw errCot;
+
+    let filas = (usuarios || []).map((u) => {
+      const codigo = u.codigo_usuario != null ? String(u.codigo_usuario) : null;
+      const solsCliente = (solicitudes || []).filter((s) => codigo && s.cliente_codigo === codigo);
+      const cotsCliente = (cotizaciones || []).filter((c) => (c.nombre_cliente || '').trim().toLowerCase() === (u.usuario || '').trim().toLowerCase());
+      const fechas = [
+        ...solsCliente.map((s) => s.created_at),
+        ...cotsCliente.map((c) => c.fecha_creacion)
+      ].filter(Boolean).sort().reverse();
+      return {
+        usuario: u.usuario,
+        codigo_usuario: u.codigo_usuario,
+        created_at: u.created_at,
+        totalSolicitudes: solsCliente.length,
+        totalCotizaciones: cotsCliente.length,
+        ultimaActividad: fechas[0] || null
+      };
+    });
+
+    if (buscarVal) {
+      filas = filas.filter((f) => (f.usuario || '').toLowerCase().includes(buscarVal) || (f.codigo_usuario != null && String(f.codigo_usuario).includes(buscarVal)));
+    }
+
+    result.innerHTML = '';
+    if (!filas.length) {
+      result.innerHTML = '<p class="qbr-empty">No hay clientes que coincidan con la búsqueda.</p>';
+      return;
+    }
+    const list = el('div', 'proy-list');
+    filas.forEach((f) => list.appendChild(repCliBuildFila(f)));
+    result.appendChild(list);
+  } catch (e) {
+    console.error('Error cargando seguimiento de clientes:', e);
+    result.innerHTML = '<p class="qbr-empty">No se pudo cargar el seguimiento de clientes.</p>';
+  }
+}
+
+$('#repCliMostrarBtn')?.addEventListener('click', () => mostrarRepClientes());
+
+const repClientesModal = $('#repClientesModal');
+function abrirRepClientesModal() {
+  if (!repClientesModal) return;
+  repClientesModal.hidden = false;
+  if ($('#repCliBuscar')) $('#repCliBuscar').value = '';
+  mostrarRepClientes();
+}
+function cerrarRepClientesModal() { if (repClientesModal) repClientesModal.hidden = true; }
+$('#navAdminRepClientesBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirRepClientesModal();
+});
+$('#repClientesClose')?.addEventListener('click', cerrarRepClientesModal);
+$('#repClientesScrim')?.addEventListener('click', cerrarRepClientesModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && repClientesModal && !repClientesModal.hidden) cerrarRepClientesModal(); });
+
 /* Catálogo de vendedores (tabla "vendedores") para que el campo "Nombre
    del vendedor" de cada ubicación (sección "Vendedor" del formulario de
    edición de propiedad) sea una lista real de los vendedores ya

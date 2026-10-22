@@ -62,6 +62,14 @@
                 <button type="button" id="navAdminComisionesPagadasBtn">Comisiones Pagadas</button>
               </div>
             </div>
+            <div class="nav-admin-group" data-grp="reportes">
+              <button type="button" class="nav-admin-group-h" aria-expanded="false">Reportes<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <div class="nav-admin-group-items" hidden>
+                <button type="button" id="navAdminRepPropiedadesBtn">Listado de Propiedades</button>
+                <button type="button" id="navAdminRepServiciosBtn">Estado de Servicios</button>
+                <button type="button" id="navAdminRepClientesBtn">Seguimiento Clientes</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1803,6 +1811,50 @@
   </div>
 </div>
 
+<div class="modal" id="repPropiedadesModal" hidden>
+  <button class="scrim" type="button" id="repPropiedadesScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="repPropiedadesCard" role="dialog" aria-modal="true" aria-labelledby="repPropiedadesTitle">
+    <button class="mx" type="button" id="repPropiedadesClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="repPropiedadesTitle">Reporte — Listado de Propiedades</h2><p class="ph-sub">Inventario completo de propiedades y su estado.</p></div>
+    <div class="q-buscar-fields" style="margin-bottom:10px">
+      <select id="repPropCiudadSel" aria-label="Ciudad"></select>
+      <select id="repPropOperacionSel" aria-label="Tipo de operación"></select>
+      <select id="repPropEstadoSel" aria-label="Estado"></select>
+      <button class="btn btn-dark btn-sm" type="button" id="repPropMostrarBtn">Mostrar</button>
+    </div>
+    <div id="repPropiedadesResult" class="qbuscar-result"></div>
+  </div>
+</div>
+
+<div class="modal" id="repServiciosModal" hidden>
+  <button class="scrim" type="button" id="repServiciosScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="repServiciosCard" role="dialog" aria-modal="true" aria-labelledby="repServiciosTitle">
+    <button class="mx" type="button" id="repServiciosClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="repServiciosTitle">Reporte — Estado de Servicios</h2><p class="ph-sub">Solicitudes de servicio y su estado actual.</p></div>
+    <div class="q-buscar-fields" style="margin-bottom:10px">
+      <select id="repServEstadoSel" aria-label="Estado"></select>
+      <select id="repServPrioridadSel" aria-label="Prioridad"></select>
+      <input type="date" id="repServFechaDesde" aria-label="Fecha inicial">
+      <input type="date" id="repServFechaHasta" aria-label="Fecha final">
+      <button class="btn btn-dark btn-sm" type="button" id="repServMostrarBtn">Mostrar</button>
+    </div>
+    <div id="repServiciosResult" class="qbuscar-result"></div>
+  </div>
+</div>
+
+<div class="modal" id="repClientesModal" hidden>
+  <button class="scrim" type="button" id="repClientesScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="repClientesCard" role="dialog" aria-modal="true" aria-labelledby="repClientesTitle">
+    <button class="mx" type="button" id="repClientesClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="repClientesTitle">Reporte — Seguimiento Clientes</h2><p class="ph-sub">Clientes registrados y su actividad: solicitudes y cotizaciones.</p></div>
+    <div class="q-buscar-fields" style="margin-bottom:10px">
+      <input type="text" id="repCliBuscar" placeholder="Buscar por nombre o usuario" aria-label="Buscar cliente">
+      <button class="btn btn-dark btn-sm" type="button" id="repCliMostrarBtn">Mostrar</button>
+    </div>
+    <div id="repClientesResult" class="qbuscar-result"></div>
+  </div>
+</div>
+
 <div class="modal lb-modal" id="lbModal" hidden>
   <button class="scrim" type="button" id="lbScrim" data-i18n-label="close"></button>
   <button class="mx lb-x" type="button" id="lbClose" data-i18n-label="close">×</button>
@@ -1812,6 +1864,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261019-0029"></script>
+<script src="script.js?v=20261022-0030"></script>
 </body>
 </html>
