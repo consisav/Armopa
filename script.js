@@ -1572,25 +1572,45 @@ function rotVisualAplicarFiltro() {
     if (rotVisualTipoSel && r.tipo_propiedad !== rotVisualTipoSel) return false;
     return true;
   });
-  rotVisualItems = filtradas.filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0] }));
+  rotVisualItems = filtradas.filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0], ciudad: r.ciudad || '' }));
 
   if (!rotVisualItems.length) {
     if (empty) { empty.hidden = false; empty.textContent = 'No hay propiedades con fotografías para mostrar.'; }
     return;
   }
   if (empty) empty.hidden = true;
-  rotVisualItems.forEach((it) => {
+  rotVisualItems.forEach((it, i) => {
     const card = el('div', 'rotv-item');
     const img = document.createElement('img');
     img.src = it.foto;
     img.alt = it.nombre;
     img.loading = 'lazy';
     card.append(img, el('div', 'rotv-name', it.nombre));
+    card.addEventListener('click', () => {
+      // Solo la tarjeta central (al frente) navega al detalle; las laterales
+      // primero se traen al centro con un click, igual que un carrusel.
+      if (i === rotVisualIdx) {
+        rotVisualIrADetalle(it);
+      } else {
+        rotVisualIdx = i;
+        rotVisualLayout();
+        rotVisualStart();
+      }
+    });
     track.appendChild(card);
   });
   rotVisualIdx = 0;
   rotVisualLayout();
   rotVisualStart();
+}
+
+function rotVisualIrADetalle(item) {
+  if (!item || !item.ciudad) return;
+  const locs = (typeof data !== 'undefined' && data[item.ciudad]) || [];
+  const idx = locs.findIndex((l) => l.name === item.nombre);
+  if (idx < 0) return;
+  cerrarRotVisualModal();
+  if (typeof openLocationDirect === 'function') openLocationDirect(item.ciudad, idx);
 }
 
 async function abrirRotVisualModal() {
