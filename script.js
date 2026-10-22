@@ -3778,26 +3778,10 @@ function update() {
   idx = ((idx % total) + total) % total;
   const cards = [...$('#carTrack').children];
   cards.forEach((card, i) => {
-    let offset = i - idx;
-    offset = ((offset % total) + total) % total;
-    if (offset > total / 2) offset -= total;
-    const abs = Math.abs(offset);
-    if (abs > 3) {
-      card.style.opacity = '0';
-      card.style.pointerEvents = 'none';
-      card.style.transform = 'translate3d(0,0,-600px)';
-      return;
-    }
-    const spacing = 150;
-    const rotateY = offset * -22;
-    const translateX = offset * spacing;
-    const translateZ = -abs * 110;
-    const scale = abs === 0 ? 1 : 0.82;
-    card.style.opacity = abs === 0 ? '1' : String(Math.max(0.35, 0.85 - abs * 0.2));
-    card.style.pointerEvents = abs === 0 ? 'auto' : 'none';
-    card.style.zIndex = String(100 - abs);
-    card.style.filter = abs === 0 ? 'none' : 'brightness(.72)';
-    card.style.transform = 'translate3d(' + translateX + 'px,0,' + translateZ + 'px) rotateY(' + rotateY + 'deg) scale(' + scale + ')';
+    const active = i === idx;
+    card.style.opacity = active ? '1' : '0';
+    card.style.pointerEvents = active ? 'auto' : 'none';
+    card.style.zIndex = active ? '2' : '1';
   });
   $$('.dot').forEach((d, i) => d.classList.toggle('on', i === idx));
 }
