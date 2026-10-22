@@ -1572,13 +1572,15 @@ function rotVisualAplicarFiltro() {
     if (rotVisualTipoSel && r.tipo_propiedad !== rotVisualTipoSel) return false;
     return true;
   });
-  rotVisualItems = filtradas.filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0], ciudad: r.ciudad || '' }));
+  rotVisualItems = filtradas.filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0], fotos: r.fotos, ciudad: r.ciudad || '' }));
 
   if (!rotVisualItems.length) {
     if (empty) { empty.hidden = false; empty.textContent = 'No hay propiedades con fotografías para mostrar.'; }
     return;
   }
   if (empty) empty.hidden = true;
+  const backBtn = $('#rotVisualVolverBtn');
+  if (backBtn) backBtn.hidden = true;
   rotVisualItems.forEach((it, i) => {
     const card = el('div', 'rotv-item');
     const img = document.createElement('img');
@@ -1587,10 +1589,11 @@ function rotVisualAplicarFiltro() {
     img.loading = 'lazy';
     card.append(img, el('div', 'rotv-name', it.nombre));
     card.addEventListener('click', () => {
-      // Solo la tarjeta central (al frente) navega al detalle; las laterales
-      // primero se traen al centro con un click, igual que un carrusel.
+      // Solo la tarjeta central (al frente) abre la rotación de todas sus
+      // fotos; las laterales primero se traen al centro con un click,
+      // igual que un carrusel.
       if (i === rotVisualIdx) {
-        rotVisualIrADetalle(it);
+        rotVisualMostrarFotos(it);
       } else {
         rotVisualIdx = i;
         rotVisualLayout();
@@ -1604,13 +1607,43 @@ function rotVisualAplicarFiltro() {
   rotVisualStart();
 }
 
-function rotVisualIrADetalle(item) {
-  if (!item || !item.ciudad) return;
-  const locs = (typeof data !== 'undefined' && data[item.ciudad]) || [];
-  const idx = locs.findIndex((l) => l.name === item.nombre);
-  if (idx < 0) return;
-  cerrarRotVisualModal();
-  if (typeof openLocationDirect === 'function') openLocationDirect(item.ciudad, idx);
+/* Al presionar la propiedad central, se reemplaza el carrusel general por
+   uno con TODAS las fotografías de esa propiedad (mismo efecto de rotación
+   3D), con un botón para volver al listado general de propiedades. */
+function rotVisualMostrarFotos(item) {
+  const track = $('#rotVisualTrack');
+  const empty = $('#rotVisualEmpty');
+  const backBtn = $('#rotVisualVolverBtn');
+  if (!track || !item) return;
+  const fotos = Array.isArray(item.fotos) && item.fotos.length ? item.fotos : [item.foto];
+  rotVisualStop();
+  track.innerHTML = '';
+  if (empty) empty.hidden = true;
+  if (backBtn) backBtn.hidden = false;
+  if (backBtn) backBtn.textContent = '← Volver a todas las propiedades';
+
+  const totalFotos = fotos.length;
+  rotVisualItems = fotos.map((f) => ({ nombre: item.nombre, foto: f }));
+  rotVisualItems.forEach((it, i) => {
+    const card = el('div', 'rotv-item');
+    const img = document.createElement('img');
+    img.src = it.foto;
+    img.alt = it.nombre + ' — foto ' + (i + 1);
+    img.loading = 'lazy';
+    const etiqueta = totalFotos > 1 ? (it.nombre + ' · Foto ' + (i + 1) + ' de ' + totalFotos) : it.nombre;
+    card.append(img, el('div', 'rotv-name', etiqueta));
+    card.addEventListener('click', () => {
+      if (i !== rotVisualIdx) {
+        rotVisualIdx = i;
+        rotVisualLayout();
+        rotVisualStart();
+      }
+    });
+    track.appendChild(card);
+  });
+  rotVisualIdx = 0;
+  rotVisualLayout();
+  rotVisualStart();
 }
 
 async function abrirRotVisualModal() {
@@ -1647,6 +1680,7 @@ $('#navAdminRotacionVisualBtn')?.addEventListener('click', () => {
 $('#rotVisualClose')?.addEventListener('click', cerrarRotVisualModal);
 $('#rotVisualScrim')?.addEventListener('click', cerrarRotVisualModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#rotVisualModal') && !$('#rotVisualModal').hidden) cerrarRotVisualModal(); });
+$('#rotVisualVolverBtn')?.addEventListener('click', () => rotVisualAplicarFiltro());
 
 /* "Vendedores" dentro del menú Administración: catálogo centralizado de
    vendedores (tabla propia en Supabase, independiente de "vendedor
