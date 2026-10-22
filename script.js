@@ -3072,7 +3072,7 @@ function poblarRepPropFiltros(ciudades) {
   }
 }
 
-function repPropBuildFila(r) {
+function repPropBuildFila(r, correlativo) {
   const card = el('div', 'proy-card');
   const head = el('div', 'proy-card-h');
   const nameWrap = el('div', 'proy-name-wrap');
@@ -3085,7 +3085,7 @@ function repPropBuildFila(r) {
 
   const grid = el('div', 'proy-grid');
   grid.append(
-    labeledCell('Correlativo', el('span', '', r.local_id != null ? String(r.local_id) : '—')),
+    labeledCell('Correlativo', el('span', '', String(correlativo))),
     labeledCell('Nombre de ubicación', el('span', '', r.nombre || '—')),
     labeledCell('Vendedor', el('span', '', r.vendedor_nombre || r.vendedor_asignado || '—')),
     labeledCell('Tipo de operación', el('span', '', operacionInfo ? operacionInfo.l : '—')),
@@ -3127,7 +3127,7 @@ async function mostrarRepPropiedades() {
       h.append(document.createTextNode(ciudadNombre), el('span', 'com-count', '(' + filas.length + ')'));
       wrap.append(h);
       const list = el('div', 'proy-list');
-      filas.forEach((r) => list.appendChild(repPropBuildFila(r)));
+      filas.forEach((r, idx) => list.appendChild(repPropBuildFila(r, idx + 1)));
       wrap.append(list);
       result.appendChild(wrap);
     });
@@ -3137,7 +3137,55 @@ async function mostrarRepPropiedades() {
   }
 }
 
+/* Imprime el contenido actualmente mostrado de un reporte (el div de
+   resultados ya renderizado) en una ventana aparte, con un encabezado
+   propio: logo a la izquierda, fecha/hora exacta y usuario conectado a
+   la derecha -ni los filtros ni el resto del sitio se imprimen-. */
+function imprimirReporte(tituloReporte, resultSelector) {
+  const result = $(resultSelector);
+  if (!result || !result.innerHTML.trim()) { alert('No hay datos para imprimir. Primero presiona "Mostrar".'); return; }
+  const usuario = localStorage.getItem(LOGIN_STORE) || '—';
+  const ahora = new Date();
+  const fechaTxt = ahora.toLocaleDateString('es-GT', { year: 'numeric', month: '2-digit', day: '2-digit' });
+  const horaTxt = ahora.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+  const win = window.open('', '_blank');
+  if (!win) { alert('El navegador bloqueó la ventana de impresión. Permite ventanas emergentes para este sitio e inténtalo de nuevo.'); return; }
+  const logoUrl = new URL('assets/logo.webp', document.baseURI).href;
+  win.document.write(
+    '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
+    '<title>' + tituloReporte + '</title>' +
+    '<style>' +
+    "body{font-family:'Figtree',system-ui,sans-serif;color:#10243c;margin:24px}" +
+    '.rep-print-head{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #c9962d;padding-bottom:12px;margin-bottom:18px}' +
+    '.rep-print-head img{height:56px}' +
+    '.rep-print-meta{text-align:right;font-size:13px;color:#56667a;line-height:1.5}' +
+    'h1{font-size:19px;margin:0 0 18px}' +
+    '.com-group-title{font-size:15px;margin:18px 0 8px;border-bottom:1px solid #d5dbe4;padding-bottom:4px}' +
+    '.com-count{color:#56667a;font-weight:400;margin-left:6px}' +
+    '.proy-list{display:flex;flex-direction:column;gap:10px}' +
+    '.proy-card{border:1px solid #d5dbe4;border-radius:10px;padding:12px 14px;break-inside:avoid}' +
+    '.proy-card-h{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px}' +
+    '.proy-name{font-weight:700;font-size:14px}' +
+    '.proy-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}' +
+    '.lbl{display:block;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;color:#56667a;margin-bottom:2px}' +
+    '.com-valor{color:#8b641d}' +
+    '@media print{ @page{margin:14mm} }' +
+    '</style></head><body>' +
+    '<div class="rep-print-head">' +
+    '<img src="' + logoUrl + '" alt="ARMOPA">' +
+    '<div class="rep-print-meta"><div>' + fechaTxt + ' · ' + horaTxt + '</div><div>Usuario: ' + usuario + '</div></div>' +
+    '</div>' +
+    '<h1>' + tituloReporte + '</h1>' +
+    result.innerHTML +
+    '</body></html>'
+  );
+  win.document.close();
+  win.focus();
+  win.addEventListener('load', () => { win.print(); });
+}
+
 $('#repPropMostrarBtn')?.addEventListener('click', () => mostrarRepPropiedades());
+$('#repPropImprimirBtn')?.addEventListener('click', () => imprimirReporte('Reporte — Listado de Propiedades', '#repPropiedadesResult'));
 
 const repPropiedadesModal = $('#repPropiedadesModal');
 async function abrirRepPropiedadesModal() {
