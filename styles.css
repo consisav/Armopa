@@ -815,8 +815,9 @@ section[id]{scroll-margin-top:148px}
 /* Barra superior izquierda: tipo de operación (más grande), el aviso
    "Presione la propiedad..." y, por último, el botón para volver a todas
    las propiedades -en ese orden, uno debajo del otro-. */
-.rotv-topbar{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}
-.rotv-op-top{margin-bottom:0;font-size:17px;padding:6px 18px}
+.rotv-topbar{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-bottom:14px}
+.rotv-topbar-row{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.rotv-op-top{margin-bottom:0;font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;padding:7px 20px}
 .rotv-topbar .rotv-hint{margin:0}
 .rotv-volver{margin-bottom:0}
 .rotv-stage{position:relative;height:560px;margin-top:0;display:flex;align-items:center;justify-content:center;overflow:hidden;perspective:1700px;border-radius:16px;background:linear-gradient(180deg,#0d1f35,#142c48)}

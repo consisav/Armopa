@@ -313,7 +313,7 @@ const T = {
     adminMenuRepProp: 'Listado de Propiedades', adminMenuRepServ: 'Estado de Servicios', adminMenuRepClientes: 'Seguimiento Clientes',
     carHint: 'Presione la imagen para ver las propiedades de la ciudad.', btnBuscarServ: 'Buscar servicios',
     catalogHtml: '🔍 Buscar propiedades', btnBuscarServHtml: '🔧 Buscar servicios',
-    rotVisualTitle: 'Rotación Visual', rotVisualHint: 'Presione la propiedad para ver las fotos y detalles', rotVisualVolver: '← Volver a todas las propiedades', rotVisualEmpty: 'No hay propiedades con fotografías para mostrar.', rotVisualLoadErr: 'No se pudo cargar la rotación visual.',
+    rotVisualTitle: 'Rotación Visual', rotVisualHint: 'Presione la propiedad para ver las fotos y detalles', rotVisualVolver: '← Volver a todas las propiedades', rotVisualVolverCiudades: '← Volver a las ciudades', rotVisualEmpty: 'No hay propiedades con fotografías para mostrar.', rotVisualLoadErr: 'No se pudo cargar la rotación visual.',
     rotVisualCiudad: 'Ciudad', rotVisualTipo: 'Tipo de Propiedad', rotVisualTodas: 'Todas',
     rotVisualRenta: 'Renta', rotVisualPrecioVenta: 'Precio de venta', rotVisualDescripcion: 'Descripción', rotVisualContactoVendedor: 'Contacto del vendedor', rotVisualWa: 'Contactar por WhatsApp',
     visionTitle: 'Nuestra Visión',
@@ -377,7 +377,7 @@ const T = {
     adminMenuRepProp: 'Property Listing', adminMenuRepServ: 'Service Status', adminMenuRepClientes: 'Client Follow-up',
     carHint: 'Click the image to see the city’s properties.', btnBuscarServ: 'Browse services',
     catalogHtml: '🔍 Browse properties', btnBuscarServHtml: '🔧 Browse services',
-    rotVisualTitle: 'Visual Rotation', rotVisualHint: 'Click a property to see its photos and details', rotVisualVolver: '← Back to all properties', rotVisualEmpty: 'No properties with photos to show.', rotVisualLoadErr: 'Could not load the visual rotation.',
+    rotVisualTitle: 'Visual Rotation', rotVisualHint: 'Click a property to see its photos and details', rotVisualVolver: '← Back to all properties', rotVisualVolverCiudades: '← Back to cities', rotVisualEmpty: 'No properties with photos to show.', rotVisualLoadErr: 'Could not load the visual rotation.',
     rotVisualCiudad: 'City', rotVisualTipo: 'Property Type', rotVisualTodas: 'All',
     rotVisualRenta: 'Rent', rotVisualPrecioVenta: 'Sale price', rotVisualDescripcion: 'Description', rotVisualContactoVendedor: 'Seller contact', rotVisualWa: 'Contact on WhatsApp',
     visionTitle: 'Our Vision',
@@ -1788,6 +1788,10 @@ $('#rotVisualClose')?.addEventListener('click', cerrarRotVisualModal);
 $('#rotVisualScrim')?.addEventListener('click', cerrarRotVisualModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#rotVisualModal') && !$('#rotVisualModal').hidden) cerrarRotVisualModal(); });
 $('#rotVisualVolverBtn')?.addEventListener('click', () => rotVisualAplicarFiltro());
+$('#rotVisualVolverCiudadesBtn')?.addEventListener('click', () => {
+  cerrarRotVisualModal();
+  $('#propiedades')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 
 /* "Vendedores" dentro del menú Administración: catálogo centralizado de
    vendedores (tabla propia en Supabase, independiente de "vendedor
