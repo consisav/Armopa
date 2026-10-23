@@ -553,7 +553,11 @@ const T = {
     /* ===== Admin: Reportes ===== */
     repPropTituloModal: 'Reporte — Listado de Propiedades', repPropSubtituloModal: 'Inventario completo de propiedades y su estado.',
     repServTituloModal: 'Reporte — Estado de Servicios', repServSubtituloModal: 'Solicitudes de servicio y su estado actual.',
-    repCliTituloModal: 'Reporte — Seguimiento Clientes', repCliSubtituloModal: 'Clientes registrados y su actividad: solicitudes y cotizaciones.',
+    repCliTituloModal: 'Reporte — Seguimiento Clientes', repCliSubtituloModal: 'Clientes registrados y el estado de sus citas agendadas.',
+    repCliTodosLosClientes: 'Todos los clientes', repCliConCitas: 'Con citas', repCliSinCitas: 'Sin citas', repCliConProximaCita: 'Con próxima cita',
+    repCliProximaCita: 'Próxima cita', repCliSinProximaCita: 'Sin próxima cita agendada', repCliTotalCitas: 'Total de citas',
+    repCliUltimaCita: 'Última cita', repCliHistorialCitas: 'Historial de citas', repCliVerHistorial: 'Ver historial', repCliOcultarHistorial: 'Ocultar historial',
+    repCliSinCitasTexto: 'Este cliente aún no tiene citas agendadas.',
     repLblCiudad: 'Ciudad', repLblTipoOperacion: 'Tipo de operación', repLblEstado: 'Estado', repLblPrioridad: 'Prioridad', repLblFechaInicial: 'Fecha inicial', repLblFechaFinal: 'Fecha final',
     repTodasLasCiudades: 'Todas las ciudades', repTodasLasOperaciones: 'Todas las operaciones', repTodosLosEstados: 'Todos los estados', repTodasLasPrioridades: 'Todas las prioridades',
     repOpRenta: 'Renta', repOpVenta: 'Venta', repOpAmbos: 'Renta y venta', repPrioAlta: 'Alta', repPrioMedia: 'Media', repPrioBaja: 'Baja',
@@ -896,7 +900,11 @@ const T = {
     /* ===== Admin: Reports ===== */
     repPropTituloModal: 'Report — Property Listing', repPropSubtituloModal: 'Complete inventory of properties and their status.',
     repServTituloModal: 'Report — Service Status', repServSubtituloModal: 'Service requests and their current status.',
-    repCliTituloModal: 'Report — Client Follow-up', repCliSubtituloModal: 'Registered clients and their activity: requests and quotes.',
+    repCliTituloModal: 'Report — Client Follow-up', repCliSubtituloModal: 'Registered clients and the status of their scheduled appointments.',
+    repCliTodosLosClientes: 'All clients', repCliConCitas: 'With appointments', repCliSinCitas: 'Without appointments', repCliConProximaCita: 'With upcoming appointment',
+    repCliProximaCita: 'Upcoming appointment', repCliSinProximaCita: 'No upcoming appointment scheduled', repCliTotalCitas: 'Total appointments',
+    repCliUltimaCita: 'Last appointment', repCliHistorialCitas: 'Appointment history', repCliVerHistorial: 'View history', repCliOcultarHistorial: 'Hide history',
+    repCliSinCitasTexto: 'This client has no scheduled appointments yet.',
     repLblCiudad: 'City', repLblTipoOperacion: 'Operation type', repLblEstado: 'Status', repLblPrioridad: 'Priority', repLblFechaInicial: 'Start date', repLblFechaFinal: 'End date',
     repTodasLasCiudades: 'All cities', repTodasLasOperaciones: 'All operations', repTodosLosEstados: 'All statuses', repTodasLasPrioridades: 'All priorities',
     repOpRenta: 'Rent', repOpVenta: 'Sale', repOpAmbos: 'Rent and sale', repPrioAlta: 'High', repPrioMedia: 'Medium', repPrioBaja: 'Low',
@@ -5224,24 +5232,85 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && repServi
    actividad: cantidad de solicitudes de servicio y de cotizaciones
    generadas, y la fecha de la más reciente. Filtrable por nombre o
    usuario. */
+/* Tarjeta de seguimiento de un cliente: cabecera (foto, nombre, código,
+   estado), la próxima cita agendada destacada arriba (o el aviso de que
+   no tiene), un resumen de cuántas citas tiene en total/realizadas, y un
+   historial completo de citas que se despliega bajo demanda para no
+   saturar la vista por defecto. */
 function repCliBuildFila(c) {
-  const card = el('div', 'proy-card');
-  const head = el('div', 'proy-card-h');
-  const nameWrap = el('div', 'proy-name-wrap');
-  nameWrap.append(el('div', 'proy-name', c.usuario || T[lang].repCliNombreFallback));
-  head.append(nameWrap);
+  const t = T[lang];
+  const card = el('div', 'proy-card cli-card');
+
+  const head = el('div', 'cli-head');
+  const avImg = document.createElement('img');
+  avImg.className = 'avatar'; avImg.alt = c.nombre || '';
+  const avPh = el('div', 'avatar ph');
+  avPh.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg>';
+  avImg.hidden = !c.foto_url; avPh.hidden = !!c.foto_url;
+  if (c.foto_url) avImg.src = c.foto_url;
+  head.append(avImg, avPh);
+  const info = el('div', 'cli-head-info');
+  info.append(el('div', 'cli-head-name', c.nombre || T[lang].repCliNombreFallback));
+  info.append(el('div', 'cli-head-code', c.codigo || '—'));
+  const estadoCls = { activo: 'cli-badge-activo', inactivo: 'cli-badge-inactivo', baja: 'cli-badge-baja' }[c.estado] || 'cli-badge-activo';
+  info.append(el('span', 'cli-head-badge ' + estadoCls, estadoClienteLabel(c.estado || 'activo')));
+  head.append(info);
   card.append(head);
 
-  const grid = el('div', 'proy-grid');
-  const t = T[lang];
-  grid.append(
-    labeledCell(t.repThCodigo, el('span', '', c.codigo_usuario != null ? String(c.codigo_usuario) : '—')),
-    labeledCell(t.repThRegistrado, el('span', '', c.created_at ? formatQBuscarRegFecha(c.created_at) : '—')),
-    labeledCell(t.repThSolicitudesServicio, el('strong', 'com-valor', String(c.totalSolicitudes || 0))),
-    labeledCell(t.repThCotizaciones, el('strong', 'com-valor', String(c.totalCotizaciones || 0))),
-    labeledCell(t.repThUltimaActividad, el('span', '', c.ultimaActividad ? formatQBuscarRegFecha(c.ultimaActividad) : '—'))
+  const citas = (c.citas || []).slice().sort((a, b) => (a.fecha_cita || '').localeCompare(b.fecha_cita || '') || (a.hora_cita || '').localeCompare(b.hora_cita || ''));
+  const hoyIso = ageFechaIso(new Date());
+  const proxima = citas.find((ci) => (ci.fecha_cita || '') >= hoyIso);
+  const ultima = citas.length ? citas[citas.length - 1] : null;
+
+  const secProx = el('div', 'cli-sec rep-cli-proxima');
+  secProx.append(el('div', 'cli-sec-h', t.repCliProximaCita));
+  if (proxima) {
+    const chip = el('div', ageEtiquetaChipClase(proxima.etiqueta) + ' rep-cli-chip-grande');
+    chip.textContent = (proxima.fecha_cita_texto || proxima.fecha_cita || '') + (proxima.hora_cita ? ' · ' + proxima.hora_cita : '');
+    secProx.append(chip);
+    const sub = [proxima.ubicacion, proxima.vendedor_asignado].filter(Boolean).join(' · ');
+    if (sub) secProx.append(el('p', 'hint', sub));
+  } else {
+    secProx.append(el('p', 'hint', t.repCliSinProximaCita));
+  }
+  card.append(secProx);
+
+  const gridResumen = el('div', 'cli-grid');
+  gridResumen.append(
+    labeledCell(t.repCliTotalCitas, el('strong', 'com-valor', String(citas.length))),
+    labeledCell(t.repCliUltimaCita, el('span', '', ultima ? (ultima.fecha_cita_texto || ultima.fecha_cita) : '—')),
+    labeledCell(t.repThRegistrado, el('span', '', c.created_at ? formatQBuscarRegFecha(c.created_at) : '—'))
   );
-  card.append(grid);
+  const secResumen = el('div', 'cli-sec');
+  secResumen.append(gridResumen);
+  card.append(secResumen);
+
+  if (citas.length) {
+    const toggleBtn = el('button', 'btn btn-line-dark btn-sm', t.repCliVerHistorial); toggleBtn.type = 'button';
+    const histWrap = el('div', 'age-dia-list rep-cli-historial'); histWrap.hidden = true;
+    citas.slice().reverse().forEach((ci) => {
+      const item = el('div', 'age-dia-item rep-cli-hist-item');
+      item.append(el('span', 'age-dia-hora', ci.hora_cita || '—'));
+      const itInfo = el('div', 'age-dia-info');
+      itInfo.append(el('div', 'age-dia-nombre', ci.fecha_cita_texto || ci.fecha_cita || '—'));
+      const subPartes = [citEtqLabel(ci.etiqueta), citEstLabel(ci.estado), ci.ubicacion].filter(Boolean);
+      itInfo.append(el('div', 'age-dia-sub', subPartes.join(' · ')));
+      item.append(itInfo);
+      histWrap.appendChild(item);
+    });
+    toggleBtn.addEventListener('click', () => {
+      histWrap.hidden = !histWrap.hidden;
+      toggleBtn.textContent = histWrap.hidden ? t.repCliVerHistorial : t.repCliOcultarHistorial;
+    });
+    const secHist = el('div', 'cli-sec');
+    secHist.append(el('div', 'cli-sec-h', t.repCliHistorialCitas), toggleBtn, histWrap);
+    card.append(secHist);
+  } else {
+    const secHist = el('div', 'cli-sec');
+    secHist.append(el('p', 'hint', t.repCliSinCitasTexto));
+    card.append(secHist);
+  }
+
   return card;
 }
 
@@ -5249,43 +5318,29 @@ async function mostrarRepClientes() {
   const result = $('#repClientesResult');
   if (!result) return;
   const buscarVal = ($('#repCliBuscar')?.value || '').trim().toLowerCase();
+  const estadoCitaVal = $('#repCliEstadoCitaSel')?.value || '';
   result.innerHTML = '<p class="qbr-empty">' + T[lang].cargando + '</p>';
   try {
-    const { data: usuarios, error: errUsuarios } = await supabaseClient
-      .from('usuarios').select('usuario, codigo_usuario, created_at')
-      .eq('tipo_usuario', 'usuario_general')
-      .order('usuario', { ascending: true });
-    if (errUsuarios) throw errUsuarios;
+    const { data: clientesRows, error: errCli } = await supabaseClient
+      .from('clientes').select('*').order('nombre', { ascending: true });
+    if (errCli) throw errCli;
 
-    const { data: solicitudes, error: errSol } = await supabaseClient
-      .from('solicitudes_servicio').select('cliente_codigo, nombre_cliente, created_at');
-    if (errSol) throw errSol;
+    const { data: citasRows, error: errCit } = await supabaseClient
+      .from('citas_propiedades').select('*');
+    if (errCit) throw errCit;
 
-    const { data: cotizaciones, error: errCot } = await supabaseClient
-      .from('cotizaciones').select('nombre_cliente, fecha_creacion');
-    if (errCot) throw errCot;
-
-    let filas = (usuarios || []).map((u) => {
-      const codigo = u.codigo_usuario != null ? String(u.codigo_usuario) : null;
-      const solsCliente = (solicitudes || []).filter((s) => codigo && s.cliente_codigo === codigo);
-      const cotsCliente = (cotizaciones || []).filter((c) => (c.nombre_cliente || '').trim().toLowerCase() === (u.usuario || '').trim().toLowerCase());
-      const fechas = [
-        ...solsCliente.map((s) => s.created_at),
-        ...cotsCliente.map((c) => c.fecha_creacion)
-      ].filter(Boolean).sort().reverse();
-      return {
-        usuario: u.usuario,
-        codigo_usuario: u.codigo_usuario,
-        created_at: u.created_at,
-        totalSolicitudes: solsCliente.length,
-        totalCotizaciones: cotsCliente.length,
-        ultimaActividad: fechas[0] || null
-      };
+    const hoyIso = ageFechaIso(new Date());
+    let filas = (clientesRows || []).map((c) => {
+      const citasCliente = (citasRows || []).filter((ci) => (ci.nombre_cliente || '').trim().toLowerCase() === (c.nombre || '').trim().toLowerCase());
+      return { ...c, citas: citasCliente };
     });
 
     if (buscarVal) {
-      filas = filas.filter((f) => (f.usuario || '').toLowerCase().includes(buscarVal) || (f.codigo_usuario != null && String(f.codigo_usuario).includes(buscarVal)));
+      filas = filas.filter((f) => (f.nombre || '').toLowerCase().includes(buscarVal) || (f.codigo || '').toLowerCase().includes(buscarVal));
     }
+    if (estadoCitaVal === 'con_citas') filas = filas.filter((f) => f.citas.length > 0);
+    else if (estadoCitaVal === 'sin_citas') filas = filas.filter((f) => f.citas.length === 0);
+    else if (estadoCitaVal === 'proxima_cita') filas = filas.filter((f) => f.citas.some((ci) => (ci.fecha_cita || '') >= hoyIso));
 
     result.innerHTML = '';
     if (!filas.length) {
@@ -5302,6 +5357,7 @@ async function mostrarRepClientes() {
 }
 
 $('#repCliMostrarBtn')?.addEventListener('click', () => mostrarRepClientes());
+$('#repCliEstadoCitaSel')?.addEventListener('change', () => mostrarRepClientes());
 
 const repClientesModal = $('#repClientesModal');
 function abrirRepClientesModal() {

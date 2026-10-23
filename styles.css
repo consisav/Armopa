@@ -964,6 +964,14 @@ section[id]{scroll-margin-top:148px}
 .age-det-grid .lbl{display:block;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
 .age-det-grid > div{margin-bottom:12px;font-size:14px;color:var(--ink);overflow-wrap:anywhere}
 
+/* ===== Seguimiento de Clientes (reporte): próxima cita destacada +
+   historial colapsable, reutilizando las pastillas de color de Agenda. */
+.rep-cli-proxima{background:#faf9f6;border-radius:12px;padding:14px 16px}
+.rep-cli-chip-grande{display:inline-block;width:auto;font-size:13px;padding:6px 14px;border-radius:999px;cursor:default}
+.rep-cli-historial{margin-top:10px}
+.rep-cli-hist-item{cursor:default}
+.rep-cli-hist-item:hover{border-color:var(--line);box-shadow:none}
+
 @media (max-width:760px){
   .age-semana-grid{grid-template-columns:repeat(7,minmax(120px,1fr));overflow-x:auto;padding-bottom:6px}
   .age-mes-grid{grid-auto-rows:minmax(72px,auto)}

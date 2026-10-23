@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023j">
+<link rel="stylesheet" href="styles.css?v=20261023k">
 </head>
 <body>
 
@@ -2047,11 +2047,17 @@
 
 <div class="modal" id="repClientesModal" hidden>
   <button class="scrim" type="button" id="repClientesScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="repClientesCard" role="dialog" aria-modal="true" aria-labelledby="repClientesTitle">
+  <div class="pcard pcard-wide" id="repClientesCard" role="dialog" aria-modal="true" aria-labelledby="repClientesTitle">
     <button class="mx" type="button" id="repClientesClose" data-i18n-label="close">×</button>
     <div class="ph"><h2 id="repClientesTitle" data-i18n="repCliTituloModal"></h2><p class="ph-sub" data-i18n="repCliSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:10px">
       <input type="text" id="repCliBuscar" data-i18n-ph="repBuscarClientePh" data-i18n-label="repBtnBuscarCliente">
+      <select id="repCliEstadoCitaSel">
+        <option value="" data-i18n="repCliTodosLosClientes"></option>
+        <option value="con_citas" data-i18n="repCliConCitas"></option>
+        <option value="sin_citas" data-i18n="repCliSinCitas"></option>
+        <option value="proxima_cita" data-i18n="repCliConProximaCita"></option>
+      </select>
       <button class="btn btn-dark btn-sm" type="button" id="repCliMostrarBtn" data-i18n="btnMostrar"></button>
     </div>
     <div id="repClientesResult" class="qbuscar-result"></div>
@@ -2067,6 +2073,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0091"></script>
+<script src="script.js?v=20261023-0092"></script>
 </body>
 </html>
