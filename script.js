@@ -575,7 +575,17 @@ const T = {
     reqPoderTitulo: 'Poder legal notarial', reqPoderDesc: 'Solo si actúa un representante o apoderado en lugar del propietario.',
     reqAvaluoTitulo: 'Avalúo comercial del inmueble', reqAvaluoDesc: 'Recomendado, no obligatorio: ayuda a definir un precio de venta realista.',
     reqNota: 'Esta guía es informativa y puede variar según el municipio, si el inmueble está en régimen de propiedad horizontal o si intervienen bancos. Para tu caso particular, consulta con un notario o con nuestro equipo.',
-    fpErrNombre: 'Por favor escribe el nombre completo del propietario.', fpErrGuardar: 'No pudimos guardar la autorización. Intenta de nuevo.'
+    fpErrNombre: 'Por favor escribe el nombre completo del propietario.', fpErrGuardar: 'No pudimos guardar la autorización. Intenta de nuevo.',
+    citaBtnHtml: '📅 Agendar Cita', citaTitle: 'Agendar Cita', citaSub: 'Completa los datos para agendar una cita. Te confirmaremos los detalles por WhatsApp.',
+    citaNombreCliente: 'Nombre de cliente', citaTelefono: 'Teléfono', citaFecha: 'Fecha de cita', citaCiudad: 'Ciudad', citaCiudadPh: 'Ej. Ciudad de Guatemala',
+    citaUbicacion: 'Nombre de la ubicación', citaUbicacionPh: 'Ej. Apartamento en Edificio Leben, Zona 15',
+    citaAsesor: 'Asesor de', citaSinVendedor: 'Sin vendedor asignado',
+    citaAccion: 'Acción', citaAccionPh: 'Describe el motivo o detalles de la cita…',
+    citaEstado: 'Estado', citaEstAgendado: 'Agendado', citaEstEfectuado: 'Efectuado', citaEstReagendado: 'Reagendado', citaEstNoAsistio: 'No asistió',
+    citaSaveBtnHtml: '💾 Guardar cita', citaWaBtn: 'Enviar por WhatsApp',
+    citaErrNombre: 'Por favor escribe el nombre del cliente.', citaErrGuardar: 'No pudimos guardar la cita. Intenta de nuevo.', citaGuardadaOk: 'Cita guardada correctamente.',
+    citaWaMsgIntro: 'Hola, se agendó una cita con los siguientes datos:', citaWaMsgCliente: 'Cliente: ', citaWaMsgTelefono: 'Teléfono: ', citaWaMsgFecha: 'Fecha de cita: ', citaWaMsgUbicacion: 'Ubicación: ', citaWaMsgCiudad: 'Ciudad: ', citaWaMsgAccion: 'Acción: ', citaWaMsgEstado: 'Estado: ',
+    citaVisitante: 'Visitante'
   },
   en: {
     menu: 'Menu', nInicio: 'Home', nNosotros: 'About', nPropiedades: 'Properties', nServicios: 'Services', nProyectos: 'Projects', nContacto: 'Contact',
@@ -887,7 +897,17 @@ const T = {
     reqPoderTitulo: 'Notarized power of attorney', reqPoderDesc: 'Only if a representative or attorney-in-fact acts on behalf of the owner.',
     reqAvaluoTitulo: 'Commercial property appraisal', reqAvaluoDesc: 'Recommended, not mandatory: helps set a realistic sale price.',
     reqNota: 'This guide is for informational purposes and may vary depending on the municipality, whether the property is under a condominium regime, or whether banks are involved. For your specific case, consult a notary or our team.',
-    fpErrNombre: "Please enter the owner's full name.", fpErrGuardar: 'We could not save the authorization. Please try again.'
+    fpErrNombre: "Please enter the owner's full name.", fpErrGuardar: 'We could not save the authorization. Please try again.',
+    citaBtnHtml: '📅 Schedule Visit', citaTitle: 'Schedule Visit', citaSub: 'Fill in your details to schedule a visit. We will confirm the details with you by WhatsApp.',
+    citaNombreCliente: 'Client name', citaTelefono: 'Phone', citaFecha: 'Visit date', citaCiudad: 'City', citaCiudadPh: 'E.g. Guatemala City',
+    citaUbicacion: 'Location name', citaUbicacionPh: 'E.g. Apartment at Leben Building, Zone 15',
+    citaAsesor: 'Advisor', citaSinVendedor: 'No advisor assigned',
+    citaAccion: 'Notes', citaAccionPh: 'Describe the reason or details for the visit…',
+    citaEstado: 'Status', citaEstAgendado: 'Scheduled', citaEstEfectuado: 'Completed', citaEstReagendado: 'Rescheduled', citaEstNoAsistio: 'Did not attend',
+    citaSaveBtnHtml: '💾 Save visit', citaWaBtn: 'Send by WhatsApp',
+    citaErrNombre: "Please enter the client's name.", citaErrGuardar: 'We could not save the visit. Please try again.', citaGuardadaOk: 'Visit saved successfully.',
+    citaWaMsgIntro: 'Hello, a visit was scheduled with the following details:', citaWaMsgCliente: 'Client: ', citaWaMsgTelefono: 'Phone: ', citaWaMsgFecha: 'Visit date: ', citaWaMsgUbicacion: 'Location: ', citaWaMsgCiudad: 'City: ', citaWaMsgAccion: 'Notes: ', citaWaMsgEstado: 'Status: ',
+    citaVisitante: 'Visitor'
   }
 };
 
@@ -5371,6 +5391,126 @@ REQ_DOC_TYPES.forEach((doc) => {
       if (st) st.textContent = T[lang].errorSubirArchivo;
     }
   });
+});
+
+/* ===== Agendar Cita: formulario público junto al botón de "Buscar
+   propiedades", guarda en citas_propiedades y permite enviar un resumen
+   por WhatsApp al asesor asignado (o al primer vendedor del catálogo si
+   no se asignó ninguno). ===== */
+const citaModal = $('#citaModal');
+let citaGuardadaId = null;
+
+function poblarCitaVendedorSelect() {
+  const sel = $('#cita-vendedor');
+  if (!sel) return;
+  const actual = sel.value;
+  sel.innerHTML = '';
+  const optVacio = document.createElement('option');
+  optVacio.value = ''; optVacio.textContent = T[lang].citaSinVendedor;
+  sel.appendChild(optVacio);
+  vendedoresCatalogo.forEach((v) => {
+    const opt = document.createElement('option');
+    opt.value = v.nombre; opt.textContent = v.nombre;
+    sel.appendChild(opt);
+  });
+  sel.value = actual || '';
+}
+
+function poblarCitaCiudadList() {
+  const list = $('#citaCiudadList');
+  if (!list) return;
+  list.innerHTML = '';
+  Object.keys(cityCovers || {}).sort().forEach((c) => {
+    const opt = document.createElement('option');
+    opt.value = c;
+    list.appendChild(opt);
+  });
+}
+
+const openCitaModal = () => {
+  citaModal.hidden = false;
+  citaGuardadaId = null;
+  $('#cita-nombre').value = '';
+  $('#cita-tel').value = '';
+  $('#cita-fecha').value = '';
+  $('#cita-ciudad').value = '';
+  $('#cita-ubicacion').value = '';
+  $('#cita-accion').value = '';
+  $('#cita-estado').value = 'agendado';
+  $('#citaMsg').textContent = '';
+  $('#citaMsg').style.color = '';
+  $('#citaWaBtn').hidden = true;
+  poblarCitaVendedorSelect();
+  poblarCitaCiudadList();
+  if (!vendedoresCatalogoCargado) cargarVendedoresCatalogo().then(poblarCitaVendedorSelect);
+};
+const closeCitaModal = () => { citaModal.hidden = true; };
+$('#abrirAgendarCitaBtn')?.addEventListener('click', openCitaModal);
+$('#citaClose')?.addEventListener('click', closeCitaModal);
+$('#citaScrim')?.addEventListener('click', closeCitaModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && citaModal && !citaModal.hidden) closeCitaModal(); });
+
+function citaWaNumero(nombreVendedor) {
+  const v = vendedoresCatalogo.find((x) => (x.nombre || '').trim() === (nombreVendedor || '').trim());
+  const tel = (v ? v.telefono : '') || (vendedoresCatalogo[0] ? vendedoresCatalogo[0].telefono : '') || '';
+  return tel.replace(/\D/g, '');
+}
+
+function citaConstruirMensajeWa(row) {
+  const t = T[lang];
+  const partes = [t.citaWaMsgIntro];
+  partes.push(t.citaWaMsgCliente + (row.nombre_cliente || ''));
+  if (row.telefono_cliente) partes.push(t.citaWaMsgTelefono + row.telefono_cliente);
+  if (row.fecha_cita) partes.push(t.citaWaMsgFecha + row.fecha_cita);
+  if (row.ubicacion) partes.push(t.citaWaMsgUbicacion + row.ubicacion);
+  if (row.ciudad) partes.push(t.citaWaMsgCiudad + row.ciudad);
+  if (row.accion) partes.push(t.citaWaMsgAccion + row.accion);
+  partes.push(t.citaWaMsgEstado + (T[lang]['citaEst' + { agendado: 'Agendado', efectuado: 'Efectuado', reagendado: 'Reagendado', no_asistio: 'NoAsistio' }[row.estado]] || row.estado));
+  return partes.join('\n');
+}
+
+$('#citaSaveBtn')?.addEventListener('click', async () => {
+  const msg = $('#citaMsg');
+  const nombre = $('#cita-nombre').value.trim();
+  if (!nombre) {
+    msg.style.color = '#b3261e';
+    msg.textContent = T[lang].citaErrNombre;
+    return;
+  }
+  const usuario = estaConectado() ? localStorage.getItem(LOGIN_STORE) : T[lang].citaVisitante;
+  const vendedor = $('#cita-vendedor').value || null;
+  const row = {
+    nombre_cliente: nombre,
+    telefono_cliente: $('#cita-tel').value.trim() || null,
+    fecha_cita: $('#cita-fecha').value || null,
+    ciudad: $('#cita-ciudad').value.trim() || null,
+    ubicacion: $('#cita-ubicacion').value.trim() || null,
+    vendedor_asignado: vendedor,
+    accion: $('#cita-accion').value.trim() || null,
+    estado: $('#cita-estado').value || 'agendado',
+    usuario,
+    estado_fecha: new Date().toISOString()
+  };
+  msg.style.color = '';
+  msg.textContent = T[lang].cargando;
+  try {
+    const { data, error } = await supabaseClient.from('citas_propiedades').insert(row).select('id').single();
+    if (error) throw error;
+    citaGuardadaId = data.id;
+    msg.style.color = '';
+    msg.textContent = T[lang].citaGuardadaOk;
+    const waBtn = $('#citaWaBtn');
+    const numero = citaWaNumero(vendedor);
+    if (numero) {
+      const texto = citaConstruirMensajeWa(row);
+      waBtn.href = 'https://wa.me/' + (numero.length === 8 ? '502' + numero : numero) + '?text=' + encodeURIComponent(texto);
+      waBtn.hidden = false;
+    }
+  } catch (err) {
+    console.error('Error al guardar cita:', err);
+    msg.style.color = '#b3261e';
+    msg.textContent = T[lang].citaErrGuardar;
+  }
 });
 
 /* Solicitud de Remodelación: datos del cliente + fotografías */

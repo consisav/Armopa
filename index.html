@@ -203,6 +203,7 @@
         <p class="car-hint" data-i18n="carHint"></p>
         <button class="btn btn-dark" type="button" id="abrirBuscarPropBtn" data-i18n-html="catalogHtml"></button>
         <button class="btn btn-dark" type="button" id="abrirBuscarServBtn" data-i18n-html="btnBuscarServHtml"></button>
+        <button class="btn btn-gold" type="button" id="abrirAgendarCitaBtn" data-i18n-html="citaBtnHtml"></button>
       </div>
       <div class="car-row">
         <div class="car car-3d" id="car">
@@ -1358,6 +1359,44 @@
   </div>
 </div>
 
+<div class="modal" id="citaModal" hidden>
+  <button class="scrim" type="button" id="citaScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="citaCard" role="dialog" aria-modal="true" aria-labelledby="citaTitle">
+    <button class="mx" type="button" id="citaClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="citaTitle" data-i18n="citaTitle"></h2><p class="ph-sub" data-i18n="citaSub"></p></div>
+
+    <div class="x-row">
+      <div class="fld"><label for="cita-nombre" data-i18n="citaNombreCliente"></label><input id="cita-nombre" type="text"></div>
+      <div class="fld"><label for="cita-tel" data-i18n="citaTelefono"></label><input id="cita-tel" type="tel" placeholder="+502 0000 0000"></div>
+    </div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="cita-fecha" data-i18n="citaFecha"></label><input id="cita-fecha" type="date"></div>
+      <div class="fld"><label for="cita-ciudad" data-i18n="citaCiudad"></label><input id="cita-ciudad" type="text" list="citaCiudadList" data-i18n-ph="citaCiudadPh"><datalist id="citaCiudadList"></datalist></div>
+    </div>
+    <div class="fld" style="margin-top:16px"><label for="cita-ubicacion" data-i18n="citaUbicacion"></label><input id="cita-ubicacion" type="text" data-i18n-ph="citaUbicacionPh"></div>
+    <div class="fld" style="margin-top:16px">
+      <label for="cita-vendedor" data-i18n="citaAsesor"></label>
+      <select id="cita-vendedor"><option value="" data-i18n="citaSinVendedor"></option></select>
+    </div>
+    <div class="fld" style="margin-top:16px"><label for="cita-accion" data-i18n="citaAccion"></label><textarea id="cita-accion" rows="3" data-i18n-ph="citaAccionPh"></textarea></div>
+    <div class="fld" style="margin-top:16px">
+      <label for="cita-estado" data-i18n="citaEstado"></label>
+      <select id="cita-estado">
+        <option value="agendado" data-i18n="citaEstAgendado"></option>
+        <option value="efectuado" data-i18n="citaEstEfectuado"></option>
+        <option value="reagendado" data-i18n="citaEstReagendado"></option>
+        <option value="no_asistio" data-i18n="citaEstNoAsistio"></option>
+      </select>
+    </div>
+
+    <div class="acts" style="margin-top:20px">
+      <button class="btn btn-dark" type="button" id="citaSaveBtn" data-i18n-html="citaSaveBtnHtml"></button>
+      <a class="btn btn-wa" id="citaWaBtn" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="citaWaBtn"></span></a>
+    </div>
+    <p class="hint" id="citaMsg" style="margin-top:8px"></p>
+  </div>
+</div>
+
 <div class="modal" id="reqModal" hidden>
   <button class="scrim" type="button" id="reqScrim" data-i18n-label="close"></button>
   <div class="pcard" id="reqCard" role="dialog" aria-modal="true" aria-labelledby="reqTitle">
@@ -1913,6 +1952,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0078"></script>
+<script src="script.js?v=20261023-0079"></script>
 </body>
 </html>
