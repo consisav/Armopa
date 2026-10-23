@@ -5507,7 +5507,9 @@ $('#citaScrim')?.addEventListener('click', closeCitaModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && citaModal && !citaModal.hidden) closeCitaModal(); });
 
 /* Botón "Agendar Cita" dentro de Rotación Visual: precarga la ubicación,
-   ciudad y asesor de la propiedad actualmente mostrada. */
+   ciudad y asesor de la propiedad actualmente mostrada. Se cierra primero
+   Rotación Visual (mismo z-index que el modal de cita) para que el
+   formulario quede al frente y sea posible completarlo. */
 $('#rotVisualAgendarCitaBtn')?.addEventListener('click', () => {
   const it = rotVisualItems[rotVisualIdx];
   const r = it && it.row;
@@ -5516,6 +5518,7 @@ $('#rotVisualAgendarCitaBtn')?.addEventListener('click', () => {
     ubicacion: (it && it.nombre) || (r && r.nombre) || '',
     vendedor: (r && r.vendedor_nombre) || ''
   };
+  cerrarRotVisualModal();
   openCitaModal(prefill);
 });
 
