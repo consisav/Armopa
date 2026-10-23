@@ -687,6 +687,15 @@ section[id]{scroll-margin-top:148px}
   .cq-trigger-row-multi{flex-direction:column}
 }
 
+/* Texto "Presione la imagen..." y los dos botones de búsqueda, en una sola
+   línea: primero el texto, luego "Buscar propiedades" y "Buscar servicios". */
+.cq-trigger-row-line{align-items:center}
+.cq-trigger-row-line .car-hint{margin:0;white-space:normal}
+@media (max-width:820px){
+  .cq-trigger-row-line{align-items:stretch}
+  .cq-trigger-row-line .car-hint{text-align:center}
+}
+
 /* Barra de búsqueda "Buscar Propiedades" / "Buscar servicios": horizontal, dentro del modal */
 .cq-bar{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:22px;box-shadow:0 8px 24px rgba(7,26,47,.08)}
 #buscarPropCard .cq-bar,#buscarServCard .cq-bar{background:none;border:0;border-radius:0;padding:0;margin-bottom:0;box-shadow:none}
