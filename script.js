@@ -308,7 +308,7 @@ const T = {
     adminUsersBtn: 'Administrar usuarios', logoutBtn: 'Salir', connectBtn: 'Conectarse',
     adminMenuBtn: 'Administración', adminMenuProp: 'Propiedades', adminMenuProy: 'Proyectos', adminMenuServ: 'Servicios', adminMenuVend: 'Vendedores',
     adminGrpCatalogos: 'Catálogos', adminGrpNegocios: 'Negocios', adminGrpComisiones: 'Comisiones', adminGrpReportes: 'Reportes',
-    adminMenuIngresoCiudades: 'Ingreso de Ciudades', adminMenuIngresoPropiedades: 'Ingreso de Propiedades', adminMenuTiposComision: 'Tipos de comisión', adminMenuRotVisual: 'Rotación Visual',
+    adminMenuIngresoCiudades: 'Ingreso de Ciudades', adminMenuIngresoPropiedades: 'Ingreso de Propiedades', adminMenuClientes: 'Clientes', adminMenuTiposComision: 'Tipos de comisión', adminMenuRotVisual: 'Rotación Visual',
     adminMenuComisionesVentas: 'Comisiones Ventas', adminMenuComisionesGeneradas: 'Comisiones Generadas', adminMenuComisionesPagadas: 'Comisiones Pagadas',
     adminMenuRepProp: 'Listado de Propiedades', adminMenuRepServ: 'Estado de Servicios', adminMenuRepClientes: 'Seguimiento Clientes',
     carHint: 'Presione la imagen para ver las propiedades de la ciudad.', btnBuscarServ: 'Buscar servicios',
@@ -472,6 +472,13 @@ const T = {
     admProyTituloModal: 'Proyectos — Listado general', admProySubtituloModal: 'Seguimiento, vendedor y comisión de cada proyecto registrado.',
     admServTituloModal: 'Servicios — Listado general', admServSubtituloModal: 'Estado, vendedor y comisión de cada solicitud de servicio.',
     admVendTituloModal: 'Vendedores — Listado general', admVendSubtituloModal: 'Código, contacto y fotografía de cada vendedor registrado.',
+    admCliTituloModal: 'Clientes — Listado general', admCliSubtituloModal: 'Código, contacto y datos de cada cliente registrado.',
+    admAgregarCliente: '+ Agregar cliente', admCodigoCliente: 'Código de cliente', admDpi: 'DPI', admDepartamento: 'Departamento', admMunicipio: 'Municipio',
+    admDetalleDireccion: 'Detalle dirección', admEstadoCliente: 'Estado', admEstCliActivo: 'Activo', admEstCliInactivo: 'Inactivo', admEstCliBaja: 'Baja',
+    admClienteSinNombre: 'Cliente sin nombre', admPlaceholderNombreCliente: 'Nombre del cliente', admPlaceholderDpi: 'Número de DPI',
+    admPlaceholderDetalleDireccion: 'Ej. Residenciales Las Flores, lote 12', admEscribeNombreCliente: 'Escribe el nombre del cliente.',
+    admErrorGuardarCliente: 'No se pudo guardar el cliente.', admErrorEliminarCliente: 'No se pudo eliminar el cliente.',
+    admConfirmEliminarCliente: '¿Eliminar este cliente? Esta acción no se puede deshacer.', admNoHayClientes: 'No hay clientes que coincidan con la búsqueda.',
     admTipoComTituloModal: 'Tipos de comisión — Catálogo', admTipoComSubtituloModal: 'Tipos de comisión según el negocio: Propiedades, Proyectos o Servicios.',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -631,7 +638,7 @@ const T = {
     adminUsersBtn: 'Manage users', logoutBtn: 'Log out', connectBtn: 'Log in',
     adminMenuBtn: 'Admin', adminMenuProp: 'Properties', adminMenuProy: 'Projects', adminMenuServ: 'Services', adminMenuVend: 'Vendors',
     adminGrpCatalogos: 'Catalogs', adminGrpNegocios: 'Business', adminGrpComisiones: 'Commissions', adminGrpReportes: 'Reports',
-    adminMenuIngresoCiudades: 'Add Cities', adminMenuIngresoPropiedades: 'Add Properties', adminMenuTiposComision: 'Commission Types', adminMenuRotVisual: 'Visual Rotation',
+    adminMenuIngresoCiudades: 'Add Cities', adminMenuIngresoPropiedades: 'Add Properties', adminMenuClientes: 'Clients', adminMenuTiposComision: 'Commission Types', adminMenuRotVisual: 'Visual Rotation',
     adminMenuComisionesVentas: 'Sales Commissions', adminMenuComisionesGeneradas: 'Generated Commissions', adminMenuComisionesPagadas: 'Paid Commissions',
     adminMenuRepProp: 'Property Listing', adminMenuRepServ: 'Service Status', adminMenuRepClientes: 'Client Follow-up',
     carHint: 'Click the image to see the city’s properties.', btnBuscarServ: 'Browse services',
@@ -795,6 +802,13 @@ const T = {
     admProyTituloModal: 'Projects — General listing', admProySubtituloModal: 'Tracking, seller and commission for each registered project.',
     admServTituloModal: 'Services — General listing', admServSubtituloModal: 'Status, seller and commission for each service request.',
     admVendTituloModal: 'Vendors — General listing', admVendSubtituloModal: 'Code, contact and photo for each registered seller.',
+    admCliTituloModal: 'Clients — General listing', admCliSubtituloModal: 'Code, contact and details for each registered client.',
+    admAgregarCliente: '+ Add client', admCodigoCliente: 'Client code', admDpi: 'National ID (DPI)', admDepartamento: 'Department', admMunicipio: 'Municipality',
+    admDetalleDireccion: 'Address details', admEstadoCliente: 'Status', admEstCliActivo: 'Active', admEstCliInactivo: 'Inactive', admEstCliBaja: 'Discharged',
+    admClienteSinNombre: 'Client with no name', admPlaceholderNombreCliente: 'Client name', admPlaceholderDpi: 'National ID number',
+    admPlaceholderDetalleDireccion: 'E.g. Las Flores Residences, lot 12', admEscribeNombreCliente: 'Enter the client name.',
+    admErrorGuardarCliente: 'Could not save the client.', admErrorEliminarCliente: 'Could not delete the client.',
+    admConfirmEliminarCliente: 'Delete this client? This action cannot be undone.', admNoHayClientes: 'No clients match your search.',
     admTipoComTituloModal: 'Commission Types — Catalog', admTipoComSubtituloModal: 'Commission types by business: Properties, Projects or Services.',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -2337,6 +2351,33 @@ function vendCodigo(v) {
   return v && v.id != null ? ('V-' + String(v.id).padStart(4, '0')) : T[lang].admCodigoSeAsigna;
 }
 
+/* Departamentos y municipios de Guatemala, para el catálogo de Clientes
+   (campos "Departamento" y "Municipio" dependientes). */
+const DEPARTAMENTOS_GT = {
+  'Alta Verapaz': ['Cobán', 'Santa Cruz Verapaz', 'San Cristóbal Verapaz', 'Tactic', 'Tamahú', 'Tucurú', 'Panzós', 'Senahú', 'San Pedro Carchá', 'San Juan Chamelco', 'Lanquín', 'Santa María Cahabón', 'Chisec', 'Chahal', 'Fray Bartolomé de las Casas', 'Santa Catalina La Tinta', 'Raxruhá'],
+  'Baja Verapaz': ['Salamá', 'San Miguel Chicaj', 'Rabinal', 'Cubulco', 'Granados', 'El Chol', 'San Jerónimo', 'Purulhá'],
+  'Chimaltenango': ['Chimaltenango', 'San José Poaquil', 'San Martín Jilotepeque', 'Comalapa', 'Santa Apolonia', 'Tecpán Guatemala', 'Patzún', 'Pochuta', 'Patzicía', 'Santa Cruz Balanyá', 'Acatenango', 'Yepocapa', 'San Andrés Itzapa', 'Parramos', 'Zaragoza', 'El Tejar'],
+  'Chiquimula': ['Chiquimula', 'San José La Arada', 'San Juan Ermita', 'Jocotán', 'Camotán', 'Olopa', 'Esquipulas', 'Concepción Las Minas', 'Quezaltepeque', 'San Jacinto', 'Ipala'],
+  'El Progreso': ['Guastatoya', 'Morazán', 'San Agustín Acasaguastlán', 'San Cristóbal Acasaguastlán', 'El Jícaro', 'Sansare', 'Sanarate', 'San Antonio La Paz'],
+  'Escuintla': ['Escuintla', 'Santa Lucía Cotzumalguapa', 'La Democracia', 'Siquinalá', 'Masagua', 'Tiquisate', 'La Gomera', 'Guanagazapa', 'San José', 'Iztapa', 'Palín', 'San Vicente Pacaya', 'Nueva Concepción'],
+  'Guatemala': ['Guatemala', 'Santa Catarina Pinula', 'San José Pinula', 'San José del Golfo', 'Palencia', 'Chinautla', 'San Pedro Ayampuc', 'Mixco', 'San Pedro Sacatepéquez', 'San Juan Sacatepéquez', 'San Raymundo', 'Chuarrancho', 'Fraijanes', 'Amatitlán', 'Villa Nueva', 'Villa Canales', 'San Miguel Petapa'],
+  'Huehuetenango': ['Huehuetenango', 'Chiantla', 'Malacatancito', 'Cuilco', 'Nentón', 'San Pedro Necta', 'Jacaltenango', 'Soloma', 'Ixtahuacán', 'Santa Bárbara', 'La Libertad', 'La Democracia', 'San Miguel Acatán', 'San Rafael La Independencia', 'Todos Santos Cuchumatán', 'San Juan Atitán', 'Santa Eulalia', 'San Mateo Ixtatán', 'Colotenango', 'San Sebastián Huehuetenango', 'Tectitán', 'Concepción Huista', 'San Juan Ixcoy', 'San Antonio Huista', 'San Sebastián Coatán', 'Barillas', 'Aguacatán', 'San Rafael Petzal', 'San Gaspar Ixchil', 'Santiago Chimaltenango', 'Santa Ana Huista', 'Unión Cantinil'],
+  'Izabal': ['Puerto Barrios', 'Livingston', 'El Estor', 'Morales', 'Los Amates'],
+  'Jalapa': ['Jalapa', 'San Pedro Pinula', 'San Luis Jilotepeque', 'San Manuel Chaparrón', 'San Carlos Alzatate', 'Monjas', 'Mataquescuintla'],
+  'Jutiapa': ['Jutiapa', 'El Progreso', 'Santa Catarina Mita', 'Agua Blanca', 'Asunción Mita', 'Yupiltepeque', 'Atescatempa', 'Jerez', 'El Adelanto', 'Zapotitlán', 'Comapa', 'Jalpatagua', 'Conguaco', 'Moyuta', 'Pasaco', 'San José Acatempa', 'Quesada'],
+  'Petén': ['Flores', 'San José', 'San Benito', 'San Andrés', 'La Libertad', 'San Francisco', 'Santa Ana', 'Dolores', 'San Luis', 'Sayaxché', 'Melchor de Mencos', 'Poptún'],
+  'Quetzaltenango': ['Quetzaltenango', 'Salcajá', 'Olintepeque', 'San Carlos Sija', 'Sibilia', 'Cabricán', 'Cajolá', 'San Miguel Sigüilá', 'Ostuncalco', 'San Mateo', 'Concepción Chiquirichapa', 'San Martín Sacatepéquez', 'Almolonga', 'Cantel', 'Huitán', 'Zunil', 'Colomba', 'San Francisco La Unión', 'El Palmar', 'Coatepeque', 'Génova', 'Flores Costa Cuca', 'La Esperanza', 'Palestina de Los Altos'],
+  'Quiché': ['Santa Cruz del Quiché', 'Chiché', 'Chinique', 'Zacualpa', 'Chajul', 'Chichicastenango', 'Patzité', 'San Antonio Ilotenango', 'San Pedro Jocopilas', 'Cunén', 'San Juan Cotzal', 'Joyabaj', 'Nebaj', 'San Andrés Sajcabajá', 'Uspantán', 'Sacapulas', 'San Bartolomé Jocotenango', 'Canillá', 'Chicamán', 'Ixcán', 'Pachalum'],
+  'Retalhuleu': ['Retalhuleu', 'San Sebastián', 'Santa Cruz Muluá', 'San Martín Zapotitlán', 'San Felipe', 'San Andrés Villa Seca', 'Champerico', 'Nuevo San Carlos', 'El Asintal'],
+  'Sacatepéquez': ['Antigua Guatemala', 'Jocotenango', 'Pastores', 'Sumpango', 'Santo Domingo Xenacoj', 'Santiago Sacatepéquez', 'San Bartolomé Milpas Altas', 'San Lucas Sacatepéquez', 'Santa Lucía Milpas Altas', 'Magdalena Milpas Altas', 'Santa María de Jesús', 'Ciudad Vieja', 'San Miguel Dueñas', 'Alotenango', 'San Antonio Aguas Calientes', 'Santa Catarina Barahona'],
+  'San Marcos': ['San Marcos', 'San Pedro Sacatepéquez', 'San Antonio Sacatepéquez', 'Comitancillo', 'San Miguel Ixtahuacán', 'Concepción Tutuapa', 'Tacaná', 'Sibinal', 'Tajumulco', 'Tejutla', 'San Rafael Pie de la Cuesta', 'Nuevo Progreso', 'El Tumbador', 'San José El Rodeo', 'Malacatán', 'Catarina', 'Ayutla', 'Ocós', 'San Pablo', 'El Quetzal', 'La Reforma', 'Pajapita', 'Ixchiguán', 'San José Ojetenam', 'San Cristóbal Cucho', 'Sipacapa', 'Esquipulas Palo Gordo', 'Río Blanco', 'San Lorenzo', 'La Blanca'],
+  'Santa Rosa': ['Cuilapa', 'Barberena', 'Santa Rosa de Lima', 'Casillas', 'San Rafael Las Flores', 'Oratorio', 'San Juan Tecuaco', 'Chiquimulilla', 'Taxisco', 'Santa María Ixhuatán', 'Guazacapán', 'Santa Cruz Naranjo', 'Pueblo Nuevo Viñas', 'Nueva Santa Rosa'],
+  'Sololá': ['Sololá', 'San José Chacayá', 'Santa María Visitación', 'Santa Lucía Utatlán', 'Nahualá', 'Santa Catarina Ixtahuacán', 'Santa Clara La Laguna', 'Concepción', 'San Andrés Semetabaj', 'Panajachel', 'Santa Catarina Palopó', 'San Antonio Palopó', 'San Lucas Tolimán', 'Santa Cruz La Laguna', 'San Pablo La Laguna', 'San Marcos La Laguna', 'San Juan La Laguna', 'San Pedro La Laguna', 'Santiago Atitlán'],
+  'Suchitepéquez': ['Mazatenango', 'Cuyotenango', 'San Francisco Zapotitlán', 'San Bernardino', 'San José El Ídolo', 'Santo Domingo Suchitepéquez', 'San Lorenzo', 'Samayac', 'San Pablo Jocopilas', 'San Antonio Suchitepéquez', 'San Miguel Panán', 'San Gabriel', 'Chicacao', 'Patulul', 'Santa Bárbara', 'San Juan Bautista', 'Santo Tomás La Unión', 'Zunilito', 'Pueblo Nuevo', 'Río Bravo'],
+  'Totonicapán': ['Totonicapán', 'San Cristóbal Totonicapán', 'San Francisco El Alto', 'San Andrés Xecul', 'Momostenango', 'Santa María Chiquimula', 'Santa Lucía La Reforma', 'San Bartolo'],
+  'Zacapa': ['Zacapa', 'Estanzuela', 'Río Hondo', 'Gualán', 'Teculután', 'Usumatlán', 'Cabañas', 'San Diego', 'La Unión', 'Huité']
+};
+
 /* Lista de bancos de Guatemala, igual a la usada en "Datos para
    precalificar un préstamo" (#pq-banco / #pqj-banco), para que el banco
    de pago del vendedor se elija de la misma lista estándar. */
@@ -2627,6 +2668,338 @@ function vendRenderEdit(card, v, isNew) {
     }
   });
 }
+
+/* ===== Clientes (catálogo) =====
+   Mismo patrón de tarjetas que Vendedores: código autogenerado
+   (AÑO-correlativo, reiniciando el correlativo cada año), foto opcional,
+   Departamento/Municipio dependientes de DEPARTAMENTOS_GT, y Estado
+   (Activo/Inactivo/Baja) con "Activo" por defecto. */
+function getEstadosCliente() {
+  const t = T[lang] || T.es;
+  return [
+    { v: 'activo', l: t.admEstCliActivo },
+    { v: 'inactivo', l: t.admEstCliInactivo },
+    { v: 'baja', l: t.admEstCliBaja }
+  ];
+}
+Object.defineProperty(window, 'ESTADOS_CLIENTE', { get: getEstadosCliente });
+const estadoClienteLabel = (v) => (getEstadosCliente().find((e) => e.v === v) || {}).l || '—';
+
+let adminCliData = [];
+
+function cliCodigo(c) {
+  return c && c.codigo ? c.codigo : T[lang].admCodigoSeAsigna;
+}
+
+/* Calcula el próximo correlativo para el año actual, consultando el mayor
+   correlativo ya usado ese año (el correlativo se reinicia cada año). */
+async function cliSiguienteCorrelativo(anio) {
+  const { data, error } = await supabaseClient.from('clientes').select('correlativo').eq('anio', anio).order('correlativo', { ascending: false }).limit(1);
+  if (error) throw error;
+  const max = data && data.length ? data[0].correlativo : 0;
+  return max + 1;
+}
+
+function cliAvatarEl(c) {
+  const wrap = el('div', 'srow');
+  const img = document.createElement('img');
+  img.className = 'avatar'; img.alt = c.nombre || '';
+  const ph = el('div', 'avatar ph');
+  ph.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg>';
+  img.hidden = !c.foto_url;
+  ph.hidden = !!c.foto_url;
+  if (c.foto_url) img.src = c.foto_url;
+  wrap.append(img, ph);
+  return wrap;
+}
+
+function cliCardHead(c) {
+  const head = el('div', 'proy-card-h');
+  const nameWrap = el('div', 'proy-name-wrap');
+  const nameEl = el('div', 'proy-name', c.nombre || T[lang].admClienteSinNombre);
+  nameWrap.append(nameEl, el('div', 'proy-city', cliCodigo(c)));
+  head.append(nameWrap);
+  return head;
+}
+
+function cliRenderView(card, c) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.remove('proy-card-edit');
+  const actions = el('div', 'proy-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+
+  card.append(cliCardHead(c));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admFoto, cliAvatarEl(c)),
+    labeledCell(t.admCodigoCliente, el('strong', '', cliCodigo(c))),
+    labeledCell(t.admNombre, el('span', '', c.nombre || '—')),
+    labeledCell(t.admTelefono, el('span', '', c.telefono || '—')),
+    labeledCell(t.admDpi, el('span', '', c.dpi || '—')),
+    labeledCell(t.admDepartamento, el('span', '', c.departamento || '—')),
+    labeledCell(t.admMunicipio, el('span', '', c.municipio || '—')),
+    labeledCell(t.admDetalleDireccion, el('span', '', c.direccion || '—')),
+    labeledCell(t.admEstadoCliente, el('span', '', estadoClienteLabel(c.estado))),
+    labeledCell(t.admUsuario, el('span', '', c.usuario || '—')),
+    labeledCell(t.admFechaGrabacion, el('span', '', c.created_at ? formatQBuscarRegFecha(c.created_at) : '—'))
+  );
+  card.append(grid, actions);
+
+  modBtn.addEventListener('click', () => cliRenderEdit(card, c, false));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm(t.admConfirmEliminarCliente)) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('clientes').delete().eq('id', c.id);
+      if (error) throw error;
+      adminCliData = adminCliData.filter((x) => x.id !== c.id);
+      card.remove();
+      if (!$('#adminClientesList').children.length) pintarAdminClientesList();
+    } catch (e) {
+      console.error('Error eliminando el cliente:', e);
+      alert(t.admErrorEliminarCliente);
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function cliRenderEdit(card, c, isNew) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.add('proy-card-edit');
+
+  let fotoUrl = c.foto_url || '';
+  const avImg = document.createElement('img');
+  avImg.className = 'avatar'; avImg.alt = '';
+  const avPh = el('div', 'avatar ph');
+  avPh.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg>';
+  const fileInput = document.createElement('input');
+  fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.className = 'sr';
+  fileInput.id = 'cliFoto-' + (c.id || 'nuevo') + '-' + Date.now();
+  const fileLabel = document.createElement('label');
+  fileLabel.className = 'btn btn-gold btn-sm'; fileLabel.htmlFor = fileInput.id; fileLabel.textContent = t.admSubirFoto;
+  const rmBtn = el('button', 'btn btn-danger btn-sm', t.admQuitarFoto); rmBtn.type = 'button';
+  const actsPhoto = el('div', 'acts');
+  actsPhoto.append(fileInput, fileLabel, rmBtn);
+  const avWrap = el('div', 'srow');
+  avWrap.append(avImg, avPh, actsPhoto);
+
+  function refreshAvatar() {
+    avImg.hidden = !fotoUrl;
+    avPh.hidden = !!fotoUrl;
+    rmBtn.hidden = !fotoUrl;
+    if (fotoUrl) avImg.src = fotoUrl;
+  }
+  refreshAvatar();
+
+  fileInput.addEventListener('change', async () => {
+    const f = fileInput.files && fileInput.files[0];
+    if (!f) return;
+    const prevLabel = fileLabel.textContent;
+    fileLabel.textContent = t.admSubiendoFoto;
+    try {
+      fotoUrl = await uploadPropFile(f, 600);
+      refreshAvatar();
+    } catch (e) {
+      console.error('Error subiendo la foto del cliente:', e);
+      alert(t.admErrorSubirFoto);
+    } finally {
+      fileLabel.textContent = prevLabel;
+      fileInput.value = '';
+    }
+  });
+  rmBtn.addEventListener('click', () => { fotoUrl = ''; refreshAvatar(); });
+
+  const nombreInput = document.createElement('input');
+  nombreInput.type = 'text'; nombreInput.value = c.nombre || ''; nombreInput.placeholder = t.admPlaceholderNombreCliente;
+
+  const telInput = document.createElement('input');
+  telInput.type = 'tel'; telInput.value = c.telefono || ''; telInput.placeholder = '+502 0000 0000';
+
+  const dpiInput = document.createElement('input');
+  dpiInput.type = 'text'; dpiInput.maxLength = 15; dpiInput.value = c.dpi || ''; dpiInput.placeholder = t.admPlaceholderDpi;
+
+  const depSel = document.createElement('select');
+  const depOptVacio = document.createElement('option');
+  depOptVacio.value = ''; depOptVacio.textContent = t.adminSelecciona;
+  depSel.appendChild(depOptVacio);
+  Object.keys(DEPARTAMENTOS_GT).sort().forEach((dep) => {
+    const opt = document.createElement('option');
+    opt.value = dep; opt.textContent = dep;
+    depSel.appendChild(opt);
+  });
+
+  const munSel = document.createElement('select');
+  function poblarMunicipios(depSeleccionado, munActual) {
+    munSel.innerHTML = '';
+    const optVacio = document.createElement('option');
+    optVacio.value = ''; optVacio.textContent = t.adminSelecciona;
+    munSel.appendChild(optVacio);
+    (DEPARTAMENTOS_GT[depSeleccionado] || []).forEach((mun) => {
+      const opt = document.createElement('option');
+      opt.value = mun; opt.textContent = mun;
+      munSel.appendChild(opt);
+    });
+    munSel.value = munActual && (DEPARTAMENTOS_GT[depSeleccionado] || []).includes(munActual) ? munActual : '';
+  }
+  depSel.value = c.departamento || '';
+  poblarMunicipios(c.departamento || '', c.municipio || '');
+  depSel.addEventListener('change', () => poblarMunicipios(depSel.value, ''));
+
+  const dirInput = document.createElement('input');
+  dirInput.type = 'text'; dirInput.value = c.direccion || ''; dirInput.placeholder = t.admPlaceholderDetalleDireccion;
+
+  const estadoSel = document.createElement('select');
+  ESTADOS_CLIENTE.forEach((es) => {
+    const opt = document.createElement('option');
+    opt.value = es.v; opt.textContent = es.l;
+    estadoSel.appendChild(opt);
+  });
+  estadoSel.value = c.estado || 'activo';
+
+  const hoyDate = new Date();
+  const hoyDisplay = hoyDate.toLocaleDateString('es-GT', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+
+  card.append(cliCardHead(c));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admFoto, avWrap),
+    labeledCell(t.admCodigoCliente, el('strong', '', isNew ? t.admCodigoSeAsignaAutomatico : cliCodigo(c))),
+    labeledCell(t.admNombre, nombreInput),
+    labeledCell(t.admTelefono, telInput),
+    labeledCell(t.admDpi, dpiInput),
+    labeledCell(t.admDepartamento, depSel),
+    labeledCell(t.admMunicipio, munSel),
+    labeledCell(t.admDetalleDireccion, dirInput),
+    labeledCell(t.admEstadoCliente, estadoSel),
+    labeledCell(t.admUsuario, el('span', '', t.admSeGrabaAutomaticamente + (localStorage.getItem(LOGIN_STORE) || t.admUsuarioActualFallback) + ')')),
+    labeledCell(t.admFechaGrabacion, el('span', '', isNew ? t.admSeAsignaAutomaticoFecha + hoyDisplay + ')' : (c.created_at ? formatQBuscarRegFecha(c.created_at) : '—')))
+  );
+  card.append(grid, actions);
+
+  cancelBtn.addEventListener('click', () => {
+    if (isNew) {
+      card.remove();
+      if (!$('#adminClientesList').children.length) pintarAdminClientesList();
+    } else {
+      cliRenderView(card, c);
+    }
+  });
+  saveBtn.addEventListener('click', async () => {
+    const nombre = nombreInput.value.trim();
+    if (!nombre) { alert(t.admEscribeNombreCliente); return; }
+    saveBtn.disabled = true;
+    const payload = {
+      nombre,
+      telefono: telInput.value.trim() || null,
+      dpi: dpiInput.value.trim() || null,
+      departamento: depSel.value || null,
+      municipio: munSel.value || null,
+      direccion: dirInput.value.trim() || null,
+      estado: estadoSel.value || 'activo',
+      foto_url: fotoUrl || null,
+      usuario: localStorage.getItem(LOGIN_STORE) || null
+    };
+    try {
+      if (isNew) {
+        const anio = new Date().getFullYear();
+        const correlativo = await cliSiguienteCorrelativo(anio);
+        const nuevo = await crearCliente({ ...payload, anio, correlativo });
+        adminCliData.unshift(nuevo);
+        cliRenderView(card, nuevo);
+      } else {
+        await guardarClienteDesdeListado(c, payload);
+        cliRenderView(card, c);
+      }
+    } catch (e) {
+      console.error('Error guardando el cliente:', e);
+      alert(t.admErrorGuardarCliente);
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+async function crearCliente(payload) {
+  const { data: row, error } = await supabaseClient.from('clientes').insert(payload).select().single();
+  if (error) throw error;
+  return row;
+}
+
+async function guardarClienteDesdeListado(c, payload) {
+  const { error } = await supabaseClient.from('clientes').update(payload).eq('id', c.id);
+  if (error) throw error;
+  Object.assign(c, payload);
+}
+
+function pintarAdminClientesList() {
+  const list = $('#adminClientesList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!adminCliData.length) { list.innerHTML = '<p class="proy-empty">' + T[lang].admNoHayClientes + '</p>'; return; }
+  adminCliData.forEach((c) => {
+    const card = el('div', 'proy-card');
+    cliRenderView(card, c);
+    list.appendChild(card);
+  });
+}
+
+async function cargarAdminCliData(filtroNombre) {
+  const list = $('#adminClientesList');
+  if (list) list.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
+  try {
+    let query = supabaseClient.from('clientes').select('*').order('id', { ascending: false });
+    if (filtroNombre) query = query.ilike('nombre', '%' + filtroNombre + '%');
+    const { data: rows, error } = await query;
+    if (error) throw error;
+    adminCliData = rows || [];
+  } catch (e) {
+    console.error('Error cargando los clientes:', e);
+    adminCliData = [];
+  }
+  pintarAdminClientesList();
+}
+
+$('#adminCliMostrarBtn')?.addEventListener('click', () => {
+  cargarAdminCliData(($('#adminCliBuscarInput')?.value || '').trim());
+});
+$('#adminCliBuscarInput')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); $('#adminCliMostrarBtn')?.click(); }
+});
+$('#adminCliNuevoBtn')?.addEventListener('click', () => {
+  const list = $('#adminClientesList');
+  if (!list) return;
+  if (list.querySelector('.proy-card-edit')) return;
+  const emptyMsg = list.querySelector('.proy-empty');
+  if (emptyMsg) emptyMsg.remove();
+  const card = el('div', 'proy-card');
+  list.prepend(card);
+  cliRenderEdit(card, {}, true);
+});
+
+const adminClientesModal = $('#adminClientesModal');
+function abrirAdminClientesModal() {
+  if (!adminClientesModal) return;
+  if ($('#adminCliBuscarInput')) $('#adminCliBuscarInput').value = '';
+  adminClientesModal.hidden = false;
+  cargarAdminCliData();
+}
+function cerrarAdminClientesModal() { if (adminClientesModal) adminClientesModal.hidden = true; }
+$('#navAdminClientesBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminClientesModal();
+});
+$('#adminClientesClose')?.addEventListener('click', cerrarAdminClientesModal);
+$('#adminClientesScrim')?.addEventListener('click', cerrarAdminClientesModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminClientesModal && !adminClientesModal.hidden) cerrarAdminClientesModal(); });
 
 /* ===== Tipos de comisión (catálogo) =====
    Catálogo simple de tipos de comisión agrupados por negocio (Propiedades,

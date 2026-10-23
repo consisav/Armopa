@@ -44,6 +44,7 @@
               <div class="nav-admin-group-items" hidden>
                 <button type="button" id="navAdminIngresoCiudadesBtn" data-i18n="adminMenuIngresoCiudades"></button>
                 <button type="button" id="navAdminIngresoPropiedadesBtn" data-i18n="adminMenuIngresoPropiedades"></button>
+                <button type="button" id="navAdminClientesBtn" data-i18n="adminMenuClientes"></button>
                 <div class="nav-admin-sep" role="separator"></div>
                 <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
                 <button type="button" id="navAdminTiposComisionBtn" data-i18n="adminMenuTiposComision"></button>
@@ -1843,6 +1844,20 @@
   </div>
 </div>
 
+<div class="modal" id="adminClientesModal" hidden>
+  <button class="scrim" type="button" id="adminClientesScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="adminClientesCard" role="dialog" aria-modal="true" aria-labelledby="adminClientesTitle">
+    <button class="mx" type="button" id="adminClientesClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminClientesTitle" data-i18n="admCliTituloModal"></h2><p class="ph-sub" data-i18n="admCliSubtituloModal"></p></div>
+    <div class="q-buscar-fields" style="margin-bottom:18px">
+      <input type="text" id="adminCliBuscarInput" class="cq-input" data-i18n-ph="admBuscarPorNombrePh">
+      <button class="btn btn-dark btn-sm" type="button" id="adminCliMostrarBtn" data-i18n="btnMostrar"></button>
+      <button class="btn btn-gold btn-sm" type="button" id="adminCliNuevoBtn" data-i18n="admAgregarCliente"></button>
+    </div>
+    <div id="adminClientesList" class="proy-list"></div>
+  </div>
+</div>
+
 <div class="modal" id="adminTiposComisionModal" hidden>
   <button class="scrim" type="button" id="adminTiposComisionScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminTiposComisionCard" role="dialog" aria-modal="true" aria-labelledby="adminTiposComisionTitle">
@@ -1969,6 +1984,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0084"></script>
+<script src="script.js?v=20261023-0085"></script>
 </body>
 </html>
