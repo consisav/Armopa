@@ -7752,13 +7752,6 @@ function renderEdit() {
   $('#fSale').hidden = !(op === 'venta' || op === 'ambos');
   $('#p-rent').value = c.pRent || '';
   $('#p-sale').value = c.pSale || '';
-  poblarPSnameSelect(c.sName || '');
-  $('#p-swa').value = c.sWa || '';
-  const puedeEditarVendedorLoc = esSuperAdmin();
-  $('#p-sname').disabled = !puedeEditarVendedorLoc;
-  $('#p-swa').disabled = !puedeEditarVendedorLoc;
-  const sellerSuperAdminHint = $('#sellerSuperAdminHint');
-  if (sellerSuperAdminHint) sellerSuperAdminHint.hidden = puedeEditarVendedorLoc;
   if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
   const locAdminBlock = $('#pLocAdminBlock');
   if (locAdminBlock) {
@@ -7771,8 +7764,13 @@ function renderEdit() {
       badge.textContent = info.l;
       badge.style.background = info.bg;
       badge.style.color = info.fg;
-      fillDatalist($('#pVendedorList'), vendedoresConocidos());
-      $('#p-vendedor-asignado').value = c.vendedorAsignado || '';
+      poblarPSnameSelect(c.sName || c.vendedorAsignado || '');
+      $('#p-swa').value = c.sWa || '';
+      const puedeEditarVendedorLoc = esSuperAdmin();
+      $('#p-sname').disabled = !puedeEditarVendedorLoc;
+      $('#p-swa').disabled = !puedeEditarVendedorLoc;
+      const sellerSuperAdminHint = $('#sellerSuperAdminHint');
+      if (sellerSuperAdminHint) sellerSuperAdminHint.hidden = puedeEditarVendedorLoc;
       if (!clientesCatalogoCargado) { clientesCatalogoCargado = true; cargarClientesCatalogo(); }
       poblarPClienteSelect(c.clienteAsignado || '');
       $('#p-comision').value = c.comisionPorcentaje || '';
@@ -8466,6 +8464,7 @@ $('#p-desc').addEventListener('input', () => {
 $('#p-sname').addEventListener('change', () => {
   const c = list()[sel]; if (!c || !esSuperAdmin()) return;
   c.sName = $('#p-sname').value;
+  c.vendedorAsignado = c.sName;
   const nombre = c.sName.trim();
   const match = nombre ? vendedoresCatalogo.find((v) => (v.nombre || '').trim() === nombre) : null;
   if (match) {
@@ -8487,11 +8486,6 @@ $('#p-estado')?.addEventListener('change', () => {
   c.estadoUsuario = localStorage.getItem(LOGIN_STORE) || '';
   note(persist() ? '' : T[lang].storeErr);
   renderEdit();
-});
-$('#p-vendedor-asignado')?.addEventListener('input', () => {
-  const c = list()[sel]; if (!c) return;
-  c.vendedorAsignado = $('#p-vendedor-asignado').value;
-  note(persist() ? '' : T[lang].storeErr);
 });
 $('#p-cliente-asignado')?.addEventListener('change', () => {
   const c = list()[sel]; if (!c) return;

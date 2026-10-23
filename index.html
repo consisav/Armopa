@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023l">
+<link rel="stylesheet" href="styles.css?v=20261023m">
 </head>
 <body>
 
@@ -1148,13 +1148,24 @@
                     </select>
                   </div>
                   <div class="fld">
-                    <label for="p-vendedor-asignado" data-i18n="admVendedorAsignado"></label>
-                    <input id="p-vendedor-asignado" class="fld-list" type="text" list="pVendedorList" data-i18n-ph="admPlaceholderVendedorAsignado">
-                    <datalist id="pVendedorList"></datalist>
+                    <label for="p-sname" data-i18n="sellerName"></label>
+                    <select id="p-sname"></select>
                   </div>
                   <div class="fld">
                     <label for="p-cliente-asignado" data-i18n="admClienteAsignado"></label>
                     <select id="p-cliente-asignado"></select>
+                  </div>
+                </div>
+                <div class="loc-admin-vend-row">
+                  <div class="loc-admin-vend-photo">
+                    <button class="av-btn" type="button" id="sAvBtn" data-i18n-label="zoom" hidden><img class="avatar" id="sAvatar" alt=""></button>
+                    <div class="avatar ph" id="sAvatarPh"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg></div>
+                  </div>
+                  <div class="loc-admin-vend-fields">
+                    <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"></div>
+                    <p class="hint" id="sellerFotoHint" data-i18n="sellerFotoHint"></p>
+                    <p class="hint" data-i18n="waHint"></p>
+                    <p class="hint" id="sellerSuperAdminHint" data-i18n="sellerSuperAdminHint" hidden></p>
                   </div>
                 </div>
               </div>
@@ -1194,18 +1205,6 @@
               <div class="acts" id="pMkUseRow"><button class="btn btn-gold btn-sm" type="button" id="pMkUse" data-i18n="mkUse"></button></div>
               <p class="hint" id="pMkNotes"></p>
             </div>
-            <div class="seller" style="margin-top:20px">
-              <h3 data-i18n="sellerH"></h3>
-              <div class="srow">
-                <button class="av-btn" type="button" id="sAvBtn" data-i18n-label="zoom" hidden><img class="avatar" id="sAvatar" alt=""></button>
-                <div class="avatar ph" id="sAvatarPh"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg></div>
-              </div>
-              <p class="hint" id="sellerFotoHint" data-i18n="sellerFotoHint"></p>
-              <div class="fld"><label for="p-sname" data-i18n="sellerName"></label><select id="p-sname"></select></div>
-              <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"><p class="hint" data-i18n="waHint"></p></div>
-              <p class="hint" id="sellerSuperAdminHint" data-i18n="sellerSuperAdminHint" hidden></p>
-            </div>
-
             <div class="acts" style="margin-top:20px">
               <button class="btn btn-dark" type="button" id="pSaveTop" data-i18n-html="qSaveBtnHtml"></button>
               <button class="btn btn-line-dark" type="button" id="pUpdateTop" data-i18n-html="btnActualizarHtml"></button>
@@ -2082,6 +2081,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0094"></script>
+<script src="script.js?v=20261023-0095"></script>
 </body>
 </html>
