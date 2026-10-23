@@ -1656,7 +1656,7 @@ function rotVisualMostrarFotos(item) {
   rotVisualStart();
 }
 
-async function abrirRotVisualModal() {
+async function abrirRotVisualModal(ciudadInicial) {
   const modal = $('#rotVisualModal');
   const track = $('#rotVisualTrack');
   const empty = $('#rotVisualEmpty');
@@ -1671,6 +1671,7 @@ async function abrirRotVisualModal() {
     const { data: rows, error } = await supabaseClient.from('propiedades').select('nombre,fotos,ciudad,tipo_propiedad,tipo_operacion,valor_renta,valor_venta').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
     if (error) throw error;
     rotVisualAllRows = rows || [];
+    if (ciudadInicial && rotVisualAllRows.some((r) => r.ciudad === ciudadInicial)) rotVisualCiudadSel = ciudadInicial;
     rotVisualAplicarFiltro();
   } catch (e) {
     console.error('Error cargando la rotación visual de propiedades:', e);
@@ -3840,7 +3841,7 @@ function buildCityCards() {
     img.src = cityCovers[name] || 'assets/propiedad-1.jpg';
     img.alt = name;
     btn.appendChild(img);
-    btn.addEventListener('click', () => openCity(name));
+    btn.addEventListener('click', () => abrirRotVisualModal(name));
     const pn = el('div', 'pn');
     pn.append(el('span', '', name));
     article.append(btn, pn);
