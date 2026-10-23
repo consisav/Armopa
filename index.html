@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023h">
+<link rel="stylesheet" href="styles.css?v=20261023i">
 </head>
 <body>
 
@@ -45,6 +45,7 @@
                 <button type="button" id="navAdminIngresoCiudadesBtn" data-i18n="adminMenuIngresoCiudades"></button>
                 <button type="button" id="navAdminIngresoPropiedadesBtn" data-i18n="adminMenuIngresoPropiedades"></button>
                 <button type="button" id="navAdminClientesBtn" data-i18n="adminMenuClientes"></button>
+                <button type="button" id="navAdminAgendaCitasBtn" data-i18n="adminMenuAgendaCitas"></button>
                 <div class="nav-admin-sep" role="separator"></div>
                 <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
                 <button type="button" id="navAdminTiposComisionBtn" data-i18n="adminMenuTiposComision"></button>
@@ -1858,6 +1859,48 @@
   </div>
 </div>
 
+<div class="modal" id="adminAgendaModal" hidden>
+  <button class="scrim" type="button" id="adminAgendaScrim" data-i18n-label="close"></button>
+  <div class="pcard pcard-wide" id="adminAgendaCard" role="dialog" aria-modal="true" aria-labelledby="adminAgendaTitle">
+    <button class="mx" type="button" id="adminAgendaClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminAgendaTitle" data-i18n="admAgeTituloModal"></h2><p class="ph-sub" data-i18n="admAgeSubtituloModal"></p></div>
+    <div class="age-toolbar">
+      <div class="age-view-tabs" role="tablist">
+        <button type="button" class="age-view-tab" id="ageViewDiaBtn" data-view="dia" data-i18n="admAgeVistaDia"></button>
+        <button type="button" class="age-view-tab" id="ageViewSemanaBtn" data-view="semana" data-i18n="admAgeVistaSemana"></button>
+        <button type="button" class="age-view-tab" id="ageViewMesBtn" data-view="mes" data-i18n="admAgeVistaMes"></button>
+      </div>
+      <div class="age-nav">
+        <button type="button" class="btn btn-line-dark btn-sm" id="agePrevBtn" aria-label="Anterior">‹</button>
+        <button type="button" class="btn btn-line-dark btn-sm" id="ageHoyBtn" data-i18n="admAgeHoy"></button>
+        <button type="button" class="btn btn-line-dark btn-sm" id="ageNextBtn" aria-label="Siguiente">›</button>
+        <span class="age-periodo-label" id="agePeriodoLabel"></span>
+      </div>
+    </div>
+    <div id="ageBody" class="age-body"></div>
+  </div>
+</div>
+
+<div class="modal" id="ageDetalleModal" hidden>
+  <button class="scrim" type="button" id="ageDetalleScrim" data-i18n-label="close"></button>
+  <div class="pcard pcard-sm" id="ageDetalleCard" role="dialog" aria-modal="true" aria-labelledby="ageDetalleTitle">
+    <button class="mx" type="button" id="ageDetalleClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="ageDetalleTitle" data-i18n="admAgeDetalleTitulo"></h2></div>
+    <div class="cli-grid age-det-grid">
+      <div><span class="lbl" data-i18n="citaNombreCliente"></span><strong id="ageDetNombre"></strong></div>
+      <div><span class="lbl" data-i18n="citaTelefono"></span><span id="ageDetTelefono"></span></div>
+      <div><span class="lbl" data-i18n="citaFecha"></span><span id="ageDetFecha"></span></div>
+      <div><span class="lbl" data-i18n="citaHora"></span><span id="ageDetHora"></span></div>
+      <div><span class="lbl" data-i18n="citaCiudad"></span><span id="ageDetCiudad"></span></div>
+      <div><span class="lbl" data-i18n="citaAsesor"></span><span id="ageDetVendedor"></span></div>
+      <div><span class="lbl" data-i18n="citaEtiqueta"></span><span id="ageDetEtiqueta"></span></div>
+      <div><span class="lbl" data-i18n="citaEstado"></span><span id="ageDetEstado"></span></div>
+      <div style="grid-column:1/-1"><span class="lbl" data-i18n="citaUbicacion"></span><span id="ageDetUbicacion"></span></div>
+      <div style="grid-column:1/-1"><span class="lbl" data-i18n="citaAccion"></span><span id="ageDetAccion"></span></div>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="adminTiposComisionModal" hidden>
   <button class="scrim" type="button" id="adminTiposComisionScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminTiposComisionCard" role="dialog" aria-modal="true" aria-labelledby="adminTiposComisionTitle">
@@ -1984,6 +2027,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0087"></script>
+<script src="script.js?v=20261023-0088"></script>
 </body>
 </html>

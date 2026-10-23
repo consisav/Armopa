@@ -405,6 +405,8 @@ section[id]{scroll-margin-top:148px}
 .pn{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .pn svg{width:20px;height:20px;flex:none;stroke:var(--gold2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .pcard{position:relative;width:min(1040px,100%);max-height:calc(100% - 8px);overflow:auto;background:#fff;border-radius:16px;padding:28px 30px 30px;box-shadow:0 24px 70px rgba(0,0,0,.4)}
+.pcard-wide{width:min(1180px,100%)}
+.pcard-sm{width:min(560px,100%)}
 .pcard.vw{background:var(--navy);color:#fff}
 .pcard.vw .mx{color:#cfd8e3}
 .ph{margin-bottom:22px;padding-right:48px}
@@ -904,6 +906,63 @@ section[id]{scroll-margin-top:148px}
 }
 @media (min-width:860px){
   .cli-edit-layout{display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:start}
+}
+
+/* ===== Agenda de citas (catálogo): calendario con vistas Día / Semana /
+   Mes sobre los registros de citas_propiedades. Cada cita se dibuja como
+   una "pastilla" de color por etiqueta; al hacer clic se abre un modal de
+   detalle de solo lectura (#ageDetalleModal). */
+.age-toolbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.age-view-tabs{display:flex;gap:6px;background:#f1f3f6;border-radius:999px;padding:4px}
+.age-view-tab{border:0;background:transparent;padding:8px 16px;border-radius:999px;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;text-transform:uppercase;letter-spacing:.02em}
+.age-view-tab.active{background:var(--navy);color:#fff}
+.age-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.age-periodo-label{margin-left:6px;font-size:15px;font-weight:700;color:var(--ink);text-transform:capitalize}
+.age-body{min-height:320px}
+
+.age-empty{padding:40px 10px;text-align:center;color:var(--muted);font-size:14.5px}
+
+/* Vista Día: lista simple de citas del día ordenadas por hora */
+.age-dia-list{display:flex;flex-direction:column;gap:10px}
+.age-dia-item{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;text-align:left;width:100%}
+.age-dia-item:hover{border-color:var(--gold);box-shadow:0 4px 14px rgba(0,0,0,.06)}
+.age-dia-hora{flex:none;width:74px;font-size:13.5px;font-weight:800;color:var(--goldtx)}
+.age-dia-info{flex:1;min-width:0}
+.age-dia-nombre{font-size:14.5px;font-weight:700;color:var(--ink)}
+.age-dia-sub{font-size:12.5px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+
+/* Vista Semana: 7 columnas con las citas de cada día apiladas */
+.age-semana-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.age-semana-col{border:1px solid var(--line);border-radius:12px;min-height:160px;padding:8px;background:#fafbfc}
+.age-semana-col.hoy{border-color:var(--gold);background:#fffdf6}
+.age-semana-col-h{font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em;text-align:center;padding-bottom:6px;margin-bottom:6px;border-bottom:1px dashed var(--line)}
+.age-semana-col-h strong{display:block;font-size:15px;color:var(--ink);font-weight:800}
+
+/* Vista Mes: cuadrícula tipo calendario */
+.age-mes-dow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.age-mes-dow span{text-align:center;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}
+.age-mes-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));grid-auto-rows:minmax(92px,auto);gap:6px}
+.age-mes-cell{border:1px solid var(--line);border-radius:10px;padding:6px;background:#fff;display:flex;flex-direction:column;gap:4px;overflow:hidden}
+.age-mes-cell.fuera-mes{background:#f7f8fa;opacity:.55}
+.age-mes-cell.hoy{border-color:var(--gold);background:#fffdf6}
+.age-mes-num{font-size:12.5px;font-weight:800;color:var(--ink)}
+
+/* Pastilla de cita, compartida entre Semana y Mes */
+.age-chip{display:block;width:100%;border:0;border-radius:7px;padding:3px 7px;font-size:11px;font-weight:700;text-align:left;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#fff}
+.age-chip-cliente{background:#0b4d91}
+.age-chip-muy{background:#15803d}
+.age-chip-interesado{background:#9a6a00}
+.age-chip-poco{background:#b3261e}
+.age-chip-mas{font-size:11px;color:var(--muted);font-weight:700;padding:2px 4px}
+
+.age-det-grid{margin-top:4px}
+.age-det-grid .lbl{display:block;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.age-det-grid > div{margin-bottom:12px;font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+
+@media (max-width:760px){
+  .age-semana-grid{grid-template-columns:repeat(7,minmax(120px,1fr));overflow-x:auto;padding-bottom:6px}
+  .age-mes-grid{grid-auto-rows:minmax(72px,auto)}
+  .age-mes-cell{padding:4px}
 }
 
 /* Filtros de "Rotación Visual": Ciudad y Tipo de Propiedad, cada uno en

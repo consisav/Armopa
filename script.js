@@ -308,7 +308,7 @@ const T = {
     adminUsersBtn: 'Administrar usuarios', logoutBtn: 'Salir', connectBtn: 'Conectarse',
     adminMenuBtn: 'Administración', adminMenuProp: 'Propiedades', adminMenuProy: 'Proyectos', adminMenuServ: 'Servicios', adminMenuVend: 'Vendedores',
     adminGrpCatalogos: 'Catálogos', adminGrpNegocios: 'Negocios', adminGrpComisiones: 'Comisiones', adminGrpReportes: 'Reportes',
-    adminMenuIngresoCiudades: 'Ingreso de Ciudades', adminMenuIngresoPropiedades: 'Ingreso de Propiedades', adminMenuClientes: 'Clientes', adminMenuTiposComision: 'Tipos de comisión', adminMenuRotVisual: 'Rotación Visual',
+    adminMenuIngresoCiudades: 'Ingreso de Ciudades', adminMenuIngresoPropiedades: 'Ingreso de Propiedades', adminMenuClientes: 'Clientes', adminMenuAgendaCitas: 'Agenda de citas', adminMenuTiposComision: 'Tipos de comisión', adminMenuRotVisual: 'Rotación Visual',
     adminMenuComisionesVentas: 'Comisiones Ventas', adminMenuComisionesGeneradas: 'Comisiones Generadas', adminMenuComisionesPagadas: 'Comisiones Pagadas',
     adminMenuRepProp: 'Listado de Propiedades', adminMenuRepServ: 'Estado de Servicios', adminMenuRepClientes: 'Seguimiento Clientes',
     carHint: 'Presione la imagen para ver las propiedades de la ciudad.', btnBuscarServ: 'Buscar servicios',
@@ -481,6 +481,10 @@ const T = {
     admPlaceholderDetalleDireccion: 'Ej. Residenciales Las Flores, lote 12', admEscribeNombreCliente: 'Escribe el nombre del cliente.',
     admErrorGuardarCliente: 'No se pudo guardar el cliente.', admErrorEliminarCliente: 'No se pudo eliminar el cliente.',
     admConfirmEliminarCliente: '¿Eliminar este cliente? Esta acción no se puede deshacer.', admNoHayClientes: 'No hay clientes que coincidan con la búsqueda.',
+    admAgeTituloModal: 'Agenda de citas', admAgeSubtituloModal: 'Consulta las citas agendadas por día, semana o mes.',
+    admAgeVistaDia: 'Día', admAgeVistaSemana: 'Semana', admAgeVistaMes: 'Mes', admAgeHoy: 'Hoy',
+    admAgeDetalleTitulo: 'Detalle de la cita', admAgeNoHayCitasDia: 'No hay citas agendadas para este día.',
+    admAgeMasCitas: '+{n} más',
     admTipoComTituloModal: 'Tipos de comisión — Catálogo', admTipoComSubtituloModal: 'Tipos de comisión según el negocio: Propiedades, Proyectos o Servicios.',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -640,7 +644,7 @@ const T = {
     adminUsersBtn: 'Manage users', logoutBtn: 'Log out', connectBtn: 'Log in',
     adminMenuBtn: 'Admin', adminMenuProp: 'Properties', adminMenuProy: 'Projects', adminMenuServ: 'Services', adminMenuVend: 'Vendors',
     adminGrpCatalogos: 'Catalogs', adminGrpNegocios: 'Business', adminGrpComisiones: 'Commissions', adminGrpReportes: 'Reports',
-    adminMenuIngresoCiudades: 'Add Cities', adminMenuIngresoPropiedades: 'Add Properties', adminMenuClientes: 'Clients', adminMenuTiposComision: 'Commission Types', adminMenuRotVisual: 'Visual Rotation',
+    adminMenuIngresoCiudades: 'Add Cities', adminMenuIngresoPropiedades: 'Add Properties', adminMenuClientes: 'Clients', adminMenuAgendaCitas: 'Appointment schedule', adminMenuTiposComision: 'Commission Types', adminMenuRotVisual: 'Visual Rotation',
     adminMenuComisionesVentas: 'Sales Commissions', adminMenuComisionesGeneradas: 'Generated Commissions', adminMenuComisionesPagadas: 'Paid Commissions',
     adminMenuRepProp: 'Property Listing', adminMenuRepServ: 'Service Status', adminMenuRepClientes: 'Client Follow-up',
     carHint: 'Click the image to see the city’s properties.', btnBuscarServ: 'Browse services',
@@ -813,6 +817,10 @@ const T = {
     admPlaceholderDetalleDireccion: 'E.g. Las Flores Residences, lot 12', admEscribeNombreCliente: 'Enter the client name.',
     admErrorGuardarCliente: 'Could not save the client.', admErrorEliminarCliente: 'Could not delete the client.',
     admConfirmEliminarCliente: 'Delete this client? This action cannot be undone.', admNoHayClientes: 'No clients match your search.',
+    admAgeTituloModal: 'Appointment schedule', admAgeSubtituloModal: 'Browse scheduled appointments by day, week, or month.',
+    admAgeVistaDia: 'Day', admAgeVistaSemana: 'Week', admAgeVistaMes: 'Month', admAgeHoy: 'Today',
+    admAgeDetalleTitulo: 'Appointment detail', admAgeNoHayCitasDia: 'No appointments scheduled for this day.',
+    admAgeMasCitas: '+{n} more',
     admTipoComTituloModal: 'Commission Types — Catalog', admTipoComSubtituloModal: 'Commission types by business: Properties, Projects or Services.',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -3079,6 +3087,226 @@ $('#navAdminClientesBtn')?.addEventListener('click', () => {
 $('#adminClientesClose')?.addEventListener('click', cerrarAdminClientesModal);
 $('#adminClientesScrim')?.addEventListener('click', cerrarAdminClientesModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminClientesModal && !adminClientesModal.hidden) cerrarAdminClientesModal(); });
+
+/* ===== Agenda de citas (catálogo) =====
+   Calendario de solo lectura sobre "citas_propiedades" con tres vistas
+   (Día, Semana, Mes). Las citas se agrupan por fecha_cita en memoria tras
+   cargar todos los registros; al hacer clic en una cita se abre un modal
+   de detalle (#ageDetalleModal). */
+let ageCitasData = [];
+let ageCitasCargadas = false;
+let ageVistaActual = 'mes';
+let ageFechaRef = new Date(); // fecha de referencia para la vista actual
+
+async function cargarAgeCitasData() {
+  try {
+    const { data, error } = await supabaseClient.from('citas_propiedades').select('*').order('fecha_cita', { ascending: true });
+    if (error) throw error;
+    ageCitasData = data || [];
+  } catch (e) {
+    console.error('Error cargando las citas de la agenda:', e);
+    ageCitasData = [];
+  }
+  ageCitasCargadas = true;
+}
+
+function ageCitasDeFecha(fechaIso) {
+  return ageCitasData
+    .filter((c) => c.fecha_cita === fechaIso)
+    .sort((a, b) => (a.hora_cita || '').localeCompare(b.hora_cita || ''));
+}
+
+function ageEtiquetaChipClase(etiqueta) {
+  return 'age-chip ' + ('age-chip-' + (CITA_ETQ_CLASES[etiqueta] || 'cliente').replace('etq-', ''));
+}
+
+function ageFechaIso(d) {
+  const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, '0'), day = String(d.getDate()).padStart(2, '0');
+  return y + '-' + m + '-' + day;
+}
+function ageEsHoy(d) { return ageFechaIso(d) === ageFechaIso(new Date()); }
+function ageInicioSemana(d) {
+  const r = new Date(d);
+  const dow = r.getDay(); // 0=domingo
+  r.setDate(r.getDate() - dow);
+  r.setHours(0, 0, 0, 0);
+  return r;
+}
+
+function ageFormatearPeriodoLabel() {
+  const t = T[lang];
+  const localeStr = lang === 'en' ? 'en-US' : 'es-GT';
+  if (ageVistaActual === 'dia') {
+    return ageFechaRef.toLocaleDateString(localeStr, { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  }
+  if (ageVistaActual === 'semana') {
+    const inicio = ageInicioSemana(ageFechaRef);
+    const fin = new Date(inicio); fin.setDate(fin.getDate() + 6);
+    const fmt = (d) => d.toLocaleDateString(localeStr, { day: '2-digit', month: 'short' });
+    return fmt(inicio) + ' – ' + fmt(fin) + ', ' + fin.getFullYear();
+  }
+  return ageFechaRef.toLocaleDateString(localeStr, { month: 'long', year: 'numeric' });
+}
+
+function agePintarVistaDia() {
+  const t = T[lang];
+  const body = $('#ageBody');
+  const citas = ageCitasDeFecha(ageFechaIso(ageFechaRef));
+  if (!citas.length) {
+    body.innerHTML = '';
+    body.appendChild(el('div', 'age-empty', t.admAgeNoHayCitasDia));
+    return;
+  }
+  const list = el('div', 'age-dia-list');
+  citas.forEach((c) => {
+    const item = el('button', 'age-dia-item'); item.type = 'button';
+    const hora = el('span', 'age-dia-hora', c.hora_cita || '—');
+    const info = el('div', 'age-dia-info');
+    info.append(el('div', 'age-dia-nombre', c.nombre_cliente || '—'));
+    const subPartes = [c.ciudad, c.vendedor_asignado].filter(Boolean);
+    info.append(el('div', 'age-dia-sub', subPartes.join(' · ')));
+    item.append(hora, info);
+    item.addEventListener('click', () => ageAbrirDetalle(c));
+    list.appendChild(item);
+  });
+  body.innerHTML = '';
+  body.appendChild(list);
+}
+
+function ageCrearChip(c) {
+  const chip = el('button', ageEtiquetaChipClase(c.etiqueta));
+  chip.type = 'button';
+  chip.textContent = (c.hora_cita ? c.hora_cita + ' ' : '') + (c.nombre_cliente || '—');
+  chip.addEventListener('click', (ev) => { ev.stopPropagation(); ageAbrirDetalle(c); });
+  return chip;
+}
+
+function agePintarVistaSemana() {
+  const t = T[lang];
+  const body = $('#ageBody');
+  const inicio = ageInicioSemana(ageFechaRef);
+  const localeStr = lang === 'en' ? 'en-US' : 'es-GT';
+  const grid = el('div', 'age-semana-grid');
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(inicio); d.setDate(d.getDate() + i);
+    const col = el('div', 'age-semana-col' + (ageEsHoy(d) ? ' hoy' : ''));
+    const head = el('div', 'age-semana-col-h');
+    head.innerHTML = '';
+    const dowSpan = document.createElement('span'); dowSpan.textContent = d.toLocaleDateString(localeStr, { weekday: 'short' });
+    const numStrong = document.createElement('strong'); numStrong.textContent = String(d.getDate());
+    head.append(dowSpan, numStrong);
+    col.append(head);
+    ageCitasDeFecha(ageFechaIso(d)).forEach((c) => col.appendChild(ageCrearChip(c)));
+    grid.appendChild(col);
+  }
+  body.innerHTML = '';
+  body.appendChild(grid);
+}
+
+function agePintarVistaMes() {
+  const t = T[lang];
+  const body = $('#ageBody');
+  const localeStr = lang === 'en' ? 'en-US' : 'es-GT';
+  const anio = ageFechaRef.getFullYear(), mes = ageFechaRef.getMonth();
+  const primerDiaMes = new Date(anio, mes, 1);
+  const inicioGrid = ageInicioSemana(primerDiaMes);
+
+  const dowRow = el('div', 'age-mes-dow');
+  const dowBase = new Date(2026, 0, 4); // un domingo de referencia
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(dowBase); d.setDate(d.getDate() + i);
+    const span = document.createElement('span'); span.textContent = d.toLocaleDateString(localeStr, { weekday: 'short' });
+    dowRow.appendChild(span);
+  }
+
+  const grid = el('div', 'age-mes-grid');
+  const MAX_CHIPS = 3;
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(inicioGrid); d.setDate(d.getDate() + i);
+    const fueraDeMes = d.getMonth() !== mes;
+    const cell = el('div', 'age-mes-cell' + (fueraDeMes ? ' fuera-mes' : '') + (ageEsHoy(d) ? ' hoy' : ''));
+    cell.appendChild(el('div', 'age-mes-num', String(d.getDate())));
+    const citasDia = ageCitasDeFecha(ageFechaIso(d));
+    citasDia.slice(0, MAX_CHIPS).forEach((c) => cell.appendChild(ageCrearChip(c)));
+    if (citasDia.length > MAX_CHIPS) {
+      cell.appendChild(el('span', 'age-chip-mas', t.admAgeMasCitas.replace('{n}', String(citasDia.length - MAX_CHIPS))));
+    }
+    grid.appendChild(cell);
+    if (i >= 34 && d.getMonth() !== mes && d.getDay() === 6) break; // no agregar una 6ª fila completamente fuera del mes si no hace falta
+  }
+
+  body.innerHTML = '';
+  body.appendChild(dowRow);
+  body.appendChild(grid);
+}
+
+function agePintarVistaActual() {
+  $('#agePeriodoLabel').textContent = ageFormatearPeriodoLabel();
+  $$('.age-view-tab').forEach((b) => b.classList.toggle('active', b.dataset.view === ageVistaActual));
+  if (ageVistaActual === 'dia') agePintarVistaDia();
+  else if (ageVistaActual === 'semana') agePintarVistaSemana();
+  else agePintarVistaMes();
+}
+
+function ageAbrirDetalle(c) {
+  const t = T[lang];
+  $('#ageDetNombre').textContent = c.nombre_cliente || '—';
+  $('#ageDetTelefono').textContent = c.telefono_cliente || '—';
+  $('#ageDetFecha').textContent = c.fecha_cita_texto || c.fecha_cita || '—';
+  $('#ageDetHora').textContent = c.hora_cita || '—';
+  $('#ageDetCiudad').textContent = c.ciudad || '—';
+  $('#ageDetVendedor').textContent = c.vendedor_asignado || '—';
+  const etqKeyMap = { cliente: 'citaEtqCliente', muy_interesado: 'citaEtqMuyInteresado', interesado: 'citaEtqInteresado', poco_interesado: 'citaEtqPocoInteresado' };
+  $('#ageDetEtiqueta').textContent = t[etqKeyMap[c.etiqueta]] || c.etiqueta || '—';
+  const estKeyMap = { agendado: 'citaEstAgendado', efectuado: 'citaEstEfectuado', reagendado: 'citaEstReagendado', no_asistio: 'citaEstNoAsistio' };
+  $('#ageDetEstado').textContent = t[estKeyMap[c.estado]] || c.estado || '—';
+  $('#ageDetUbicacion').textContent = c.ubicacion || '—';
+  $('#ageDetAccion').textContent = c.accion || '—';
+  $('#ageDetalleModal').hidden = false;
+}
+function ageCerrarDetalle() { $('#ageDetalleModal').hidden = true; }
+$('#ageDetalleClose')?.addEventListener('click', ageCerrarDetalle);
+$('#ageDetalleScrim')?.addEventListener('click', ageCerrarDetalle);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#ageDetalleModal') && !$('#ageDetalleModal').hidden) ageCerrarDetalle(); });
+
+$$('.age-view-tab').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    ageVistaActual = btn.dataset.view;
+    agePintarVistaActual();
+  });
+});
+$('#agePrevBtn')?.addEventListener('click', () => {
+  if (ageVistaActual === 'dia') ageFechaRef.setDate(ageFechaRef.getDate() - 1);
+  else if (ageVistaActual === 'semana') ageFechaRef.setDate(ageFechaRef.getDate() - 7);
+  else ageFechaRef.setMonth(ageFechaRef.getMonth() - 1);
+  agePintarVistaActual();
+});
+$('#ageNextBtn')?.addEventListener('click', () => {
+  if (ageVistaActual === 'dia') ageFechaRef.setDate(ageFechaRef.getDate() + 1);
+  else if (ageVistaActual === 'semana') ageFechaRef.setDate(ageFechaRef.getDate() + 7);
+  else ageFechaRef.setMonth(ageFechaRef.getMonth() + 1);
+  agePintarVistaActual();
+});
+$('#ageHoyBtn')?.addEventListener('click', () => { ageFechaRef = new Date(); agePintarVistaActual(); });
+
+const adminAgendaModal = $('#adminAgendaModal');
+async function abrirAdminAgendaModal() {
+  if (!adminAgendaModal) return;
+  adminAgendaModal.hidden = false;
+  ageFechaRef = new Date();
+  ageVistaActual = 'mes';
+  await cargarAgeCitasData();
+  agePintarVistaActual();
+}
+function cerrarAdminAgendaModal() { if (adminAgendaModal) adminAgendaModal.hidden = true; }
+$('#navAdminAgendaCitasBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminAgendaModal();
+});
+$('#adminAgendaClose')?.addEventListener('click', cerrarAdminAgendaModal);
+$('#adminAgendaScrim')?.addEventListener('click', cerrarAdminAgendaModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminAgendaModal && !adminAgendaModal.hidden) cerrarAdminAgendaModal(); });
 
 /* ===== Tipos de comisión (catálogo) =====
    Catálogo simple de tipos de comisión agrupados por negocio (Propiedades,
