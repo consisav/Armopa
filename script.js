@@ -580,7 +580,7 @@ const T = {
     citaNombreCliente: 'Nombre de cliente', citaTelefono: 'Teléfono', citaFecha: 'Fecha de cita', citaHora: 'Hora de cita', citaCiudad: 'Ciudad', citaCiudadPh: 'Ej. Ciudad de Guatemala',
     citaEtiqueta: 'Etiqueta', citaEtqCliente: 'Cliente', citaEtqMuyInteresado: 'Muy interesado', citaEtqInteresado: 'Interesado', citaEtqPocoInteresado: 'Poco interesado',
     citaUbicacion: 'Nombre de la ubicación', citaUbicacionPh: 'Ej. Apartamento en Edificio Leben, Zona 15',
-    citaAsesor: 'Asesor de', citaSinVendedor: 'Sin vendedor asignado',
+    citaAsesor: 'Asesor de Ventas', citaSinVendedor: 'Sin vendedor asignado',
     citaAccion: 'Acción', citaAccionPh: 'Describe el motivo o detalles de la cita…',
     citaEstado: 'Estado', citaEstAgendado: 'Agendado', citaEstEfectuado: 'Efectuado', citaEstReagendado: 'Reagendado', citaEstNoAsistio: 'No asistió',
     citaSaveBtnHtml: '💾 Guardar cita', citaWaBtn: 'Enviar por WhatsApp',
@@ -903,7 +903,7 @@ const T = {
     citaNombreCliente: 'Client name', citaTelefono: 'Phone', citaFecha: 'Visit date', citaHora: 'Visit time', citaCiudad: 'City', citaCiudadPh: 'E.g. Guatemala City',
     citaEtiqueta: 'Tag', citaEtqCliente: 'Client', citaEtqMuyInteresado: 'Very interested', citaEtqInteresado: 'Interested', citaEtqPocoInteresado: 'Slightly interested',
     citaUbicacion: 'Location name', citaUbicacionPh: 'E.g. Apartment at Leben Building, Zone 15',
-    citaAsesor: 'Advisor', citaSinVendedor: 'No advisor assigned',
+    citaAsesor: 'Sales Advisor', citaSinVendedor: 'No advisor assigned',
     citaAccion: 'Notes', citaAccionPh: 'Describe the reason or details for the visit…',
     citaEstado: 'Status', citaEstAgendado: 'Scheduled', citaEstEfectuado: 'Completed', citaEstReagendado: 'Rescheduled', citaEstNoAsistio: 'Did not attend',
     citaSaveBtnHtml: '💾 Save visit', citaWaBtn: 'Send by WhatsApp',
@@ -5458,21 +5458,14 @@ function poblarCitaCiudadList() {
   });
 }
 
-let citaEtiquetaSel = 'cliente';
-
-function poblarCitaEtiquetaTabs() {
-  const wrap = $('#citaEtiquetaTabs');
-  if (!wrap) return;
-  wrap.querySelectorAll('.cita-tag').forEach((b) => {
-    b.classList.toggle('on', b.dataset.val === citaEtiquetaSel);
-  });
+/* Debajo del campo de fecha, muestra "Nombre del día" al elegir una fecha. */
+function actualizarCitaFechaDia() {
+  const el = $('#citaFechaDia');
+  if (!el) return;
+  const valor = $('#cita-fecha').value;
+  el.textContent = valor ? citaFechaConNombreDia(valor) : '';
 }
-$('#citaEtiquetaTabs')?.addEventListener('click', (e) => {
-  const btn = e.target.closest('.cita-tag');
-  if (!btn) return;
-  citaEtiquetaSel = btn.dataset.val;
-  poblarCitaEtiquetaTabs();
-});
+$('#cita-fecha')?.addEventListener('change', actualizarCitaFechaDia);
 
 /* prefill: datos opcionales de una propiedad ya seleccionada (desde
    Rotación Visual) para precargar ubicación/ciudad/asesor al agendar. */
@@ -5482,17 +5475,19 @@ const openCitaModal = (prefill) => {
   $('#cita-nombre').value = '';
   $('#cita-tel').value = '';
   $('#cita-fecha').value = '';
+  actualizarCitaFechaDia();
   poblarCitaHoraSelect();
-  $('#cita-hora').value = '';
+  $('#cita-hora').value = '07:00';
   $('#cita-ciudad').value = (prefill && prefill.ciudad) || '';
   $('#cita-ubicacion').value = (prefill && prefill.ubicacion) || '';
   $('#cita-accion').value = '';
   $('#cita-estado').value = 'agendado';
-  citaEtiquetaSel = 'cliente';
-  poblarCitaEtiquetaTabs();
+  $('#cita-etiqueta').value = 'cliente';
   $('#citaMsg').textContent = '';
   $('#citaMsg').style.color = '';
   $('#citaWaBtn').hidden = true;
+  $('#citaModBtn').hidden = true;
+  $('#citaSaveBtn').hidden = false;
   poblarCitaVendedorSelect();
   poblarCitaCiudadList();
   if (prefill && prefill.vendedor) $('#cita-vendedor').value = prefill.vendedor;
@@ -5567,18 +5562,11 @@ function citaConstruirMensajeWa(row) {
   return partes.join('\n');
 }
 
-$('#citaSaveBtn')?.addEventListener('click', async () => {
-  const msg = $('#citaMsg');
+function citaLeerRowFormulario() {
   const nombre = $('#cita-nombre').value.trim();
-  if (!nombre) {
-    msg.style.color = '#b3261e';
-    msg.textContent = T[lang].citaErrNombre;
-    return;
-  }
-  const usuario = estaConectado() ? localStorage.getItem(LOGIN_STORE) : T[lang].citaVisitante;
   const vendedor = $('#cita-vendedor').value || null;
   const fechaIso = $('#cita-fecha').value || null;
-  const row = {
+  return {
     nombre_cliente: nombre,
     telefono_cliente: $('#cita-tel').value.trim() || null,
     fecha_cita: fechaIso,
@@ -5589,10 +5577,30 @@ $('#citaSaveBtn')?.addEventListener('click', async () => {
     vendedor_asignado: vendedor,
     accion: $('#cita-accion').value.trim() || null,
     estado: $('#cita-estado').value || 'agendado',
-    etiqueta: citaEtiquetaSel || 'cliente',
-    usuario,
-    estado_fecha: new Date().toISOString()
+    etiqueta: $('#cita-etiqueta').value || 'cliente'
   };
+}
+
+function citaActualizarBotonWa(row, vendedor) {
+  const waBtn = $('#citaWaBtn');
+  const numero = citaWaNumero(vendedor);
+  if (numero) {
+    const texto = citaConstruirMensajeWa(row);
+    waBtn.href = 'https://wa.me/' + (numero.length === 8 ? '502' + numero : numero) + '?text=' + encodeURIComponent(texto);
+    waBtn.hidden = false;
+  }
+}
+
+$('#citaSaveBtn')?.addEventListener('click', async () => {
+  const msg = $('#citaMsg');
+  const base = citaLeerRowFormulario();
+  if (!base.nombre_cliente) {
+    msg.style.color = '#b3261e';
+    msg.textContent = T[lang].citaErrNombre;
+    return;
+  }
+  const usuario = estaConectado() ? localStorage.getItem(LOGIN_STORE) : T[lang].citaVisitante;
+  const row = { ...base, usuario, estado_fecha: new Date().toISOString() };
   msg.style.color = '';
   msg.textContent = T[lang].cargando;
   try {
@@ -5601,15 +5609,37 @@ $('#citaSaveBtn')?.addEventListener('click', async () => {
     citaGuardadaId = data.id;
     msg.style.color = '';
     msg.textContent = T[lang].citaGuardadaOk;
-    const waBtn = $('#citaWaBtn');
-    const numero = citaWaNumero(vendedor);
-    if (numero) {
-      const texto = citaConstruirMensajeWa(row);
-      waBtn.href = 'https://wa.me/' + (numero.length === 8 ? '502' + numero : numero) + '?text=' + encodeURIComponent(texto);
-      waBtn.hidden = false;
-    }
+    citaActualizarBotonWa(row, base.vendedor_asignado);
+    $('#citaModBtn').hidden = false;
   } catch (err) {
     console.error('Error al guardar cita:', err);
+    msg.style.color = '#b3261e';
+    msg.textContent = T[lang].citaErrGuardar;
+  }
+});
+
+/* Modifica la cita ya guardada en esta misma sesión del formulario (UPDATE
+   sobre citaGuardadaId), en vez de crear un registro nuevo. */
+$('#citaModBtn')?.addEventListener('click', async () => {
+  const msg = $('#citaMsg');
+  if (!citaGuardadaId) return;
+  const base = citaLeerRowFormulario();
+  if (!base.nombre_cliente) {
+    msg.style.color = '#b3261e';
+    msg.textContent = T[lang].citaErrNombre;
+    return;
+  }
+  const row = { ...base, estado_fecha: new Date().toISOString() };
+  msg.style.color = '';
+  msg.textContent = T[lang].cargando;
+  try {
+    const { error } = await supabaseClient.from('citas_propiedades').update(row).eq('id', citaGuardadaId);
+    if (error) throw error;
+    msg.style.color = '';
+    msg.textContent = T[lang].citaGuardadaOk;
+    citaActualizarBotonWa(row, base.vendedor_asignado);
+  } catch (err) {
+    console.error('Error al modificar cita:', err);
     msg.style.color = '#b3261e';
     msg.textContent = T[lang].citaErrGuardar;
   }

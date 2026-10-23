@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023e">
+<link rel="stylesheet" href="styles.css?v=20261023f">
 </head>
 <body>
 
@@ -1368,24 +1368,30 @@
       <div class="fld"><label for="cita-nombre" data-i18n="citaNombreCliente"></label><input id="cita-nombre" type="text"></div>
       <div class="fld"><label for="cita-tel" data-i18n="citaTelefono"></label><input id="cita-tel" type="tel" placeholder="+502 0000 0000"></div>
     </div>
-    <div class="fld" style="margin-top:16px">
-      <label data-i18n="citaEtiqueta"></label>
-      <div class="cita-tag-row" id="citaEtiquetaTabs">
-        <button type="button" class="cita-tag cita-tag-cliente" data-val="cliente" data-i18n="citaEtqCliente"></button>
-        <button type="button" class="cita-tag cita-tag-muy" data-val="muy_interesado" data-i18n="citaEtqMuyInteresado"></button>
-        <button type="button" class="cita-tag cita-tag-interesado" data-val="interesado" data-i18n="citaEtqInteresado"></button>
-        <button type="button" class="cita-tag cita-tag-poco" data-val="poco_interesado" data-i18n="citaEtqPocoInteresado"></button>
-      </div>
-    </div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="cita-fecha" data-i18n="citaFecha"></label><input id="cita-fecha" type="date"></div>
+      <div class="fld">
+        <label for="cita-fecha" data-i18n="citaFecha"></label>
+        <input id="cita-fecha" type="date">
+        <span class="cita-fecha-dia" id="citaFechaDia"></span>
+      </div>
       <div class="fld"><label for="cita-hora" data-i18n="citaHora"></label><select id="cita-hora"></select></div>
     </div>
     <div class="fld" style="margin-top:16px"><label for="cita-ciudad" data-i18n="citaCiudad"></label><input id="cita-ciudad" type="text" list="citaCiudadList" data-i18n-ph="citaCiudadPh"><datalist id="citaCiudadList"></datalist></div>
     <div class="fld" style="margin-top:16px"><label for="cita-ubicacion" data-i18n="citaUbicacion"></label><input id="cita-ubicacion" type="text" data-i18n-ph="citaUbicacionPh"></div>
-    <div class="fld" style="margin-top:16px">
-      <label for="cita-vendedor" data-i18n="citaAsesor"></label>
-      <select id="cita-vendedor"><option value="" data-i18n="citaSinVendedor"></option></select>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld">
+        <label for="cita-vendedor" data-i18n="citaAsesor"></label>
+        <select id="cita-vendedor"><option value="" data-i18n="citaSinVendedor"></option></select>
+      </div>
+      <div class="fld">
+        <label data-i18n="citaEtiqueta"></label>
+        <select id="cita-etiqueta">
+          <option value="cliente" data-i18n="citaEtqCliente"></option>
+          <option value="muy_interesado" data-i18n="citaEtqMuyInteresado"></option>
+          <option value="interesado" data-i18n="citaEtqInteresado"></option>
+          <option value="poco_interesado" data-i18n="citaEtqPocoInteresado"></option>
+        </select>
+      </div>
     </div>
     <div class="fld" style="margin-top:16px"><label for="cita-accion" data-i18n="citaAccion"></label><textarea id="cita-accion" rows="3" data-i18n-ph="citaAccionPh"></textarea></div>
     <div class="fld" style="margin-top:16px">
@@ -1400,6 +1406,7 @@
 
     <div class="acts" style="margin-top:20px">
       <button class="btn btn-dark" type="button" id="citaSaveBtn" data-i18n-html="citaSaveBtnHtml"></button>
+      <button class="btn btn-line" type="button" id="citaModBtn" data-i18n="btnModificar" hidden></button>
       <a class="btn btn-wa" id="citaWaBtn" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="citaWaBtn"></span></a>
     </div>
     <p class="hint" id="citaMsg" style="margin-top:8px"></p>
@@ -1962,6 +1969,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0083"></script>
+<script src="script.js?v=20261023-0084"></script>
 </body>
 </html>
