@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023o">
+<link rel="stylesheet" href="styles.css?v=20261023p">
 </head>
 <body>
 
@@ -1875,6 +1875,27 @@
   </div>
 </div>
 
+<div class="modal" id="segModal" hidden>
+  <button class="scrim" type="button" id="segScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="segCard" role="dialog" aria-modal="true" aria-labelledby="segTitle">
+    <button class="mx" type="button" id="segClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="segTitle" data-i18n="segTituloModal"></h2><p class="ph-sub" id="segSub"></p></div>
+    <div class="acts" style="margin-bottom:14px">
+      <button class="btn btn-gold btn-sm" type="button" id="segNuevoBtn" data-i18n="segAgregar"></button>
+    </div>
+    <div id="segList" class="proy-list"></div>
+  </div>
+</div>
+
+<div class="modal" id="actModal" hidden>
+  <button class="scrim" type="button" id="actScrim" data-i18n-label="close"></button>
+  <div class="pcard pcard-wide" id="actCard" role="dialog" aria-modal="true" aria-labelledby="actTitle">
+    <button class="mx" type="button" id="actClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="actTitle" data-i18n="actTituloModal"></h2><p class="ph-sub" id="actSub"></p></div>
+    <div id="actBody"></div>
+  </div>
+</div>
+
 <div class="modal" id="adminCitasModal" hidden>
   <button class="scrim" type="button" id="adminCitasScrim" data-i18n-label="close"></button>
   <div class="pcard pcard-wide" id="adminCitasCard" role="dialog" aria-modal="true" aria-labelledby="adminCitasTitle">
@@ -2081,6 +2102,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0096"></script>
+<script src="script.js?v=20261023-0097"></script>
 </body>
 </html>

@@ -477,6 +477,18 @@ const T = {
     admCliTituloModal: 'Clientes — Listado general', admCliSubtituloModal: 'Código, contacto y datos de cada cliente registrado.',
     admCliVendedorAsignado: 'Vendedor asignado', admCliSinVendedor: 'Sin vendedor asignado',
     admCliSeccionContacto: 'Contacto', admCliSeccionUbicacion: 'Ubicación', admCliSeccionAdmin: 'Administrativo',
+    btnSeguimientos: 'Seguimientos', btnVerActividades: 'Ver actividades',
+    segTituloModal: 'Seguimientos', segSubtituloModal: 'Historial de llamadas y gestiones de',
+    segFechaLlamada: 'Fecha de llamada', segVendedor: 'Vendedor', segAccion: 'Acción', segResultado: 'Resultado', segDescripcion: 'Descripción',
+    segAccLlamada: 'Llamada', segAccVisita: 'Visita de propiedad', segAccServicio: 'Seguimiento de servicio',
+    segResInteresado: 'Interesado', segResNoInteresado: 'No interesado', segResConfirmado: 'Confirmado', segResIndeciso: 'Indeciso',
+    segPlaceholderDescripcion: 'Detalle de la llamada o gestión realizada', segSinVendedor: 'Sin vendedor',
+    segAgregar: '+ Agregar seguimiento', segSinRegistros: 'Aún no hay seguimientos registrados para este cliente.',
+    segConfirmEliminar: '¿Eliminar este seguimiento?', segErrorEliminar: 'No se pudo eliminar el seguimiento.', segErrorGuardar: 'No se pudo guardar el seguimiento.', segErrorCargar: 'No se pudieron cargar los seguimientos.',
+    actTituloModal: 'Actividades del cliente', actSubtituloModal: 'Todo lo registrado en el sistema para',
+    actSeccionCitas: 'Agendas de citas', actSeccionPropiedades: 'Propiedades en las que aparece', actSeccionServicios: 'Servicios en los que aparece', actSeccionSeguimientos: 'Seguimientos',
+    actSinCitas: 'Sin citas registradas.', actSinPropiedades: 'Sin propiedades asignadas.', actSinServicios: 'Sin solicitudes de servicio registradas.', actSinSeguimientos: 'Sin seguimientos registrados.',
+    actErrorCargar: 'No se pudieron cargar las actividades del cliente.',
     admAgregarCliente: '+ Agregar cliente', admCodigoCliente: 'Código de cliente', admDpi: 'DPI', admDepartamento: 'Departamento', admMunicipio: 'Municipio',
     admDetalleDireccion: 'Detalle dirección', admEstadoCliente: 'Estado', admEstCliActivo: 'Activo', admEstCliInactivo: 'Inactivo', admEstCliBaja: 'Baja', admEstCliInquilino: 'Inquilino', admEstCliPropietario: 'Propietario',
     admProfesion: 'Profesión',
@@ -824,6 +836,18 @@ const T = {
     admVendTituloModal: 'Vendors — General listing', admVendSubtituloModal: 'Code, contact and photo for each registered seller.',
     admCliTituloModal: 'Clients — General listing', admCliSubtituloModal: 'Code, contact and details for each registered client.',
     admCliVendedorAsignado: 'Assigned seller', admCliSinVendedor: 'No seller assigned',
+    btnSeguimientos: 'Follow-ups', btnVerActividades: 'View activities',
+    segTituloModal: 'Follow-ups', segSubtituloModal: 'Call and management history for',
+    segFechaLlamada: 'Call date', segVendedor: 'Seller', segAccion: 'Action', segResultado: 'Result', segDescripcion: 'Description',
+    segAccLlamada: 'Call', segAccVisita: 'Property visit', segAccServicio: 'Service follow-up',
+    segResInteresado: 'Interested', segResNoInteresado: 'Not interested', segResConfirmado: 'Confirmed', segResIndeciso: 'Undecided',
+    segPlaceholderDescripcion: 'Detail of the call or management performed', segSinVendedor: 'No seller',
+    segAgregar: '+ Add follow-up', segSinRegistros: 'No follow-ups have been recorded for this client yet.',
+    segConfirmEliminar: 'Delete this follow-up?', segErrorEliminar: 'Could not delete the follow-up.', segErrorGuardar: 'Could not save the follow-up.', segErrorCargar: 'Could not load the follow-ups.',
+    actTituloModal: 'Client activities', actSubtituloModal: 'Everything recorded in the system for',
+    actSeccionCitas: 'Scheduled appointments', actSeccionPropiedades: 'Properties where they appear', actSeccionServicios: 'Services where they appear', actSeccionSeguimientos: 'Follow-ups',
+    actSinCitas: 'No appointments recorded.', actSinPropiedades: 'No properties assigned.', actSinServicios: 'No service requests recorded.', actSinSeguimientos: 'No follow-ups recorded.',
+    actErrorCargar: 'Could not load the client activities.',
     admCliSeccionContacto: 'Contact', admCliSeccionUbicacion: 'Location', admCliSeccionAdmin: 'Administrative',
     admAgregarCliente: '+ Add client', admCodigoCliente: 'Client code', admDpi: 'National ID (DPI)', admDepartamento: 'Department', admMunicipio: 'Municipality',
     admDetalleDireccion: 'Address details', admEstadoCliente: 'Status', admEstCliActivo: 'Active', admEstCliInactivo: 'Inactive', admEstCliBaja: 'Discharged', admEstCliInquilino: 'Tenant', admEstCliPropietario: 'Owner',
@@ -2785,9 +2809,13 @@ function cliRenderView(card, c) {
   card.classList.remove('proy-card-edit');
   card.classList.add('cli-card');
   const actions = el('div', 'proy-actions');
+  const segBtn = el('button', 'btn btn-line-dark btn-sm', t.btnSeguimientos); segBtn.type = 'button';
+  const actBtn = el('button', 'btn btn-line-dark btn-sm', t.btnVerActividades); actBtn.type = 'button';
   const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
   const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
-  actions.append(modBtn, delBtn);
+  actions.append(segBtn, actBtn, modBtn, delBtn);
+  segBtn.addEventListener('click', () => abrirSegModal(c));
+  actBtn.addEventListener('click', () => abrirActModal(c));
 
   card.append(cliCardHead(c));
 
@@ -3388,6 +3416,293 @@ $('#navAdminCitasBtn')?.addEventListener('click', () => {
 $('#adminCitasClose')?.addEventListener('click', cerrarAdminCitasModal);
 $('#adminCitasScrim')?.addEventListener('click', cerrarAdminCitasModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminCitasModal && !adminCitasModal.hidden) cerrarAdminCitasModal(); });
+
+/* ===== Seguimientos de cliente =====
+   Botón "Seguimientos" de cada ficha de cliente: historial de llamadas y
+   gestiones (fecha, vendedor, acción, resultado, descripción) guardado en
+   seguimientos_clientes, filtrado por el código del cliente. */
+function getAccionesSeguimiento() {
+  const t = T[lang] || T.es;
+  return [
+    { v: 'llamada', l: t.segAccLlamada },
+    { v: 'visita_propiedad', l: t.segAccVisita },
+    { v: 'seguimiento_servicio', l: t.segAccServicio }
+  ];
+}
+function getResultadosSeguimiento() {
+  const t = T[lang] || T.es;
+  return [
+    { v: 'interesado', l: t.segResInteresado },
+    { v: 'no_interesado', l: t.segResNoInteresado },
+    { v: 'confirmado', l: t.segResConfirmado },
+    { v: 'indeciso', l: t.segResIndeciso }
+  ];
+}
+const segAccionLabel = (v) => (getAccionesSeguimiento().find((o) => o.v === v) || {}).l || v || '—';
+const segResultadoLabel = (v) => (getResultadosSeguimiento().find((o) => o.v === v) || {}).l || v || '—';
+
+let segClienteActual = null;
+
+function segPoblarVendedorSelect(sel, actual) {
+  sel.innerHTML = '';
+  const optVacio = document.createElement('option');
+  optVacio.value = ''; optVacio.textContent = T[lang].segSinVendedor;
+  sel.appendChild(optVacio);
+  vendedoresCatalogo.forEach((v) => {
+    const opt = document.createElement('option');
+    opt.value = v.nombre; opt.textContent = v.nombre;
+    sel.appendChild(opt);
+  });
+  sel.value = actual || '';
+}
+
+function segCrearTarjetaEdit(row, isNew) {
+  const t = T[lang];
+  const card = el('div', 'proy-card proy-card-edit cli-card');
+
+  const fechaInput = document.createElement('input');
+  fechaInput.type = 'date'; fechaInput.value = row.fecha_llamada || ageFechaIso(new Date());
+
+  const vendSel = document.createElement('select');
+  segPoblarVendedorSelect(vendSel, row.vendedor || '');
+  if (!vendedoresCatalogoCargado) cargarVendedoresCatalogo().then(() => segPoblarVendedorSelect(vendSel, row.vendedor || ''));
+
+  const accSel = document.createElement('select');
+  getAccionesSeguimiento().forEach((o) => { const opt = document.createElement('option'); opt.value = o.v; opt.textContent = o.l; accSel.appendChild(opt); });
+  accSel.value = row.accion || 'llamada';
+
+  const resSel = document.createElement('select');
+  getResultadosSeguimiento().forEach((o) => { const opt = document.createElement('option'); opt.value = o.v; opt.textContent = o.l; resSel.appendChild(opt); });
+  resSel.value = row.resultado || 'interesado';
+
+  const descInput = document.createElement('textarea');
+  descInput.rows = 3; descInput.placeholder = t.segPlaceholderDescripcion; descInput.value = row.descripcion || '';
+
+  const grid = el('div', 'cli-grid');
+  grid.append(
+    labeledCell(t.segFechaLlamada, fechaInput),
+    labeledCell(t.segVendedor, vendSel),
+    labeledCell(t.segAccion, accSel),
+    labeledCell(t.segResultado, resSel)
+  );
+  card.append(grid);
+  card.append(labeledCell(t.segDescripcion, descInput));
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+  card.append(actions);
+
+  cancelBtn.addEventListener('click', () => {
+    if (isNew) card.remove();
+    else segRenderView(card, row);
+  });
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    try {
+      const payload = {
+        cliente_codigo: segClienteActual.codigo || '',
+        cliente_nombre: segClienteActual.nombre || '',
+        fecha_llamada: fechaInput.value || ageFechaIso(new Date()),
+        vendedor: vendSel.value || null,
+        accion: accSel.value || 'llamada',
+        resultado: resSel.value || 'interesado',
+        descripcion: descInput.value.trim() || null,
+        usuario: localStorage.getItem(LOGIN_STORE) || null
+      };
+      if (isNew) {
+        const { data, error } = await supabaseClient.from('seguimientos_clientes').insert(payload).select().single();
+        if (error) throw error;
+        Object.assign(row, data);
+      } else {
+        const { error } = await supabaseClient.from('seguimientos_clientes').update(payload).eq('id', row.id);
+        if (error) throw error;
+        Object.assign(row, payload);
+      }
+      segRenderView(card, row);
+    } catch (e) {
+      console.error('Error guardando el seguimiento:', e);
+      alert(t.segErrorGuardar);
+    } finally {
+      saveBtn.disabled = false;
+    }
+  });
+
+  return card;
+}
+
+function segRenderView(card, row) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.className = 'proy-card cli-card';
+  const grid = el('div', 'cli-grid');
+  grid.append(
+    labeledCell(t.segFechaLlamada, el('span', '', row.fecha_llamada ? formatQBuscarRegFecha(row.fecha_llamada) : '—')),
+    labeledCell(t.segVendedor, el('span', '', row.vendedor || t.segSinVendedor)),
+    labeledCell(t.segAccion, el('span', '', segAccionLabel(row.accion))),
+    labeledCell(t.segResultado, el('span', '', segResultadoLabel(row.resultado)))
+  );
+  card.append(grid);
+  if (row.descripcion) {
+    const sec = el('div', 'cli-sec');
+    sec.append(el('div', 'cli-sec-h', t.segDescripcion));
+    sec.append(el('p', '', row.descripcion));
+    card.append(sec);
+  }
+  const actions = el('div', 'proy-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+  card.append(actions);
+  modBtn.addEventListener('click', () => {
+    const edit = segCrearTarjetaEdit(row, false);
+    card.replaceWith(edit);
+  });
+  delBtn.addEventListener('click', async () => {
+    if (!confirm(t.segConfirmEliminar)) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('seguimientos_clientes').delete().eq('id', row.id);
+      if (error) throw error;
+      card.remove();
+      if (!$('#segList').children.length) segPintarVacio();
+    } catch (e) {
+      console.error('Error eliminando el seguimiento:', e);
+      alert(t.segErrorEliminar);
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function segPintarVacio() {
+  const list = $('#segList');
+  if (!list) return;
+  list.innerHTML = '';
+  list.appendChild(el('p', 'proy-empty', T[lang].segSinRegistros));
+}
+
+async function segCargarYPintar() {
+  const list = $('#segList');
+  if (!list || !segClienteActual) return;
+  list.innerHTML = '<p class="proy-empty">' + T[lang].cargando + '</p>';
+  try {
+    const { data: rows, error } = await supabaseClient.from('seguimientos_clientes').select('*').eq('cliente_codigo', segClienteActual.codigo || '').order('fecha_llamada', { ascending: false }).order('created_at', { ascending: false });
+    if (error) throw error;
+    list.innerHTML = '';
+    if (!rows || !rows.length) { segPintarVacio(); return; }
+    rows.forEach((row) => { const card = el('div'); list.appendChild(card); segRenderView(card, row); });
+  } catch (e) {
+    console.error('Error cargando los seguimientos:', e);
+    list.innerHTML = '<p class="proy-empty">' + T[lang].segErrorCargar + '</p>';
+  }
+}
+
+const segModal = $('#segModal');
+function abrirSegModal(cliente) {
+  if (!segModal) return;
+  segClienteActual = cliente;
+  $('#segSub').textContent = T[lang].segSubtituloModal + ' ' + (cliente.nombre || '');
+  segModal.hidden = false;
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
+  segCargarYPintar();
+}
+function cerrarSegModal() { if (segModal) segModal.hidden = true; }
+$('#segClose')?.addEventListener('click', cerrarSegModal);
+$('#segScrim')?.addEventListener('click', cerrarSegModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && segModal && !segModal.hidden) cerrarSegModal(); });
+$('#segNuevoBtn')?.addEventListener('click', () => {
+  const list = $('#segList');
+  if (!list || !segClienteActual) return;
+  if (list.querySelector('.proy-empty')) list.innerHTML = '';
+  const nuevoRow = { fecha_llamada: ageFechaIso(new Date()), accion: 'llamada', resultado: 'interesado' };
+  const card = segCrearTarjetaEdit(nuevoRow, true);
+  list.prepend(card);
+});
+
+/* ===== Ver actividades (resumen cruzado por cliente) =====
+   Botón "Ver actividades" de cada ficha de cliente: agrega, en un solo
+   panel de solo lectura, todo lo que existe para ese cliente en Citas,
+   Propiedades, Servicios y Seguimientos — cruzando por nombre (Citas,
+   Propiedades) o por código de cliente (Servicios, Seguimientos), igual
+   que el resto de la app ya lo hace entre estos mismos catálogos. */
+function actSeccion(titulo, filas, vacioTexto, filaBuilder) {
+  const sec = el('div', 'cli-sec');
+  sec.append(el('div', 'cli-sec-h', titulo));
+  if (!filas || !filas.length) {
+    sec.append(el('p', 'proy-empty', vacioTexto));
+    return sec;
+  }
+  const list = el('div', 'proy-list');
+  filas.forEach((f) => list.appendChild(filaBuilder(f)));
+  sec.append(list);
+  return sec;
+}
+function actFilaSimple(grid) {
+  const card = el('div', 'proy-card cli-card');
+  const g = el('div', 'cli-grid');
+  g.append(...grid);
+  card.append(g);
+  return card;
+}
+
+async function actCargarYPintar(cliente) {
+  const t = T[lang];
+  const body = $('#actBody');
+  if (!body) return;
+  body.innerHTML = '<p class="proy-empty">' + t.cargando + '</p>';
+  try {
+    const nombre = cliente.nombre || '';
+    const [citasRes, propsRes, servRes, segRes] = await Promise.all([
+      supabaseClient.from('citas_propiedades').select('*').eq('nombre_cliente', nombre).order('fecha_cita', { ascending: false }),
+      supabaseClient.from('propiedades').select('*').eq('cliente_asignado', nombre),
+      supabaseClient.from('solicitudes_servicio').select('*').eq('cliente_codigo', cliente.codigo || ''),
+      supabaseClient.from('seguimientos_clientes').select('*').eq('cliente_codigo', cliente.codigo || '').order('fecha_llamada', { ascending: false })
+    ]);
+    if (citasRes.error) throw citasRes.error;
+    if (propsRes.error) throw propsRes.error;
+    if (servRes.error) throw servRes.error;
+    if (segRes.error) throw segRes.error;
+
+    body.innerHTML = '';
+    body.append(actSeccion(t.actSeccionCitas, citasRes.data, t.actSinCitas, (row) => actFilaSimple([
+      labeledCell(t.citaFecha, el('span', '', (row.fecha_cita_texto || row.fecha_cita || '—') + (row.hora_cita ? ' · ' + row.hora_cita : ''))),
+      labeledCell(t.citaCiudad, el('span', '', row.ciudad || '—')),
+      labeledCell(t.citaAsesor, el('span', '', row.vendedor_asignado || '—')),
+      labeledCell(t.citaEstado, el('span', '', citEstLabel(row.estado)))
+    ])));
+    body.append(actSeccion(t.actSeccionPropiedades, propsRes.data, t.actSinPropiedades, (row) => actFilaSimple([
+      labeledCell(t.admPropNombre || 'Propiedad', el('span', '', row.nombre || '—')),
+      labeledCell(t.admCiudad || 'Ciudad', el('span', '', row.ciudad || '—')),
+      labeledCell(t.admEstadoUbicacion || 'Estado', el('span', '', ubicEstadoInfo(row.estado_ubicacion || row.estado || 'activa').l))
+    ])));
+    body.append(actSeccion(t.actSeccionServicios, servRes.data, t.actSinServicios, (row) => actFilaSimple([
+      labeledCell(t.admServicio || 'Servicio', el('span', '', row.servicio || '—')),
+      labeledCell(t.admEstado || 'Estado', el('span', '', row.estado || '—')),
+      labeledCell(t.admFechaGrabacion, el('span', '', row.fecha_creacion ? formatQBuscarRegFecha(row.fecha_creacion) : '—'))
+    ])));
+    body.append(actSeccion(t.actSeccionSeguimientos, segRes.data, t.actSinSeguimientos, (row) => actFilaSimple([
+      labeledCell(t.segFechaLlamada, el('span', '', row.fecha_llamada ? formatQBuscarRegFecha(row.fecha_llamada) : '—')),
+      labeledCell(t.segAccion, el('span', '', segAccionLabel(row.accion))),
+      labeledCell(t.segResultado, el('span', '', segResultadoLabel(row.resultado)))
+    ])));
+  } catch (e) {
+    console.error('Error cargando actividades del cliente:', e);
+    body.innerHTML = '<p class="proy-empty">' + t.actErrorCargar + '</p>';
+  }
+}
+
+const actModal = $('#actModal');
+function abrirActModal(cliente) {
+  if (!actModal) return;
+  $('#actSub').textContent = T[lang].actSubtituloModal + ' ' + (cliente.nombre || '');
+  actModal.hidden = false;
+  actCargarYPintar(cliente);
+}
+function cerrarActModal() { if (actModal) actModal.hidden = true; }
+$('#actClose')?.addEventListener('click', cerrarActModal);
+$('#actScrim')?.addEventListener('click', cerrarActModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && actModal && !actModal.hidden) cerrarActModal(); });
 
 /* ===== Agenda de citas (catálogo) =====
    Calendario de solo lectura sobre "citas_propiedades" con tres vistas
