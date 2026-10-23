@@ -577,7 +577,7 @@ const T = {
     reqNota: 'Esta guía es informativa y puede variar según el municipio, si el inmueble está en régimen de propiedad horizontal o si intervienen bancos. Para tu caso particular, consulta con un notario o con nuestro equipo.',
     fpErrNombre: 'Por favor escribe el nombre completo del propietario.', fpErrGuardar: 'No pudimos guardar la autorización. Intenta de nuevo.',
     citaBtnHtml: '📅 Agendar Cita', citaTitle: 'Agendar Cita', citaSub: 'Completa los datos para agendar una cita. Te confirmaremos los detalles por WhatsApp.',
-    citaNombreCliente: 'Nombre de cliente', citaTelefono: 'Teléfono', citaFecha: 'Fecha de cita', citaCiudad: 'Ciudad', citaCiudadPh: 'Ej. Ciudad de Guatemala',
+    citaNombreCliente: 'Nombre de cliente', citaTelefono: 'Teléfono', citaFecha: 'Fecha de cita', citaHora: 'Hora de cita', citaCiudad: 'Ciudad', citaCiudadPh: 'Ej. Ciudad de Guatemala',
     citaEtiqueta: 'Etiqueta', citaEtqCliente: 'Cliente', citaEtqMuyInteresado: 'Muy interesado', citaEtqInteresado: 'Interesado', citaEtqPocoInteresado: 'Poco interesado',
     citaUbicacion: 'Nombre de la ubicación', citaUbicacionPh: 'Ej. Apartamento en Edificio Leben, Zona 15',
     citaAsesor: 'Asesor de', citaSinVendedor: 'Sin vendedor asignado',
@@ -585,7 +585,7 @@ const T = {
     citaEstado: 'Estado', citaEstAgendado: 'Agendado', citaEstEfectuado: 'Efectuado', citaEstReagendado: 'Reagendado', citaEstNoAsistio: 'No asistió',
     citaSaveBtnHtml: '💾 Guardar cita', citaWaBtn: 'Enviar por WhatsApp',
     citaErrNombre: 'Por favor escribe el nombre del cliente.', citaErrGuardar: 'No pudimos guardar la cita. Intenta de nuevo.', citaGuardadaOk: 'Cita guardada correctamente.',
-    citaWaMsgIntro: 'Hola, se agendó una cita con los siguientes datos:', citaWaMsgCliente: 'Cliente: ', citaWaMsgTelefono: 'Teléfono: ', citaWaMsgFecha: 'Fecha de cita: ', citaWaMsgUbicacion: 'Ubicación: ', citaWaMsgCiudad: 'Ciudad: ', citaWaMsgAccion: 'Acción: ', citaWaMsgEstado: 'Estado: ',
+    citaWaMsgIntro: 'Hola, se agendó una cita con los siguientes datos:', citaWaMsgCliente: 'Cliente: ', citaWaMsgTelefono: 'Teléfono: ', citaWaMsgFecha: 'Fecha de cita: ', citaWaMsgHora: 'Hora de cita: ', citaWaMsgUbicacion: 'Ubicación: ', citaWaMsgCiudad: 'Ciudad: ', citaWaMsgAccion: 'Acción: ', citaWaMsgEstado: 'Estado: ',
     citaVisitante: 'Visitante'
   },
   en: {
@@ -900,7 +900,7 @@ const T = {
     reqNota: 'This guide is for informational purposes and may vary depending on the municipality, whether the property is under a condominium regime, or whether banks are involved. For your specific case, consult a notary or our team.',
     fpErrNombre: "Please enter the owner's full name.", fpErrGuardar: 'We could not save the authorization. Please try again.',
     citaBtnHtml: '📅 Schedule Visit', citaTitle: 'Schedule Visit', citaSub: 'Fill in your details to schedule a visit. We will confirm the details with you by WhatsApp.',
-    citaNombreCliente: 'Client name', citaTelefono: 'Phone', citaFecha: 'Visit date', citaCiudad: 'City', citaCiudadPh: 'E.g. Guatemala City',
+    citaNombreCliente: 'Client name', citaTelefono: 'Phone', citaFecha: 'Visit date', citaHora: 'Visit time', citaCiudad: 'City', citaCiudadPh: 'E.g. Guatemala City',
     citaEtiqueta: 'Tag', citaEtqCliente: 'Client', citaEtqMuyInteresado: 'Very interested', citaEtqInteresado: 'Interested', citaEtqPocoInteresado: 'Slightly interested',
     citaUbicacion: 'Location name', citaUbicacionPh: 'E.g. Apartment at Leben Building, Zone 15',
     citaAsesor: 'Advisor', citaSinVendedor: 'No advisor assigned',
@@ -908,7 +908,7 @@ const T = {
     citaEstado: 'Status', citaEstAgendado: 'Scheduled', citaEstEfectuado: 'Completed', citaEstReagendado: 'Rescheduled', citaEstNoAsistio: 'Did not attend',
     citaSaveBtnHtml: '💾 Save visit', citaWaBtn: 'Send by WhatsApp',
     citaErrNombre: "Please enter the client's name.", citaErrGuardar: 'We could not save the visit. Please try again.', citaGuardadaOk: 'Visit saved successfully.',
-    citaWaMsgIntro: 'Hello, a visit was scheduled with the following details:', citaWaMsgCliente: 'Client: ', citaWaMsgTelefono: 'Phone: ', citaWaMsgFecha: 'Visit date: ', citaWaMsgUbicacion: 'Location: ', citaWaMsgCiudad: 'City: ', citaWaMsgAccion: 'Notes: ', citaWaMsgEstado: 'Status: ',
+    citaWaMsgIntro: 'Hello, a visit was scheduled with the following details:', citaWaMsgCliente: 'Client: ', citaWaMsgTelefono: 'Phone: ', citaWaMsgFecha: 'Visit date: ', citaWaMsgHora: 'Visit time: ', citaWaMsgUbicacion: 'Location: ', citaWaMsgCiudad: 'City: ', citaWaMsgAccion: 'Notes: ', citaWaMsgEstado: 'Status: ',
     citaVisitante: 'Visitor'
   }
 };
@@ -5423,6 +5423,30 @@ function poblarCitaVendedorSelect() {
   sel.value = actual || '';
 }
 
+/* Lista de horas de 7:00 a.m. a 6:00 p.m. cada 30 minutos, en formato
+   24h (valor) y 12h con a.m./p.m. (texto visible). */
+function poblarCitaHoraSelect() {
+  const sel = $('#cita-hora');
+  if (!sel) return;
+  const actual = sel.value;
+  sel.innerHTML = '';
+  const optVacio = document.createElement('option');
+  optVacio.value = ''; optVacio.textContent = '';
+  sel.appendChild(optVacio);
+  for (let mins = 7 * 60; mins <= 18 * 60; mins += 30) {
+    const h24 = Math.floor(mins / 60);
+    const m = mins % 60;
+    const value = String(h24).padStart(2, '0') + ':' + String(m).padStart(2, '0');
+    const h12 = (h24 % 12) === 0 ? 12 : (h24 % 12);
+    const ampm = h24 < 12 ? 'a.m.' : 'p.m.';
+    const label = h12 + ':' + String(m).padStart(2, '0') + ' ' + ampm;
+    const opt = document.createElement('option');
+    opt.value = value; opt.textContent = label;
+    sel.appendChild(opt);
+  }
+  sel.value = actual || '';
+}
+
 function poblarCitaCiudadList() {
   const list = $('#citaCiudadList');
   if (!list) return;
@@ -5458,6 +5482,8 @@ const openCitaModal = (prefill) => {
   $('#cita-nombre').value = '';
   $('#cita-tel').value = '';
   $('#cita-fecha').value = '';
+  poblarCitaHoraSelect();
+  $('#cita-hora').value = '';
   $('#cita-ciudad').value = (prefill && prefill.ciudad) || '';
   $('#cita-ubicacion').value = (prefill && prefill.ubicacion) || '';
   $('#cita-accion').value = '';
@@ -5493,6 +5519,31 @@ $('#rotVisualAgendarCitaBtn')?.addEventListener('click', () => {
   openCitaModal(prefill);
 });
 
+/* Convierte el valor de un <input type="date"> (AAAA-MM-DD) al formato
+   "Nombre del día DD-MM-AAAA" para guardarlo tal como se mostrará al
+   usuario (por ejemplo "Jueves 15-11-2026"), usando el idioma activo. */
+function citaFechaConNombreDia(valorIso) {
+  if (!valorIso) return '';
+  const [y, m, d] = valorIso.split('-').map(Number);
+  if (!y || !m || !d) return '';
+  const fecha = new Date(Date.UTC(y, m - 1, d));
+  const diasEs = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+  const diasEn = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const nombreDia = (lang === 'en' ? diasEn : diasEs)[fecha.getUTCDay()];
+  const dd = String(d).padStart(2, '0');
+  const mm = String(m).padStart(2, '0');
+  return nombreDia + ' ' + dd + '-' + mm + '-' + y;
+}
+
+/* Texto visible de la hora elegida (ej. "9:30 a.m."), leído de la etiqueta
+   del <option> seleccionado en #cita-hora. */
+function citaHoraTexto() {
+  const sel = $('#cita-hora');
+  if (!sel || !sel.value) return '';
+  const opt = sel.options[sel.selectedIndex];
+  return opt ? opt.textContent : '';
+}
+
 function citaWaNumero(nombreVendedor) {
   const v = vendedoresCatalogo.find((x) => (x.nombre || '').trim() === (nombreVendedor || '').trim());
   const tel = (v ? v.telefono : '') || (vendedoresCatalogo[0] ? vendedoresCatalogo[0].telefono : '') || '';
@@ -5504,7 +5555,8 @@ function citaConstruirMensajeWa(row) {
   const partes = [t.citaWaMsgIntro];
   partes.push(t.citaWaMsgCliente + (row.nombre_cliente || ''));
   if (row.telefono_cliente) partes.push(t.citaWaMsgTelefono + row.telefono_cliente);
-  if (row.fecha_cita) partes.push(t.citaWaMsgFecha + row.fecha_cita);
+  if (row.fecha_cita_texto) partes.push(t.citaWaMsgFecha + row.fecha_cita_texto);
+  if (row.hora_cita) partes.push(t.citaWaMsgHora + citaHoraTexto());
   if (row.ubicacion) partes.push(t.citaWaMsgUbicacion + row.ubicacion);
   if (row.ciudad) partes.push(t.citaWaMsgCiudad + row.ciudad);
   if (row.accion) partes.push(t.citaWaMsgAccion + row.accion);
@@ -5522,10 +5574,13 @@ $('#citaSaveBtn')?.addEventListener('click', async () => {
   }
   const usuario = estaConectado() ? localStorage.getItem(LOGIN_STORE) : T[lang].citaVisitante;
   const vendedor = $('#cita-vendedor').value || null;
+  const fechaIso = $('#cita-fecha').value || null;
   const row = {
     nombre_cliente: nombre,
     telefono_cliente: $('#cita-tel').value.trim() || null,
-    fecha_cita: $('#cita-fecha').value || null,
+    fecha_cita: fechaIso,
+    fecha_cita_texto: fechaIso ? citaFechaConNombreDia(fechaIso) : null,
+    hora_cita: $('#cita-hora').value || null,
     ciudad: $('#cita-ciudad').value.trim() || null,
     ubicacion: $('#cita-ubicacion').value.trim() || null,
     vendedor_asignado: vendedor,
