@@ -852,10 +852,21 @@ section[id]{scroll-margin-top:148px}
 .rotv-sname{font-family:'Marcellus',Georgia,serif;font-size:21px;line-height:1.2;color:var(--ink)}
 .rotv-sname:empty{display:none}
 .rotv-snum{color:var(--muted);font-size:14px}
+.rotv-cita-row{margin-top:18px}
+.rotv-cita-row .btn{width:100%}
 @media (max-width:640px){
   .rotv-dname{font-size:21px}
   .rotv-savatar{width:72px;height:72px}
 }
+
+.cita-tag-row{display:flex;flex-wrap:wrap;gap:8px}
+.cita-tag{border:2px solid transparent;border-radius:999px;padding:7px 16px;font-size:13.5px;font-weight:700;cursor:pointer;transition:transform .15s ease,box-shadow .15s ease;opacity:.55}
+.cita-tag:hover{opacity:.85}
+.cita-tag.on{opacity:1;box-shadow:0 2px 8px rgba(0,0,0,.18);transform:translateY(-1px)}
+.cita-tag-cliente{background:#e3f0ff;color:#0b4d91;border-color:#0b4d91}
+.cita-tag-muy{background:#e4f8ea;color:#15803d;border-color:#15803d}
+.cita-tag-interesado{background:#fff6d9;color:#9a6a00;border-color:#9a6a00}
+.cita-tag-poco{background:#fde8e8;color:#b3261e;border-color:#b3261e}
 
 /* Filtros de "Rotación Visual": Ciudad y Tipo de Propiedad, cada uno en
    su propia línea bajo el escenario, con el mismo estilo de botón "pill"

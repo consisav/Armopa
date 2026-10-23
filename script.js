@@ -578,6 +578,7 @@ const T = {
     fpErrNombre: 'Por favor escribe el nombre completo del propietario.', fpErrGuardar: 'No pudimos guardar la autorización. Intenta de nuevo.',
     citaBtnHtml: '📅 Agendar Cita', citaTitle: 'Agendar Cita', citaSub: 'Completa los datos para agendar una cita. Te confirmaremos los detalles por WhatsApp.',
     citaNombreCliente: 'Nombre de cliente', citaTelefono: 'Teléfono', citaFecha: 'Fecha de cita', citaCiudad: 'Ciudad', citaCiudadPh: 'Ej. Ciudad de Guatemala',
+    citaEtiqueta: 'Etiqueta', citaEtqCliente: 'Cliente', citaEtqMuyInteresado: 'Muy interesado', citaEtqInteresado: 'Interesado', citaEtqPocoInteresado: 'Poco interesado',
     citaUbicacion: 'Nombre de la ubicación', citaUbicacionPh: 'Ej. Apartamento en Edificio Leben, Zona 15',
     citaAsesor: 'Asesor de', citaSinVendedor: 'Sin vendedor asignado',
     citaAccion: 'Acción', citaAccionPh: 'Describe el motivo o detalles de la cita…',
@@ -900,6 +901,7 @@ const T = {
     fpErrNombre: "Please enter the owner's full name.", fpErrGuardar: 'We could not save the authorization. Please try again.',
     citaBtnHtml: '📅 Schedule Visit', citaTitle: 'Schedule Visit', citaSub: 'Fill in your details to schedule a visit. We will confirm the details with you by WhatsApp.',
     citaNombreCliente: 'Client name', citaTelefono: 'Phone', citaFecha: 'Visit date', citaCiudad: 'City', citaCiudadPh: 'E.g. Guatemala City',
+    citaEtiqueta: 'Tag', citaEtqCliente: 'Client', citaEtqMuyInteresado: 'Very interested', citaEtqInteresado: 'Interested', citaEtqPocoInteresado: 'Slightly interested',
     citaUbicacion: 'Location name', citaUbicacionPh: 'E.g. Apartment at Leben Building, Zone 15',
     citaAsesor: 'Advisor', citaSinVendedor: 'No advisor assigned',
     citaAccion: 'Notes', citaAccionPh: 'Describe the reason or details for the visit…',
@@ -2132,6 +2134,8 @@ function rotVisualOcultarDetalle() {
   if (d) d.hidden = true;
   const s = $('#rotVisualDetSeller');
   if (s) s.hidden = true;
+  const c = $('#rotVisualCitaRow');
+  if (c) c.hidden = true;
 }
 
 /* Pinta, debajo de las fotografías de Rotación Visual, el detalle completo
@@ -2185,6 +2189,9 @@ function rotVisualPintarDetalle() {
   const sWa = $('#rotVisualDetSWa');
   sWa.hidden = !sWaDigits;
   if (sWaDigits) sWa.href = 'https://wa.me/' + (sWaDigits.length === 8 ? '502' + sWaDigits : sWaDigits) + '?text=' + encodeURIComponent(t.waMsg + (it.nombre || r.nombre || ''));
+
+  const citaRow = $('#rotVisualCitaRow');
+  if (citaRow) citaRow.hidden = false;
 }
 
 function rotVisualAplicarFiltro() {
@@ -5427,28 +5434,64 @@ function poblarCitaCiudadList() {
   });
 }
 
-const openCitaModal = () => {
+let citaEtiquetaSel = 'cliente';
+
+function poblarCitaEtiquetaTabs() {
+  const wrap = $('#citaEtiquetaTabs');
+  if (!wrap) return;
+  wrap.querySelectorAll('.cita-tag').forEach((b) => {
+    b.classList.toggle('on', b.dataset.val === citaEtiquetaSel);
+  });
+}
+$('#citaEtiquetaTabs')?.addEventListener('click', (e) => {
+  const btn = e.target.closest('.cita-tag');
+  if (!btn) return;
+  citaEtiquetaSel = btn.dataset.val;
+  poblarCitaEtiquetaTabs();
+});
+
+/* prefill: datos opcionales de una propiedad ya seleccionada (desde
+   Rotación Visual) para precargar ubicación/ciudad/asesor al agendar. */
+const openCitaModal = (prefill) => {
   citaModal.hidden = false;
   citaGuardadaId = null;
   $('#cita-nombre').value = '';
   $('#cita-tel').value = '';
   $('#cita-fecha').value = '';
-  $('#cita-ciudad').value = '';
-  $('#cita-ubicacion').value = '';
+  $('#cita-ciudad').value = (prefill && prefill.ciudad) || '';
+  $('#cita-ubicacion').value = (prefill && prefill.ubicacion) || '';
   $('#cita-accion').value = '';
   $('#cita-estado').value = 'agendado';
+  citaEtiquetaSel = 'cliente';
+  poblarCitaEtiquetaTabs();
   $('#citaMsg').textContent = '';
   $('#citaMsg').style.color = '';
   $('#citaWaBtn').hidden = true;
   poblarCitaVendedorSelect();
   poblarCitaCiudadList();
-  if (!vendedoresCatalogoCargado) cargarVendedoresCatalogo().then(poblarCitaVendedorSelect);
+  if (prefill && prefill.vendedor) $('#cita-vendedor').value = prefill.vendedor;
+  if (!vendedoresCatalogoCargado) cargarVendedoresCatalogo().then(() => {
+    poblarCitaVendedorSelect();
+    if (prefill && prefill.vendedor) $('#cita-vendedor').value = prefill.vendedor;
+  });
 };
 const closeCitaModal = () => { citaModal.hidden = true; };
-$('#abrirAgendarCitaBtn')?.addEventListener('click', openCitaModal);
 $('#citaClose')?.addEventListener('click', closeCitaModal);
 $('#citaScrim')?.addEventListener('click', closeCitaModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && citaModal && !citaModal.hidden) closeCitaModal(); });
+
+/* Botón "Agendar Cita" dentro de Rotación Visual: precarga la ubicación,
+   ciudad y asesor de la propiedad actualmente mostrada. */
+$('#rotVisualAgendarCitaBtn')?.addEventListener('click', () => {
+  const it = rotVisualItems[rotVisualIdx];
+  const r = it && it.row;
+  const prefill = {
+    ciudad: (r && r.ciudad) || '',
+    ubicacion: (it && it.nombre) || (r && r.nombre) || '',
+    vendedor: (r && r.vendedor_nombre) || ''
+  };
+  openCitaModal(prefill);
+});
 
 function citaWaNumero(nombreVendedor) {
   const v = vendedoresCatalogo.find((x) => (x.nombre || '').trim() === (nombreVendedor || '').trim());
@@ -5488,6 +5531,7 @@ $('#citaSaveBtn')?.addEventListener('click', async () => {
     vendedor_asignado: vendedor,
     accion: $('#cita-accion').value.trim() || null,
     estado: $('#cita-estado').value || 'agendado',
+    etiqueta: citaEtiquetaSel || 'cliente',
     usuario,
     estado_fecha: new Date().toISOString()
   };

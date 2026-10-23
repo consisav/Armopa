@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023c">
+<link rel="stylesheet" href="styles.css?v=20261023d">
 </head>
 <body>
 
@@ -203,7 +203,6 @@
         <p class="car-hint" data-i18n="carHint"></p>
         <button class="btn btn-dark" type="button" id="abrirBuscarPropBtn" data-i18n-html="catalogHtml"></button>
         <button class="btn btn-dark" type="button" id="abrirBuscarServBtn" data-i18n-html="btnBuscarServHtml"></button>
-        <button class="btn btn-gold" type="button" id="abrirAgendarCitaBtn" data-i18n-html="citaBtnHtml"></button>
       </div>
       <div class="car-row">
         <div class="car car-3d" id="car">
@@ -1369,6 +1368,15 @@
       <div class="fld"><label for="cita-nombre" data-i18n="citaNombreCliente"></label><input id="cita-nombre" type="text"></div>
       <div class="fld"><label for="cita-tel" data-i18n="citaTelefono"></label><input id="cita-tel" type="tel" placeholder="+502 0000 0000"></div>
     </div>
+    <div class="fld" style="margin-top:16px">
+      <label data-i18n="citaEtiqueta"></label>
+      <div class="cita-tag-row" id="citaEtiquetaTabs">
+        <button type="button" class="cita-tag cita-tag-cliente" data-val="cliente" data-i18n="citaEtqCliente"></button>
+        <button type="button" class="cita-tag cita-tag-muy" data-val="muy_interesado" data-i18n="citaEtqMuyInteresado"></button>
+        <button type="button" class="cita-tag cita-tag-interesado" data-val="interesado" data-i18n="citaEtqInteresado"></button>
+        <button type="button" class="cita-tag cita-tag-poco" data-val="poco_interesado" data-i18n="citaEtqPocoInteresado"></button>
+      </div>
+    </div>
     <div class="x-row" style="margin-top:16px">
       <div class="fld"><label for="cita-fecha" data-i18n="citaFecha"></label><input id="cita-fecha" type="date"></div>
       <div class="fld"><label for="cita-ciudad" data-i18n="citaCiudad"></label><input id="cita-ciudad" type="text" list="citaCiudadList" data-i18n-ph="citaCiudadPh"><datalist id="citaCiudadList"></datalist></div>
@@ -1775,6 +1783,9 @@
       <div class="rotv-sinfo"><p class="rotv-slabel" data-i18n="rotVisualContactoVendedor"></p><p class="rotv-sname" id="rotVisualDetSName"></p><p class="rotv-snum" id="rotVisualDetSNum"></p></div>
       <a class="btn btn-wa" id="rotVisualDetSWa" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="rotVisualWa"></span></a>
     </div>
+    <div class="rotv-cita-row" id="rotVisualCitaRow" hidden>
+      <button class="btn btn-gold" type="button" id="rotVisualAgendarCitaBtn" data-i18n-html="citaBtnHtml"></button>
+    </div>
   </div>
 </div>
 
@@ -1952,6 +1963,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0079"></script>
+<script src="script.js?v=20261023-0080"></script>
 </body>
 </html>
