@@ -5955,6 +5955,22 @@ function shrink(file, max) {
 
 $('#addCityBtn').addEventListener('click', () => openProp());
 
+/* "Ingreso de Ciudades" e "Ingreso de Propiedades" en el menú de
+   Administración > Catálogos: ambas abren el mismo panel de administración
+   de ciudades/ubicaciones (openProp), empezando en la pantalla de
+   ciudades; desde allí se entra a una ciudad para administrar sus
+   propiedades. */
+$('#navAdminIngresoCiudadesBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  openProp();
+});
+$('#navAdminIngresoPropiedadesBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  openProp();
+});
+
 /* Datos para precalificar un préstamo (Gestión de Préstamos Bancarios) */
 (function () {
   const btn = $('#preqBtn'), box = $('#preqBox'), hide = $('#preqHide');
