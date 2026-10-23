@@ -815,6 +815,32 @@ section[id]{scroll-margin-top:148px}
   .rotv-item{width:190px;height:300px;margin:-150px 0 0 -95px}
 }
 
+/* Detalle de la propiedad activa en "Rotación Visual" (dirección, mapa,
+   precio, descripción y contacto del vendedor), debajo del escenario de
+   fotos y antes de los filtros de Ciudad/Tipo. */
+.rotv-info{margin-top:20px}
+.rotv-op{display:inline-block;margin-bottom:8px;padding:4px 14px;border-radius:999px;border:1px solid var(--gold);color:var(--goldtx);font-size:13px;font-weight:600}
+.rotv-dname{font-family:'Marcellus',Georgia,serif;font-weight:400;font-size:26px;line-height:1.2;margin:0;color:var(--ink)}
+.rotv-daddr{color:var(--muted);margin:6px 0 14px}
+.rotv-prices{display:flex;gap:14px;flex-wrap:wrap;margin-top:16px}
+.rotv-price{display:flex;flex-direction:column;gap:2px;padding:14px 22px;border:1px solid var(--line);border-radius:12px;min-width:200px;background:var(--paper)}
+.rotv-price span{color:var(--muted);font-size:13px}
+.rotv-price strong{font-family:'Marcellus',Georgia,serif;font-weight:400;font-size:26px;color:var(--goldtx);line-height:1.2}
+.rotv-desc{margin-top:20px;padding-top:18px;border-top:1px solid var(--line);max-width:74ch}
+.rotv-desc h4{font-family:'Marcellus',Georgia,serif;font-weight:400;font-size:19px;color:var(--ink);margin:0 0 8px}
+.rotv-desc p{color:var(--ink);white-space:pre-line;line-height:1.7}
+.rotv-seller{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:20px;padding:16px 20px;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+.rotv-savatar{width:92px;height:92px;flex:none;border-radius:50%;object-fit:cover;border:2px solid var(--gold);display:block}
+.rotv-sinfo{flex:1;min-width:180px}
+.rotv-slabel{color:var(--muted);font-size:13px}
+.rotv-sname{font-family:'Marcellus',Georgia,serif;font-size:21px;line-height:1.2;color:var(--ink)}
+.rotv-sname:empty{display:none}
+.rotv-snum{color:var(--muted);font-size:14px}
+@media (max-width:640px){
+  .rotv-dname{font-size:21px}
+  .rotv-savatar{width:72px;height:72px}
+}
+
 /* Filtros de "Rotación Visual": Ciudad y Tipo de Propiedad, cada uno en
    su propia línea bajo el escenario, con el mismo estilo de botón "pill"
    que el resto del sitio (.loc-tab) -"Todas" siempre primero y activa
