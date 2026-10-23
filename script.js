@@ -327,7 +327,255 @@ const T = {
     txHead2: 'Tecnología que conecta.<br>Personas que te orientan.',
     txList2: ['Simplificamos tu camino inmobiliario.', 'Encuentra mejor. Decide inteligente.', 'Tu espacio ideal, de forma inteligente.', 'Conectamos oportunidades con tus necesidades.', 'Inteligencia inmobiliaria a tu alcance.'],
     txHead3: 'Hogares que inspiran.<br>Confianza que perdura.',
-    txList3: ['Mucho más que paredes, tu próximo hogar.', 'Espacios para tus mejores recuerdos.', 'Construyendo el escenario de tu vida.', 'Tu aliado de confianza en cada paso.', 'Asesoría honesta para tu hogar ideal.']
+    txList3: ['Mucho más que paredes, tu próximo hogar.', 'Espacios para tus mejores recuerdos.', 'Construyendo el escenario de tu vida.', 'Tu aliado de confianza en cada paso.', 'Asesoría honesta para tu hogar ideal.'],
+    /* ===== Footer / tagline ===== */
+    ftrTagline: 'Administración Inmobiliaria',
+    /* ===== Widget "Cotizar" (guardar/modificar/eliminar) ===== */
+    qSaveBtnHtml: '💾 Guardar', qModifyBtnHtml: '🔄 Modificar', qDeleteBtnHtml: '🗑️ Eliminar',
+    /* ===== Carga / error / vacío: servicios y listados ===== */
+    cargandoServicios: 'Cargando servicios...', cargando: 'Cargando…', proximamente: 'Próximamente.',
+    errCargarServicios: 'No pudimos cargar los servicios en este momento.', noHayServiciosDisponibles: 'No hay servicios disponibles',
+    seleccionaServicio: 'Selecciona un servicio…', eligeServicioLista: 'Elige un servicio de la lista.',
+    nuestrosServicios: 'Nuestros servicios', btnBuscar: 'Buscar',
+    /* ===== Precalificación bancaria (préstamo) ===== */
+    pqBtnLabel: 'Datos para precalificar un préstamo',
+    pqTitle: 'Requisitos generales para precalificación bancaria en Guatemala',
+    pqOcultar: 'Ocultar',
+    pqIntro: 'Elige el tipo de solicitante, completa los datos, adjunta los documentos en PDF que ya tengas y guarda tu expediente. Puedes volver después a actualizarlo o completar los documentos que falten.',
+    pqTipoSolicitante: 'Tipo de solicitante',
+    pqPersonaIndividual: 'Persona Individual', pqPersonaJuridica: 'Persona Jurídica (Empresa)',
+    pqTusDatos: 'Tus datos', pqDatosEmpresa: 'Datos de la empresa',
+    pqBanco: 'Banco de preferencia', pqSelecciona: 'Selecciona…',
+    pqBancoOtro: 'Otro',
+    pqMontoSolicitado: 'Monto solicitado (Q)', pqMontoPh: 'Ej. 250,000', pqMontoPhJ: 'Ej. 500,000',
+    pqDestinoCredito: 'Destino del crédito',
+    pqDestVivienda: 'Vivienda', pqDestVehiculo: 'Vehículo', pqDestConsumo: 'Consumo Personal',
+    pqDestCapitalTrabajo: 'Capital de trabajo', pqDestCompraEquipo: 'Compra de equipo', pqDestExpansion: 'Expansión del negocio',
+    pqTipoPerfil: 'Tipo de perfil', pqPerfilAsalariado: 'Asalariado', pqPerfilIndependiente: 'Independiente',
+    pqDpi: 'DPI (13 dígitos)', pqNit: 'NIT', pqNitPh: 'Ej. 1234567-8',
+    pqTelefono: 'Teléfono celular', pqCorreo: 'Correo electrónico', pqCorreoPhEmpresa: 'nombre@empresa.com',
+    pqEscolaridad: 'Grado de escolaridad',
+    pqEscSin: 'Sin estudios', pqEscPrimaria: 'Primaria', pqEscBasicos: 'Básicos', pqEscDiversificado: 'Diversificado',
+    pqEscTecnico: 'Técnico', pqEscUniversitario: 'Universitario', pqEscPostgrado: 'Postgrado (Maestría / Doctorado)', pqEscOtro: 'Otro',
+    pqProfesion: 'Profesión / Ocupación', pqProfesionPh: 'Ej. Maestro, comerciante, ingeniero…',
+    pqIdentidad: 'Identidad', pqIngresos: 'Ingresos', pqEstabilidadLaboral: 'Estabilidad laboral',
+    pqDocLegalesEmpresa: 'Documentos legales de la empresa', pqRepLegalFinanzas: 'Representante legal y finanzas',
+    pqRazonSocial: 'Razón social / Nombre de la empresa', pqRazonSocialPh: 'Ej. Inversiones ABC, S.A.',
+    pqNitEmpresa: 'NIT de la empresa',
+    pqRepNombre: 'Nombre del representante legal', pqNombreCompletoPh: 'Nombre completo',
+    pqRepDpi: 'DPI del representante legal (13 dígitos)',
+    pqSubirPdfHtml: '📎 Subir PDF', pqSinGuardar: 'Sin guardar aún',
+    pqDocDpi: 'DPI (Documento Personal de Identificación) vigente', pqDocNit: 'Número de NIT',
+    pqDocBoletas: 'Si eres asalariado: boletas o constancia de salario de los últimos 3 meses',
+    pqDocEstadosCuenta: 'Estados de cuenta bancarios recientes (usualmente los últimos 3 a 6 meses)',
+    pqDocPatenteIsr: 'Si eres independiente: patente de comercio y declaraciones de ISR',
+    pqDocCartaTrabajo: 'Carta de trabajo que indique el tiempo laborado en la empresa',
+    pqDocAntiguedad: 'Antigüedad laboral (muchos bancos piden al menos 1 año en el empleo actual)',
+    pqDocHistorial: 'Historial crediticio favorable (consulta en buró de crédito)',
+    pqDocPatenteComercioEmpresa: 'Patente de Comercio de Empresa',
+    pqDocPatenteSociedad: 'Patente de Comercio de Sociedad (si aplica)',
+    pqDocEscrituraConstitucion: 'Escritura de Constitución de la Sociedad',
+    pqDocRtu: 'RTU (Registro Tributario Unificado) de la empresa',
+    pqDocDpiRepresentante: 'DPI del Representante Legal vigente',
+    pqDocNombramientoRepresentante: 'Nombramiento del Representante Legal (vigente)',
+    pqDocPatenteComercioSociedadRep: 'Patente de Comercio y Sociedad',
+    pqDocEstadosFinancieros: 'Estados Financieros de la empresa (último periodo)',
+    pqAviso: 'Esta información es de carácter general y orientativo; no sustituye la evaluación oficial de cada banco. Con gusto te ayudamos a reunir y organizar estos documentos.',
+    pqGuardarHtml: '💾 Guardar', pqActualizarHtml: '🔄 Actualizar', pqEliminarHtml: '🗑️ Eliminar',
+    pqDescargarPdf: 'Descargar documentos en PDF',
+    pqMsgGuardando: 'Guardando…',
+    pqMsgErrorActualizar: 'Error al actualizar: ',
+    pqMsgActualizadoExito: 'Expediente actualizado con éxito.',
+    pqMsgErrorGuardar: 'Error al guardar: ',
+    pqMsgGuardadoExito: 'Expediente guardado con éxito. Ya puedes subir tus documentos en PDF.',
+    pqMsgErrorGuardarExpediente: 'Error al guardar el expediente.',
+    pqMsgNoHayExpediente: 'No hay ningún expediente guardado todavía.',
+    pqConfirmEliminar: '¿Eliminar este expediente y todos sus documentos adjuntos? Esta acción no se puede deshacer.',
+    pqMsgErrorEliminar: 'Error al eliminar: ',
+    pqMsgEliminadoExito: 'Expediente eliminado con éxito.',
+    pqMsgErrorEliminarExpediente: 'Error al eliminar el expediente.',
+    pqMsgCompletaEmpresa: 'Completa todos los campos de "Datos de la empresa" antes de guardar.',
+    pqMsgDpiRepresentante13: 'El DPI del representante legal debe tener 13 dígitos.',
+    pqMsgCompletaTusDatos: 'Completa todos los campos de "Tus datos" antes de guardar.',
+    pqMsgDpi13: 'El DPI debe tener 13 dígitos.',
+    pqMsgSubido: '✅ Subido', pqMsgSubiendoEllipsis: 'Subiendo…', pqMsgSubidoNombre: '✅ Subido: ',
+    pqMsgPrimeroGuarda: 'Primero guarda tus datos (botón "Guardar") antes de subir documentos.',
+    pqMsgSoloPdf: 'Solo se permiten archivos PDF.',
+    pqMsgErrorGuardarDoc: 'Error al guardar el documento: ',
+    pqMsgErrorGuardarCorto: 'Error al guardar',
+    pqMsgDocumentoSubidoExito: 'Documento subido con éxito.',
+    pqMsgErrorSubir: 'Error al subir',
+    pqMsgErrorSubirPdf: 'Error al subir el PDF.',
+    pqMsgNoSePudoPdf: 'No se pudo generar el PDF. Recarga la página e inténtalo de nuevo.',
+    pqPdfTituloJuridica: 'Requisitos para precalificación bancaria — Persona Jurídica (Empresa)',
+    pqPdfTituloIndividual: 'Requisitos para precalificación bancaria — Persona Individual',
+    pqPdfFooter: 'Generado el ', pqPdfFooter2: ' — Este listado es de carácter general y orientativo.',
+    pqPdfSubtitle: 'ARMOPA — Administración Inmobiliaria',
+    pqBancoLista: ['Crédito Hipotecario Nacional de Guatemala (CHN)', 'Banco de los Trabajadores (Bantrab)', 'Banco Cuscatlán Guatemala', 'Banco Industrial', 'Banco de Desarrollo Rural (Banrural)', 'Banco Internacional', 'Citibank, N.A. Sucursal Guatemala', 'Vivibanco', 'Banco Ficohsa Guatemala', 'Banco Promerica', 'Banco de Antigua', 'Banco de América Central (BAC)', 'Banco Agromercantil de Guatemala (BAM)', 'Banco G&T Continental', 'Banco Azteca de Guatemala', 'Banco INV', 'Banco Credicorp', 'Banco Nexa', 'Banco Multimoney'],
+    /* ===== Admin: acciones genéricas compartidas ===== */
+    btnModificar: 'Modificar', btnGuardar: 'Guardar', btnEliminar: 'Eliminar', btnCancelar: 'Cancelar', btnBuscarAdmin: 'Buscar', btnMostrar: 'Mostrar', btnActualizarHtml: '🔄 Actualizar',
+    adminSinNombre: 'Sin nombre', adminCargandoPuntos: 'Cargando…', adminSelecciona: 'Selecciona…',
+    adminConfirmEliminarGenerico: '¿Eliminar este registro? Esta acción no se puede deshacer.',
+    adminErrorGuardarCambio: 'No se pudo guardar el cambio.',
+    /* ===== Admin: Propiedades / Proyectos / Servicios (listados) ===== */
+    admEstado: 'Estado', admFechaCambio: 'Fecha de cambio', admUsuarioCambia: 'Usuario que cambia', admVendedorAsignado: 'Vendedor asignado', admPctComision: '% Comisión', admValorComision: 'Valor de comisión',
+    admEstadoUbicacion: 'Estado de ubicación', admPlaceholderVendedorAsignado: 'Vendedor asignado',
+    admConfirmEliminarUbicacion: '¿Eliminar esta ubicación? Esta acción no se puede deshacer.', admErrorEliminarUbicacion: 'No se pudo eliminar la ubicación.',
+    admNoHayUbicaciones: 'No hay ubicaciones que coincidan con la búsqueda.',
+    admTodasLasCiudades: 'Todas las ciudades', admTodasLasUbicaciones: 'Todas las ubicaciones', admTodosLosEstados: 'Todos los estados', admTodosLosVendedores: 'Todos los vendedores', admTodosLosPromotores: 'Todos los promotores de negocio',
+    admCliente: 'Cliente', admDescripcionRealizar: 'Descripción a realizar', admValor: 'Valor', admPrioridad: 'Prioridad', admNumSolicitud: 'No. de solicitud', admPromotorNegocios: 'Promotor de Negocios',
+    admFechaCambioEstado: 'Fecha de cambio de estado', admSinDefinir: 'Sin definir', admPrioridadAlta: 'Alta', admPrioridadMedia: 'Media', admPrioridadBaja: 'Baja',
+    admConfirmEliminarSolicitud: '¿Eliminar esta solicitud de servicio? Esta acción no se puede deshacer.', admErrorEliminarSolicitud: 'No se pudo eliminar la solicitud.',
+    admNoHayProyectos: 'No hay proyectos que coincidan con la búsqueda.', admTodosLosProyectos: 'Todos los proyectos',
+    admSeleccionaPromotor: 'Selecciona un promotor', admNoEstaEnVendedores: ' (no está en Vendedores)',
+    admNoNumSolicitud: 'No. de solicitud', admNombreCliente: 'Nombre del cliente', admFechaSolicitud: 'Fecha de solicitud', admUsuarioModifica: 'Usuario Modifica', admValorDelServicio: 'Valor del servicio',
+    admTodosLosServicios: 'Todos los servicios', admSinSolicitudesRegistradas: 'Sin solicitudes registradas', admErrorAlCargar: 'Error al cargar', admNoSePudoCargarLista: 'No se pudo cargar la lista.',
+    admTodosLosRegistros: 'Todos los registros (', admSolicitudEncontrada: ' solicitud encontrada', admSolicitudesEncontradas: ' solicitudes encontradas',
+    admEligeRegistroLista: 'Elige un registro de la lista para ver su información.', admNoHaySolicitudesCoinciden: 'No hay solicitudes que coincidan con la búsqueda.',
+    admNoSePudoCargarSolicitudes: 'No se pudo cargar la información de las solicitudes.', admNoSeEncontroSolicitud: 'No se encontró la solicitud.', admNoSePudoCargarSolicitud: 'No se pudo cargar la información de la solicitud.',
+    admServicioSinEspecificar: 'Servicio sin especificar', admSinPropiedadAsignada: 'Sin propiedad asignada',
+    /* ===== Admin: Vendedores ===== */
+    admFoto: 'Foto', admCodigoVendedor: 'Código de vendedor', admNombre: 'Nombre', admTelefono: 'Teléfono', admDireccion: 'Dirección', admFechaInicio: 'Fecha inicio', admFechaGrabacion: 'Fecha de grabación', admUsuario: 'Usuario',
+    admBancoDePago: 'Banco de pago', admNumeroCuentaBancaria: 'Número de cuenta bancaria', admTipoCuenta: 'Tipo de cuenta', admPctComisionVentas: '% Comisión por ventas',
+    admVendedorSinNombre: 'Vendedor sin nombre', admCodigoSeAsigna: 'Se asigna al guardar', admCodigoSeAsignaAutomatico: 'Se asigna automáticamente al guardar',
+    admSeAsignaAutomaticoFecha: 'Se asigna automáticamente al guardar (', admUsuarioActualFallback: 'usuario actual', admSeGrabaAutomaticamente: 'Se graba automáticamente (',
+    admSubirFoto: 'Subir foto', admSubiendoFoto: 'Subiendo…', admQuitarFoto: 'Quitar foto', admPlaceholderNombreVendedor: 'Nombre del vendedor', admPlaceholderDireccion: 'Dirección',
+    admConfirmEliminarVendedor: '¿Eliminar este vendedor? Esta acción no se puede deshacer.', admErrorEliminarVendedor: 'No se pudo eliminar el vendedor.', admErrorSubirFoto: 'No se pudo subir la foto.',
+    admEscribeNombreVendedor: 'Escribe el nombre del vendedor.', admErrorGuardarVendedor: 'No se pudo guardar el vendedor.',
+    admNoHayVendedores: 'No hay vendedores que coincidan con la búsqueda.', admBuscarPorNombrePh: 'Buscar por nombre', admAgregarVendedor: '+ Agregar vendedor',
+    admMonetaria: 'Monetaria', admAhorros: 'Ahorros', admTransferencia: 'Transferencia', admCheque: 'Cheque', admEfectivo: 'Efectivo',
+    /* ===== Admin: Tipos de comisión ===== */
+    admNegocio: 'Negocio', admTipoSinNombre: 'Tipo sin nombre', admPctComisionDefecto: '% Comisión por defecto', admPlaceholderNombreTipoComision: 'Ej. Venta directa, Remodelación…',
+    admConfirmEliminarTipoComision: '¿Eliminar este tipo de comisión? Esta acción no se puede deshacer.', admErrorEliminarTipoComision: 'No se pudo eliminar el tipo de comisión.',
+    admEscribeNombreTipoComision: 'Escribe el nombre del tipo de comisión.', admSeleccionaNegocio: 'Selecciona el negocio.', admErrorGuardarTipoComision: 'No se pudo guardar el tipo de comisión.',
+    admNoHayTiposComision: 'No hay tipos de comisión que coincidan con la búsqueda.', admAgregarTipoComision: '+ Agregar tipo de comisión', admTodosLosNegocios: 'Todos los negocios',
+    admNegocioPropiedades: 'Propiedades', admNegocioProyectos: 'Proyectos', admNegocioServicios: 'Servicios',
+    /* ===== Admin: Ingreso de Ciudades / Propiedades ===== */
+    admNuevaCiudad: '+ Nueva ciudad', admBuscarCiudadPh: 'Buscar ciudad...', admNoSeEncontraronCiudades: 'No se encontraron ciudades.',
+    admNombreCiudadLbl: 'Nombre de la ciudad', admNombreCiudadPh: 'Ej. Cobán', admFotoPortadaOpcional: 'Foto de portada (opcional)', admElegirFotoHtml: '📷 Elegir foto',
+    admEscribeNombreCiudad: 'Escribe el nombre de la ciudad.', admGuardandoEllipsis: 'Guardando…', admErrorGuardarGenerico: 'Error al guardar: ', admErrorGuardarCiudad: 'Error al guardar la ciudad.',
+    admCiudadYFotoGuardadas: 'Ciudad y foto guardadas con éxito.', admCiudadAgregada: 'Ciudad agregada con éxito.',
+    admIngresoPropiedadesTitulo: 'Ingreso de Propiedades', admEnQueCiudadPropiedades: '¿En qué ciudad vas a ingresar propiedades?',
+    admCiudades: 'Ciudades', admAgregaPrimeraCiudad: 'Agrega tu primera ciudad', admCiudadesSufijo: 'ciudad(es)',
+    admFotoPortada: 'Foto de portada', admActualizar: 'Actualizar', admNuevoNombreCiudad: 'Nuevo nombre para la ciudad:', admCiudadActualizada: 'Ciudad actualizada con éxito.', admErrorActualizarCiudad: 'Error al actualizar la ciudad: ', admErrorActualizarCiudadGenerico: 'Error al actualizar la ciudad.',
+    admConfirmEliminarCiudad: '¿Eliminar la ciudad "', admConfirmEliminarCiudad2: '"? Esta acción no se puede deshacer.', admCiudadEliminada: 'Ciudad eliminada con éxito.', admErrorEliminarCiudad: 'Error al eliminar la ciudad: ', admErrorEliminarCiudadGenerico: 'Error al eliminar la ciudad.',
+    admVolverCiudades: '← Ciudades', admBuscarUbicacionPh: 'Buscar ubicación por nombre, sector o zona...',
+    admResultadosBusqueda: 'Resultados de tu búsqueda (', admVerTodasUbicaciones: 'Ver todas las ubicaciones', admNoSeEncontraronUbicaciones: 'No se encontraron ubicaciones para "',
+    admSeleccionaOAgregaUbicacion: 'Selecciona o agrega una ubicación primero.', admUbicacionGuardadaExito: 'Ubicación guardada con éxito.', admUbicacionActualizadaExito: 'Ubicación actualizada con éxito.', admErrorGuardarUbicacion: 'Error al guardar la ubicación.',
+    admGestionInterna: 'Gestión interna', admFechaCambioEstadoLbl: 'Fecha cambio de estado: ', admUsuarioCambiaEstadoLbl: 'Usuario que cambia el estado: ',
+    admTipoPropiedadLbl: 'Tipo de propiedad', admSectorLbl: 'Sector', admZonaLbl: 'Zona', admValorComisionLbl: 'Valor de comisión',
+    ubicEstLabels: { activa: 'Activa', arrendada: 'Arrendada', vendida: 'Vendida', suspendida: 'Suspendida', baja: 'Baja' },
+    solEstLabels: { solicitado: 'Solicitado', presupuesto_enviado: 'Enviado presupuesto', aprobado: 'Aprobado', en_proceso: 'En proceso', ejecutado: 'Ejecutado', anulado: 'Anulado' },
+    ubicEstActiva: 'Activa', ubicEstArrendada: 'Arrendada', ubicEstVendida: 'Vendida', ubicEstSuspendida: 'Suspendida', ubicEstBaja: 'Baja',
+    pTipoPh: 'Ej. Casa, Local comercial, Finca cafetalera…', pSectorPh: 'Ej. Cayalá, Vista Hermosa…', pZonaPh: 'Ej. Zona 10, Zona 4…',
+    admPropTituloModal: 'Propiedades — Listado general', admPropSubtituloModal: 'Estado, seguimiento y comisión de cada ubicación registrada.',
+    admProyTituloModal: 'Proyectos — Listado general', admProySubtituloModal: 'Seguimiento, vendedor y comisión de cada proyecto registrado.',
+    admServTituloModal: 'Servicios — Listado general', admServSubtituloModal: 'Estado, vendedor y comisión de cada solicitud de servicio.',
+    admVendTituloModal: 'Vendedores — Listado general', admVendSubtituloModal: 'Código, contacto y fotografía de cada vendedor registrado.',
+    admTipoComTituloModal: 'Tipos de comisión — Catálogo', admTipoComSubtituloModal: 'Tipos de comisión según el negocio: Propiedades, Proyectos o Servicios.',
+    admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
+    admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
+    admSeleccionaVendedor: 'Selecciona un vendedor',
+    /* ===== Solicitud de Remodelación (fr-) ===== */
+    frTitulo: 'Solicitud de Remodelación', frSubtitulo: 'Cuéntanos qué quieres remodelar y adjunta fotografías para que podamos ayudarte a planificar, coordinar y supervisar el proyecto.',
+    frNombreCliente: 'Nombre Cliente', frDetalles: 'Detalles que se desean de la remodelación', frDetallesPh: 'Ej. Remodelar cocina y sala, cambiar piso, ampliar un cuarto…',
+    frFotosActuales: 'Adjuntar fotografías (estado actual)', frFotosReferencia: 'Adjuntar fotografías (referencia / inspiración)', xSubirFotosHtml: '📷 Subir fotografías',
+    frTiempoEstimado: 'Tiempo estimado de remodelación', frSelecciona: 'Selecciona…', frT12sem: '1 a 2 semanas', frT34sem: '3 a 4 semanas', frT12mes: '1 a 2 meses', frT36mes: '3 a 6 meses', frTMas6mes: 'Más de 6 meses', frTNoSeguro: 'No estoy seguro',
+    frPresupuestoEstimado: 'Presupuesto estimado de remodelación (Q)', frEnviadaOk: 'Solicitud enviada correctamente. Gracias.',
+    /* ===== Adaptamos tu presupuesto (pp-) ===== */
+    ppSubtitulo: 'Cuéntanos qué deseas realizar y diseñaremos alternativas de acuerdo con tus necesidades y objetivos.', ppPresupuestoH: 'Presupuesto',
+    ppValorPresupuesto: 'Valor del presupuesto (Q)', ppNombreCliente: 'Nombre del cliente', ppFecha: 'Fecha',
+    ppQueDeseasRealizar: '¿Qué deseas realizar con una propiedad?', ppOpComprar: 'Comprar', ppOpRentar: 'Rentar', ppOpRemodelar: 'Remodelar', ppOpServiciosEspeciales: 'Servicios especiales', ppOpEmprendimiento: 'Emprendimiento financiero',
+    ppDescribeRealizar: 'Describe lo que deseas realizar', ppDescribeRealizarPh: 'Cuéntanos con el mayor detalle posible qué necesitas…', ppAdjuntarPdf: 'Adjuntar PDF (opcional)',
+    ppSeleccionaQueDeseas: 'Por favor selecciona qué deseas realizar con una propiedad.',
+    /* ===== Mensajes compartidos: formularios de solicitud (fr/pp/cs) ===== */
+    escribeNombreCliente: 'Por favor escribe el nombre del cliente.', errorEnviarSolicitud: 'No pudimos enviar tu solicitud. Intenta de nuevo.',
+    soloArchivosPdf: 'Solo se permiten archivos PDF.', subiendoEllipsis: 'Subiendo…', errorSubirArchivo: 'Error al subir', subidoPrefix: 'Subido: ',
+    /* ===== Construimos en tu terreno (cs-) ===== */
+    csSubtitulo: 'Cuéntanos los datos generales de tu proyecto; con gusto te ayudamos con el diseño, el presupuesto y la ejecución.',
+    csValorPresupuesto: 'Valor Presupuesto (Q)', csNombreCompleto: 'Nombre completo', csFechaInicioEstimada: 'Fecha de Inicio estimada',
+    csQueDeseasHacer: 'Describe qué deseas hacer en la construcción', csQueDeseasHacerPh: 'Ej. Construir mi casa de habitación en un terreno propio de 300 mts2…',
+    csMetrosCuadrados: 'Metros cuadrados', csDescribeConstruir: 'Describe lo que deseas construir', csDescribeConstruirPh: 'Ej. Casa moderna de un nivel, fachada blanca con detalles de madera, techo plano, ventanales grandes, 3 habitaciones…',
+    csVistaIaAlt: 'Vista exterior generada con IA', csFotosTerreno: 'Fotografías del terreno (imágenes o PDF)', csSubirFotosPdfHtml: '📎 Subir fotografías / PDF',
+    csReqBtnHtml: '📋 Requisitos para construir', csGenerarDisenoHtml: '🎨 Generar diseño con IA',
+    csPasosTitulo: 'Pasos para construir una propiedad en Guatemala', csPasosSubtitulo: 'Esta guía fue generada con IA a partir del proceso habitual ante municipalidades, colegios profesionales y entidades de servicios en Guatemala. Es informativa y puede variar según el municipio y el tipo de proyecto.',
+    csPaso1: '<b>Verificar el uso de suelo y el Plan de Ordenamiento Territorial (POT)</b><br><small>Confirma en la municipalidad que el terreno permite el tipo de construcción que deseas.</small>',
+    csPaso2: '<b>Reunir la documentación legal del terreno</b><br><small>Escritura registrada, certificación del RGP y solvencia del IUSI al día.</small>',
+    csPaso3: '<b>Contratar a un profesional colegiado (arquitecto o ingeniero civil)</b><br><small>Debe estar activo en el CIG (Colegio de Ingenieros) o CAG (Colegio de Arquitectos).</small>',
+    csPaso4: '<b>Elaborar el anteproyecto y los planos</b><br><small>Diseño arquitectónico, planos estructurales, eléctricos e hidrosanitarios.</small>',
+    csPaso5: '<b>Realizar un estudio de suelos</b><br><small>Recomendado para definir el tipo de cimentación adecuado.</small>',
+    csPaso6: '<b>Gestionar la licencia municipal de construcción</b><br><small>Presentar planos, boleta de pago de arbitrios y demás requisitos ante la municipalidad correspondiente.</small>',
+    csPaso7: '<b>Confirmar factibilidad de servicios</b><br><small>Agua, drenajes y energía eléctrica (EEGSA u otra distribuidora local).</small>',
+    csPaso8: '<b>Iniciar la obra con bitácora y supervisión</b><br><small>Llevar bitácora de obra y supervisión periódica del profesional responsable.</small>',
+    csPaso9: '<b>Solicitar la recepción de obra / permiso de habitabilidad</b><br><small>Trámite final ante la municipalidad al concluir la construcción.</small>',
+    csPaso10: '<b>Registrar las mejoras en el Registro General de la Propiedad</b><br><small>Actualiza el valor y la descripción del inmueble ya construido.</small>',
+    csPasosHint: 'Para tu caso particular, te recomendamos confirmar los pasos exactos con un profesional colegiado o con nuestro equipo.',
+    csDescribePrimero: 'Por favor describe primero lo que deseas construir.', csEscribeNombreCompleto: 'Por favor escribe el nombre completo.',
+    csGenerandoVista: 'Generando vista exterior con IA… esto puede tardar unos segundos.', csVistaGenerada: 'Vista exterior generada con IA (referencial):', csErrorGenerarVista: 'No pudimos generar la vista exterior en este momento. Intenta de nuevo más tarde.',
+    /* ===== Admin: Comisiones Ventas / Generadas / Pagadas ===== */
+    comVentasTituloModal: 'Comisiones Ventas — Listado general', comVentasSubtituloModal: 'Comisiones por vendedor, a partir de una fecha y por tipo.',
+    comGenTituloModal: 'Comisiones Generadas — Listado general', comGenSubtituloModal: 'Comisiones ya generadas, su estado de pago y los datos de la operación bancaria.',
+    comPagTituloModal: 'Comisiones Pagadas', comPagSubtituloModal: 'Historial de comisiones por vendedor, fecha y estado.',
+    comTipoTodas: 'Todas', comTipoPropiedades: 'Propiedades', comTipoProyectos: 'Proyectos', comTipoServicios: 'Servicios',
+    comLblVendedor: 'Vendedor', comLblFechaInicial: 'Fecha inicial', comLblFechaFinal: 'Fecha final', comLblTipoComision: 'Tipo de comisión', comLblEstado: 'Estado',
+    comThDetalle: 'Detalle', comThFecha: 'Fecha', comThVendedor: 'Vendedor', comThPctComision: '% Comisión', comThValorComision: 'Valor de comisión', comThEstado: 'Estado', comThPagarComision: 'Pagar comisión',
+    comSubtotalPrefix: 'Subtotal ', comGrupoPropiedades: 'Propiedades', comGrupoProyectos: 'Proyectos', comGrupoServicios: 'Servicios', comGrupoProyectosServicios: 'Proyectos y Servicios', comSinVendedor: '(Sin vendedor)',
+    comTotalGenerado: 'Total de comisiones generadas', comTotalAPagar: 'Total de comisiones a pagar', comBtnGenerar: 'Generar Comisiones',
+    comNoHayMarcadas: 'No hay comisiones marcadas para pagar.', comConfirmGenerar: '¿Confirmas generar {n} comisión(es) por un total de {v}?', comGenerando: 'Generando comisiones…',
+    comGeneradasOk: 'Se generaron {n} comisión(es). Da seguimiento al pago en Comisiones Generadas.', comErrorGenerar: 'No se pudo generar la comisión. Intenta de nuevo.',
+    comNoHayComisionesBusqueda: 'No hay comisiones que coincidan con la búsqueda.', comErrorCargarComisiones: 'No se pudo cargar la información de comisiones.',
+    comEstPendiente: 'Pendiente de pago', comEstPagado: 'Pagado', comEstSuspendido: 'Suspendido', comEstAnulado: 'Anulado',
+    comNoHayGeneradasBusqueda: 'No hay comisiones generadas que coincidan con la búsqueda.', comErrorCargarGeneradas: 'No se pudo cargar la información de comisiones generadas.',
+    comLblBanco: 'Banco', comLblCuentaBancaria: 'Cuenta bancaria', comLblNumeroCheque: 'Número de cheque', comLblFechaPago: 'Fecha de pago', comLblFechaOperacion: 'Fecha operación', comLblUsuarioPaga: 'Usuario que paga', comLblFechaGenerada: 'Fecha generada',
+    comResumenPagoPorVendedor: 'Resumen de pago por vendedor', comLblTotalPendiente: 'Total pendiente', comLblFormaPago: 'Forma de pago', comPlaceholderNumeroCuenta: 'Número de cuenta', comPlaceholderNumeroCheque: 'Número de cheque',
+    comBtnPagar: 'Pagar', comConfirmPagar: '¿Confirmas el pago de {n} comisión(es) a {v} por un total de {t}?', comProcesando: 'Procesando…', comPagoRegistrado: 'Pago registrado.', comErrorPagoVendedor: 'No se pudo registrar el pago.', comErrorGuardarPct: 'No se pudo guardar el % de comisión.',
+    comNoHayPagadasBusqueda: 'No hay comisiones que coincidan con la búsqueda.', comErrorCargarPagadas: 'No se pudo cargar la información de comisiones pagadas.',
+    /* ===== Admin: Reportes ===== */
+    repPropTituloModal: 'Reporte — Listado de Propiedades', repPropSubtituloModal: 'Inventario completo de propiedades y su estado.',
+    repServTituloModal: 'Reporte — Estado de Servicios', repServSubtituloModal: 'Solicitudes de servicio y su estado actual.',
+    repCliTituloModal: 'Reporte — Seguimiento Clientes', repCliSubtituloModal: 'Clientes registrados y su actividad: solicitudes y cotizaciones.',
+    repLblCiudad: 'Ciudad', repLblTipoOperacion: 'Tipo de operación', repLblEstado: 'Estado', repLblPrioridad: 'Prioridad', repLblFechaInicial: 'Fecha inicial', repLblFechaFinal: 'Fecha final',
+    repTodasLasCiudades: 'Todas las ciudades', repTodasLasOperaciones: 'Todas las operaciones', repTodosLosEstados: 'Todos los estados', repTodasLasPrioridades: 'Todas las prioridades',
+    repOpRenta: 'Renta', repOpVenta: 'Venta', repOpAmbos: 'Renta y venta', repPrioAlta: 'Alta', repPrioMedia: 'Media', repPrioBaja: 'Baja',
+    repBtnImprimirHtml: '🖨️ Imprimir', repBtnBuscarCliente: 'Buscar cliente', repBuscarClientePh: 'Buscar por nombre o usuario',
+    repNoDataImprimir: 'No hay datos para imprimir. Primero presiona "Mostrar".', repVentanaBloqueada: 'El navegador bloqueó la ventana de impresión. Permite ventanas emergentes para este sitio e inténtalo de nuevo.',
+    repUsuarioLbl: 'Usuario: ',
+    repNoHayPropiedadesBusqueda: 'No hay propiedades que coincidan con la búsqueda.', repErrorCargarPropiedades: 'No se pudo cargar el listado de propiedades.',
+    repThNo: 'No.', repThNombreUbicacion: 'Nombre de ubicación', repThVendedor: 'Vendedor', repThTipoOperacion: 'Tipo de operación', repThValor: 'Valor', repThEstado: 'Estado', repThFechaCreacion: 'Fecha de creación', repThFotos: 'Fotos',
+    repTituloReportePropiedades: 'Reporte — Listado de Propiedades',
+    repNoHaySolicitudesServicioBusqueda: 'No hay solicitudes de servicio que coincidan con la búsqueda.', repErrorCargarServicios: 'No se pudo cargar el estado de servicios.',
+    repSinTipoServicio: '(Sin tipo de servicio)', repTituloReporteServicios: 'Reporte — Estado de Servicios',
+    repThCliente: 'Cliente', repThTelefono: 'Teléfono', repThNumSolicitud: 'N.° de solicitud', repThPrioridad: 'Prioridad', repThValor2: 'Valor', repThInicio: 'Inicio', repThFechaSolicitud: 'Fecha de solicitud',
+    repCliNombreFallback: 'Cliente', repThCodigo: 'Código', repThRegistrado: 'Registrado', repThSolicitudesServicio: 'Solicitudes de servicio', repThCotizaciones: 'Cotizaciones', repThUltimaActividad: 'Última actividad',
+    repNoHayClientesBusqueda: 'No hay clientes que coincidan con la búsqueda.', repErrorCargarClientes: 'No se pudo cargar el seguimiento de clientes.',
+    buscarServSub: 'Elige uno de los servicios que ofrecemos para ir directamente a su información.',
+    authTitle: 'Formulario de Autorización de Promoción y Venta', authSub: 'Como propietario del inmueble que se describe a continuación, autorizo a Armopa Group a promocionar en Alquiler y/o Venta mi inmueble por los medios que este considere pertinentes.',
+    fpDatosPropietario: 'Datos del Propietario', fpNombreCompleto: 'Nombre completo', fpFechaNacimiento: 'Fecha de Nacimiento', fpDpi: 'DPI/CUI o Pasaporte', fpRepLegal: 'Representante Legal', fpRazonSocial: 'Razón Social', fpNit: 'NIT', fpTelMovil: 'Teléfono móvil', fpCorreo: 'Correo Electrónico', fpDomicilio: 'Dirección domicilio actual',
+    fpDescripcionProp: 'Descripción Propiedad', fpTipo: 'Tipo', fpTipoPh: 'Ej. Casa, Apartamento, Terreno…', fpDireccion: 'Dirección', fpNumero: 'Número', fpFinca: 'Finca', fpFolio: 'Folio', fpLibro: 'Libro', fpGravamen: 'Gravamen', fpInstitucion: 'Institución', fpMonto: 'Monto',
+    fpMFrente: 'Mts. Frente', fpMFondo: 'Mts. Fondo', fpMConst: 'Mts. Construcción', fpTerrenoVrs2: 'Terreno Vrs2', fpMts2: 'Mts2', fpNiveles: 'Niveles', fpEstacionamientos: 'Estacionamientos', fpHabitaciones: 'Habitaciones', fpBanos: 'Baños',
+    fpLavanderia: 'Lavandería', fpLineaBlanca: 'Línea Blanca', fpHabServicio: 'Habitación Servicio', fpBodega: 'Bodega', fpAmueblado: 'Amueblado', fpBalcon: 'Balcón y/o Terraza / Jardín', fpMascota: 'Mascota',
+    fpAmenidades: 'Amenidades del Edificio / Condominio', fpAmMotorLobby: 'Motor Lobby', fpAmPiscina: 'Piscina', fpAmSauna: 'Sauna', fpAmJuegos: 'Juegos de Niños', fpAmAreaVerde: 'Área Verde', fpAmSalon: 'Salón Usos Múltiples', fpAmGimnasio: 'Gimnasio', fpAmBusiness: 'Business Center', fpAmCanchas: 'Canchas Deportivas', fpAmCisterna: 'Cisterna y/o Pozo', fpAmParqueos: 'Número de parqueos de visita',
+    fpPrecioVenta: 'Precio de Venta', fpValorRegistro: 'Valor del Registro', fpIusi: 'IUSI Trimestral',
+    fpPrecioAlquiler: 'Precio de Alquiler', fpMantenimiento: 'Mantenimiento', fpIncluyeMant: 'Qué incluye el mantenimiento', fpObservaciones: 'Observaciones',
+    fpSaveBtnHtml: '💾 Guardar autorización', fpNoteSaved: 'Autorización guardada correctamente. Gracias.',
+    buscarPropTitulo: 'Buscar propiedades', buscarPropSub: 'Filtra por ciudad, sector, tipo, zona, especificaciones y presupuesto para encontrar la ubicación que buscas.',
+    solNumeroPreview: 'Se genera automáticamente al guardar.',
+    reqTitle: 'Requisitos para vender tu propiedad en Guatemala', reqSub: 'Esta guía fue generada con IA a partir de los requisitos habituales que piden bancos, notarios y el Registro General de la Propiedad en Guatemala. Sube el PDF de cada documento que ya tengas listo; puedes completar los demás después.',
+    reqSinSubir: 'Sin subir', reqSubirPdfHtml: '📎 Subir PDF',
+    reqDpiTitulo: 'DPI del propietario', reqDpiDesc: 'Documento Personal de Identificación vigente.',
+    reqNitTitulo: 'NIT del propietario', reqNitDesc: 'Número de Identificación Tributaria.',
+    reqEscrituraTitulo: 'Escritura pública de propiedad', reqEscrituraDesc: 'Título de propiedad o escritura traslativa de dominio, debidamente registrada.',
+    reqRgpTitulo: 'Certificación del Registro General de la Propiedad (RGP)', reqRgpDesc: 'Con vigencia no mayor a 30 días; confirma quién es el propietario actual.',
+    reqGravamenesTitulo: 'Certificación de gravámenes', reqGravamenesDesc: 'Descarta hipotecas, embargos o anotaciones sobre el inmueble.',
+    reqIusiTitulo: 'Solvencia y recibo de pago del IUSI', reqIusiDesc: 'Impuesto Único Sobre Inmuebles al día.',
+    reqSolvMunTitulo: 'Solvencia municipal', reqSolvMunDesc: 'Boleto de ornato y arbitrios municipales al día.',
+    reqCatastroTitulo: 'Certificación catastral', reqCatastroDesc: 'Cuando el municipio donde está ubicado el inmueble cuenta con catastro.',
+    reqPlanosTitulo: 'Planos registrados de la propiedad', reqPlanosDesc: 'Si existen planos de construcción o de finca registrados.',
+    reqEmpresaTitulo: 'Escritura de constitución y patente de comercio', reqEmpresaDesc: 'Solo si el propietario es una sociedad o empresa.',
+    reqPoderTitulo: 'Poder legal notarial', reqPoderDesc: 'Solo si actúa un representante o apoderado en lugar del propietario.',
+    reqAvaluoTitulo: 'Avalúo comercial del inmueble', reqAvaluoDesc: 'Recomendado, no obligatorio: ayuda a definir un precio de venta realista.',
+    reqNota: 'Esta guía es informativa y puede variar según el municipio, si el inmueble está en régimen de propiedad horizontal o si intervienen bancos. Para tu caso particular, consulta con un notario o con nuestro equipo.',
+    fpErrNombre: 'Por favor escribe el nombre completo del propietario.', fpErrGuardar: 'No pudimos guardar la autorización. Intenta de nuevo.'
   },
   en: {
     menu: 'Menu', nInicio: 'Home', nNosotros: 'About', nPropiedades: 'Properties', nServicios: 'Services', nProyectos: 'Projects', nContacto: 'Contact',
@@ -391,7 +639,255 @@ const T = {
     txHead2: 'Technology that connects.<br>People who guide you.',
     txList2: ['We simplify your real estate journey.', 'Find better. Decide smart.', 'Your ideal space, the smart way.', 'We connect opportunities with your needs.', 'Real estate intelligence within reach.'],
     txHead3: 'Homes that inspire.<br>Trust that lasts.',
-    txList3: ['Much more than walls, your next home.', 'Spaces for your best memories.', 'Building the setting for your life.', 'Your trusted ally every step of the way.', 'Honest advice for your ideal home.']
+    txList3: ['Much more than walls, your next home.', 'Spaces for your best memories.', 'Building the setting for your life.', 'Your trusted ally every step of the way.', 'Honest advice for your ideal home.'],
+    /* ===== Footer / tagline ===== */
+    ftrTagline: 'Real Estate Management',
+    /* ===== "Request quote" widget (save/modify/delete) ===== */
+    qSaveBtnHtml: '💾 Save', qModifyBtnHtml: '🔄 Modify', qDeleteBtnHtml: '🗑️ Delete',
+    /* ===== Loading / error / empty: services and lists ===== */
+    cargandoServicios: 'Loading services...', cargando: 'Loading…', proximamente: 'Coming soon.',
+    errCargarServicios: 'We could not load the services right now.', noHayServiciosDisponibles: 'No services available',
+    seleccionaServicio: 'Select a service…', eligeServicioLista: 'Choose a service from the list.',
+    nuestrosServicios: 'Our services', btnBuscar: 'Search',
+    /* ===== Bank loan prequalification ===== */
+    pqBtnLabel: 'Loan prequalification details',
+    pqTitle: 'General requirements for bank prequalification in Guatemala',
+    pqOcultar: 'Hide',
+    pqIntro: 'Choose the applicant type, fill in the details, attach any PDF documents you already have, and save your file. You can come back later to update it or complete any missing documents.',
+    pqTipoSolicitante: 'Applicant type',
+    pqPersonaIndividual: 'Individual', pqPersonaJuridica: 'Legal Entity (Company)',
+    pqTusDatos: 'Your details', pqDatosEmpresa: 'Company details',
+    pqBanco: 'Preferred bank', pqSelecciona: 'Select…',
+    pqBancoOtro: 'Other',
+    pqMontoSolicitado: 'Amount requested (Q)', pqMontoPh: 'E.g. 250,000', pqMontoPhJ: 'E.g. 500,000',
+    pqDestinoCredito: 'Loan purpose',
+    pqDestVivienda: 'Housing', pqDestVehiculo: 'Vehicle', pqDestConsumo: 'Personal Use',
+    pqDestCapitalTrabajo: 'Working capital', pqDestCompraEquipo: 'Equipment purchase', pqDestExpansion: 'Business expansion',
+    pqTipoPerfil: 'Profile type', pqPerfilAsalariado: 'Salaried', pqPerfilIndependiente: 'Self-employed',
+    pqDpi: 'ID number (13 digits)', pqNit: 'Tax ID (NIT)', pqNitPh: 'E.g. 1234567-8',
+    pqTelefono: 'Mobile phone', pqCorreo: 'Email address', pqCorreoPhEmpresa: 'name@company.com',
+    pqEscolaridad: 'Education level',
+    pqEscSin: 'No schooling', pqEscPrimaria: 'Elementary', pqEscBasicos: 'Middle school', pqEscDiversificado: 'High school',
+    pqEscTecnico: 'Technical', pqEscUniversitario: 'University', pqEscPostgrado: 'Postgraduate (Master\'s / Doctorate)', pqEscOtro: 'Other',
+    pqProfesion: 'Profession / Occupation', pqProfesionPh: 'E.g. Teacher, merchant, engineer…',
+    pqIdentidad: 'Identity', pqIngresos: 'Income', pqEstabilidadLaboral: 'Job stability',
+    pqDocLegalesEmpresa: 'Company legal documents', pqRepLegalFinanzas: 'Legal representative and finances',
+    pqRazonSocial: 'Company name', pqRazonSocialPh: 'E.g. Inversiones ABC, S.A.',
+    pqNitEmpresa: 'Company Tax ID (NIT)',
+    pqRepNombre: 'Legal representative name', pqNombreCompletoPh: 'Full name',
+    pqRepDpi: 'Legal representative ID number (13 digits)',
+    pqSubirPdfHtml: '📎 Upload PDF', pqSinGuardar: 'Not saved yet',
+    pqDocDpi: 'Valid national ID (DPI)', pqDocNit: 'Tax ID (NIT) number',
+    pqDocBoletas: 'If salaried: pay stubs or salary certificate for the last 3 months',
+    pqDocEstadosCuenta: 'Recent bank statements (usually the last 3 to 6 months)',
+    pqDocPatenteIsr: 'If self-employed: business license and income tax (ISR) filings',
+    pqDocCartaTrabajo: 'Work letter stating time employed at the company',
+    pqDocAntiguedad: 'Job tenure (many banks require at least 1 year at the current job)',
+    pqDocHistorial: 'Favorable credit history (credit bureau check)',
+    pqDocPatenteComercioEmpresa: 'Company Business License',
+    pqDocPatenteSociedad: 'Corporate Business License (if applicable)',
+    pqDocEscrituraConstitucion: 'Articles of Incorporation',
+    pqDocRtu: 'Company Unified Tax Registry (RTU)',
+    pqDocDpiRepresentante: 'Valid ID (DPI) of the Legal Representative',
+    pqDocNombramientoRepresentante: 'Legal Representative Appointment (current)',
+    pqDocPatenteComercioSociedadRep: 'Business and Corporate License',
+    pqDocEstadosFinancieros: 'Company Financial Statements (latest period)',
+    pqAviso: 'This information is general and for guidance only; it does not replace each bank\'s official evaluation. We are happy to help you gather and organize these documents.',
+    pqGuardarHtml: '💾 Save', pqActualizarHtml: '🔄 Update', pqEliminarHtml: '🗑️ Delete',
+    pqDescargarPdf: 'Download documents as PDF',
+    pqMsgGuardando: 'Saving…',
+    pqMsgErrorActualizar: 'Error updating: ',
+    pqMsgActualizadoExito: 'File updated successfully.',
+    pqMsgErrorGuardar: 'Error saving: ',
+    pqMsgGuardadoExito: 'File saved successfully. You can now upload your PDF documents.',
+    pqMsgErrorGuardarExpediente: 'Error saving the file.',
+    pqMsgNoHayExpediente: 'There is no saved file yet.',
+    pqConfirmEliminar: 'Delete this file and all its attached documents? This action cannot be undone.',
+    pqMsgErrorEliminar: 'Error deleting: ',
+    pqMsgEliminadoExito: 'File deleted successfully.',
+    pqMsgErrorEliminarExpediente: 'Error deleting the file.',
+    pqMsgCompletaEmpresa: 'Complete all fields in "Company details" before saving.',
+    pqMsgDpiRepresentante13: 'The legal representative\'s ID must have 13 digits.',
+    pqMsgCompletaTusDatos: 'Complete all fields in "Your details" before saving.',
+    pqMsgDpi13: 'The ID number must have 13 digits.',
+    pqMsgSubido: '✅ Uploaded', pqMsgSubiendoEllipsis: 'Uploading…', pqMsgSubidoNombre: '✅ Uploaded: ',
+    pqMsgPrimeroGuarda: 'First save your details ("Save" button) before uploading documents.',
+    pqMsgSoloPdf: 'Only PDF files are allowed.',
+    pqMsgErrorGuardarDoc: 'Error saving the document: ',
+    pqMsgErrorGuardarCorto: 'Error saving',
+    pqMsgDocumentoSubidoExito: 'Document uploaded successfully.',
+    pqMsgErrorSubir: 'Error uploading',
+    pqMsgErrorSubirPdf: 'Error uploading the PDF.',
+    pqMsgNoSePudoPdf: 'Could not generate the PDF. Reload the page and try again.',
+    pqPdfTituloJuridica: 'Bank prequalification requirements — Legal Entity (Company)',
+    pqPdfTituloIndividual: 'Bank prequalification requirements — Individual',
+    pqPdfFooter: 'Generated on ', pqPdfFooter2: ' — This list is general and for guidance only.',
+    pqPdfSubtitle: 'ARMOPA — Real Estate Management',
+    pqBancoLista: ['Crédito Hipotecario Nacional de Guatemala (CHN)', 'Banco de los Trabajadores (Bantrab)', 'Banco Cuscatlán Guatemala', 'Banco Industrial', 'Banco de Desarrollo Rural (Banrural)', 'Banco Internacional', 'Citibank, N.A. Sucursal Guatemala', 'Vivibanco', 'Banco Ficohsa Guatemala', 'Banco Promerica', 'Banco de Antigua', 'Banco de América Central (BAC)', 'Banco Agromercantil de Guatemala (BAM)', 'Banco G&T Continental', 'Banco Azteca de Guatemala', 'Banco INV', 'Banco Credicorp', 'Banco Nexa', 'Banco Multimoney'],
+    /* ===== Admin: shared generic actions ===== */
+    btnModificar: 'Modify', btnGuardar: 'Save', btnEliminar: 'Delete', btnCancelar: 'Cancel', btnBuscarAdmin: 'Search', btnMostrar: 'Show', btnActualizarHtml: '🔄 Update',
+    adminSinNombre: 'No name', adminCargandoPuntos: 'Loading…', adminSelecciona: 'Select…',
+    adminConfirmEliminarGenerico: 'Delete this record? This action cannot be undone.',
+    adminErrorGuardarCambio: 'Could not save the change.',
+    /* ===== Admin: Properties / Projects / Services (lists) ===== */
+    admEstado: 'Status', admFechaCambio: 'Change date', admUsuarioCambia: 'User who changed it', admVendedorAsignado: 'Assigned seller', admPctComision: '% Commission', admValorComision: 'Commission value',
+    admEstadoUbicacion: 'Location status', admPlaceholderVendedorAsignado: 'Assigned seller',
+    admConfirmEliminarUbicacion: 'Delete this location? This action cannot be undone.', admErrorEliminarUbicacion: 'Could not delete the location.',
+    admNoHayUbicaciones: 'No locations match your search.',
+    admTodasLasCiudades: 'All cities', admTodasLasUbicaciones: 'All locations', admTodosLosEstados: 'All statuses', admTodosLosVendedores: 'All sellers', admTodosLosPromotores: 'All business referrers',
+    admCliente: 'Client', admDescripcionRealizar: 'Description of work', admValor: 'Value', admPrioridad: 'Priority', admNumSolicitud: 'Request No.', admPromotorNegocios: 'Business Referrer',
+    admFechaCambioEstado: 'Status change date', admSinDefinir: 'Not set', admPrioridadAlta: 'High', admPrioridadMedia: 'Medium', admPrioridadBaja: 'Low',
+    admConfirmEliminarSolicitud: 'Delete this service request? This action cannot be undone.', admErrorEliminarSolicitud: 'Could not delete the request.',
+    admNoHayProyectos: 'No projects match your search.', admTodosLosProyectos: 'All projects',
+    admSeleccionaPromotor: 'Select a referrer', admNoEstaEnVendedores: ' (not in Vendors)',
+    admNoNumSolicitud: 'Request No.', admNombreCliente: 'Client name', admFechaSolicitud: 'Request date', admUsuarioModifica: 'Modified by', admValorDelServicio: 'Service value',
+    admTodosLosServicios: 'All services', admSinSolicitudesRegistradas: 'No requests registered', admErrorAlCargar: 'Error loading', admNoSePudoCargarLista: 'Could not load the list.',
+    admTodosLosRegistros: 'All records (', admSolicitudEncontrada: ' request found', admSolicitudesEncontradas: ' requests found',
+    admEligeRegistroLista: 'Choose a record from the list to view its information.', admNoHaySolicitudesCoinciden: 'No requests match your search.',
+    admNoSePudoCargarSolicitudes: 'Could not load the requests information.', admNoSeEncontroSolicitud: 'The request was not found.', admNoSePudoCargarSolicitud: 'Could not load the request information.',
+    admServicioSinEspecificar: 'Unspecified service', admSinPropiedadAsignada: 'No property assigned',
+    /* ===== Admin: Vendors ===== */
+    admFoto: 'Photo', admCodigoVendedor: 'Seller code', admNombre: 'Name', admTelefono: 'Phone', admDireccion: 'Address', admFechaInicio: 'Start date', admFechaGrabacion: 'Record date', admUsuario: 'User',
+    admBancoDePago: 'Payment bank', admNumeroCuentaBancaria: 'Bank account number', admTipoCuenta: 'Account type', admPctComisionVentas: '% Sales commission',
+    admVendedorSinNombre: 'Seller with no name', admCodigoSeAsigna: 'Assigned on save', admCodigoSeAsignaAutomatico: 'Assigned automatically on save',
+    admSeAsignaAutomaticoFecha: 'Assigned automatically on save (', admUsuarioActualFallback: 'current user', admSeGrabaAutomaticamente: 'Recorded automatically (',
+    admSubirFoto: 'Upload photo', admSubiendoFoto: 'Uploading…', admQuitarFoto: 'Remove photo', admPlaceholderNombreVendedor: 'Seller name', admPlaceholderDireccion: 'Address',
+    admConfirmEliminarVendedor: 'Delete this seller? This action cannot be undone.', admErrorEliminarVendedor: 'Could not delete the seller.', admErrorSubirFoto: 'Could not upload the photo.',
+    admEscribeNombreVendedor: 'Enter the seller name.', admErrorGuardarVendedor: 'Could not save the seller.',
+    admNoHayVendedores: 'No sellers match your search.', admBuscarPorNombrePh: 'Search by name', admAgregarVendedor: '+ Add seller',
+    admMonetaria: 'Checking', admAhorros: 'Savings', admTransferencia: 'Transfer', admCheque: 'Check', admEfectivo: 'Cash',
+    /* ===== Admin: Commission Types ===== */
+    admNegocio: 'Business', admTipoSinNombre: 'Unnamed type', admPctComisionDefecto: '% Default commission', admPlaceholderNombreTipoComision: 'E.g. Direct sale, Remodeling…',
+    admConfirmEliminarTipoComision: 'Delete this commission type? This action cannot be undone.', admErrorEliminarTipoComision: 'Could not delete the commission type.',
+    admEscribeNombreTipoComision: 'Enter the commission type name.', admSeleccionaNegocio: 'Select the business.', admErrorGuardarTipoComision: 'Could not save the commission type.',
+    admNoHayTiposComision: 'No commission types match your search.', admAgregarTipoComision: '+ Add commission type', admTodosLosNegocios: 'All businesses',
+    admNegocioPropiedades: 'Properties', admNegocioProyectos: 'Projects', admNegocioServicios: 'Services',
+    /* ===== Admin: Add Cities / Add Properties ===== */
+    admNuevaCiudad: '+ New city', admBuscarCiudadPh: 'Search city...', admNoSeEncontraronCiudades: 'No cities found.',
+    admNombreCiudadLbl: 'City name', admNombreCiudadPh: 'E.g. Cobán', admFotoPortadaOpcional: 'Cover photo (optional)', admElegirFotoHtml: '📷 Choose photo',
+    admEscribeNombreCiudad: 'Enter the city name.', admGuardandoEllipsis: 'Saving…', admErrorGuardarGenerico: 'Error saving: ', admErrorGuardarCiudad: 'Error saving the city.',
+    admCiudadYFotoGuardadas: 'City and photo saved successfully.', admCiudadAgregada: 'City added successfully.',
+    admIngresoPropiedadesTitulo: 'Add Properties', admEnQueCiudadPropiedades: 'Which city will you add properties in?',
+    admCiudades: 'Cities', admAgregaPrimeraCiudad: 'Add your first city', admCiudadesSufijo: 'city(ies)',
+    admFotoPortada: 'Cover photo', admActualizar: 'Update', admNuevoNombreCiudad: 'New name for the city:', admCiudadActualizada: 'City updated successfully.', admErrorActualizarCiudad: 'Error updating the city: ', admErrorActualizarCiudadGenerico: 'Error updating the city.',
+    admConfirmEliminarCiudad: 'Delete the city "', admConfirmEliminarCiudad2: '"? This action cannot be undone.', admCiudadEliminada: 'City deleted successfully.', admErrorEliminarCiudad: 'Error deleting the city: ', admErrorEliminarCiudadGenerico: 'Error deleting the city.',
+    admVolverCiudades: '← Cities', admBuscarUbicacionPh: 'Search location by name, sector or zone...',
+    admResultadosBusqueda: 'Your search results (', admVerTodasUbicaciones: 'View all locations', admNoSeEncontraronUbicaciones: 'No locations found for "',
+    admSeleccionaOAgregaUbicacion: 'Select or add a location first.', admUbicacionGuardadaExito: 'Location saved successfully.', admUbicacionActualizadaExito: 'Location updated successfully.', admErrorGuardarUbicacion: 'Error saving the location.',
+    admGestionInterna: 'Internal management', admFechaCambioEstadoLbl: 'Status change date: ', admUsuarioCambiaEstadoLbl: 'User who changed the status: ',
+    admTipoPropiedadLbl: 'Property type', admSectorLbl: 'Sector', admZonaLbl: 'Zone', admValorComisionLbl: 'Commission value',
+    ubicEstLabels: { activa: 'Active', arrendada: 'Leased', vendida: 'Sold', suspendida: 'Suspended', baja: 'Deactivated' },
+    solEstLabels: { solicitado: 'Requested', presupuesto_enviado: 'Quote sent', aprobado: 'Approved', en_proceso: 'In progress', ejecutado: 'Completed', anulado: 'Canceled' },
+    ubicEstActiva: 'Active', ubicEstArrendada: 'Leased', ubicEstVendida: 'Sold', ubicEstSuspendida: 'Suspended', ubicEstBaja: 'Deactivated',
+    pTipoPh: 'E.g. House, Retail space, Coffee farm…', pSectorPh: 'E.g. Cayalá, Vista Hermosa…', pZonaPh: 'E.g. Zone 10, Zone 4…',
+    admPropTituloModal: 'Properties — General listing', admPropSubtituloModal: 'Status, tracking and commission for each registered location.',
+    admProyTituloModal: 'Projects — General listing', admProySubtituloModal: 'Tracking, seller and commission for each registered project.',
+    admServTituloModal: 'Services — General listing', admServSubtituloModal: 'Status, seller and commission for each service request.',
+    admVendTituloModal: 'Vendors — General listing', admVendSubtituloModal: 'Code, contact and photo for each registered seller.',
+    admTipoComTituloModal: 'Commission Types — Catalog', admTipoComSubtituloModal: 'Commission types by business: Properties, Projects or Services.',
+    admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
+    admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
+    admSeleccionaVendedor: 'Select a seller',
+    /* ===== Remodeling Request (fr-) ===== */
+    frTitulo: 'Remodeling Request', frSubtitulo: 'Tell us what you want to remodel and attach photos so we can help you plan, coordinate and supervise the project.',
+    frNombreCliente: 'Client Name', frDetalles: 'Details you want for the remodeling', frDetallesPh: 'E.g. Remodel kitchen and living room, change flooring, expand a room…',
+    frFotosActuales: 'Attach photos (current condition)', frFotosReferencia: 'Attach photos (reference / inspiration)', xSubirFotosHtml: '📷 Upload photos',
+    frTiempoEstimado: 'Estimated remodeling time', frSelecciona: 'Select…', frT12sem: '1 to 2 weeks', frT34sem: '3 to 4 weeks', frT12mes: '1 to 2 months', frT36mes: '3 to 6 months', frTMas6mes: 'More than 6 months', frTNoSeguro: "I'm not sure",
+    frPresupuestoEstimado: 'Estimated remodeling budget (Q)', frEnviadaOk: 'Request sent successfully. Thank you.',
+    /* ===== We adjust your budget (pp-) ===== */
+    ppSubtitulo: 'Tell us what you want to do and we will design alternatives based on your needs and goals.', ppPresupuestoH: 'Budget',
+    ppValorPresupuesto: 'Budget value (Q)', ppNombreCliente: "Client's name", ppFecha: 'Date',
+    ppQueDeseasRealizar: 'What do you want to do with a property?', ppOpComprar: 'Buy', ppOpRentar: 'Rent', ppOpRemodelar: 'Remodel', ppOpServiciosEspeciales: 'Special services', ppOpEmprendimiento: 'Financial venture',
+    ppDescribeRealizar: 'Describe what you want to do', ppDescribeRealizarPh: 'Tell us in as much detail as possible what you need…', ppAdjuntarPdf: 'Attach PDF (optional)',
+    ppSeleccionaQueDeseas: 'Please select what you want to do with a property.',
+    /* ===== Shared messages: request forms (fr/pp/cs) ===== */
+    escribeNombreCliente: 'Please enter the client name.', errorEnviarSolicitud: 'We could not send your request. Please try again.',
+    soloArchivosPdf: 'Only PDF files are allowed.', subiendoEllipsis: 'Uploading…', errorSubirArchivo: 'Upload error', subidoPrefix: 'Uploaded: ',
+    /* ===== We build on your land (cs-) ===== */
+    csSubtitulo: 'Tell us the general details of your project; we are happy to help you with the design, budget and execution.',
+    csValorPresupuesto: 'Budget Value (Q)', csNombreCompleto: 'Full name', csFechaInicioEstimada: 'Estimated start date',
+    csQueDeseasHacer: 'Describe what you want to do with the construction', csQueDeseasHacerPh: 'E.g. Build my house on my own 300 sq m lot…',
+    csMetrosCuadrados: 'Square meters', csDescribeConstruir: 'Describe what you want to build', csDescribeConstruirPh: 'E.g. Modern one-level house, white facade with wood details, flat roof, large windows, 3 bedrooms…',
+    csVistaIaAlt: 'AI-generated exterior view', csFotosTerreno: 'Photos of the land (images or PDF)', csSubirFotosPdfHtml: '📎 Upload photos / PDF',
+    csReqBtnHtml: '📋 Requirements to build', csGenerarDisenoHtml: '🎨 Generate design with AI',
+    csPasosTitulo: 'Steps to build a property in Guatemala', csPasosSubtitulo: 'This guide was generated with AI based on the usual process before municipalities, professional associations and service providers in Guatemala. It is informative and may vary by municipality and project type.',
+    csPaso1: '<b>Check the land use and the Territorial Zoning Plan (POT)</b><br><small>Confirm with the municipality that the lot allows the type of construction you want.</small>',
+    csPaso2: '<b>Gather the legal documentation of the lot</b><br><small>Registered deed, RGP certification and up-to-date IUSI payment status.</small>',
+    csPaso3: '<b>Hire a licensed professional (architect or civil engineer)</b><br><small>Must be active in the CIG (Engineers Association) or CAG (Architects Association).</small>',
+    csPaso4: '<b>Prepare the preliminary design and blueprints</b><br><small>Architectural design, structural, electrical and plumbing plans.</small>',
+    csPaso5: '<b>Carry out a soil study</b><br><small>Recommended to define the appropriate type of foundation.</small>',
+    csPaso6: '<b>Apply for the municipal construction permit</b><br><small>Submit plans, tax payment receipt and other requirements to the corresponding municipality.</small>',
+    csPaso7: '<b>Confirm service availability</b><br><small>Water, drainage and electricity (EEGSA or another local utility).</small>',
+    csPaso8: '<b>Start construction with a logbook and supervision</b><br><small>Keep a construction logbook and periodic supervision by the responsible professional.</small>',
+    csPaso9: '<b>Request the final inspection / occupancy permit</b><br><small>Final step with the municipality once construction is complete.</small>',
+    csPaso10: '<b>Register the improvements with the Property Registry</b><br><small>Update the value and description of the now-built property.</small>',
+    csPasosHint: 'For your particular case, we recommend confirming the exact steps with a licensed professional or with our team.',
+    csDescribePrimero: 'Please describe first what you want to build.', csEscribeNombreCompleto: 'Please enter the full name.',
+    csGenerandoVista: 'Generating exterior view with AI… this may take a few seconds.', csVistaGenerada: 'AI-generated exterior view (for reference):', csErrorGenerarVista: 'We could not generate the exterior view right now. Try again later.',
+    /* ===== Admin: Sales / Generated / Paid Commissions ===== */
+    comVentasTituloModal: 'Sales Commissions — General listing', comVentasSubtituloModal: 'Commissions by seller, from a date and by type.',
+    comGenTituloModal: 'Generated Commissions — General listing', comGenSubtituloModal: 'Already generated commissions, their payment status and bank transaction details.',
+    comPagTituloModal: 'Paid Commissions', comPagSubtituloModal: 'Commission history by seller, date and status.',
+    comTipoTodas: 'All', comTipoPropiedades: 'Properties', comTipoProyectos: 'Projects', comTipoServicios: 'Services',
+    comLblVendedor: 'Seller', comLblFechaInicial: 'Start date', comLblFechaFinal: 'End date', comLblTipoComision: 'Commission type', comLblEstado: 'Status',
+    comThDetalle: 'Detail', comThFecha: 'Date', comThVendedor: 'Seller', comThPctComision: '% Commission', comThValorComision: 'Commission value', comThEstado: 'Status', comThPagarComision: 'Pay commission',
+    comSubtotalPrefix: 'Subtotal ', comGrupoPropiedades: 'Properties', comGrupoProyectos: 'Projects', comGrupoServicios: 'Services', comGrupoProyectosServicios: 'Projects and Services', comSinVendedor: '(No seller)',
+    comTotalGenerado: 'Total generated commissions', comTotalAPagar: 'Total commissions to pay', comBtnGenerar: 'Generate Commissions',
+    comNoHayMarcadas: 'No commissions marked for payment.', comConfirmGenerar: 'Confirm generating {n} commission(s) for a total of {v}?', comGenerando: 'Generating commissions…',
+    comGeneradasOk: '{n} commission(s) generated. Follow up on payment in Generated Commissions.', comErrorGenerar: 'Could not generate the commission. Try again.',
+    comNoHayComisionesBusqueda: 'No commissions match your search.', comErrorCargarComisiones: 'Could not load the commission information.',
+    comEstPendiente: 'Pending payment', comEstPagado: 'Paid', comEstSuspendido: 'Suspended', comEstAnulado: 'Canceled',
+    comNoHayGeneradasBusqueda: 'No generated commissions match your search.', comErrorCargarGeneradas: 'Could not load the generated commissions information.',
+    comLblBanco: 'Bank', comLblCuentaBancaria: 'Bank account', comLblNumeroCheque: 'Check number', comLblFechaPago: 'Payment date', comLblFechaOperacion: 'Transaction date', comLblUsuarioPaga: 'User who paid', comLblFechaGenerada: 'Generated date',
+    comResumenPagoPorVendedor: 'Payment summary by seller', comLblTotalPendiente: 'Total pending', comLblFormaPago: 'Payment method', comPlaceholderNumeroCuenta: 'Account number', comPlaceholderNumeroCheque: 'Check number',
+    comBtnPagar: 'Pay', comConfirmPagar: 'Confirm payment of {n} commission(s) to {v} for a total of {t}?', comProcesando: 'Processing…', comPagoRegistrado: 'Payment recorded.', comErrorPagoVendedor: 'Could not record the payment.', comErrorGuardarPct: 'Could not save the commission %.',
+    comNoHayPagadasBusqueda: 'No commissions match your search.', comErrorCargarPagadas: 'Could not load the paid commissions information.',
+    /* ===== Admin: Reports ===== */
+    repPropTituloModal: 'Report — Property Listing', repPropSubtituloModal: 'Complete inventory of properties and their status.',
+    repServTituloModal: 'Report — Service Status', repServSubtituloModal: 'Service requests and their current status.',
+    repCliTituloModal: 'Report — Client Follow-up', repCliSubtituloModal: 'Registered clients and their activity: requests and quotes.',
+    repLblCiudad: 'City', repLblTipoOperacion: 'Operation type', repLblEstado: 'Status', repLblPrioridad: 'Priority', repLblFechaInicial: 'Start date', repLblFechaFinal: 'End date',
+    repTodasLasCiudades: 'All cities', repTodasLasOperaciones: 'All operations', repTodosLosEstados: 'All statuses', repTodasLasPrioridades: 'All priorities',
+    repOpRenta: 'Rent', repOpVenta: 'Sale', repOpAmbos: 'Rent and sale', repPrioAlta: 'High', repPrioMedia: 'Medium', repPrioBaja: 'Low',
+    repBtnImprimirHtml: '🖨️ Print', repBtnBuscarCliente: 'Search client', repBuscarClientePh: 'Search by name or username',
+    repNoDataImprimir: 'There is no data to print. First press "Show".', repVentanaBloqueada: 'Your browser blocked the print window. Allow pop-ups for this site and try again.',
+    repUsuarioLbl: 'User: ',
+    repNoHayPropiedadesBusqueda: 'No properties match your search.', repErrorCargarPropiedades: 'Could not load the property listing.',
+    repThNo: 'No.', repThNombreUbicacion: 'Location name', repThVendedor: 'Seller', repThTipoOperacion: 'Operation type', repThValor: 'Value', repThEstado: 'Status', repThFechaCreacion: 'Creation date', repThFotos: 'Photos',
+    repTituloReportePropiedades: 'Report — Property Listing',
+    repNoHaySolicitudesServicioBusqueda: 'No service requests match your search.', repErrorCargarServicios: 'Could not load the service status.',
+    repSinTipoServicio: '(No service type)', repTituloReporteServicios: 'Report — Service Status',
+    repThCliente: 'Client', repThTelefono: 'Phone', repThNumSolicitud: 'Request No.', repThPrioridad: 'Priority', repThValor2: 'Value', repThInicio: 'Start', repThFechaSolicitud: 'Request date',
+    repCliNombreFallback: 'Client', repThCodigo: 'Code', repThRegistrado: 'Registered', repThSolicitudesServicio: 'Service requests', repThCotizaciones: 'Quotes', repThUltimaActividad: 'Last activity',
+    repNoHayClientesBusqueda: 'No clients match your search.', repErrorCargarClientes: 'Could not load the client follow-up.',
+    buscarServSub: 'Choose one of the services we offer to go directly to its information.',
+    authTitle: 'Property Promotion and Sale Authorization Form', authSub: 'As the owner of the property described below, I authorize Armopa Group to promote it for Rent and/or Sale through whatever means it considers appropriate.',
+    fpDatosPropietario: "Owner's Information", fpNombreCompleto: 'Full name', fpFechaNacimiento: 'Date of Birth', fpDpi: 'ID/CUI or Passport', fpRepLegal: 'Legal Representative', fpRazonSocial: 'Business Name', fpNit: 'Tax ID (NIT)', fpTelMovil: 'Mobile phone', fpCorreo: 'Email address', fpDomicilio: 'Current home address',
+    fpDescripcionProp: 'Property Description', fpTipo: 'Type', fpTipoPh: 'E.g. House, Apartment, Land…', fpDireccion: 'Address', fpNumero: 'Number', fpFinca: 'Property record (Finca)', fpFolio: 'Folio', fpLibro: 'Book', fpGravamen: 'Lien', fpInstitucion: 'Institution', fpMonto: 'Amount',
+    fpMFrente: 'Front (m)', fpMFondo: 'Depth (m)', fpMConst: 'Built area (m²)', fpTerrenoVrs2: 'Lot (Vrs²)', fpMts2: 'm²', fpNiveles: 'Levels', fpEstacionamientos: 'Parking spaces', fpHabitaciones: 'Bedrooms', fpBanos: 'Bathrooms',
+    fpLavanderia: 'Laundry room', fpLineaBlanca: 'Appliances', fpHabServicio: 'Maid’s room', fpBodega: 'Storage room', fpAmueblado: 'Furnished', fpBalcon: 'Balcony and/or Terrace / Garden', fpMascota: 'Pet',
+    fpAmenidades: 'Building / Condominium Amenities', fpAmMotorLobby: 'Motor lobby', fpAmPiscina: 'Pool', fpAmSauna: 'Sauna', fpAmJuegos: "Children's play area", fpAmAreaVerde: 'Green area', fpAmSalon: 'Multi-purpose room', fpAmGimnasio: 'Gym', fpAmBusiness: 'Business Center', fpAmCanchas: 'Sports courts', fpAmCisterna: 'Cistern and/or Well', fpAmParqueos: 'Number of visitor parking spaces',
+    fpPrecioVenta: 'Sale Price', fpValorRegistro: 'Registry value', fpIusi: 'Quarterly IUSI (property tax)',
+    fpPrecioAlquiler: 'Rental Price', fpMantenimiento: 'Maintenance fee', fpIncluyeMant: 'What the maintenance fee includes', fpObservaciones: 'Remarks',
+    fpSaveBtnHtml: '💾 Save authorization', fpNoteSaved: 'Authorization saved successfully. Thank you.',
+    buscarPropTitulo: 'Browse properties', buscarPropSub: 'Filter by city, sector, type, zone, specifications and budget to find the location you are looking for.',
+    solNumeroPreview: 'Generated automatically when saved.',
+    reqTitle: 'Requirements to sell your property in Guatemala', reqSub: 'This guide was generated with AI based on the typical requirements requested by banks, notaries and the General Property Registry in Guatemala. Upload the PDF of each document you already have ready; you can complete the rest later.',
+    reqSinSubir: 'Not uploaded', reqSubirPdfHtml: '📎 Upload PDF',
+    reqDpiTitulo: "Owner's ID", reqDpiDesc: 'Valid personal identification document (DPI).',
+    reqNitTitulo: "Owner's Tax ID (NIT)", reqNitDesc: 'Tax Identification Number.',
+    reqEscrituraTitulo: 'Public property deed', reqEscrituraDesc: 'Title deed or deed of transfer, duly registered.',
+    reqRgpTitulo: 'General Property Registry (RGP) certification', reqRgpDesc: 'Valid for no more than 30 days; confirms who the current owner is.',
+    reqGravamenesTitulo: 'Lien certification', reqGravamenesDesc: 'Rules out mortgages, liens or encumbrances on the property.',
+    reqIusiTitulo: 'IUSI (property tax) clearance and payment receipt', reqIusiDesc: 'Property tax (IUSI) up to date.',
+    reqSolvMunTitulo: 'Municipal clearance', reqSolvMunDesc: 'Municipal "boleto de ornato" fee and taxes up to date.',
+    reqCatastroTitulo: 'Cadastral certification', reqCatastroDesc: "When the property's municipality has a cadastre.",
+    reqPlanosTitulo: 'Registered property plans', reqPlanosDesc: 'If registered construction or lot plans exist.',
+    reqEmpresaTitulo: 'Articles of incorporation and business license', reqEmpresaDesc: 'Only if the owner is a company or corporation.',
+    reqPoderTitulo: 'Notarized power of attorney', reqPoderDesc: 'Only if a representative or attorney-in-fact acts on behalf of the owner.',
+    reqAvaluoTitulo: 'Commercial property appraisal', reqAvaluoDesc: 'Recommended, not mandatory: helps set a realistic sale price.',
+    reqNota: 'This guide is for informational purposes and may vary depending on the municipality, whether the property is under a condominium regime, or whether banks are involved. For your specific case, consult a notary or our team.',
+    fpErrNombre: "Please enter the owner's full name.", fpErrGuardar: 'We could not save the authorization. Please try again.'
   }
 };
 
@@ -420,6 +916,7 @@ function setLang(l) {
   buildDots();
   if (typeof xo !== 'undefined' && xo >= 0) xRender(xo);
   if (typeof refreshQuoteSummary === 'function') refreshQuoteSummary();
+  if (typeof cargarServiciosArmopa === 'function') cargarServiciosArmopa();
 }
 $$('.lg').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
 
@@ -513,7 +1010,7 @@ function proyCardHead(city, c) {
   badge.style.color = info.fg;
   const head = el('div', 'proy-card-h');
   const nameWrap = el('div', 'proy-name-wrap');
-  const nameEl = el('div', 'proy-name', c.name || 'Sin nombre');
+  const nameEl = el('div', 'proy-name', c.name || T[lang].adminSinNombre);
   nameEl.title = c.name || '';
   nameWrap.append(nameEl, el('div', 'proy-city', city));
   head.append(nameWrap, badge);
@@ -521,11 +1018,12 @@ function proyCardHead(city, c) {
 }
 
 function proyRenderView(card, city, c) {
+  const t = T[lang];
   card.innerHTML = '';
   card.classList.remove('proy-card-edit');
   const actions = el('div', 'proy-actions');
-  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
-  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
   actions.append(modBtn, delBtn);
   card.append(
     proyCardHead(city, c),
@@ -533,18 +1031,18 @@ function proyRenderView(card, city, c) {
   );
   const grid = card.querySelector('.proy-grid');
   grid.append(
-    labeledCell('Estado', proyEstadoBadge(c)),
-    labeledCell('Fecha de cambio', el('span', '', c.estadoFecha ? formatQBuscarRegFecha(c.estadoFecha) : '—')),
-    labeledCell('Usuario que cambia', el('span', '', c.estadoUsuario || '—')),
-    labeledCell('Vendedor asignado', el('span', '', c.vendedorAsignado || '—')),
-    labeledCell('% Comisión', el('span', '', c.comisionPorcentaje ? (c.comisionPorcentaje + '%') : '—')),
-    labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(comisionValorCalc(c))))
+    labeledCell(t.admEstado, proyEstadoBadge(c)),
+    labeledCell(t.admFechaCambio, el('span', '', c.estadoFecha ? formatQBuscarRegFecha(c.estadoFecha) : '—')),
+    labeledCell(t.admUsuarioCambia, el('span', '', c.estadoUsuario || '—')),
+    labeledCell(t.admVendedorAsignado, el('span', '', c.vendedorAsignado || '—')),
+    labeledCell(t.admPctComision, el('span', '', c.comisionPorcentaje ? (c.comisionPorcentaje + '%') : '—')),
+    labeledCell(t.admValorComision, el('strong', 'proy-valor', formatQ(comisionValorCalc(c))))
   );
   card.appendChild(actions);
 
   modBtn.addEventListener('click', () => proyRenderEdit(card, city, c));
   delBtn.addEventListener('click', async () => {
-    if (!confirm('¿Eliminar esta ubicación? Esta acción no se puede deshacer.')) return;
+    if (!confirm(t.admConfirmEliminarUbicacion)) return;
     delBtn.disabled = true;
     try {
       await eliminarUbicacionDesdeListado(city, c);
@@ -552,13 +1050,14 @@ function proyRenderView(card, city, c) {
       if (!$('#adminProyectosList').children.length) pintarAdminProyectosList();
     } catch (e) {
       console.error('Error eliminando la ubicación:', e);
-      alert('No se pudo eliminar la ubicación.');
+      alert(t.admErrorEliminarUbicacion);
       delBtn.disabled = false;
     }
   });
 }
 
 function proyRenderEdit(card, city, c) {
+  const t = T[lang];
   card.innerHTML = '';
   card.classList.add('proy-card-edit');
 
@@ -573,7 +1072,7 @@ function proyRenderEdit(card, city, c) {
   const vendedorInput = document.createElement('input');
   vendedorInput.type = 'text';
   vendedorInput.value = c.vendedorAsignado || '';
-  vendedorInput.placeholder = 'Vendedor asignado';
+  vendedorInput.placeholder = t.admPlaceholderVendedorAsignado;
   const vendedorList = document.createElement('datalist');
   vendedorList.id = 'proyVendedorList-' + c.id;
   fillDatalist(vendedorList, vendedoresConocidos());
@@ -591,17 +1090,17 @@ function proyRenderEdit(card, city, c) {
   });
 
   const actions = el('div', 'proy-actions');
-  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
-  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
   actions.append(saveBtn, cancelBtn);
 
   card.append(proyCardHead(city, c));
   const grid = el('div', 'proy-grid');
   grid.append(
-    labeledCell('Estado de ubicación', estadoSel),
-    labeledCell('Vendedor asignado', vendedorInput),
-    labeledCell('% Comisión', comisionInput),
-    labeledCell('Valor de comisión', valorPreview)
+    labeledCell(t.admEstadoUbicacion, estadoSel),
+    labeledCell(t.admVendedorAsignado, vendedorInput),
+    labeledCell(t.admPctComision, comisionInput),
+    labeledCell(t.admValorComision, valorPreview)
   );
   card.append(grid, vendedorList, actions);
 
@@ -613,7 +1112,7 @@ function proyRenderEdit(card, city, c) {
       proyRenderView(card, city, c);
     } catch (e) {
       console.error('Error guardando la ubicación:', e);
-      alert('No se pudo guardar el cambio.');
+      alert(t.adminErrorGuardarCambio);
       saveBtn.disabled = false;
     }
   });
@@ -663,7 +1162,7 @@ function poblarAdminPropCiudadSel() {
   const prev = sel.value;
   sel.innerHTML = '';
   const optTodas = document.createElement('option');
-  optTodas.value = ''; optTodas.textContent = 'Todas las ciudades';
+  optTodas.value = ''; optTodas.textContent = T[lang].admTodasLasCiudades;
   sel.appendChild(optTodas);
   proyCiudadesOrdenadas().forEach((city) => {
     const opt = document.createElement('option');
@@ -680,12 +1179,12 @@ function poblarAdminPropUbicacionSel() {
   const ciudadFiltro = ciudadSel ? ciudadSel.value : '';
   sel.innerHTML = '';
   const optTodas = document.createElement('option');
-  optTodas.value = ''; optTodas.textContent = 'Todas las ubicaciones';
+  optTodas.value = ''; optTodas.textContent = T[lang].admTodasLasUbicaciones;
   sel.appendChild(optTodas);
   proyUbicacionesPlano(ciudadFiltro || null).forEach(({ city, c }) => {
     const opt = document.createElement('option');
     opt.value = city + '::' + c.id;
-    opt.textContent = (c.name || 'Sin nombre') + (ciudadFiltro ? '' : (' · ' + city));
+    opt.textContent = (c.name || T[lang].adminSinNombre) + (ciudadFiltro ? '' : (' · ' + city));
     sel.appendChild(opt);
   });
 }
@@ -696,7 +1195,7 @@ function poblarAdminPropEstadoSel() {
   const sel = $('#adminPropEstadoSel');
   if (!sel || sel.options.length) return;
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los estados';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosEstados;
   sel.appendChild(optTodos);
   UBIC_ESTADOS.forEach((e) => {
     const opt = document.createElement('option');
@@ -716,7 +1215,7 @@ function poblarAdminPropVendedorSel() {
   const prev = sel.value;
   sel.innerHTML = '';
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosVendedores;
   sel.appendChild(optTodos);
   vendedoresCatalogo.forEach((v) => {
     const nombre = (v.nombre || '').trim();
@@ -746,7 +1245,7 @@ function pintarAdminProyectosList(cityFiltro, ubicacionFiltro, estadoFiltro, ven
     list.appendChild(card);
     total++;
   });
-  if (!total) list.innerHTML = '<p class="proy-empty">No hay ubicaciones que coincidan con la búsqueda.</p>';
+  if (!total) list.innerHTML = '<p class="proy-empty">' + T[lang].admNoHayUbicaciones + '</p>';
 }
 
 $('#adminPropMostrarBtn')?.addEventListener('click', () => {
@@ -820,19 +1319,20 @@ function solCardHead(r) {
   badge.style.color = info.fg;
   const head = el('div', 'proy-card-h');
   const nameWrap = el('div', 'proy-name-wrap');
-  const nameEl = el('div', 'proy-name', r.servicio || 'Servicio sin especificar');
+  const nameEl = el('div', 'proy-name', r.servicio || T[lang].admServicioSinEspecificar);
   nameEl.title = r.servicio || '';
-  nameWrap.append(nameEl, el('div', 'proy-city', r.direccion || 'Sin propiedad asignada'));
+  nameWrap.append(nameEl, el('div', 'proy-city', r.direccion || T[lang].admSinPropiedadAsignada));
   head.append(nameWrap, badge);
   return head;
 }
 
 function solRenderView(card, r) {
+  const t = T[lang];
   card.innerHTML = '';
   card.classList.remove('proy-card-edit');
   const actions = el('div', 'proy-actions');
-  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
-  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
   actions.append(modBtn, delBtn);
   card.append(
     solCardHead(r),
@@ -840,27 +1340,27 @@ function solRenderView(card, r) {
   );
   const grid = card.querySelector('.proy-grid');
   grid.append(
-    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
-    labeledCell('Descripción a realizar', el('span', '', r.necesidad || '—')),
-    labeledCell('Valor', el('strong', '', formatQ(solPresupuestoBase(r)))),
-    labeledCell('Estado', solEstadoBadge(r)),
-    labeledCell('Prioridad', el('span', '', r.prioridad ? (r.prioridad.charAt(0).toUpperCase() + r.prioridad.slice(1)) : '—')),
-    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
-    labeledCell('Vendedor asignado', el('span', '', r.vendedor_asignado || '—')),
-    labeledCell('% Comisión', el('span', '', r.comision_porcentaje ? (r.comision_porcentaje + '%') : '—')),
-    labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(solComisionValorCalc(r)))),
-    labeledCell('Fecha de cambio de estado', el('span', '', r.estado_fecha ? formatQBuscarRegFecha(r.estado_fecha) : '—'))
+    labeledCell(t.admCliente, el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
+    labeledCell(t.admDescripcionRealizar, el('span', '', r.necesidad || '—')),
+    labeledCell(t.admValor, el('strong', '', formatQ(solPresupuestoBase(r)))),
+    labeledCell(t.admEstado, solEstadoBadge(r)),
+    labeledCell(t.admPrioridad, el('span', '', r.prioridad ? (r.prioridad.charAt(0).toUpperCase() + r.prioridad.slice(1)) : '—')),
+    labeledCell(t.admNumSolicitud, el('strong', 'sol-num', r.numero_solicitud || '—')),
+    labeledCell(t.admVendedorAsignado, el('span', '', r.vendedor_asignado || '—')),
+    labeledCell(t.admPctComision, el('span', '', r.comision_porcentaje ? (r.comision_porcentaje + '%') : '—')),
+    labeledCell(t.admValorComision, el('strong', 'proy-valor', formatQ(solComisionValorCalc(r)))),
+    labeledCell(t.admFechaCambioEstado, el('span', '', r.estado_fecha ? formatQBuscarRegFecha(r.estado_fecha) : '—'))
   );
   // El Promotor de Negocios (del catálogo de Vendedores) solo lo ve y
   // administra el Administrador o el Super Administrador.
   if (esAdminOSuperAdmin()) {
-    grid.appendChild(labeledCell('Promotor de Negocios', el('span', '', r.promotor_negocio || '—')));
+    grid.appendChild(labeledCell(t.admPromotorNegocios, el('span', '', r.promotor_negocio || '—')));
   }
   card.appendChild(actions);
 
   modBtn.addEventListener('click', () => solRenderEdit(card, r));
   delBtn.addEventListener('click', async () => {
-    if (!confirm('¿Eliminar esta solicitud de servicio? Esta acción no se puede deshacer.')) return;
+    if (!confirm(t.admConfirmEliminarSolicitud)) return;
     delBtn.disabled = true;
     try {
       await eliminarSolicitudDesdeListado(r);
@@ -868,13 +1368,14 @@ function solRenderView(card, r) {
       if (!$('#adminSolicitudesList').children.length) pintarAdminSolicitudesList();
     } catch (e) {
       console.error('Error eliminando la solicitud de servicio:', e);
-      alert('No se pudo eliminar la solicitud.');
+      alert(t.admErrorEliminarSolicitud);
       delBtn.disabled = false;
     }
   });
 }
 
 function solRenderEdit(card, r) {
+  const t = T[lang];
   card.innerHTML = '';
   card.classList.add('proy-card-edit');
 
@@ -887,7 +1388,7 @@ function solRenderEdit(card, r) {
   });
 
   const prioridadSel = document.createElement('select');
-  [{ v: '', l: 'Sin definir' }, { v: 'alta', l: 'Alta' }, { v: 'media', l: 'Media' }, { v: 'baja', l: 'Baja' }].forEach((p) => {
+  [{ v: '', l: t.admSinDefinir }, { v: 'alta', l: t.admPrioridadAlta }, { v: 'media', l: t.admPrioridadMedia }, { v: 'baja', l: t.admPrioridadBaja }].forEach((p) => {
     const opt = document.createElement('option');
     opt.value = p.v; opt.textContent = p.l;
     if (p.v === (r.prioridad || '')) opt.selected = true;
@@ -897,7 +1398,7 @@ function solRenderEdit(card, r) {
   const vendedorInput = document.createElement('input');
   vendedorInput.type = 'text';
   vendedorInput.value = r.vendedor_asignado || '';
-  vendedorInput.placeholder = 'Vendedor asignado';
+  vendedorInput.placeholder = t.admPlaceholderVendedorAsignado;
   const vendedorList = document.createElement('datalist');
   vendedorList.id = 'solVendedorList-' + r.id;
   fillDatalist(vendedorList, vendedoresConocidos());
@@ -921,7 +1422,7 @@ function solRenderEdit(card, r) {
   if (puedeEditarPromotor) {
     promotorSel = document.createElement('select');
     const optVacio = document.createElement('option');
-    optVacio.value = ''; optVacio.textContent = 'Selecciona un promotor';
+    optVacio.value = ''; optVacio.textContent = t.admSeleccionaPromotor;
     promotorSel.appendChild(optVacio);
     vendedoresCatalogo.forEach((v) => {
       const nombre = (v.nombre || '').trim();
@@ -933,31 +1434,31 @@ function solRenderEdit(card, r) {
     const actual = (r.promotor_negocio || '').trim();
     if (actual && ![...promotorSel.options].some((o) => o.value === actual)) {
       const opt = document.createElement('option');
-      opt.value = actual; opt.textContent = actual + ' (no está en Vendedores)';
+      opt.value = actual; opt.textContent = actual + t.admNoEstaEnVendedores;
       promotorSel.appendChild(opt);
     }
     promotorSel.value = actual;
   }
 
   const actions = el('div', 'proy-actions');
-  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
-  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
   actions.append(saveBtn, cancelBtn);
 
   card.append(solCardHead(r));
   const grid = el('div', 'proy-grid');
   grid.append(
-    labeledCell('Cliente', el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
-    labeledCell('Descripción a realizar', el('span', '', r.necesidad || '—')),
-    labeledCell('Valor', el('strong', '', formatQ(solPresupuestoBase(r)))),
-    labeledCell('Estado', estadoSel),
-    labeledCell('Prioridad', prioridadSel),
-    labeledCell('No. de solicitud', el('strong', 'sol-num', r.numero_solicitud || '—')),
-    labeledCell('Vendedor asignado', vendedorInput),
-    labeledCell('% Comisión', comisionInput),
-    labeledCell('Valor de comisión', valorPreview)
+    labeledCell(t.admCliente, el('span', '', r.nombre_cliente || (r.cliente_codigo ? ('#' + r.cliente_codigo) : '—'))),
+    labeledCell(t.admDescripcionRealizar, el('span', '', r.necesidad || '—')),
+    labeledCell(t.admValor, el('strong', '', formatQ(solPresupuestoBase(r)))),
+    labeledCell(t.admEstado, estadoSel),
+    labeledCell(t.admPrioridad, prioridadSel),
+    labeledCell(t.admNumSolicitud, el('strong', 'sol-num', r.numero_solicitud || '—')),
+    labeledCell(t.admVendedorAsignado, vendedorInput),
+    labeledCell(t.admPctComision, comisionInput),
+    labeledCell(t.admValorComision, valorPreview)
   );
-  if (promotorSel) grid.appendChild(labeledCell('Promotor de Negocios', promotorSel));
+  if (promotorSel) grid.appendChild(labeledCell(t.admPromotorNegocios, promotorSel));
   card.append(grid, vendedorList, actions);
 
   cancelBtn.addEventListener('click', () => solRenderView(card, r));
@@ -968,7 +1469,7 @@ function solRenderEdit(card, r) {
       solRenderView(card, r);
     } catch (e) {
       console.error('Error guardando la solicitud de servicio:', e);
-      alert('No se pudo guardar el cambio.');
+      alert(t.adminErrorGuardarCambio);
       saveBtn.disabled = false;
     }
   });
@@ -1012,7 +1513,7 @@ function poblarAdminSolProyectoSel() {
   const prev = sel.value;
   sel.innerHTML = '';
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los proyectos';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosProyectos;
   sel.appendChild(optTodos);
   adminSolData.forEach((r) => {
     const opt = document.createElement('option');
@@ -1026,7 +1527,7 @@ function poblarAdminSolEstadoSel() {
   const sel = $('#adminSolEstadoSel');
   if (!sel || sel.options.length) return;
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los estados';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosEstados;
   sel.appendChild(optTodos);
   SOL_ESTADOS.forEach((e) => {
     const opt = document.createElement('option');
@@ -1044,7 +1545,7 @@ function poblarAdminSolVendedorSel() {
   const prev = sel.value;
   sel.innerHTML = '';
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosVendedores;
   sel.appendChild(optTodos);
   vendedoresCatalogo.forEach((v) => {
     const nombre = (v.nombre || '').trim();
@@ -1070,7 +1571,7 @@ function pintarAdminSolicitudesList(proyectoFiltro, estadoFiltro, vendedorFiltro
     list.appendChild(card);
     total++;
   });
-  if (!total) list.innerHTML = '<p class="proy-empty">No hay proyectos que coincidan con la búsqueda.</p>';
+  if (!total) list.innerHTML = '<p class="proy-empty">' + T[lang].admNoHayProyectos + '</p>';
 }
 
 $('#adminSolMostrarBtn')?.addEventListener('click', () => {
@@ -1082,7 +1583,7 @@ $('#adminSolMostrarBtn')?.addEventListener('click', () => {
 
 async function cargarAdminSolData() {
   const list = $('#adminSolicitudesList');
-  if (list) list.innerHTML = '<p class="proy-empty">Cargando…</p>';
+  if (list) list.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
   try {
     const { data: rows, error } = await supabaseClient
       .from('solicitudes_servicio')
@@ -1149,7 +1650,7 @@ function poblarAdminSrvTipoSel() {
   if (!sel || sel.options.length) return;
   const t = T[lang] || T.es;
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los servicios';
+  optTodos.value = ''; optTodos.textContent = t.admTodosLosServicios;
   sel.appendChild(optTodos);
   t.ext.forEach((name, i) => {
     const opt = document.createElement('option');
@@ -1162,7 +1663,7 @@ function poblarAdminSrvEstadoSel() {
   const sel = $('#adminSrvEstadoSel');
   if (!sel || sel.options.length) return;
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los estados';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosEstados;
   sel.appendChild(optTodos);
   SOL_ESTADOS.forEach((e) => {
     const opt = document.createElement('option');
@@ -1181,7 +1682,7 @@ function poblarAdminSrvPromotorSel() {
   const prev = sel.value;
   sel.innerHTML = '';
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los promotores de negocio';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosPromotores;
   sel.appendChild(optTodos);
   vendedoresCatalogo.forEach((v) => {
     const nombre = (v.nombre || '').trim();
@@ -1198,7 +1699,7 @@ async function cargarAdminSrvLista() {
   const hint = $('#adminSrvHint');
   if (!listaSel) return;
   listaSel.innerHTML = '';
-  if (hint) hint.textContent = 'Cargando…';
+  if (hint) hint.textContent = T[lang].adminCargandoPuntos;
   const tipoSel = $('#adminSrvTipoSel');
   const estadoSel = $('#adminSrvEstadoSel');
   const promotorSel = $('#adminSrvPromotorSel');
@@ -1233,30 +1734,30 @@ async function cargarAdminSrvLista() {
     }
     if (!filas.length) {
       const opt = document.createElement('option');
-      opt.value = ''; opt.textContent = 'Sin solicitudes registradas';
+      opt.value = ''; opt.textContent = t.admSinSolicitudesRegistradas;
       listaSel.appendChild(opt);
       if (hint) hint.textContent = '';
       return;
     }
     const optTodosReg = document.createElement('option');
     optTodosReg.value = QBUSCARREG_TODOS;
-    optTodosReg.textContent = 'Todos los registros (' + filas.length + ')';
+    optTodosReg.textContent = t.admTodosLosRegistros + filas.length + ')';
     listaSel.appendChild(optTodosReg);
     filas.forEach((r) => {
       const opt = document.createElement('option');
       opt.value = String(r.id);
       const presupuesto = formatQBuscarRegPresupuesto(presupuestos[r.cotizacion_id]);
       const fecha = formatQBuscarRegFecha(r.created_at);
-      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || 'Sin nombre') + ' · ' + fecha + ' · ' + presupuesto;
+      opt.textContent = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.nombre_cliente || t.adminSinNombre) + ' · ' + fecha + ' · ' + presupuesto;
       listaSel.appendChild(opt);
     });
-    if (hint) hint.textContent = filas.length + (filas.length === 1 ? ' solicitud encontrada' : ' solicitudes encontradas');
+    if (hint) hint.textContent = filas.length + (filas.length === 1 ? t.admSolicitudEncontrada : t.admSolicitudesEncontradas);
   } catch (e) {
     console.error('Error cargando la lista de servicios:', e);
     const opt = document.createElement('option');
-    opt.value = ''; opt.textContent = 'Error al cargar';
+    opt.value = ''; opt.textContent = t.admErrorAlCargar;
     listaSel.appendChild(opt);
-    if (hint) hint.textContent = 'No se pudo cargar la lista.';
+    if (hint) hint.textContent = t.admNoSePudoCargarLista;
   }
 }
 
@@ -1274,31 +1775,32 @@ function adminSrvBuildRow(sol, presupuesto) {
 }
 
 function adminSrvRenderRowView(row, sol, presupuesto) {
+  const t = T[lang];
   row.innerHTML = '';
   const info = solEstadoInfo(sol.estado);
   const estBadge = el('span', 'sol-badge', info.l);
   estBadge.style.background = info.bg;
   estBadge.style.color = info.fg;
   const actions = el('div', 'sol-actions');
-  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
-  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
   actions.append(modBtn, delBtn);
   row.append(
-    labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
-    labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
-    labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
-    labeledCell('Estado', estBadge),
-    labeledCell('Fecha cambio de estado', el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
-    labeledCell('Usuario Modifica', el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
-    labeledCell('Valor del servicio', el('strong', 'sol-cli', formatQBuscarRegPresupuesto(presupuesto))),
-    labeledCell('Vendedor asignado', el('span', 'sol-cli', sol.vendedor_asignado || '—')),
-    labeledCell('% Comisión', el('span', 'sol-cli', sol.comision_porcentaje ? (sol.comision_porcentaje + '%') : '—')),
-    labeledCell('Valor de comisión', el('strong', 'proy-valor', formatQ(adminSrvComisionValorCalc(sol, presupuesto)))),
+    labeledCell(t.admNoNumSolicitud, el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
+    labeledCell(t.admNombreCliente, el('span', 'sol-cli', sol.nombre_cliente || '—')),
+    labeledCell(t.admFechaSolicitud, el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
+    labeledCell(t.admEstado, estBadge),
+    labeledCell(t.admFechaCambioEstado, el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
+    labeledCell(t.admUsuarioModifica, el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
+    labeledCell(t.admValorDelServicio, el('strong', 'sol-cli', formatQBuscarRegPresupuesto(presupuesto))),
+    labeledCell(t.admVendedorAsignado, el('span', 'sol-cli', sol.vendedor_asignado || '—')),
+    labeledCell(t.admPctComision, el('span', 'sol-cli', sol.comision_porcentaje ? (sol.comision_porcentaje + '%') : '—')),
+    labeledCell(t.admValorComision, el('strong', 'proy-valor', formatQ(adminSrvComisionValorCalc(sol, presupuesto)))),
     actions
   );
   modBtn.addEventListener('click', () => adminSrvRenderRowEdit(row, sol, presupuesto));
   delBtn.addEventListener('click', async () => {
-    if (!confirm('¿Eliminar esta solicitud de servicio? Esta acción no se puede deshacer.')) return;
+    if (!confirm(t.admConfirmEliminarSolicitud)) return;
     delBtn.disabled = true;
     try {
       const { error } = await supabaseClient.from('solicitudes_servicio').delete().eq('id', sol.id);
@@ -1307,13 +1809,14 @@ function adminSrvRenderRowView(row, sol, presupuesto) {
       mostrarAdminSrvDetalle();
     } catch (e) {
       console.error('Error eliminando la solicitud:', e);
-      alert('No se pudo eliminar la solicitud.');
+      alert(t.admErrorEliminarSolicitud);
       delBtn.disabled = false;
     }
   });
 }
 
 function adminSrvRenderRowEdit(row, sol, presupuesto) {
+  const t = T[lang];
   row.innerHTML = '';
   const estadoSel = document.createElement('select');
   SOL_ESTADOS.forEach((e) => {
@@ -1326,7 +1829,7 @@ function adminSrvRenderRowEdit(row, sol, presupuesto) {
   const vendedorInput = document.createElement('input');
   vendedorInput.type = 'text';
   vendedorInput.value = sol.vendedor_asignado || '';
-  vendedorInput.placeholder = 'Vendedor asignado';
+  vendedorInput.placeholder = t.admPlaceholderVendedorAsignado;
   const vendedorList = document.createElement('datalist');
   vendedorList.id = 'srvVendedorList-' + sol.id;
   fillDatalist(vendedorList, vendedoresConocidos());
@@ -1344,20 +1847,20 @@ function adminSrvRenderRowEdit(row, sol, presupuesto) {
   });
 
   const actions = el('div', 'sol-actions');
-  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
-  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
   actions.append(saveBtn, cancelBtn);
   row.append(
-    labeledCell('No. de solicitud', el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
-    labeledCell('Nombre del cliente', el('span', 'sol-cli', sol.nombre_cliente || '—')),
-    labeledCell('Fecha de solicitud', el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
-    labeledCell('Estado', estadoSel),
-    labeledCell('Fecha cambio de estado', el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
-    labeledCell('Usuario Modifica', el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
-    labeledCell('Valor del servicio', el('strong', 'sol-cli', formatQBuscarRegPresupuesto(presupuesto))),
-    labeledCell('Vendedor asignado', vendedorInput),
-    labeledCell('% Comisión', comisionInput),
-    labeledCell('Valor de comisión', valorPreview),
+    labeledCell(t.admNoNumSolicitud, el('strong', 'sol-num', sol.numero_solicitud || ('#' + sol.id))),
+    labeledCell(t.admNombreCliente, el('span', 'sol-cli', sol.nombre_cliente || '—')),
+    labeledCell(t.admFechaSolicitud, el('span', 'sol-cli', formatQBuscarRegFecha(sol.created_at))),
+    labeledCell(t.admEstado, estadoSel),
+    labeledCell(t.admFechaCambioEstado, el('span', 'sol-cli', sol.estado_actualizado_en ? formatQBuscarRegFecha(sol.estado_actualizado_en) : '—')),
+    labeledCell(t.admUsuarioModifica, el('span', 'sol-cli', sol.estado_actualizado_por || '—')),
+    labeledCell(t.admValorDelServicio, el('strong', 'sol-cli', formatQBuscarRegPresupuesto(presupuesto))),
+    labeledCell(t.admVendedorAsignado, vendedorInput),
+    labeledCell(t.admPctComision, comisionInput),
+    labeledCell(t.admValorComision, valorPreview),
     actions
   );
   row.appendChild(vendedorList);
@@ -1379,7 +1882,7 @@ function adminSrvRenderRowEdit(row, sol, presupuesto) {
       adminSrvRenderRowView(row, sol, presupuesto);
     } catch (e) {
       console.error('Error actualizando la solicitud:', e);
-      alert('No se pudo guardar el cambio.');
+      alert(t.adminErrorGuardarCambio);
       saveBtn.disabled = false;
     }
   });
@@ -1390,19 +1893,19 @@ async function mostrarAdminSrvDetalle() {
   const listaSel = $('#adminSrvListaSel');
   if (!result || !listaSel) return;
   const id = listaSel.value;
+  const t = T[lang] || T.es;
   if (!id) {
-    result.innerHTML = '<p class="qbr-empty">Elige un registro de la lista para ver su información.</p>';
+    result.innerHTML = '<p class="qbr-empty">' + t.admEligeRegistroLista + '</p>';
     return;
   }
   if (id === QBUSCARREG_TODOS) {
-    result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+    result.innerHTML = '<p class="qbr-empty">' + t.adminCargandoPuntos + '</p>';
     try {
       const tipoSel = $('#adminSrvTipoSel');
       const estadoSel = $('#adminSrvEstadoSel');
       const promotorSel = $('#adminSrvPromotorSel');
       const fechaDesdeVal = $('#adminSrvFechaDesde')?.value || null;
       const fechaHastaVal = $('#adminSrvFechaHasta')?.value || null;
-      const t = T[lang] || T.es;
       const tipoIdx = tipoSel && tipoSel.value !== '' ? Number(tipoSel.value) : null;
       const estadoVal = estadoSel && estadoSel.value !== '' ? estadoSel.value : null;
       const promotorVal = promotorSel && promotorSel.value !== '' ? promotorSel.value : null;
@@ -1416,7 +1919,7 @@ async function mostrarAdminSrvDetalle() {
       if (error) throw error;
       const filas = data || [];
       if (!filas.length) {
-        result.innerHTML = '<p class="qbr-empty">No hay solicitudes que coincidan con la búsqueda.</p>';
+        result.innerHTML = '<p class="qbr-empty">' + t.admNoHaySolicitudesCoinciden + '</p>';
         return;
       }
       const idsCotizacion = [...new Set(filas.map((r) => r.cotizacion_id).filter((v) => v != null))];
@@ -1431,16 +1934,16 @@ async function mostrarAdminSrvDetalle() {
       result.appendChild(table);
     } catch (e) {
       console.error('Error cargando todas las solicitudes de servicio:', e);
-      result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de las solicitudes.</p>';
+      result.innerHTML = '<p class="qbr-empty">' + t.admNoSePudoCargarSolicitudes + '</p>';
     }
     return;
   }
-  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  result.innerHTML = '<p class="qbr-empty">' + t.adminCargandoPuntos + '</p>';
   try {
     const { data: sol, error } = await supabaseClient.from('solicitudes_servicio').select('*').eq('id', id).maybeSingle();
     if (error) throw error;
     if (!sol) {
-      result.innerHTML = '<p class="qbr-empty">No se encontró la solicitud.</p>';
+      result.innerHTML = '<p class="qbr-empty">' + t.admNoSeEncontroSolicitud + '</p>';
       return;
     }
     let presupuesto = null;
@@ -1454,7 +1957,7 @@ async function mostrarAdminSrvDetalle() {
     result.appendChild(table);
   } catch (e) {
     console.error('Error cargando el detalle de la solicitud:', e);
-    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de la solicitud.</p>';
+    result.innerHTML = '<p class="qbr-empty">' + t.admNoSePudoCargarSolicitud + '</p>';
   }
 }
 
@@ -1804,7 +2307,7 @@ $('#rotVisualVolverCiudadesBtn')?.addEventListener('click', () => {
 let adminVendData = [];
 
 function vendCodigo(v) {
-  return v && v.id != null ? ('V-' + String(v.id).padStart(4, '0')) : 'Se asigna al guardar';
+  return v && v.id != null ? ('V-' + String(v.id).padStart(4, '0')) : T[lang].admCodigoSeAsigna;
 }
 
 /* Lista de bancos de Guatemala, igual a la usada en "Datos para
@@ -1834,20 +2337,29 @@ const BANCOS_GT = [
 ];
 
 /* Tipo de cuenta bancaria del vendedor, para el depósito de sus
-   comisiones. */
-const TIPOS_CUENTA_BANCARIA = [
-  { v: 'monetaria', l: 'Monetaria' },
-  { v: 'ahorros', l: 'Ahorros' }
-];
-const tipoCuentaLabel = (v) => (TIPOS_CUENTA_BANCARIA.find((t) => t.v === v) || {}).l || '—';
+   comisiones. Las etiquetas ("l") se traducen en vivo según el idioma
+   activo, igual que UBIC_ESTADOS/SOL_ESTADOS. */
+function getTiposCuentaBancaria() {
+  const t = T[lang] || T.es;
+  return [
+    { v: 'monetaria', l: t.admMonetaria },
+    { v: 'ahorros', l: t.admAhorros }
+  ];
+}
+Object.defineProperty(window, 'TIPOS_CUENTA_BANCARIA', { get: getTiposCuentaBancaria });
+const tipoCuentaLabel = (v) => (getTiposCuentaBancaria().find((t) => t.v === v) || {}).l || '—';
 
 /* Forma de pago de una comisión generada, usada en el resumen de pago por
    vendedor de Comisiones Generadas. */
-const FORMAS_PAGO = [
-  { v: 'transferencia', l: 'Transferencia' },
-  { v: 'cheque', l: 'Cheque' },
-  { v: 'efectivo', l: 'Efectivo' }
-];
+function getFormasPago() {
+  const t = T[lang] || T.es;
+  return [
+    { v: 'transferencia', l: t.admTransferencia },
+    { v: 'cheque', l: t.admCheque },
+    { v: 'efectivo', l: t.admEfectivo }
+  ];
+}
+Object.defineProperty(window, 'FORMAS_PAGO', { get: getFormasPago });
 
 function vendAvatarEl(v) {
   const wrap = el('div', 'srow');
@@ -1865,46 +2377,47 @@ function vendAvatarEl(v) {
 function vendCardHead(v) {
   const head = el('div', 'proy-card-h');
   const nameWrap = el('div', 'proy-name-wrap');
-  const nameEl = el('div', 'proy-name', v.nombre || 'Vendedor sin nombre');
+  const nameEl = el('div', 'proy-name', v.nombre || T[lang].admVendedorSinNombre);
   nameWrap.append(nameEl, el('div', 'proy-city', vendCodigo(v)));
   head.append(nameWrap);
   return head;
 }
 
 function vendRenderView(card, v) {
+  const t = T[lang];
   card.innerHTML = '';
   card.classList.remove('proy-card-edit');
   const actions = el('div', 'proy-actions');
-  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
-  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
   actions.append(modBtn, delBtn);
 
   card.append(vendCardHead(v));
   const grid = el('div', 'proy-grid');
   grid.append(
-    labeledCell('Foto', vendAvatarEl(v)),
-    labeledCell('Código de vendedor', el('strong', '', vendCodigo(v))),
-    labeledCell('Nombre', el('span', '', v.nombre || '—')),
-    labeledCell('Teléfono', el('span', '', v.telefono || '—')),
-    labeledCell('Dirección', el('span', '', v.direccion || '—')),
-    labeledCell('Fecha inicio', el('span', '', v.fecha_inicio ? formatQBuscarRegFecha(v.fecha_inicio) : '—')),
-    labeledCell('Fecha de grabación', el('span', '', v.created_at ? formatQBuscarRegFecha(v.created_at) : '—')),
-    labeledCell('Usuario', el('span', '', v.usuario || '—')),
-    labeledCell('Banco de pago', el('span', '', v.banco_pago || '—')),
-    labeledCell('Número de cuenta bancaria', el('span', '', v.numero_cuenta_bancaria || '—')),
-    labeledCell('Tipo de cuenta', el('span', '', tipoCuentaLabel(v.tipo_cuenta_bancaria)))
+    labeledCell(t.admFoto, vendAvatarEl(v)),
+    labeledCell(t.admCodigoVendedor, el('strong', '', vendCodigo(v))),
+    labeledCell(t.admNombre, el('span', '', v.nombre || '—')),
+    labeledCell(t.admTelefono, el('span', '', v.telefono || '—')),
+    labeledCell(t.admDireccion, el('span', '', v.direccion || '—')),
+    labeledCell(t.admFechaInicio, el('span', '', v.fecha_inicio ? formatQBuscarRegFecha(v.fecha_inicio) : '—')),
+    labeledCell(t.admFechaGrabacion, el('span', '', v.created_at ? formatQBuscarRegFecha(v.created_at) : '—')),
+    labeledCell(t.admUsuario, el('span', '', v.usuario || '—')),
+    labeledCell(t.admBancoDePago, el('span', '', v.banco_pago || '—')),
+    labeledCell(t.admNumeroCuentaBancaria, el('span', '', v.numero_cuenta_bancaria || '—')),
+    labeledCell(t.admTipoCuenta, el('span', '', tipoCuentaLabel(v.tipo_cuenta_bancaria)))
   );
   // El % de comisión por ventas solo lo ve y administra el Super
   // Administrador (el resto de la modal ya está detrás de ese mismo
   // candado, pero se repite aquí por si ese candado cambia más adelante).
   if (esSuperAdmin()) {
-    grid.appendChild(labeledCell('% Comisión por ventas', el('span', '', v.comision_porcentaje != null && v.comision_porcentaje !== '' ? (v.comision_porcentaje + '%') : '—')));
+    grid.appendChild(labeledCell(t.admPctComisionVentas, el('span', '', v.comision_porcentaje != null && v.comision_porcentaje !== '' ? (v.comision_porcentaje + '%') : '—')));
   }
   card.append(grid, actions);
 
   modBtn.addEventListener('click', () => vendRenderEdit(card, v, false));
   delBtn.addEventListener('click', async () => {
-    if (!confirm('¿Eliminar este vendedor? Esta acción no se puede deshacer.')) return;
+    if (!confirm(t.admConfirmEliminarVendedor)) return;
     delBtn.disabled = true;
     try {
       await eliminarVendedorDesdeListado(v);
@@ -1913,13 +2426,14 @@ function vendRenderView(card, v) {
       if (!$('#adminVendedoresList').children.length) pintarAdminVendedoresList();
     } catch (e) {
       console.error('Error eliminando el vendedor:', e);
-      alert('No se pudo eliminar el vendedor.');
+      alert(t.admErrorEliminarVendedor);
       delBtn.disabled = false;
     }
   });
 }
 
 function vendRenderEdit(card, v, isNew) {
+  const t = T[lang];
   card.innerHTML = '';
   card.classList.add('proy-card-edit');
 
@@ -1932,8 +2446,8 @@ function vendRenderEdit(card, v, isNew) {
   fileInput.type = 'file'; fileInput.accept = 'image/*'; fileInput.className = 'sr';
   fileInput.id = 'vendFoto-' + (v.id || 'nuevo') + '-' + Date.now();
   const fileLabel = document.createElement('label');
-  fileLabel.className = 'btn btn-gold btn-sm'; fileLabel.htmlFor = fileInput.id; fileLabel.textContent = 'Subir foto';
-  const rmBtn = el('button', 'btn btn-danger btn-sm', 'Quitar foto'); rmBtn.type = 'button';
+  fileLabel.className = 'btn btn-gold btn-sm'; fileLabel.htmlFor = fileInput.id; fileLabel.textContent = t.admSubirFoto;
+  const rmBtn = el('button', 'btn btn-danger btn-sm', t.admQuitarFoto); rmBtn.type = 'button';
   const actsPhoto = el('div', 'acts');
   actsPhoto.append(fileInput, fileLabel, rmBtn);
   const avWrap = el('div', 'srow');
@@ -1951,13 +2465,13 @@ function vendRenderEdit(card, v, isNew) {
     const f = fileInput.files && fileInput.files[0];
     if (!f) return;
     const prevLabel = fileLabel.textContent;
-    fileLabel.textContent = 'Subiendo…';
+    fileLabel.textContent = t.admSubiendoFoto;
     try {
       fotoUrl = await uploadPropFile(f, 600);
       refreshAvatar();
     } catch (e) {
       console.error('Error subiendo la foto del vendedor:', e);
-      alert('No se pudo subir la foto.');
+      alert(t.admErrorSubirFoto);
     } finally {
       fileLabel.textContent = prevLabel;
       fileInput.value = '';
@@ -1966,17 +2480,17 @@ function vendRenderEdit(card, v, isNew) {
   rmBtn.addEventListener('click', () => { fotoUrl = ''; refreshAvatar(); });
 
   const nombreInput = document.createElement('input');
-  nombreInput.type = 'text'; nombreInput.value = v.nombre || ''; nombreInput.placeholder = 'Nombre del vendedor';
+  nombreInput.type = 'text'; nombreInput.value = v.nombre || ''; nombreInput.placeholder = t.admPlaceholderNombreVendedor;
 
   const telInput = document.createElement('input');
   telInput.type = 'tel'; telInput.value = v.telefono || ''; telInput.placeholder = '+502 0000 0000';
 
   const dirInput = document.createElement('input');
-  dirInput.type = 'text'; dirInput.value = v.direccion || ''; dirInput.placeholder = 'Dirección';
+  dirInput.type = 'text'; dirInput.value = v.direccion || ''; dirInput.placeholder = t.admPlaceholderDireccion;
 
   const bancoSel = document.createElement('select');
   const bancoOptVacio = document.createElement('option');
-  bancoOptVacio.value = ''; bancoOptVacio.textContent = 'Selecciona…';
+  bancoOptVacio.value = ''; bancoOptVacio.textContent = t.adminSelecciona;
   bancoSel.appendChild(bancoOptVacio);
   BANCOS_GT.forEach((nombreBanco) => {
     const opt = document.createElement('option');
@@ -1986,15 +2500,15 @@ function vendRenderEdit(card, v, isNew) {
   bancoSel.value = v.banco_pago || '';
 
   const cuentaInput = document.createElement('input');
-  cuentaInput.type = 'text'; cuentaInput.value = v.numero_cuenta_bancaria || ''; cuentaInput.placeholder = 'Número de cuenta';
+  cuentaInput.type = 'text'; cuentaInput.value = v.numero_cuenta_bancaria || ''; cuentaInput.placeholder = t.admNumeroCuentaBancaria;
 
   const tipoCuentaSel = document.createElement('select');
   const tipoCuentaOptVacio = document.createElement('option');
-  tipoCuentaOptVacio.value = ''; tipoCuentaOptVacio.textContent = 'Selecciona…';
+  tipoCuentaOptVacio.value = ''; tipoCuentaOptVacio.textContent = t.adminSelecciona;
   tipoCuentaSel.appendChild(tipoCuentaOptVacio);
-  TIPOS_CUENTA_BANCARIA.forEach((t) => {
+  TIPOS_CUENTA_BANCARIA.forEach((tc) => {
     const opt = document.createElement('option');
-    opt.value = t.v; opt.textContent = t.l;
+    opt.value = tc.v; opt.textContent = tc.l;
     tipoCuentaSel.appendChild(opt);
   });
   tipoCuentaSel.value = v.tipo_cuenta_bancaria || '';
@@ -2017,27 +2531,27 @@ function vendRenderEdit(card, v, isNew) {
   comisionInput.value = v.comision_porcentaje != null ? v.comision_porcentaje : ''; comisionInput.placeholder = '%';
 
   const actions = el('div', 'proy-actions');
-  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
-  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
   actions.append(saveBtn, cancelBtn);
 
   card.append(vendCardHead(v));
   const grid = el('div', 'proy-grid');
   grid.append(
-    labeledCell('Foto', avWrap),
-    labeledCell('Código de vendedor', el('strong', '', isNew ? 'Se asigna automáticamente al guardar' : vendCodigo(v))),
-    labeledCell('Nombre', nombreInput),
-    labeledCell('Teléfono', telInput),
-    labeledCell('Dirección', dirInput),
-    labeledCell('Fecha inicio', el('span', '', isNew ? 'Se asigna automáticamente al guardar (' + hoyDisplay + ')' : (v.fecha_inicio ? formatQBuscarRegFecha(v.fecha_inicio) : '—'))),
-    labeledCell('Fecha de grabación', el('span', '', isNew ? 'Se asigna automáticamente al guardar' : (v.created_at ? formatQBuscarRegFecha(v.created_at) : '—'))),
-    labeledCell('Usuario', el('span', '', 'Se graba automáticamente (' + (localStorage.getItem(LOGIN_STORE) || 'usuario actual') + ')')),
-    labeledCell('Banco de pago', bancoSel),
-    labeledCell('Número de cuenta bancaria', cuentaInput),
-    labeledCell('Tipo de cuenta', tipoCuentaSel)
+    labeledCell(t.admFoto, avWrap),
+    labeledCell(t.admCodigoVendedor, el('strong', '', isNew ? t.admCodigoSeAsignaAutomatico : vendCodigo(v))),
+    labeledCell(t.admNombre, nombreInput),
+    labeledCell(t.admTelefono, telInput),
+    labeledCell(t.admDireccion, dirInput),
+    labeledCell(t.admFechaInicio, el('span', '', isNew ? t.admSeAsignaAutomaticoFecha + hoyDisplay + ')' : (v.fecha_inicio ? formatQBuscarRegFecha(v.fecha_inicio) : '—'))),
+    labeledCell(t.admFechaGrabacion, el('span', '', isNew ? t.admCodigoSeAsignaAutomatico : (v.created_at ? formatQBuscarRegFecha(v.created_at) : '—'))),
+    labeledCell(t.admUsuario, el('span', '', t.admSeGrabaAutomaticamente + (localStorage.getItem(LOGIN_STORE) || t.admUsuarioActualFallback) + ')')),
+    labeledCell(t.admBancoDePago, bancoSel),
+    labeledCell(t.admNumeroCuentaBancaria, cuentaInput),
+    labeledCell(t.admTipoCuenta, tipoCuentaSel)
   );
   if (esSuperAdmin()) {
-    grid.appendChild(labeledCell('% Comisión por ventas', comisionInput));
+    grid.appendChild(labeledCell(t.admPctComisionVentas, comisionInput));
   }
   card.append(grid, actions);
 
@@ -2051,7 +2565,7 @@ function vendRenderEdit(card, v, isNew) {
   });
   saveBtn.addEventListener('click', async () => {
     const nombre = nombreInput.value.trim();
-    if (!nombre) { alert('Escribe el nombre del vendedor.'); return; }
+    if (!nombre) { alert(t.admEscribeNombreVendedor); return; }
     saveBtn.disabled = true;
     const payload = {
       nombre,
@@ -2081,7 +2595,7 @@ function vendRenderEdit(card, v, isNew) {
       vendedoresCatalogoCargado = false; // el catálogo del formulario de propiedades se refresca en su próximo uso
     } catch (e) {
       console.error('Error guardando el vendedor:', e);
-      alert('No se pudo guardar el vendedor.');
+      alert(t.admErrorGuardarVendedor);
       saveBtn.disabled = false;
     }
   });
@@ -2091,87 +2605,94 @@ function vendRenderEdit(card, v, isNew) {
    Catálogo simple de tipos de comisión agrupados por negocio (Propiedades,
    Proyectos o Servicios), con un % de comisión por defecto de referencia.
    Mismo patrón de tarjetas que el catálogo de Vendedores. */
-const NEGOCIOS_TIPO = [
-  { v: 'propiedades', l: 'Propiedades' },
-  { v: 'proyectos', l: 'Proyectos' },
-  { v: 'servicios', l: 'Servicios' }
-];
-const negocioLabel = (v) => (NEGOCIOS_TIPO.find((n) => n.v === v) || {}).l || v || '—';
+/* Las etiquetas ("l") se traducen en vivo según el idioma activo. */
+function getNegociosTipo() {
+  const t = T[lang] || T.es;
+  return [
+    { v: 'propiedades', l: t.admNegocioPropiedades },
+    { v: 'proyectos', l: t.admNegocioProyectos },
+    { v: 'servicios', l: t.admNegocioServicios }
+  ];
+}
+Object.defineProperty(window, 'NEGOCIOS_TIPO', { get: getNegociosTipo });
+const negocioLabel = (v) => (getNegociosTipo().find((n) => n.v === v) || {}).l || v || '—';
 
 let adminTipoComData = [];
 
-function tipoComCardHead(t) {
+function tipoComCardHead(tc) {
   const head = el('div', 'proy-card-h');
-  head.append(el('div', 'proy-name', t.nombre || 'Tipo sin nombre'));
+  head.append(el('div', 'proy-name', tc.nombre || T[lang].admTipoSinNombre));
   return head;
 }
 
-function tipoComRenderView(card, t) {
+function tipoComRenderView(card, tc) {
+  const t = T[lang];
   card.innerHTML = '';
   card.classList.remove('proy-card-edit');
   const actions = el('div', 'proy-actions');
-  const modBtn = el('button', 'btn btn-line-dark btn-sm', 'Modificar'); modBtn.type = 'button';
-  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', 'Eliminar'); delBtn.type = 'button';
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
   actions.append(modBtn, delBtn);
 
-  card.append(tipoComCardHead(t));
+  card.append(tipoComCardHead(tc));
   const grid = el('div', 'proy-grid');
   grid.append(
-    labeledCell('Negocio', el('span', '', negocioLabel(t.negocio))),
-    labeledCell('Nombre', el('span', '', t.nombre || '—')),
-    labeledCell('% Comisión por defecto', el('span', '', t.porcentaje_default != null && t.porcentaje_default !== '' ? (t.porcentaje_default + '%') : '—'))
+    labeledCell(t.admNegocio, el('span', '', negocioLabel(tc.negocio))),
+    labeledCell(t.admNombre, el('span', '', tc.nombre || '—')),
+    labeledCell(t.admPctComisionDefecto, el('span', '', tc.porcentaje_default != null && tc.porcentaje_default !== '' ? (tc.porcentaje_default + '%') : '—'))
   );
   card.append(grid, actions);
 
-  modBtn.addEventListener('click', () => tipoComRenderEdit(card, t, false));
+  modBtn.addEventListener('click', () => tipoComRenderEdit(card, tc, false));
   delBtn.addEventListener('click', async () => {
-    if (!confirm('¿Eliminar este tipo de comisión? Esta acción no se puede deshacer.')) return;
+    if (!confirm(t.admConfirmEliminarTipoComision)) return;
     delBtn.disabled = true;
     try {
-      const { error } = await supabaseClient.from('tipos_comision').delete().eq('id', t.id);
+      const { error } = await supabaseClient.from('tipos_comision').delete().eq('id', tc.id);
       if (error) throw error;
-      adminTipoComData = adminTipoComData.filter((x) => x.id !== t.id);
+      adminTipoComData = adminTipoComData.filter((x) => x.id !== tc.id);
       card.remove();
       if (!$('#adminTiposComisionList').children.length) pintarAdminTiposComisionList();
     } catch (e) {
       console.error('Error eliminando el tipo de comisión:', e);
-      alert('No se pudo eliminar el tipo de comisión.');
+      alert(t.admErrorEliminarTipoComision);
       delBtn.disabled = false;
     }
   });
 }
 
-function tipoComRenderEdit(card, t, isNew) {
+function tipoComRenderEdit(card, tc, isNew) {
+  const t = T[lang];
   card.innerHTML = '';
   card.classList.add('proy-card-edit');
 
   const negocioSel = document.createElement('select');
-  const optVacio = document.createElement('option'); optVacio.value = ''; optVacio.textContent = 'Selecciona…';
+  const optVacio = document.createElement('option'); optVacio.value = ''; optVacio.textContent = t.adminSelecciona;
   negocioSel.appendChild(optVacio);
   NEGOCIOS_TIPO.forEach((n) => {
     const opt = document.createElement('option'); opt.value = n.v; opt.textContent = n.l;
     negocioSel.appendChild(opt);
   });
-  negocioSel.value = t.negocio || '';
+  negocioSel.value = tc.negocio || '';
 
   const nombreInput = document.createElement('input');
-  nombreInput.type = 'text'; nombreInput.value = t.nombre || ''; nombreInput.placeholder = 'Ej. Venta directa, Remodelación…';
+  nombreInput.type = 'text'; nombreInput.value = tc.nombre || ''; nombreInput.placeholder = t.admPlaceholderNombreTipoComision;
 
   const pctInput = document.createElement('input');
   pctInput.type = 'number'; pctInput.min = '0'; pctInput.max = '100'; pctInput.step = '0.1';
-  pctInput.value = t.porcentaje_default != null ? t.porcentaje_default : ''; pctInput.placeholder = '%';
+  pctInput.value = tc.porcentaje_default != null ? tc.porcentaje_default : ''; pctInput.placeholder = '%';
 
   const actions = el('div', 'proy-actions');
-  const saveBtn = el('button', 'btn btn-dark btn-sm', 'Guardar'); saveBtn.type = 'button';
-  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', 'Cancelar'); cancelBtn.type = 'button';
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
   actions.append(saveBtn, cancelBtn);
 
-  card.append(tipoComCardHead(t));
+  card.append(tipoComCardHead(tc));
   const grid = el('div', 'proy-grid');
   grid.append(
-    labeledCell('Negocio', negocioSel),
-    labeledCell('Nombre', nombreInput),
-    labeledCell('% Comisión por defecto', pctInput)
+    labeledCell(t.admNegocio, negocioSel),
+    labeledCell(t.admNombre, nombreInput),
+    labeledCell(t.admPctComisionDefecto, pctInput)
   );
   card.append(grid, actions);
 
@@ -2180,13 +2701,13 @@ function tipoComRenderEdit(card, t, isNew) {
       card.remove();
       if (!$('#adminTiposComisionList').children.length) pintarAdminTiposComisionList();
     } else {
-      tipoComRenderView(card, t);
+      tipoComRenderView(card, tc);
     }
   });
   saveBtn.addEventListener('click', async () => {
     const nombre = nombreInput.value.trim();
-    if (!nombre) { alert('Escribe el nombre del tipo de comisión.'); return; }
-    if (!negocioSel.value) { alert('Selecciona el negocio.'); return; }
+    if (!nombre) { alert(t.admEscribeNombreTipoComision); return; }
+    if (!negocioSel.value) { alert(t.admSeleccionaNegocio); return; }
     saveBtn.disabled = true;
     const payload = {
       nombre,
@@ -2201,14 +2722,14 @@ function tipoComRenderEdit(card, t, isNew) {
         adminTipoComData.unshift(row);
         tipoComRenderView(card, row);
       } else {
-        const { error } = await supabaseClient.from('tipos_comision').update(payload).eq('id', t.id);
+        const { error } = await supabaseClient.from('tipos_comision').update(payload).eq('id', tc.id);
         if (error) throw error;
-        Object.assign(t, payload);
-        tipoComRenderView(card, t);
+        Object.assign(tc, payload);
+        tipoComRenderView(card, tc);
       }
     } catch (e) {
       console.error('Error guardando el tipo de comisión:', e);
-      alert('No se pudo guardar el tipo de comisión.');
+      alert(t.admErrorGuardarTipoComision);
       saveBtn.disabled = false;
     }
   });
@@ -2218,17 +2739,17 @@ function pintarAdminTiposComisionList() {
   const list = $('#adminTiposComisionList');
   if (!list) return;
   list.innerHTML = '';
-  if (!adminTipoComData.length) { list.innerHTML = '<p class="proy-empty">No hay tipos de comisión que coincidan con la búsqueda.</p>'; return; }
-  adminTipoComData.forEach((t) => {
+  if (!adminTipoComData.length) { list.innerHTML = '<p class="proy-empty">' + T[lang].admNoHayTiposComision + '</p>'; return; }
+  adminTipoComData.forEach((tc) => {
     const card = el('div', 'proy-card');
-    tipoComRenderView(card, t);
+    tipoComRenderView(card, tc);
     list.appendChild(card);
   });
 }
 
 async function cargarAdminTipoComData(filtroNegocio) {
   const list = $('#adminTiposComisionList');
-  if (list) list.innerHTML = '<p class="proy-empty">Cargando…</p>';
+  if (list) list.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
   try {
     let q = supabaseClient.from('tipos_comision').select('*').order('negocio', { ascending: true }).order('nombre', { ascending: true });
     if (filtroNegocio) q = q.eq('negocio', filtroNegocio);
@@ -2294,7 +2815,7 @@ function pintarAdminVendedoresList() {
   const list = $('#adminVendedoresList');
   if (!list) return;
   list.innerHTML = '';
-  if (!adminVendData.length) { list.innerHTML = '<p class="proy-empty">No hay vendedores que coincidan con la búsqueda.</p>'; return; }
+  if (!adminVendData.length) { list.innerHTML = '<p class="proy-empty">' + T[lang].admNoHayVendedores + '</p>'; return; }
   adminVendData.forEach((v) => {
     const card = el('div', 'proy-card');
     vendRenderView(card, v);
@@ -2304,7 +2825,7 @@ function pintarAdminVendedoresList() {
 
 async function cargarAdminVendData(filtroNombre) {
   const list = $('#adminVendedoresList');
-  if (list) list.innerHTML = '<p class="proy-empty">Cargando…</p>';
+  if (list) list.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
   try {
     let query = supabaseClient.from('vendedores').select('*').order('id', { ascending: false });
     if (filtroNombre) query = query.ilike('nombre', '%' + filtroNombre + '%');
@@ -2365,7 +2886,7 @@ function poblarAdminComVendedorSel() {
   const prev = sel.value;
   sel.innerHTML = '';
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosVendedores;
   sel.appendChild(optTodos);
   vendedoresCatalogo.forEach((v) => {
     const nombre = (v.nombre || '').trim();
@@ -2391,14 +2912,22 @@ function adminComValorCalc(pct, precio) {
 }
 
 /* Estados de pago de una comisión, con colores propios (igual criterio que
-   SOL_ESTADOS). "pendiente" es el que queda por defecto. */
-const COM_ESTADOS = [
-  { v: 'pendiente', l: 'Pendiente de pago', bg: '#e6eef5', fg: '#2b4a66' },
-  { v: 'pagado', l: 'Pagado', bg: '#dcefe0', fg: '#1f7a43' },
-  { v: 'suspendido', l: 'Suspendido', bg: '#fbe9c8', fg: '#8b641d' },
-  { v: 'anulado', l: 'Anulado', bg: '#fbdede', fg: '#b42318' }
+   SOL_ESTADOS). "pendiente" es el que queda por defecto. Las etiquetas (campo
+   "l") se traducen en vivo leyendo T[lang] según el idioma activo, igual que
+   UBIC_ESTADOS/SOL_ESTADOS. */
+const COM_ESTADOS_BASE = [
+  { v: 'pendiente', bg: '#e6eef5', fg: '#2b4a66' },
+  { v: 'pagado', bg: '#dcefe0', fg: '#1f7a43' },
+  { v: 'suspendido', bg: '#fbe9c8', fg: '#8b641d' },
+  { v: 'anulado', bg: '#fbdede', fg: '#b42318' }
 ];
-const comEstadoInfo = (v) => COM_ESTADOS.find((e) => e.v === v) || COM_ESTADOS[0];
+function getComEstados() {
+  const t = T[lang] || T.es;
+  const labels = { pendiente: t.comEstPendiente, pagado: t.comEstPagado, suspendido: t.comEstSuspendido, anulado: t.comEstAnulado };
+  return COM_ESTADOS_BASE.map((e) => ({ ...e, l: labels[e.v] || e.v }));
+}
+Object.defineProperty(window, 'COM_ESTADOS', { get: getComEstados });
+const comEstadoInfo = (v) => getComEstados().find((e) => e.v === v) || getComEstados()[0];
 function adminComEstadoBadge(valor) {
   const info = comEstadoInfo(valor);
   const span = el('span', 'sol-badge', info.l);
@@ -2473,7 +3002,7 @@ function adminComBuildFila(d) {
         if (error) throw error;
       } catch (e) {
         console.error('Error guardando el % de comisión:', e);
-        alert('No se pudo guardar el % de comisión.');
+        alert(T[lang].comErrorGuardarPct);
       } finally {
         input.disabled = false;
       }
@@ -2511,7 +3040,7 @@ function adminComBuildFila(d) {
           adminComRecalcularTotales();
         } catch (e) {
           console.error('Error guardando el estado de la comisión:', e);
-          alert('No se pudo guardar el estado.');
+          alert(T[lang].adminErrorGuardarCambio);
           sel.value = anterior;
           colorear();
         } finally {
@@ -2572,12 +3101,13 @@ function adminComBuildGrupo(titulo, filasDescriptor) {
   const table = document.createElement('table');
   table.className = 'com-table';
   const thead = document.createElement('thead');
-  thead.innerHTML = '<tr><th>Detalle</th><th>Fecha</th><th>Vendedor</th><th class="num">% Comisión</th><th class="num">Valor de comisión</th><th>Estado</th><th>Pagar comisión</th></tr>';
+  const t = T[lang];
+  thead.innerHTML = '<tr><th>' + t.comThDetalle + '</th><th>' + t.comThFecha + '</th><th>' + t.comThVendedor + '</th><th class="num">' + t.comThPctComision + '</th><th class="num">' + t.comThValorComision + '</th><th>' + t.comThEstado + '</th><th>' + t.comThPagarComision + '</th></tr>';
   const tbody = document.createElement('tbody');
   const tfoot = document.createElement('tfoot');
   const subtotalTd = el('td', 'num', '');
   const subtotalRow = el('tr', 'com-subtotal');
-  const labelTd = el('td', '', 'Subtotal ' + titulo);
+  const labelTd = el('td', '', t.comSubtotalPrefix + titulo);
   labelTd.colSpan = 4;
   const colaTd = el('td', '', '');
   colaTd.colSpan = 2;
@@ -2607,15 +3137,15 @@ async function adminComProcesarPago(filtros) {
   const status = $('#adminComPagarStatus');
   const seleccionadas = comFilasActivas.filter((f) => f.isChecked() && f.getEstado() !== 'pagado');
   if (!seleccionadas.length) {
-    if (status) status.textContent = 'No hay comisiones marcadas para pagar.';
+    if (status) status.textContent = T[lang].comNoHayMarcadas;
     return;
   }
   const totalPagar = seleccionadas.reduce((a, f) => a + (f.getValor() || 0), 0);
-  if (!confirm('¿Confirmas generar ' + seleccionadas.length + ' comisión(es) por un total de ' + formatQ(totalPagar) + '?')) return;
+  if (!confirm(T[lang].comConfirmGenerar.replace('{n}', seleccionadas.length).replace('{v}', formatQ(totalPagar)))) return;
 
   const btn = $('#adminComPagarBtn');
   if (btn) btn.disabled = true;
-  if (status) status.textContent = 'Generando comisiones…';
+  if (status) status.textContent = T[lang].comGenerando;
   const usuario = localStorage.getItem(LOGIN_STORE) || null;
   const ahora = new Date().toISOString();
   try {
@@ -2649,10 +3179,10 @@ async function adminComProcesarPago(filtros) {
       f.marcarPagada();
     }
     adminComRecalcularTotales();
-    if (status) status.textContent = 'Se generaron ' + seleccionadas.length + ' comisión(es). Da seguimiento al pago en Comisiones Generadas.';
+    if (status) status.textContent = T[lang].comGeneradasOk.replace('{n}', seleccionadas.length);
   } catch (e) {
     console.error('Error generando comisiones:', e);
-    if (status) status.textContent = 'No se pudo generar la comisión. Intenta de nuevo.';
+    if (status) status.textContent = T[lang].comErrorGenerar;
   } finally {
     if (btn) btn.disabled = false;
   }
@@ -2665,7 +3195,7 @@ async function mostrarAdminComisiones() {
   const fechaDesdeVal = $('#adminComFechaDesde')?.value || '';
   const fechaHastaVal = $('#adminComFechaHasta')?.value || '';
   const tipoVal = $('#adminComTipoSel')?.value || '';
-  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  result.innerHTML = '<p class="qbr-empty">' + T[lang].cargando + '</p>';
   comFilasActivas = [];
   try {
     const grupos = [];
@@ -2704,7 +3234,7 @@ async function mostrarAdminComisiones() {
           guardarPagoCompleto: () => supabaseClient.from('propiedades').update({ comision_pagar: true, comision_estado: 'pagado' }).eq('ciudad', r.ciudad).eq('local_id', r.local_id)
         };
       });
-      grupos.push({ titulo: 'Propiedades', filasDescriptor });
+      grupos.push({ titulo: T[lang].comGrupoPropiedades, filasDescriptor });
     }
 
     if (tipoVal === '' || tipoVal === 'proyectos' || tipoVal === 'servicios') {
@@ -2725,7 +3255,7 @@ async function mostrarAdminComisiones() {
         const { data: cots } = await supabaseClient.from('cotizaciones').select('id, presupuesto_asignado').in('id', idsCot);
         if (cots) cots.forEach((c) => { presupuestos[c.id] = c.presupuesto_asignado; });
       }
-      const titulo = tipoVal === 'proyectos' ? 'Proyectos' : tipoVal === 'servicios' ? 'Servicios' : 'Proyectos y Servicios';
+      const titulo = tipoVal === 'proyectos' ? T[lang].comGrupoProyectos : tipoVal === 'servicios' ? T[lang].comGrupoServicios : T[lang].comGrupoProyectosServicios;
       const filasDescriptor = filas.map((r) => {
         const detalleTexto = (r.numero_solicitud || ('#' + r.id)) + ' · ' + (r.servicio || '—');
         return {
@@ -2757,20 +3287,20 @@ async function mostrarAdminComisiones() {
       result.appendChild(adminComBuildGrupo(g.titulo, g.filasDescriptor));
     });
     if (!totalFilas) {
-      result.innerHTML = '<p class="qbr-empty">No hay comisiones que coincidan con la búsqueda.</p>';
+      result.innerHTML = '<p class="qbr-empty">' + T[lang].comNoHayComisionesBusqueda + '</p>';
       return;
     }
 
     const totalBar = el('div', 'com-total-bar');
     totalBar.append(
-      el('span', 'com-total-label', 'Total de comisiones generadas'),
+      el('span', 'com-total-label', T[lang].comTotalGenerado),
       (() => { const v = el('strong', 'com-total-value'); v.id = 'adminComTotalValor'; return v; })()
     );
     result.appendChild(totalBar);
 
     const pagarBar = el('div', 'com-total-bar com-pagar-bar');
     pagarBar.append(
-      el('span', 'com-total-label', 'Total de comisiones a pagar'),
+      el('span', 'com-total-label', T[lang].comTotalAPagar),
       (() => { const v = el('strong', 'com-total-value'); v.id = 'adminComTotalPagarValor'; return v; })()
     );
     result.appendChild(pagarBar);
@@ -2778,7 +3308,7 @@ async function mostrarAdminComisiones() {
     const pagarWrap = el('div', 'com-pagar-btn-wrap');
     const pagarBtn = document.createElement('button');
     pagarBtn.type = 'button'; pagarBtn.id = 'adminComPagarBtn'; pagarBtn.className = 'btn btn-gold btn-sm';
-    pagarBtn.textContent = 'Generar Comisiones';
+    pagarBtn.textContent = T[lang].comBtnGenerar;
     pagarBtn.addEventListener('click', () => adminComProcesarPago({ vendedorVal, fechaDesdeVal, fechaHastaVal, tipoVal }));
     const pagarStatus = el('p', 'hint', ''); pagarStatus.id = 'adminComPagarStatus';
     pagarWrap.append(pagarBtn, pagarStatus);
@@ -2787,7 +3317,7 @@ async function mostrarAdminComisiones() {
     adminComRecalcularTotales();
   } catch (e) {
     console.error('Error cargando las comisiones de ventas:', e);
-    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de comisiones.</p>';
+    result.innerHTML = '<p class="qbr-empty">' + T[lang].comErrorCargarComisiones + '</p>';
   }
 }
 
@@ -2829,7 +3359,7 @@ function poblarAdminComGenVendedorSel() {
   const prev = sel.value;
   sel.innerHTML = '';
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosVendedores;
   sel.appendChild(optTodos);
   vendedoresCatalogo.forEach((v) => {
     const nombre = (v.nombre || '').trim();
@@ -2858,7 +3388,7 @@ function adminComGenCampoFecha(td, id, campo, valorIso) {
         if (error) throw error;
       } catch (e) {
         console.error('Error guardando ' + campo + ':', e);
-        alert('No se pudo guardar el cambio.');
+        alert(T[lang].adminErrorGuardarCambio);
       } finally {
         input.disabled = false;
       }
@@ -2882,7 +3412,7 @@ function adminComGenCampoTexto(td, id, campo, valorTxt) {
         if (error) throw error;
       } catch (e) {
         console.error('Error guardando ' + campo + ':', e);
-        alert('No se pudo guardar el cambio.');
+        alert(T[lang].adminErrorGuardarCambio);
       } finally {
         input.disabled = false;
       }
@@ -2918,7 +3448,7 @@ function adminComGenCampoFormaPago(td, r, camposRelacionados) {
         r.forma_pago = sel.value;
       } catch (e) {
         console.error('Error guardando forma_pago:', e);
-        alert('No se pudo guardar el cambio.');
+        alert(T[lang].adminErrorGuardarCambio);
         sel.value = anterior || 'transferencia';
         camposRelacionados(sel.value);
       } finally {
@@ -2941,7 +3471,7 @@ function adminComGenBuildFila(r) {
   const card = el('div', 'proy-card');
   const head = el('div', 'proy-card-h');
   const nameWrap = el('div', 'proy-name-wrap');
-  nameWrap.append(el('div', 'proy-name', r.detalle || 'Comisión'));
+  nameWrap.append(el('div', 'proy-name', r.detalle || T[lang].comThDetalle));
   head.append(nameWrap);
   const estadoWrap = el('div');
   head.append(estadoWrap);
@@ -2968,7 +3498,7 @@ function adminComGenBuildFila(r) {
         colorear();
       } catch (e) {
         console.error('Error guardando el estado:', e);
-        alert('No se pudo guardar el estado.');
+        alert(T[lang].adminErrorGuardarCambio);
         sel.value = anterior;
         colorear();
       } finally {
@@ -2988,22 +3518,22 @@ function adminComGenBuildFila(r) {
   const bancoWrap = el('div'); adminComGenCampoTexto(bancoWrap, r.id, 'banco', r.banco);
   const cuentaWrap = el('div'); adminComGenCampoTexto(cuentaWrap, r.id, 'cuenta_bancaria', r.cuenta_bancaria);
   const chequeWrap = el('div'); adminComGenCampoTexto(chequeWrap, r.id, 'numero_cheque', r.numero_cheque);
-  const bancoCell = labeledCell('Banco', bancoWrap);
-  const cuentaCell = labeledCell('Cuenta bancaria', cuentaWrap);
-  const chequeCell = labeledCell('Número de cheque', chequeWrap);
+  const bancoCell = labeledCell(T[lang].comLblBanco, bancoWrap);
+  const cuentaCell = labeledCell(T[lang].comLblCuentaBancaria, cuentaWrap);
+  const chequeCell = labeledCell(T[lang].comLblNumeroCheque, chequeWrap);
 
   grid.append(
-    labeledCell('Vendedor', el('span', '', r.vendedor || '—')),
-    labeledCell('Fecha generada', el('span', '', r.fecha_comision ? formatQBuscarRegFecha(r.fecha_comision) : '—')),
-    labeledCell('% Comisión', el('span', '', r.porcentaje_comision != null && r.porcentaje_comision !== '' ? (r.porcentaje_comision + '%') : '—')),
-    labeledCell('Valor de comisión', el('strong', 'com-valor', formatQ(r.valor_comision))),
-    labeledCell('Forma de pago', formaPagoWrap),
-    labeledCell('Fecha de pago', campoFechaWrap('fecha_pago', r.fecha_pago)),
+    labeledCell(T[lang].comThVendedor, el('span', '', r.vendedor || '—')),
+    labeledCell(T[lang].comLblFechaGenerada, el('span', '', r.fecha_comision ? formatQBuscarRegFecha(r.fecha_comision) : '—')),
+    labeledCell(T[lang].admPctComision, el('span', '', r.porcentaje_comision != null && r.porcentaje_comision !== '' ? (r.porcentaje_comision + '%') : '—')),
+    labeledCell(T[lang].admValorComision, el('strong', 'com-valor', formatQ(r.valor_comision))),
+    labeledCell(T[lang].comLblFormaPago, formaPagoWrap),
+    labeledCell(T[lang].comLblFechaPago, campoFechaWrap('fecha_pago', r.fecha_pago)),
     bancoCell,
     cuentaCell,
     chequeCell,
-    labeledCell('Fecha operación', campoFechaWrap('fecha_operacion', r.fecha_operacion)),
-    labeledCell('Usuario que paga', campoTextoWrap('usuario_banco', r.usuario_banco))
+    labeledCell(T[lang].comLblFechaOperacion, campoFechaWrap('fecha_operacion', r.fecha_operacion)),
+    labeledCell(T[lang].comLblUsuarioPaga, campoTextoWrap('usuario_banco', r.usuario_banco))
   );
   card.append(grid);
 
@@ -3035,14 +3565,14 @@ function construirResumenPagoPorVendedor(data) {
 
   const porVendedor = {};
   pendientes.forEach((r) => {
-    const key = r.vendedor || '(Sin vendedor)';
+    const key = r.vendedor || T[lang].comSinVendedor;
     if (!porVendedor[key]) porVendedor[key] = { total: 0, ids: [] };
     porVendedor[key].total += (r.valor_comision || 0);
     porVendedor[key].ids.push(r.id);
   });
 
   const wrap = el('div', 'com-group com-pay-summary');
-  wrap.append(el('h3', 'com-group-title', 'Resumen de pago por vendedor'));
+  wrap.append(el('h3', 'com-group-title', T[lang].comResumenPagoPorVendedor));
   const list = el('div', 'proy-list');
 
   Object.keys(porVendedor).sort().forEach((vendedorNombre) => {
@@ -3055,7 +3585,7 @@ function construirResumenPagoPorVendedor(data) {
     card.append(head);
 
     const grid = el('div', 'proy-grid');
-    grid.append(labeledCell('Total pendiente', el('strong', 'com-valor', formatQ(total))));
+    grid.append(labeledCell(T[lang].comLblTotalPendiente, el('strong', 'com-valor', formatQ(total))));
 
     // Forma de pago: según la que se elija, se muestran solo los campos que
     // correspondan (Transferencia → Banco + Cuenta bancaria; Cheque →
@@ -3067,19 +3597,19 @@ function construirResumenPagoPorVendedor(data) {
       formaPagoSel.appendChild(opt);
     });
     formaPagoSel.value = 'transferencia';
-    grid.append(labeledCell('Forma de pago', formaPagoSel));
+    grid.append(labeledCell(T[lang].comLblFormaPago, formaPagoSel));
 
     const hoyIso = fechaHoyIso();
     const fechaPagoInput = document.createElement('input'); fechaPagoInput.type = 'date'; fechaPagoInput.value = hoyIso;
-    grid.append(labeledCell('Fecha de pago', fechaPagoInput));
+    grid.append(labeledCell(T[lang].comLblFechaPago, fechaPagoInput));
 
     const fechaOpInput = document.createElement('input'); fechaOpInput.type = 'date'; fechaOpInput.value = hoyIso;
-    grid.append(labeledCell('Fecha de operación', fechaOpInput));
+    grid.append(labeledCell(T[lang].comLblFechaOperacion, fechaOpInput));
 
     // Usuario que procesa el pago: se toma solo de la sesión actual, no se
     // escribe a mano (igual criterio que "Usuario" en Vendedores).
-    const usuarioActual = localStorage.getItem(LOGIN_STORE) || 'usuario actual';
-    grid.append(labeledCell('Usuario que paga', el('span', '', usuarioActual)));
+    const usuarioActual = localStorage.getItem(LOGIN_STORE) || T[lang].admUsuarioActualFallback;
+    grid.append(labeledCell(T[lang].comLblUsuarioPaga, el('span', '', usuarioActual)));
 
     card.append(grid);
 
@@ -3088,19 +3618,19 @@ function construirResumenPagoPorVendedor(data) {
     // otro banco.
     const camposPago = el('div', 'proy-grid com-pay-campos');
     const bancoSel = document.createElement('select');
-    const optVacio = document.createElement('option'); optVacio.value = ''; optVacio.textContent = 'Selecciona…';
+    const optVacio = document.createElement('option'); optVacio.value = ''; optVacio.textContent = T[lang].adminSelecciona;
     bancoSel.appendChild(optVacio);
     BANCOS_GT.forEach((b) => { const o = document.createElement('option'); o.value = b; o.textContent = b; bancoSel.appendChild(o); });
     bancoSel.value = catalogo.banco_pago || '';
-    const bancoCell = labeledCell('Banco', bancoSel);
+    const bancoCell = labeledCell(T[lang].comLblBanco, bancoSel);
 
     const cuentaInput = document.createElement('input');
-    cuentaInput.type = 'text'; cuentaInput.value = catalogo.numero_cuenta_bancaria || ''; cuentaInput.placeholder = 'Número de cuenta';
-    const cuentaCell = labeledCell('Cuenta bancaria', cuentaInput);
+    cuentaInput.type = 'text'; cuentaInput.value = catalogo.numero_cuenta_bancaria || ''; cuentaInput.placeholder = T[lang].comPlaceholderNumeroCuenta;
+    const cuentaCell = labeledCell(T[lang].comLblCuentaBancaria, cuentaInput);
 
     const chequeInput = document.createElement('input');
-    chequeInput.type = 'text'; chequeInput.placeholder = 'Número de cheque';
-    const chequeCell = labeledCell('Número de cheque', chequeInput);
+    chequeInput.type = 'text'; chequeInput.placeholder = T[lang].comPlaceholderNumeroCheque;
+    const chequeCell = labeledCell(T[lang].comLblNumeroCheque, chequeInput);
 
     camposPago.append(bancoCell, cuentaCell, chequeCell);
     card.append(camposPago);
@@ -3116,14 +3646,15 @@ function construirResumenPagoPorVendedor(data) {
 
     const actions = el('div', 'proy-actions');
     const status = el('p', 'hint', ''); status.style.margin = '0'; status.style.marginRight = 'auto';
-    const pagarBtn = el('button', 'btn btn-gold btn-sm', 'Pagar'); pagarBtn.type = 'button';
+    const pagarBtn = el('button', 'btn btn-gold btn-sm', T[lang].comBtnPagar); pagarBtn.type = 'button';
     actions.append(status, pagarBtn);
     card.append(actions);
 
     pagarBtn.addEventListener('click', async () => {
-      if (!confirm('¿Confirmas el pago de ' + ids.length + ' comisión(es) a ' + vendedorNombre + ' por un total de ' + formatQ(total) + '?')) return;
+      const confirmMsg = T[lang].comConfirmPagar.replace('{n}', ids.length).replace('{v}', vendedorNombre).replace('{t}', formatQ(total));
+      if (!confirm(confirmMsg)) return;
       pagarBtn.disabled = true;
-      status.textContent = 'Procesando…';
+      status.textContent = T[lang].comProcesando;
       try {
         const usuario = localStorage.getItem(LOGIN_STORE) || null;
         const forma = formaPagoSel.value;
@@ -3138,11 +3669,11 @@ function construirResumenPagoPorVendedor(data) {
           usuario_banco: usuario
         }).in('id', ids);
         if (error) throw error;
-        status.textContent = 'Pago registrado.';
+        status.textContent = T[lang].comPagoRegistrado;
         mostrarComisionesGeneradas();
       } catch (e) {
         console.error('Error registrando el pago por vendedor:', e);
-        status.textContent = 'No se pudo registrar el pago.';
+        status.textContent = T[lang].comErrorPagoVendedor;
         pagarBtn.disabled = false;
       }
     });
@@ -3160,7 +3691,7 @@ async function mostrarComisionesGeneradas() {
   const vendedorVal = $('#adminComGenVendedorSel')?.value || '';
   const fechaDesdeVal = $('#adminComGenFechaDesde')?.value || '';
   const fechaHastaVal = $('#adminComGenFechaHasta')?.value || '';
-  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  result.innerHTML = '<p class="qbr-empty">' + T[lang].cargando + '</p>';
   try {
     let q = supabaseClient.from('comisiones_pagadas').select('*').order('vendedor', { ascending: true }).order('fecha_pago', { ascending: false });
     if (vendedorVal) q = q.eq('vendedor', vendedorVal);
@@ -3170,7 +3701,7 @@ async function mostrarComisionesGeneradas() {
     if (error) throw error;
     result.innerHTML = '';
     if (!data || !data.length) {
-      result.innerHTML = '<p class="qbr-empty">No hay comisiones generadas que coincidan con la búsqueda.</p>';
+      result.innerHTML = '<p class="qbr-empty">' + T[lang].comNoHayGeneradasBusqueda + '</p>';
       return;
     }
 
@@ -3178,7 +3709,7 @@ async function mostrarComisionesGeneradas() {
     // Comisiones Ventas).
     const porVendedor = {};
     data.forEach((r) => {
-      const key = r.vendedor || '(Sin vendedor)';
+      const key = r.vendedor || T[lang].comSinVendedor;
       if (!porVendedor[key]) porVendedor[key] = [];
       porVendedor[key].push(r);
     });
@@ -3198,7 +3729,7 @@ async function mostrarComisionesGeneradas() {
     if (resumen) result.appendChild(resumen);
   } catch (e) {
     console.error('Error cargando comisiones generadas:', e);
-    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de comisiones generadas.</p>';
+    result.innerHTML = '<p class="qbr-empty">' + T[lang].comErrorCargarGeneradas + '</p>';
   }
 }
 
@@ -3241,7 +3772,7 @@ function poblarAdminComPagVendedorSel() {
   const prev = sel.value;
   sel.innerHTML = '';
   const optTodos = document.createElement('option');
-  optTodos.value = ''; optTodos.textContent = 'Todos los vendedores';
+  optTodos.value = ''; optTodos.textContent = T[lang].admTodosLosVendedores;
   sel.appendChild(optTodos);
   vendedoresCatalogo.forEach((v) => {
     const nombre = (v.nombre || '').trim();
@@ -3259,7 +3790,7 @@ function poblarAdminComPagEstadoSel() {
   const prev = sel.value;
   sel.innerHTML = '';
   const optTodas = document.createElement('option');
-  optTodas.value = ''; optTodas.textContent = 'Todos los estados';
+  optTodas.value = ''; optTodas.textContent = T[lang].admTodosLosEstados;
   sel.appendChild(optTodas);
   COM_ESTADOS.forEach((e) => {
     const opt = document.createElement('option');
@@ -3276,7 +3807,7 @@ async function mostrarComisionesPagadas() {
   const fechaDesdeVal = $('#adminComPagFechaDesde')?.value || '';
   const fechaHastaVal = $('#adminComPagFechaHasta')?.value || '';
   const estadoVal = $('#adminComPagEstadoSel')?.value || '';
-  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  result.innerHTML = '<p class="qbr-empty">' + T[lang].cargando + '</p>';
   try {
     let q = supabaseClient.from('comisiones_pagadas').select('*').order('vendedor', { ascending: true }).order('fecha_pago', { ascending: false });
     if (vendedorVal) q = q.eq('vendedor', vendedorVal);
@@ -3287,13 +3818,13 @@ async function mostrarComisionesPagadas() {
     if (error) throw error;
     result.innerHTML = '';
     if (!data || !data.length) {
-      result.innerHTML = '<p class="qbr-empty">No hay comisiones que coincidan con la búsqueda.</p>';
+      result.innerHTML = '<p class="qbr-empty">' + T[lang].comNoHayPagadasBusqueda + '</p>';
       return;
     }
 
     const porVendedor = {};
     data.forEach((r) => {
-      const key = r.vendedor || '(Sin vendedor)';
+      const key = r.vendedor || T[lang].comSinVendedor;
       if (!porVendedor[key]) porVendedor[key] = [];
       porVendedor[key].push(r);
     });
@@ -3310,7 +3841,7 @@ async function mostrarComisionesPagadas() {
     });
   } catch (e) {
     console.error('Error cargando comisiones pagadas:', e);
-    result.innerHTML = '<p class="qbr-empty">No se pudo cargar la información de comisiones pagadas.</p>';
+    result.innerHTML = '<p class="qbr-empty">' + T[lang].comErrorCargarPagadas + '</p>';
   }
 }
 
@@ -3344,19 +3875,27 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminCom
    operación y estado de la ubicación. Mismo lenguaje visual que el resto
    de Administración (.proy-card/.proy-grid), para que la información se
    lea completa sin scroll horizontal. */
-const REP_PROP_OPERACION = [
-  { v: 'renta', l: 'Renta' },
-  { v: 'venta', l: 'Venta' },
-  { v: 'ambos', l: 'Renta y venta' }
+const REP_PROP_OPERACION_BASE = [{ v: 'renta' }, { v: 'venta' }, { v: 'ambos' }];
+function getRepPropOperacion() {
+  const t = T[lang] || T.es;
+  const labels = { renta: t.repOpRenta, venta: t.repOpVenta, ambos: t.repOpAmbos };
+  return REP_PROP_OPERACION_BASE.map((e) => ({ ...e, l: labels[e.v] || e.v }));
+}
+Object.defineProperty(window, 'REP_PROP_OPERACION', { get: getRepPropOperacion });
+
+const REP_PROP_ESTADOS_BASE = [
+  { v: 'activa', bg: '#dcefe0', fg: '#1f7a43' },
+  { v: 'arrendada', bg: '#dde8fb', fg: '#1d4ed8' },
+  { v: 'vendida', bg: '#c9eed2', fg: '#0f5132' },
+  { v: 'suspendida', bg: '#fbe9c8', fg: '#8b641d' },
+  { v: 'baja', bg: '#fbdede', fg: '#b42318' }
 ];
-const REP_PROP_ESTADOS = [
-  { v: 'activa', l: 'Activa', bg: '#dcefe0', fg: '#1f7a43' },
-  { v: 'arrendada', l: 'Arrendada', bg: '#dde8fb', fg: '#1d4ed8' },
-  { v: 'vendida', l: 'Vendida', bg: '#c9eed2', fg: '#0f5132' },
-  { v: 'suspendida', l: 'Suspendida', bg: '#fbe9c8', fg: '#8b641d' },
-  { v: 'baja', l: 'Baja', bg: '#fbdede', fg: '#b42318' }
-];
-const repPropEstadoInfo = (v) => REP_PROP_ESTADOS.find((e) => e.v === v) || REP_PROP_ESTADOS[0];
+function getRepPropEstados() {
+  const labels = (T[lang] || T.es).ubicEstLabels || {};
+  return REP_PROP_ESTADOS_BASE.map((e) => ({ ...e, l: labels[e.v] || e.v }));
+}
+Object.defineProperty(window, 'REP_PROP_ESTADOS', { get: getRepPropEstados });
+const repPropEstadoInfo = (v) => getRepPropEstados().find((e) => e.v === v) || getRepPropEstados()[0];
 function repPropEstadoBadge(v) {
   const info = repPropEstadoInfo(v);
   const b = el('span', '', info.l);
@@ -3369,20 +3908,20 @@ function poblarRepPropFiltros(ciudades) {
   if (ciudadSel) {
     const prev = ciudadSel.value;
     ciudadSel.innerHTML = '';
-    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todas las ciudades';
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = T[lang].repTodasLasCiudades;
     ciudadSel.appendChild(optTodas);
     ciudades.forEach((c) => { const o = document.createElement('option'); o.value = c; o.textContent = c; ciudadSel.appendChild(o); });
     if (prev && [...ciudadSel.options].some((o) => o.value === prev)) ciudadSel.value = prev;
   }
   const opSel = $('#repPropOperacionSel');
   if (opSel && !opSel.options.length) {
-    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todas las operaciones';
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = T[lang].repTodasLasOperaciones;
     opSel.appendChild(optTodas);
     REP_PROP_OPERACION.forEach((o) => { const opt = document.createElement('option'); opt.value = o.v; opt.textContent = o.l; opSel.appendChild(opt); });
   }
   const estSel = $('#repPropEstadoSel');
   if (estSel && !estSel.options.length) {
-    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todos los estados';
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = T[lang].repTodosLosEstados;
     estSel.appendChild(optTodas);
     REP_PROP_ESTADOS.forEach((e) => { const opt = document.createElement('option'); opt.value = e.v; opt.textContent = e.l; estSel.appendChild(opt); });
   }
@@ -3415,7 +3954,7 @@ async function mostrarRepPropiedades() {
   const ciudadVal = $('#repPropCiudadSel')?.value || '';
   const operacionVal = $('#repPropOperacionSel')?.value || '';
   const estadoVal = $('#repPropEstadoSel')?.value || '';
-  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  result.innerHTML = '<p class="qbr-empty">' + T[lang].cargando + '</p>';
   try {
     let q = supabaseClient.from('propiedades').select('*').eq('activo', true).order('creado_en', { ascending: true });
     if (ciudadVal) q = q.eq('ciudad', ciudadVal);
@@ -3425,27 +3964,28 @@ async function mostrarRepPropiedades() {
     if (error) throw error;
     result.innerHTML = '';
     if (!rows || !rows.length) {
-      result.innerHTML = '<p class="qbr-empty">No hay propiedades que coincidan con la búsqueda.</p>';
+      result.innerHTML = '<p class="qbr-empty">' + T[lang].repNoHayPropiedadesBusqueda + '</p>';
       return;
     }
     const wrap = el('div', 'rep-list');
     const head = el('div', 'rep-row rep-row-head');
+    const t = T[lang];
     head.append(
-      el('span', '', 'No.'),
-      el('span', '', 'Nombre de ubicación'),
-      el('span', '', 'Vendedor'),
-      el('span', '', 'Tipo de operación'),
-      el('span', '', 'Valor'),
-      el('span', '', 'Estado'),
-      el('span', '', 'Fecha de creación'),
-      el('span', '', 'Fotos')
+      el('span', '', t.repThNo),
+      el('span', '', t.repThNombreUbicacion),
+      el('span', '', t.repThVendedor),
+      el('span', '', t.repThTipoOperacion),
+      el('span', '', t.repThValor),
+      el('span', '', t.repThEstado),
+      el('span', '', t.repThFechaCreacion),
+      el('span', '', t.repThFotos)
     );
     wrap.append(head);
     rows.forEach((r, idx) => wrap.appendChild(repPropBuildFila(r, idx + 1)));
     result.appendChild(wrap);
   } catch (e) {
     console.error('Error cargando reporte de propiedades:', e);
-    result.innerHTML = '<p class="qbr-empty">No se pudo cargar el listado de propiedades.</p>';
+    result.innerHTML = '<p class="qbr-empty">' + T[lang].repErrorCargarPropiedades + '</p>';
   }
 }
 
@@ -3455,16 +3995,16 @@ async function mostrarRepPropiedades() {
    la derecha -ni los filtros ni el resto del sitio se imprimen-. */
 function imprimirReporte(tituloReporte, resultSelector) {
   const result = $(resultSelector);
-  if (!result || !result.innerHTML.trim()) { alert('No hay datos para imprimir. Primero presiona "Mostrar".'); return; }
+  if (!result || !result.innerHTML.trim()) { alert(T[lang].repNoDataImprimir); return; }
   const usuario = localStorage.getItem(LOGIN_STORE) || '—';
   const ahora = new Date();
   const fechaTxt = ahora.toLocaleDateString('es-GT', { year: 'numeric', month: '2-digit', day: '2-digit' });
   const horaTxt = ahora.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
   const win = window.open('', '_blank');
-  if (!win) { alert('El navegador bloqueó la ventana de impresión. Permite ventanas emergentes para este sitio e inténtalo de nuevo.'); return; }
+  if (!win) { alert(T[lang].repVentanaBloqueada); return; }
   const logoUrl = new URL('assets/logo.webp', document.baseURI).href;
   win.document.write(
-    '<!doctype html><html lang="es"><head><meta charset="utf-8">' +
+    '<!doctype html><html lang="' + lang + '"><head><meta charset="utf-8">' +
     '<title>' + tituloReporte + '</title>' +
     '<style>' +
     "body{font-family:'Figtree',system-ui,sans-serif;color:#10243c;margin:24px}" +
@@ -3494,7 +4034,7 @@ function imprimirReporte(tituloReporte, resultSelector) {
     '</style></head><body>' +
     '<div class="rep-print-head">' +
     '<img src="' + logoUrl + '" alt="ARMOPA">' +
-    '<div class="rep-print-meta"><div>' + fechaTxt + ' · ' + horaTxt + '</div><div>Usuario: ' + usuario + '</div></div>' +
+    '<div class="rep-print-meta"><div>' + fechaTxt + ' · ' + horaTxt + '</div><div>' + T[lang].repUsuarioLbl + usuario + '</div></div>' +
     '</div>' +
     '<h1>' + tituloReporte + '</h1>' +
     result.innerHTML +
@@ -3506,7 +4046,7 @@ function imprimirReporte(tituloReporte, resultSelector) {
 }
 
 $('#repPropMostrarBtn')?.addEventListener('click', () => mostrarRepPropiedades());
-$('#repPropImprimirBtn')?.addEventListener('click', () => imprimirReporte('Reporte — Listado de Propiedades', '#repPropiedadesResult'));
+$('#repPropImprimirBtn')?.addEventListener('click', () => imprimirReporte(T[lang].repTituloReportePropiedades, '#repPropiedadesResult'));
 
 const repPropiedadesModal = $('#repPropiedadesModal');
 async function abrirRepPropiedadesModal() {
@@ -3540,22 +4080,24 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && repPropi
    Listado de "solicitudes_servicio", filtrable por estado, prioridad y
    rango de fechas de creación. Reutiliza SOL_ESTADOS/solEstadoInfo ya
    definidos para Solicitudes de servicio. */
-const REP_SERV_PRIORIDAD = [
-  { v: 'alta', l: 'Alta' },
-  { v: 'media', l: 'Media' },
-  { v: 'baja', l: 'Baja' }
-];
+const REP_SERV_PRIORIDAD_BASE = [{ v: 'alta' }, { v: 'media' }, { v: 'baja' }];
+function getRepServPrioridad() {
+  const t = T[lang] || T.es;
+  const labels = { alta: t.repPrioAlta, media: t.repPrioMedia, baja: t.repPrioBaja };
+  return REP_SERV_PRIORIDAD_BASE.map((e) => ({ ...e, l: labels[e.v] || e.v }));
+}
+Object.defineProperty(window, 'REP_SERV_PRIORIDAD', { get: getRepServPrioridad });
 
 function poblarRepServFiltros() {
   const estSel = $('#repServEstadoSel');
   if (estSel && !estSel.options.length) {
-    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todos los estados';
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = T[lang].repTodosLosEstados;
     estSel.appendChild(optTodas);
     SOL_ESTADOS.forEach((e) => { const opt = document.createElement('option'); opt.value = e.v; opt.textContent = e.l; estSel.appendChild(opt); });
   }
   const prioSel = $('#repServPrioridadSel');
   if (prioSel && !prioSel.options.length) {
-    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = 'Todas las prioridades';
+    const optTodas = document.createElement('option'); optTodas.value = ''; optTodas.textContent = T[lang].repTodasLasPrioridades;
     prioSel.appendChild(optTodas);
     REP_SERV_PRIORIDAD.forEach((p) => { const opt = document.createElement('option'); opt.value = p.v; opt.textContent = p.l; prioSel.appendChild(opt); });
   }
@@ -3595,7 +4137,7 @@ async function mostrarRepServicios() {
   const prioridadVal = $('#repServPrioridadSel')?.value || '';
   const fechaDesdeVal = $('#repServFechaDesde')?.value || '';
   const fechaHastaVal = $('#repServFechaHasta')?.value || '';
-  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  result.innerHTML = '<p class="qbr-empty">' + T[lang].cargando + '</p>';
   try {
     let q = supabaseClient.from('solicitudes_servicio').select('*').order('fecha_creacion', { ascending: true });
     if (estadoVal) q = q.eq('estado', estadoVal);
@@ -3606,7 +4148,7 @@ async function mostrarRepServicios() {
     if (error) throw error;
     result.innerHTML = '';
     if (!rows || !rows.length) {
-      result.innerHTML = '<p class="qbr-empty">No hay solicitudes de servicio que coincidan con la búsqueda.</p>';
+      result.innerHTML = '<p class="qbr-empty">' + T[lang].repNoHaySolicitudesServicioBusqueda + '</p>';
       return;
     }
     const cotizacionIds = [...new Set(rows.map((r) => r.cotizacion_id).filter((v) => v !== null && v !== undefined))];
@@ -3620,10 +4162,11 @@ async function mostrarRepServicios() {
     }
     const porServicio = {};
     rows.forEach((r) => {
-      const key = r.servicio || '(Sin tipo de servicio)';
+      const key = r.servicio || T[lang].repSinTipoServicio;
       if (!porServicio[key]) porServicio[key] = [];
       porServicio[key].push(r);
     });
+    const t = T[lang];
     Object.keys(porServicio).sort().forEach((servicioNombre) => {
       const filas = porServicio[servicioNombre];
       const groupWrap = el('div', 'com-group');
@@ -3634,16 +4177,16 @@ async function mostrarRepServicios() {
       const list = el('div', 'rep-list');
       const head = el('div', 'rep-row rep-row-serv rep-row-head');
       head.append(
-        el('span', '', 'No.'),
-        el('span', '', 'Cliente'),
-        el('span', '', 'Teléfono'),
-        el('span', '', 'N.° de solicitud'),
-        el('span', '', 'Prioridad'),
-        el('span', '', 'Estado'),
-        el('span', '', 'Valor'),
-        el('span', '', 'Inicio'),
-        el('span', '', 'Fecha de solicitud'),
-        el('span', '', 'Vendedor')
+        el('span', '', t.repThNo),
+        el('span', '', t.repThCliente),
+        el('span', '', t.repThTelefono),
+        el('span', '', t.repThNumSolicitud),
+        el('span', '', t.repThPrioridad),
+        el('span', '', t.repThEstado),
+        el('span', '', t.repThValor2),
+        el('span', '', t.repThInicio),
+        el('span', '', t.repThFechaSolicitud),
+        el('span', '', t.repThVendedor)
       );
       list.append(head);
       filas.forEach((r, idx) => list.appendChild(repServBuildFila(r, idx + 1, valorPorCotizacion[r.cotizacion_id])));
@@ -3652,12 +4195,12 @@ async function mostrarRepServicios() {
     });
   } catch (e) {
     console.error('Error cargando reporte de servicios:', e);
-    result.innerHTML = '<p class="qbr-empty">No se pudo cargar el estado de servicios.</p>';
+    result.innerHTML = '<p class="qbr-empty">' + T[lang].repErrorCargarServicios + '</p>';
   }
 }
 
 $('#repServMostrarBtn')?.addEventListener('click', () => mostrarRepServicios());
-$('#repServImprimirBtn')?.addEventListener('click', () => imprimirReporte('Reporte — Estado de Servicios', '#repServiciosResult'));
+$('#repServImprimirBtn')?.addEventListener('click', () => imprimirReporte(T[lang].repTituloReporteServicios, '#repServiciosResult'));
 
 const repServiciosModal = $('#repServiciosModal');
 function abrirRepServiciosModal() {
@@ -3689,17 +4232,18 @@ function repCliBuildFila(c) {
   const card = el('div', 'proy-card');
   const head = el('div', 'proy-card-h');
   const nameWrap = el('div', 'proy-name-wrap');
-  nameWrap.append(el('div', 'proy-name', c.usuario || 'Cliente'));
+  nameWrap.append(el('div', 'proy-name', c.usuario || T[lang].repCliNombreFallback));
   head.append(nameWrap);
   card.append(head);
 
   const grid = el('div', 'proy-grid');
+  const t = T[lang];
   grid.append(
-    labeledCell('Código', el('span', '', c.codigo_usuario != null ? String(c.codigo_usuario) : '—')),
-    labeledCell('Registrado', el('span', '', c.created_at ? formatQBuscarRegFecha(c.created_at) : '—')),
-    labeledCell('Solicitudes de servicio', el('strong', 'com-valor', String(c.totalSolicitudes || 0))),
-    labeledCell('Cotizaciones', el('strong', 'com-valor', String(c.totalCotizaciones || 0))),
-    labeledCell('Última actividad', el('span', '', c.ultimaActividad ? formatQBuscarRegFecha(c.ultimaActividad) : '—'))
+    labeledCell(t.repThCodigo, el('span', '', c.codigo_usuario != null ? String(c.codigo_usuario) : '—')),
+    labeledCell(t.repThRegistrado, el('span', '', c.created_at ? formatQBuscarRegFecha(c.created_at) : '—')),
+    labeledCell(t.repThSolicitudesServicio, el('strong', 'com-valor', String(c.totalSolicitudes || 0))),
+    labeledCell(t.repThCotizaciones, el('strong', 'com-valor', String(c.totalCotizaciones || 0))),
+    labeledCell(t.repThUltimaActividad, el('span', '', c.ultimaActividad ? formatQBuscarRegFecha(c.ultimaActividad) : '—'))
   );
   card.append(grid);
   return card;
@@ -3709,7 +4253,7 @@ async function mostrarRepClientes() {
   const result = $('#repClientesResult');
   if (!result) return;
   const buscarVal = ($('#repCliBuscar')?.value || '').trim().toLowerCase();
-  result.innerHTML = '<p class="qbr-empty">Cargando…</p>';
+  result.innerHTML = '<p class="qbr-empty">' + T[lang].cargando + '</p>';
   try {
     const { data: usuarios, error: errUsuarios } = await supabaseClient
       .from('usuarios').select('usuario, codigo_usuario, created_at')
@@ -3749,7 +4293,7 @@ async function mostrarRepClientes() {
 
     result.innerHTML = '';
     if (!filas.length) {
-      result.innerHTML = '<p class="qbr-empty">No hay clientes que coincidan con la búsqueda.</p>';
+      result.innerHTML = '<p class="qbr-empty">' + T[lang].repNoHayClientesBusqueda + '</p>';
       return;
     }
     const list = el('div', 'proy-list');
@@ -3757,7 +4301,7 @@ async function mostrarRepClientes() {
     result.appendChild(list);
   } catch (e) {
     console.error('Error cargando seguimiento de clientes:', e);
-    result.innerHTML = '<p class="qbr-empty">No se pudo cargar el seguimiento de clientes.</p>';
+    result.innerHTML = '<p class="qbr-empty">' + T[lang].repErrorCargarClientes + '</p>';
   }
 }
 
@@ -3840,7 +4384,7 @@ function poblarPSnameSelect(nombreActual) {
   if (!sel) return;
   sel.innerHTML = '';
   const optVacio = document.createElement('option');
-  optVacio.value = ''; optVacio.textContent = 'Selecciona un vendedor';
+  optVacio.value = ''; optVacio.textContent = T[lang].admSeleccionaVendedor;
   sel.appendChild(optVacio);
   vendedoresCatalogo.forEach((v) => {
     const opt = document.createElement('option');
@@ -3850,7 +4394,7 @@ function poblarPSnameSelect(nombreActual) {
   const nombre = (nombreActual || '').trim();
   if (nombre && !vendedoresCatalogo.some((v) => (v.nombre || '').trim() === nombre)) {
     const opt = document.createElement('option');
-    opt.value = nombre; opt.textContent = nombre + ' (no está en Vendedores)';
+    opt.value = nombre; opt.textContent = nombre + T[lang].admNoEstaEnVendedores;
     sel.appendChild(opt);
   }
   sel.value = nombre;
@@ -4530,7 +5074,7 @@ $('#fpSave')?.addEventListener('click', async () => {
 
   const nombre = v('#fp-nombre');
   if (!nombre) {
-    alert('Por favor escribe el nombre completo del propietario.');
+    alert(T[lang].fpErrNombre);
     return;
   }
 
@@ -4599,7 +5143,7 @@ $('#fpSave')?.addEventListener('click', async () => {
 
   if (error) {
     console.error('Error al guardar autorización:', error);
-    alert('No pudimos guardar la autorización. Intenta de nuevo.');
+    alert(T[lang].fpErrGuardar);
     return;
   }
 
@@ -4776,7 +5320,7 @@ const reqModal = $('#reqModal');
 const openReqModal = () => {
   reqModal.hidden = false;
   reqVentaId = null;
-  REQ_DOC_TYPES.forEach((doc) => { const st = $('#reqs-' + doc); if (st) st.textContent = 'Sin subir'; });
+  REQ_DOC_TYPES.forEach((doc) => { const st = $('#reqs-' + doc); if (st) st.textContent = T[lang].reqSinSubir; });
 };
 const closeReqModal = () => { reqModal.hidden = true; };
 const svComprarBtn = $('#svComprarBtn');
@@ -4803,28 +5347,28 @@ REQ_DOC_TYPES.forEach((doc) => {
     const file = input.files && input.files[0];
     if (!file) return;
     if (file.type !== 'application/pdf') {
-      alert('Solo se permiten archivos PDF.');
+      alert(T[lang].soloArchivosPdf);
       input.value = '';
       return;
     }
     const st = $('#reqs-' + doc);
-    if (st) st.textContent = 'Subiendo…';
+    if (st) st.textContent = T[lang].subiendoEllipsis;
     try {
       const ventaId = await reqEnsureVentaId();
       const path = ventaId + '/' + doc + '-' + Date.now() + '.pdf';
       const { error: upErr } = await supabaseClient.storage.from(REQ_DOCS_BUCKET).upload(path, file, { contentType: 'application/pdf', upsert: true });
-      if (upErr) { if (st) st.textContent = 'Error al subir'; return; }
+      if (upErr) { if (st) st.textContent = T[lang].errorSubirArchivo; return; }
       const { error: dbErr } = await supabaseClient.from('documentos_venta_propiedad').upsert({
         venta_id: ventaId,
         tipo_documento: doc,
         ruta_archivo_pdf: path,
         tamano_bytes: file.size
       }, { onConflict: 'venta_id,tipo_documento' });
-      if (dbErr) { if (st) st.textContent = 'Error al guardar'; return; }
-      if (st) st.textContent = '✅ Subido: ' + file.name;
+      if (dbErr) { if (st) st.textContent = T[lang].pqMsgErrorGuardarCorto; return; }
+      if (st) st.textContent = '✅ ' + T[lang].subidoPrefix + file.name;
     } catch (err) {
       console.error('Error al subir requisito:', err);
-      if (st) st.textContent = 'Error al subir';
+      if (st) st.textContent = T[lang].errorSubirArchivo;
     }
   });
 });
@@ -4873,7 +5417,7 @@ function frRenderGrid(gridId, arr) {
     wrap.appendChild(img);
     const x = el('button', 'th-x', '×');
     x.type = 'button';
-    x.setAttribute('aria-label', 'Quitar');
+    x.setAttribute('aria-label', T[lang].remove);
     x.addEventListener('click', () => { arr.splice(i, 1); frRenderGrid(gridId, arr); });
     wrap.appendChild(x);
     grid.appendChild(wrap);
@@ -4925,7 +5469,7 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && remodelM
 $('#frSend')?.addEventListener('click', async () => {
   const nombre = $('#fr-nombre')?.value.trim();
   if (!nombre) {
-    alert('Por favor escribe el nombre del cliente.');
+    alert(T[lang].escribeNombreCliente);
     return;
   }
   const row = {
@@ -4942,7 +5486,7 @@ $('#frSend')?.addEventListener('click', async () => {
 
   if (error) {
     console.error('Error al guardar solicitud de remodelación:', error);
-    alert('No pudimos enviar tu solicitud. Intenta de nuevo.');
+    alert(T[lang].errorEnviarSolicitud);
     return;
   }
 
@@ -4970,7 +5514,7 @@ const openPresupuestoModal = () => {
   $('#pp-valor').value = '';
   $('#pp-descripcion').value = '';
   $('#pp-file').value = '';
-  $('#pp-file-status').textContent = 'Sin subir';
+  $('#pp-file-status').textContent = T[lang].xQuoteNone;
   ppOpcion = '';
   ppFileUrl = '';
   $$('#ppOpciones .seg').forEach((b) => { b.classList.remove('on'); b.setAttribute('aria-pressed', 'false'); });
@@ -5006,32 +5550,32 @@ $('#pp-file')?.addEventListener('change', async () => {
   const file = input.files && input.files[0];
   if (!file) return;
   if (file.type !== 'application/pdf') {
-    alert('Solo se permiten archivos PDF.');
+    alert(T[lang].soloArchivosPdf);
     input.value = '';
     return;
   }
   const st = $('#pp-file-status');
-  st.textContent = 'Subiendo…';
+  st.textContent = T[lang].subiendoEllipsis;
   try {
     const path = Date.now() + '-' + Math.random().toString(36).slice(2) + '.pdf';
     const { error } = await supabaseClient.storage.from(PRESUP_BUCKET).upload(path, file, { contentType: 'application/pdf' });
-    if (error) { st.textContent = 'Error al subir'; return; }
+    if (error) { st.textContent = T[lang].errorSubirArchivo; return; }
     ppFileUrl = path;
-    st.textContent = '✅ Subido: ' + file.name;
+    st.textContent = '✅ ' + T[lang].subidoPrefix + file.name;
   } catch (err) {
     console.error('Error al subir PDF de presupuesto:', err);
-    st.textContent = 'Error al subir';
+    st.textContent = T[lang].errorSubirArchivo;
   }
 });
 
 $('#ppSend')?.addEventListener('click', async () => {
   const nombre = $('#pp-nombre')?.value.trim();
   if (!nombre) {
-    alert('Por favor escribe el nombre del cliente.');
+    alert(T[lang].escribeNombreCliente);
     return;
   }
   if (!ppOpcion) {
-    alert('Por favor selecciona qué deseas realizar con una propiedad.');
+    alert(T[lang].ppSeleccionaQueDeseas);
     return;
   }
   const row = {
@@ -5049,7 +5593,7 @@ $('#ppSend')?.addEventListener('click', async () => {
 
   if (error) {
     console.error('Error al guardar solicitud de presupuesto:', error);
-    alert('No pudimos enviar tu solicitud. Intenta de nuevo.');
+    alert(T[lang].errorEnviarSolicitud);
     return;
   }
 
@@ -5090,7 +5634,7 @@ function csRenderGrid() {
     }
     const x = el('button', 'th-x', '×');
     x.type = 'button';
-    x.setAttribute('aria-label', 'Quitar');
+    x.setAttribute('aria-label', T[lang].remove);
     x.addEventListener('click', () => { csFiles.splice(i, 1); csRenderGrid(); });
     wrap.appendChild(x);
     grid.appendChild(wrap);
@@ -5298,7 +5842,7 @@ function csRenderPlano(text, m2) {
 $('#csGenerarDisenoBtn')?.addEventListener('click', () => {
   const descripcion = $('#cs-descripcion-diseno')?.value.trim();
   if (!descripcion) {
-    alert('Por favor describe primero lo que deseas construir.');
+    alert(T[lang].csDescribePrimero);
     return;
   }
   const queHacer = $('#cs-que-hacer')?.value.trim() || '';
@@ -5314,16 +5858,16 @@ $('#csGenerarDisenoBtn')?.addEventListener('click', () => {
   const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1024&height=768&nologo=true&seed=' + seed;
 
   btn.disabled = true;
-  status.textContent = 'Generando vista exterior con IA… esto puede tardar unos segundos.';
+  status.textContent = T[lang].csGenerandoVista;
   img.hidden = true;
 
   img.onload = () => {
-    status.textContent = 'Vista exterior generada con IA (referencial):';
+    status.textContent = T[lang].csVistaGenerada;
     img.hidden = false;
     btn.disabled = false;
   };
   img.onerror = () => {
-    status.textContent = 'No pudimos generar la vista exterior en este momento. Intenta de nuevo más tarde.';
+    status.textContent = T[lang].csErrorGenerarVista;
     btn.disabled = false;
   };
 
@@ -5334,7 +5878,7 @@ $('#csGenerarDisenoBtn')?.addEventListener('click', () => {
 $('#csSend')?.addEventListener('click', async () => {
   const nombre = $('#cs-nombre')?.value.trim();
   if (!nombre) {
-    alert('Por favor escribe el nombre completo.');
+    alert(T[lang].csEscribeNombreCompleto);
     return;
   }
   const row = {
@@ -5354,7 +5898,7 @@ $('#csSend')?.addEventListener('click', async () => {
 
   if (error) {
     console.error('Error al guardar solicitud de construcción:', error);
-    alert('No pudimos enviar tu solicitud. Intenta de nuevo.');
+    alert(T[lang].errorEnviarSolicitud);
     return;
   }
 
@@ -5558,7 +6102,7 @@ function renderList() {
     const searchInput = document.createElement('input');
     searchInput.type = 'text';
     searchInput.id = 'citySearchInput';
-    searchInput.placeholder = 'Buscar ciudad...';
+    searchInput.placeholder = t.admBuscarCiudadPh;
     searchInput.autocomplete = 'off';
     searchInput.value = citySearch;
     searchInput.style.width = '100%';
@@ -5589,7 +6133,7 @@ function renderList() {
       });
     }
 
-    const add = el('button', 'btn btn-dark', '+ Nueva ciudad');
+    const add = el('button', 'btn btn-dark', t.admNuevaCiudad);
     add.type = 'button';
     add.style.width = '100%';
     add.style.marginBottom = '12px';
@@ -5600,7 +6144,7 @@ function renderList() {
     const namesToShow = q ? cityNames().filter((n) => n.toLowerCase().includes(q)) : cityNames();
 
     if (q && !namesToShow.length) {
-      const noRes = el('p', '', 'No se encontraron ciudades.');
+      const noRes = el('p', '', t.admNoSeEncontraronCiudades);
       noRes.style.color = 'var(--muted)';
       noRes.style.fontSize = '13px';
       noRes.style.margin = '4px 0 10px';
@@ -5633,50 +6177,50 @@ function renderList() {
         });
         input.click();
       });
-      cam.title = 'Foto de portada';
-      cam.setAttribute('aria-label', 'Foto de portada');
+      cam.title = t.admFotoPortada;
+      cam.setAttribute('aria-label', t.admFotoPortada);
 
       const btnUpdate = el('button', 'btn btn-line-dark btn-sm', '✏️');
       btnUpdate.type = 'button';
-      btnUpdate.title = 'Actualizar';
-      btnUpdate.setAttribute('aria-label', 'Actualizar');
+      btnUpdate.title = t.admActualizar;
+      btnUpdate.setAttribute('aria-label', t.admActualizar);
       btnUpdate.addEventListener('click', async (e) => {
         e.stopPropagation();
-        const newName = (prompt('Nuevo nombre para la ciudad:', name) || '').trim();
+        const newName = (prompt(t.admNuevoNombreCiudad, name) || '').trim();
         if (!newName || newName === name) return;
         try {
           const { error } = await supabaseClient.from('ciudades_portada').update({ ciudad: newName }).eq('ciudad', name);
-          if (error) { note('Error al actualizar la ciudad: ' + error.message); return; }
+          if (error) { note(t.admErrorActualizarCiudad + error.message); return; }
           data[newName] = data[name] || [];
           delete data[name];
           cityCovers[newName] = cityCovers[name];
           delete cityCovers[name];
           if (cur === name) cur = newName;
           persistLocalOnly();
-          note('Ciudad actualizada con éxito.');
+          note(t.admCiudadActualizada);
           buildCityCards();
           renderList();
-        } catch (err) { note('Error al actualizar la ciudad.'); }
+        } catch (err) { note(t.admErrorActualizarCiudadGenerico); }
       });
 
       const btnDelete = el('button', 'btn btn-line-dark btn-sm', '🗑️');
       btnDelete.type = 'button';
-      btnDelete.title = 'Eliminar';
-      btnDelete.setAttribute('aria-label', 'Eliminar');
+      btnDelete.title = t.btnEliminar;
+      btnDelete.setAttribute('aria-label', t.btnEliminar);
       btnDelete.addEventListener('click', async (e) => {
         e.stopPropagation();
-        if (!confirm('¿Eliminar la ciudad "' + name + '"? Esta acción no se puede deshacer.')) return;
+        if (!confirm(t.admConfirmEliminarCiudad + name + t.admConfirmEliminarCiudad2)) return;
         try {
           const { error } = await supabaseClient.from('ciudades_portada').delete().eq('ciudad', name);
-          if (error) { note('Error al eliminar la ciudad: ' + error.message); return; }
+          if (error) { note(t.admErrorEliminarCiudad + error.message); return; }
           delete data[name];
           delete cityCovers[name];
           if (cur === name) { cur = null; panelView = 'cities'; }
           persistLocalOnly();
-          note('Ciudad eliminada con éxito.');
+          note(t.admCiudadEliminada);
           buildCityCards();
           renderList();
-        } catch (err) { note('Error al eliminar la ciudad.'); }
+        } catch (err) { note(t.admErrorEliminarCiudadGenerico); }
       });
 
       const rowActions = el('div', 'city-row-actions');
@@ -5715,12 +6259,12 @@ function renderLocTabs() {
 
   const headLeft = el('div', 'loc-tabs-head-l');
   if (estaConectado()) {
-    const back = el('button', 'btn btn-line-dark btn-sm loc-back', '← Ciudades');
+    const back = el('button', 'btn btn-line-dark btn-sm loc-back', t.admVolverCiudades);
     back.type = 'button';
     back.addEventListener('click', () => { if (!estaConectado()) return; panelView = 'cities'; cur = null; sel = -1; locFilterIdx = null; locQuickSearch = ''; note(''); render(); });
     headLeft.appendChild(back);
   }
-  const count = el('span', 'loc-count', todas.length === 1 ? '1 ubicación' : todas.length + ' ubicaciones');
+  const count = el('span', 'loc-count', todas.length === 1 ? t.oneLoc : todas.length + ' ' + t.locsWord);
   headLeft.appendChild(count);
   head.appendChild(headLeft);
 
@@ -5730,7 +6274,7 @@ function renderLocTabs() {
     searchInput.type = 'text';
     searchInput.id = 'locSearchInput';
     searchInput.className = 'loc-search-input';
-    searchInput.placeholder = 'Buscar ubicación por nombre, sector o zona...';
+    searchInput.placeholder = t.admBuscarUbicacionPh;
     searchInput.autocomplete = 'off';
     searchInput.value = locQuickSearch;
     searchInput.addEventListener('input', () => {
@@ -5758,8 +6302,8 @@ function renderLocTabs() {
     filterBar.innerHTML = '';
     if (locFilterIdx) {
       filterBar.hidden = false;
-      filterBar.append(el('span', '', 'Resultados de tu búsqueda (' + locFilterIdx.length + ')'));
-      const clearBtn = el('button', 'loc-filter-clear', 'Ver todas las ubicaciones');
+      filterBar.append(el('span', '', t.admResultadosBusqueda + locFilterIdx.length + ')'));
+      const clearBtn = el('button', 'loc-filter-clear', t.admVerTodasUbicaciones);
       clearBtn.type = 'button';
       clearBtn.addEventListener('click', () => { locFilterIdx = null; render(); });
       filterBar.appendChild(clearBtn);
@@ -5785,7 +6329,7 @@ function renderLocTabs() {
     grid.appendChild(b);
   });
   if (q && !shown) {
-    const noRes = el('p', 'loc-no-res', 'No se encontraron ubicaciones para "' + locQuickSearch.trim() + '".');
+    const noRes = el('p', 'loc-no-res', t.admNoSeEncontraronUbicaciones + locQuickSearch.trim() + '".');
     grid.appendChild(noRes);
   }
   box.appendChild(grid);
@@ -5997,8 +6541,8 @@ function render() {
     else { closeProp(); return; }
   }
   if (panelView === 'cities') {
-    $('#pTitle').textContent = 'Ciudades';
-    $('#pSub').textContent = cityNames().length ? cityNames().length + ' ciudad(es)' : 'Agrega tu primera ciudad';
+    $('#pTitle').textContent = t.admCiudades;
+    $('#pSub').textContent = cityNames().length ? cityNames().length + ' ' + t.admCiudadesSufijo : t.admAgregaPrimeraCiudad;
     $('#pEdit').hidden = false;
     $('#pEdit').classList.remove('locs-mode');
     $('#pLocPanel').hidden = true;
@@ -6066,6 +6610,7 @@ $('#navAdminIngresoCiudadesBtn')?.addEventListener('click', () => {
    pantalla general de ciudades. */
 function openSelectCityForPropsDialog() {
   if (!estaConectado()) { if (typeof openLoginModal === 'function') openLoginModal(); return; }
+  const t = T[lang];
   const overlay = el('div', 'ncw-overlay');
   Object.assign(overlay.style, {
     position: 'fixed', inset: '0', background: 'rgba(3,12,22,.6)',
@@ -6078,18 +6623,18 @@ function openSelectCityForPropsDialog() {
     maxHeight: '80vh', boxShadow: '0 24px 70px rgba(0,0,0,.4)', display: 'flex', flexDirection: 'column', gap: '14px'
   });
 
-  const title = el('h3', '', 'Ingreso de Propiedades');
+  const title = el('h3', '', t.admIngresoPropiedadesTitulo);
   title.style.margin = '0';
   card.appendChild(title);
 
-  const sub = el('p', '', '¿En qué ciudad vas a ingresar propiedades?');
+  const sub = el('p', '', t.admEnQueCiudadPropiedades);
   sub.style.cssText = 'margin:0;color:var(--muted);font-size:13.5px';
   card.appendChild(sub);
 
   const searchInput = document.createElement('input');
   searchInput.type = 'text';
   searchInput.className = 'cq-input';
-  searchInput.placeholder = 'Buscar ciudad...';
+  searchInput.placeholder = t.admBuscarCiudadPh;
   searchInput.autocomplete = 'off';
   card.appendChild(searchInput);
 
@@ -6104,7 +6649,7 @@ function openSelectCityForPropsDialog() {
     const names = cityNames().filter((n) => !q || n.toLowerCase().includes(q));
     listWrap.innerHTML = '';
     if (!names.length) {
-      const noRes = el('p', '', 'No se encontraron ciudades.');
+      const noRes = el('p', '', t.admNoSeEncontraronCiudades);
       noRes.style.cssText = 'color:var(--muted);font-size:13px;margin:4px 0';
       listWrap.appendChild(noRes);
       return;
@@ -6125,10 +6670,10 @@ function openSelectCityForPropsDialog() {
 
   const btnRow = el('div', '');
   btnRow.style.cssText = 'display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:4px';
-  const newCityBtn = el('button', 'btn btn-line-dark btn-sm', '+ Nueva ciudad');
+  const newCityBtn = el('button', 'btn btn-line-dark btn-sm', t.admNuevaCiudad);
   newCityBtn.type = 'button';
   newCityBtn.addEventListener('click', () => { closeDialog(); openNewCityDialog(); });
-  const cancelBtn = el('button', 'btn btn-line-dark', 'Cancelar');
+  const cancelBtn = el('button', 'btn btn-line-dark', t.btnCancelar);
   cancelBtn.type = 'button';
   cancelBtn.addEventListener('click', closeDialog);
   btnRow.append(newCityBtn, cancelBtn);
@@ -6224,6 +6769,7 @@ function fillDatalist(listEl, values) {
   });
 }
 function openNewCityDialog() {
+  const t = T[lang];
   const overlay = el('div', 'ncw-overlay');
   Object.assign(overlay.style, {
     position: 'fixed', inset: '0', background: 'rgba(3,12,22,.6)',
@@ -6236,19 +6782,19 @@ function openNewCityDialog() {
     boxShadow: '0 24px 70px rgba(0,0,0,.4)', display: 'flex', flexDirection: 'column', gap: '14px'
   });
 
-  const title = el('h3', '', 'Nueva ciudad');
+  const title = el('h3', '', t.admNuevaCiudad.replace(/^\+\s*/, ''));
   title.style.margin = '0';
   card.appendChild(title);
 
-  const nameLabel = el('label', 'cq-label', 'Nombre de la ciudad');
+  const nameLabel = el('label', 'cq-label', t.admNombreCiudadLbl);
   card.appendChild(nameLabel);
   const nameInput = document.createElement('input');
   nameInput.type = 'text';
   nameInput.className = 'cq-input';
-  nameInput.placeholder = 'Ej. Cobán';
+  nameInput.placeholder = t.admNombreCiudadPh;
   card.appendChild(nameInput);
 
-  const photoLabel = el('label', 'cq-label', 'Foto de portada (opcional)');
+  const photoLabel = el('label', 'cq-label', t.admFotoPortadaOpcional);
   card.appendChild(photoLabel);
   const fileInput = document.createElement('input');
   fileInput.type = 'file';
@@ -6260,7 +6806,7 @@ function openNewCityDialog() {
   photoBtnLabel.className = 'btn btn-line-dark btn-sm';
   photoBtnLabel.style.cursor = 'pointer';
   photoBtnLabel.style.display = 'inline-block';
-  photoBtnLabel.textContent = '📷 Elegir foto';
+  photoBtnLabel.textContent = t.admElegirFotoHtml;
   const fileNameNote = el('span', '', '');
   fileNameNote.style.cssText = 'display:block;margin-top:6px;font-size:13px;color:var(--muted)';
   fileInput.addEventListener('change', () => {
@@ -6277,9 +6823,9 @@ function openNewCityDialog() {
 
   const btnRow = el('div', '');
   btnRow.style.cssText = 'display:flex;gap:10px;justify-content:flex-end;margin-top:4px';
-  const cancelBtn = el('button', 'btn btn-line-dark', 'Cancelar');
+  const cancelBtn = el('button', 'btn btn-line-dark', t.btnCancelar);
   cancelBtn.type = 'button';
-  const saveBtn = el('button', 'btn btn-dark', 'Guardar');
+  const saveBtn = el('button', 'btn btn-dark', t.btnGuardar);
   saveBtn.type = 'button';
   btnRow.append(cancelBtn, saveBtn);
   card.appendChild(btnRow);
@@ -6294,9 +6840,9 @@ function openNewCityDialog() {
 
   saveBtn.addEventListener('click', async () => {
     const name = nameInput.value.trim();
-    if (!name) { errMsg.textContent = 'Escribe el nombre de la ciudad.'; nameInput.focus(); return; }
+    if (!name) { errMsg.textContent = t.admEscribeNombreCiudad; nameInput.focus(); return; }
     saveBtn.disabled = true;
-    saveBtn.textContent = 'Guardando…';
+    saveBtn.textContent = t.admGuardandoEllipsis;
     if (!data[name]) data[name] = [];
     const file = fileInput.files && fileInput.files[0];
     let photoUrl = '';
@@ -6306,12 +6852,12 @@ function openNewCityDialog() {
         cityCovers[name] = photoUrl;
       }
       const { error } = await supabaseClient.from('ciudades_portada').upsert({ ciudad: name, foto: photoUrl || null });
-      if (error) { errMsg.textContent = 'Error al guardar: ' + error.message; saveBtn.disabled = false; saveBtn.textContent = 'Guardar'; return; }
-      note(file ? 'Ciudad y foto guardadas con éxito.' : 'Ciudad agregada con éxito.');
+      if (error) { errMsg.textContent = t.admErrorGuardarGenerico + error.message; saveBtn.disabled = false; saveBtn.textContent = t.btnGuardar; return; }
+      note(file ? t.admCiudadYFotoGuardadas : t.admCiudadAgregada);
     } catch (err) {
-      errMsg.textContent = 'Error al guardar la ciudad.';
+      errMsg.textContent = t.admErrorGuardarCiudad;
       saveBtn.disabled = false;
-      saveBtn.textContent = 'Guardar';
+      saveBtn.textContent = t.btnGuardar;
       return;
     }
     cur = name; panelView = 'locs'; sel = list().length ? 0 : -1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false;
@@ -7319,12 +7865,12 @@ async function cargarServiciosArmopa() {
 
   if (error) {
     console.error('Error cargando servicios:', error);
-    contenedor.innerHTML = '<p class="servicios-estado">No pudimos cargar los servicios en este momento.</p>';
+    contenedor.innerHTML = '<p class="servicios-estado">' + escaparTexto(T[lang].errCargarServicios) + '</p>';
     return;
   }
 
   if (!data.length) {
-    contenedor.innerHTML = '<p class="servicios-estado">Próximamente.</p>';
+    contenedor.innerHTML = '<p class="servicios-estado">' + escaparTexto(T[lang].proximamente) + '</p>';
     poblarServSelect([]);
     return;
   }
@@ -7359,7 +7905,7 @@ function poblarServSelect(data, grupos) {
   const sel = $('#servSelect');
   if (!sel) return;
   if (!data || !data.length) {
-    sel.innerHTML = '<option value="">No hay servicios disponibles</option>';
+    sel.innerHTML = '<option value="">' + escaparTexto(T[lang].noHayServiciosDisponibles) + '</option>';
     return;
   }
   const g = grupos || data.reduce((acc, s) => {
@@ -7367,7 +7913,7 @@ function poblarServSelect(data, grupos) {
     (acc[cat] = acc[cat] || []).push(s);
     return acc;
   }, {});
-  sel.innerHTML = '<option value="">Selecciona un servicio…</option>' +
+  sel.innerHTML = '<option value="">' + escaparTexto(T[lang].seleccionaServicio) + '</option>' +
     Object.entries(g).map(([cat, items]) => `
       <optgroup label="${escaparTexto(cat)}">
         ${items.map(s => `<option value="${escaparTexto(s.id)}">${escaparTexto(s.nombre)}</option>`).join('')}
@@ -7393,7 +7939,7 @@ $('#servSearchBtn')?.addEventListener('click', () => {
   const msg = $('#servSearchMsg');
   const id = sel ? sel.value : '';
   if (!id) {
-    if (msg) msg.innerHTML = '<div class="cq-empty">Elige un servicio de la lista.</div>';
+    if (msg) msg.innerHTML = '<div class="cq-empty">' + escaparTexto(T[lang].eligeServicioLista) + '</div>';
     return;
   }
   if (msg) msg.innerHTML = '';
@@ -7464,7 +8010,7 @@ function pqCurrentDocTypes() {
 function pqResetStatuses(types) {
   types.forEach((doc) => {
     const st = $('#pqs-' + doc);
-    if (st) st.textContent = 'Sin guardar aún';
+    if (st) st.textContent = T[lang].pqSinGuardar;
   });
 }
 function pqSwitchTipo(tipo) {
@@ -7510,49 +8056,49 @@ function pqCollectFields() {
 function pqValidate(f) {
   if (f.tipo_solicitante === 'juridica') {
     if (!f.banco_preferencia || !f.monto_solicitado || !f.destino_credito || !f.razon_social || !f.nit_empresa || !f.rep_legal_nombre || !f.rep_legal_dpi || !f.telefono_celular || !f.correo_electronico) {
-      return 'Completa todos los campos de "Datos de la empresa" antes de guardar.';
+      return T[lang].pqMsgCompletaEmpresa;
     }
-    if (f.rep_legal_dpi.length !== 13) return 'El DPI del representante legal debe tener 13 dígitos.';
+    if (f.rep_legal_dpi.length !== 13) return T[lang].pqMsgDpiRepresentante13;
     return null;
   }
   if (!f.banco_preferencia || !f.monto_solicitado || !f.destino_credito || !f.cui_dpi || !f.nit_sat || !f.telefono_celular || !f.correo_electronico || !f.tipo_perfil || !f.grado_escolaridad || !f.profesion) {
-    return 'Completa todos los campos de "Tus datos" antes de guardar.';
+    return T[lang].pqMsgCompletaTusDatos;
   }
-  if (f.cui_dpi.length !== 13) return 'El DPI debe tener 13 dígitos.';
+  if (f.cui_dpi.length !== 13) return T[lang].pqMsgDpi13;
   return null;
 }
 async function pqSaveOrUpdate(isUpdate) {
   const fields = pqCollectFields();
   const err = pqValidate(fields);
   if (err) { pqMsg(err, true); return; }
-  pqMsg('Guardando…');
+  pqMsg(T[lang].pqMsgGuardando);
   try {
     if (isUpdate && pqExpedienteId) {
       const { error } = await supabaseClient.from('expedientes_precalificacion').update(fields).eq('id_expediente', pqExpedienteId);
-      if (error) { pqMsg('Error al actualizar: ' + error.message, true); return; }
-      pqMsg('Expediente actualizado con éxito.');
+      if (error) { pqMsg(T[lang].pqMsgErrorActualizar + error.message, true); return; }
+      pqMsg(T[lang].pqMsgActualizadoExito);
     } else {
       const { data, error } = await supabaseClient.from('expedientes_precalificacion').insert(fields).select('id_expediente').single();
-      if (error) { pqMsg('Error al guardar: ' + error.message, true); return; }
+      if (error) { pqMsg(T[lang].pqMsgErrorGuardar + error.message, true); return; }
       pqExpedienteId = data.id_expediente;
-      pqMsg('Expediente guardado con éxito. Ya puedes subir tus documentos en PDF.');
+      pqMsg(T[lang].pqMsgGuardadoExito);
       pqRefreshDocStatuses();
     }
   } catch (e) {
-    pqMsg('Error al guardar el expediente.', true);
+    pqMsg(T[lang].pqMsgErrorGuardarExpediente, true);
   }
 }
 async function pqDeleteExpediente() {
-  if (!pqExpedienteId) { pqMsg('No hay ningún expediente guardado todavía.', true); return; }
-  if (!confirm('¿Eliminar este expediente y todos sus documentos adjuntos? Esta acción no se puede deshacer.')) return;
+  if (!pqExpedienteId) { pqMsg(T[lang].pqMsgNoHayExpediente, true); return; }
+  if (!confirm(T[lang].pqConfirmEliminar)) return;
   try {
     const { error } = await supabaseClient.from('expedientes_precalificacion').delete().eq('id_expediente', pqExpedienteId);
-    if (error) { pqMsg('Error al eliminar: ' + error.message, true); return; }
+    if (error) { pqMsg(T[lang].pqMsgErrorEliminar + error.message, true); return; }
     pqExpedienteId = null;
-    pqMsg('Expediente eliminado con éxito.');
+    pqMsg(T[lang].pqMsgEliminadoExito);
     pqResetStatuses(pqCurrentDocTypes());
   } catch (e) {
-    pqMsg('Error al eliminar el expediente.', true);
+    pqMsg(T[lang].pqMsgErrorEliminarExpediente, true);
   }
 }
 function uploadPdfFile(file, idExpediente, tipoDocumento) {
@@ -7572,7 +8118,7 @@ async function pqRefreshDocStatuses() {
     if (error || !data) return;
     data.forEach((row) => {
       const st = $('#pqs-' + row.tipo_documento);
-      if (st) st.textContent = '✅ Subido';
+      if (st) st.textContent = T[lang].pqMsgSubido;
     });
   } catch (e) {}
 }
@@ -7583,17 +8129,17 @@ PQ_DOC_TYPES_ALL.forEach((doc) => {
     const file = input.files && input.files[0];
     if (!file) return;
     if (!pqExpedienteId) {
-      pqMsg('Primero guarda tus datos (botón "Guardar") antes de subir documentos.', true);
+      pqMsg(T[lang].pqMsgPrimeroGuarda, true);
       input.value = '';
       return;
     }
     if (file.type !== 'application/pdf') {
-      pqMsg('Solo se permiten archivos PDF.', true);
+      pqMsg(T[lang].pqMsgSoloPdf, true);
       input.value = '';
       return;
     }
     const st = $('#pqs-' + doc);
-    if (st) st.textContent = 'Subiendo…';
+    if (st) st.textContent = T[lang].pqMsgSubiendoEllipsis;
     try {
       const path = await uploadPdfFile(file, pqExpedienteId, doc);
       const { error } = await supabaseClient.from('documentos_expediente').upsert({
@@ -7602,12 +8148,12 @@ PQ_DOC_TYPES_ALL.forEach((doc) => {
         ruta_archivo_pdf: path,
         tamano_bytes: file.size
       }, { onConflict: 'id_expediente,tipo_documento' });
-      if (error) { if (st) st.textContent = 'Error al guardar'; pqMsg('Error al guardar el documento: ' + error.message, true); return; }
-      if (st) st.textContent = '✅ Subido: ' + file.name;
-      pqMsg('Documento subido con éxito.');
+      if (error) { if (st) st.textContent = T[lang].pqMsgErrorGuardarCorto; pqMsg(T[lang].pqMsgErrorGuardarDoc + error.message, true); return; }
+      if (st) st.textContent = T[lang].pqMsgSubidoNombre + file.name;
+      pqMsg(T[lang].pqMsgDocumentoSubidoExito);
     } catch (err) {
-      if (st) st.textContent = 'Error al subir';
-      pqMsg('Error al subir el PDF.', true);
+      if (st) st.textContent = T[lang].pqMsgErrorSubir;
+      pqMsg(T[lang].pqMsgErrorSubirPdf, true);
     }
   });
 });
@@ -7629,14 +8175,14 @@ function pqBuildRequirementsSections() {
   return sections.filter((s) => s.items.length > 0);
 }
 function pqDownloadRequirementsPdf() {
-  if (!window.jspdf) { pqMsg('No se pudo generar el PDF. Recarga la página e inténtalo de nuevo.', true); return; }
+  if (!window.jspdf) { pqMsg(T[lang].pqMsgNoSePudoPdf, true); return; }
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   const marginX = 15;
   let y = 20;
   const titulo = pqTipo === 'juridica'
-    ? 'Requisitos para precalificación bancaria — Persona Jurídica (Empresa)'
-    : 'Requisitos para precalificación bancaria — Persona Individual';
+    ? T[lang].pqPdfTituloJuridica
+    : T[lang].pqPdfTituloIndividual;
   doc.setFont('helvetica', 'bold');
   doc.setFontSize(15);
   const tituloLines = doc.splitTextToSize(titulo, 180);
@@ -7644,7 +8190,7 @@ function pqDownloadRequirementsPdf() {
   y += tituloLines.length * 7 + 3;
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(10);
-  doc.text('ARMOPA — Administración Inmobiliaria', marginX, y);
+  doc.text(T[lang].pqPdfSubtitle, marginX, y);
   y += 10;
 
   pqBuildRequirementsSections().forEach((sec) => {
@@ -7665,10 +8211,10 @@ function pqDownloadRequirementsPdf() {
   });
 
   if (y > 280) { doc.addPage(); y = 20; }
-  const fecha = new Date().toLocaleDateString('es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
+  const fecha = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : 'es-GT', { day: 'numeric', month: 'long', year: 'numeric' });
   doc.setFontSize(9);
   doc.setTextColor(120);
-  doc.text('Generado el ' + fecha + ' — Este listado es de carácter general y orientativo.', marginX, Math.max(y, 285));
+  doc.text(T[lang].pqPdfFooter + fecha + T[lang].pqPdfFooter2, marginX, Math.max(y, 285));
 
   const nombreArchivo = pqTipo === 'juridica' ? 'requisitos-precalificacion-empresa.pdf' : 'requisitos-precalificacion-individual.pdf';
   doc.save(nombreArchivo);
@@ -7794,24 +8340,36 @@ const SOL_TIPOS_CODIGO = ['ALQ', 'CAM', 'REN', 'MTO', 'PLE', 'JUR', 'PRE', 'MOV'
    administrador). "Fecha cambio de estado" y "Usuario que cambia el
    estado" se actualizan automáticamente cada vez que se cambia este
    selector. */
-const UBIC_ESTADOS = [
-  { v: 'activa', l: 'Activa', bg: '#dcefe0', fg: '#1f7a43' },
-  { v: 'arrendada', l: 'Arrendada', bg: '#dde8fb', fg: '#1d4ed8' },
-  { v: 'vendida', l: 'Vendida', bg: '#fbe9c8', fg: '#8b641d' },
-  { v: 'suspendida', l: 'Suspendida', bg: '#fde8d0', fg: '#b45309' },
-  { v: 'baja', l: 'Baja', bg: '#fbdede', fg: '#b42318' }
+/* Las etiquetas (campo "l") se traducen en vivo leyendo T[lang].ubicEstLabels
+   / T[lang].solEstLabels según el idioma activo; "v"/"bg"/"fg" no cambian. */
+const UBIC_ESTADOS_BASE = [
+  { v: 'activa', bg: '#dcefe0', fg: '#1f7a43' },
+  { v: 'arrendada', bg: '#dde8fb', fg: '#1d4ed8' },
+  { v: 'vendida', bg: '#fbe9c8', fg: '#8b641d' },
+  { v: 'suspendida', bg: '#fde8d0', fg: '#b45309' },
+  { v: 'baja', bg: '#fbdede', fg: '#b42318' }
 ];
-const ubicEstadoInfo = (v) => UBIC_ESTADOS.find((e) => e.v === v) || UBIC_ESTADOS[0];
+function getUbicEstados() {
+  const labels = (T[lang] || T.es).ubicEstLabels || {};
+  return UBIC_ESTADOS_BASE.map((e) => ({ ...e, l: labels[e.v] || e.v }));
+}
+Object.defineProperty(window, 'UBIC_ESTADOS', { get: getUbicEstados });
+const ubicEstadoInfo = (v) => getUbicEstados().find((e) => e.v === v) || getUbicEstados()[0];
 
-const SOL_ESTADOS = [
-  { v: 'solicitado', l: 'Solicitado', bg: '#e6eef5', fg: '#2b4a66' },
-  { v: 'presupuesto_enviado', l: 'Enviado presupuesto', bg: '#fbe9c8', fg: '#8b641d' },
-  { v: 'aprobado', l: 'Aprobado', bg: '#dcefe0', fg: '#1f7a43' },
-  { v: 'en_proceso', l: 'En proceso', bg: '#dde8fb', fg: '#1d4ed8' },
-  { v: 'ejecutado', l: 'Ejecutado', bg: '#c9eed2', fg: '#0f5132' },
-  { v: 'anulado', l: 'Anulado', bg: '#fbdede', fg: '#b42318' },
+const SOL_ESTADOS_BASE = [
+  { v: 'solicitado', bg: '#e6eef5', fg: '#2b4a66' },
+  { v: 'presupuesto_enviado', bg: '#fbe9c8', fg: '#8b641d' },
+  { v: 'aprobado', bg: '#dcefe0', fg: '#1f7a43' },
+  { v: 'en_proceso', bg: '#dde8fb', fg: '#1d4ed8' },
+  { v: 'ejecutado', bg: '#c9eed2', fg: '#0f5132' },
+  { v: 'anulado', bg: '#fbdede', fg: '#b42318' },
 ];
-const solEstadoInfo = (v) => SOL_ESTADOS.find((e) => e.v === v) || SOL_ESTADOS[0];
+function getSolEstados() {
+  const labels = (T[lang] || T.es).solEstLabels || {};
+  return SOL_ESTADOS_BASE.map((e) => ({ ...e, l: labels[e.v] || e.v }));
+}
+Object.defineProperty(window, 'SOL_ESTADOS', { get: getSolEstados });
+const solEstadoInfo = (v) => getSolEstados().find((e) => e.v === v) || getSolEstados()[0];
 
 function solServicioActual() {
   const sel = $('#sol-servicio-sel');

@@ -500,26 +500,26 @@
               <p class="hint" data-i18n="xEstStale"></p>
               <p class="hint x-estnote"></p>
             </div>
-            <button class="btn btn-line-dark btn-sm" type="button" id="preqBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg><span>Datos para precalificar un préstamo</span></button>
+            <button class="btn btn-line-dark btn-sm" type="button" id="preqBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg><span data-i18n="pqBtnLabel"></span></button>
             <div class="x-est" id="preqBox" hidden>
-              <div class="x-est-top"><p class="x-est-h">Requisitos generales para precalificación bancaria en Guatemala</p><button class="x-est-x" type="button" id="preqHide">Ocultar</button></div>
-              <p class="hint" style="margin-top:0">Elige el tipo de solicitante, completa los datos, adjunta los documentos en PDF que ya tengas y guarda tu expediente. Puedes volver después a actualizarlo o completar los documentos que falten.</p>
+              <div class="x-est-top"><p class="x-est-h" data-i18n="pqTitle"></p><button class="x-est-x" type="button" id="preqHide" data-i18n="pqOcultar"></button></div>
+              <p class="hint" style="margin-top:0" data-i18n="pqIntro"></p>
 
               <div class="fld" style="margin-top:14px">
-                <span class="lbl">Tipo de solicitante</span>
+                <span class="lbl" data-i18n="pqTipoSolicitante"></span>
                 <div class="seg-g" id="pqTipoSeg">
-                  <button class="seg on" type="button" data-tipo="individual">Persona Individual</button>
-                  <button class="seg" type="button" data-tipo="juridica">Persona Jurídica (Empresa)</button>
+                  <button class="seg on" type="button" data-tipo="individual" data-i18n="pqPersonaIndividual"></button>
+                  <button class="seg" type="button" data-tipo="juridica" data-i18n="pqPersonaJuridica"></button>
                 </div>
               </div>
 
               <!-- ===== Persona Individual ===== -->
               <div id="pq-block-individual">
-                <p class="x-est-h" style="margin-top:18px">Tus datos</p>
+                <p class="x-est-h" style="margin-top:18px" data-i18n="pqTusDatos"></p>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-banco">Banco de preferencia</label>
-                  <select id="pq-banco">
-                    <option value="">Selecciona…</option>
+                  <div class="fld"><label for="pq-banco" data-i18n="pqBanco"></label>
+                  <select id="pq-banco" data-pq-bank-select>
+                    <option value="" data-i18n="pqSelecciona"></option>
                     <option value="Crédito Hipotecario Nacional de Guatemala (CHN)">Crédito Hipotecario Nacional de Guatemala (CHN)</option>
                     <option value="Banco de los Trabajadores (Bantrab)">Banco de los Trabajadores (Bantrab)</option>
                     <option value="Banco Cuscatlán Guatemala">Banco Cuscatlán Guatemala</option>
@@ -539,81 +539,81 @@
                     <option value="Banco Credicorp">Banco Credicorp</option>
                     <option value="Banco Nexa">Banco Nexa</option>
                     <option value="Banco Multimoney">Banco Multimoney</option>
-                    <option value="Otro">Otro</option>
+                    <option value="Otro" data-i18n="pqBancoOtro"></option>
                   </select>
                 </div>
-                  <div class="fld"><label for="pq-monto">Monto solicitado (Q)</label><input id="pq-monto" type="text" inputmode="decimal" placeholder="Ej. 250,000"></div>
+                  <div class="fld"><label for="pq-monto" data-i18n="pqMontoSolicitado"></label><input id="pq-monto" type="text" inputmode="decimal" data-i18n-ph="pqMontoPh"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-destino">Destino del crédito</label>
+                  <div class="fld"><label for="pq-destino" data-i18n="pqDestinoCredito"></label>
                     <select id="pq-destino">
-                      <option value="">Selecciona…</option>
-                      <option value="Vivienda">Vivienda</option>
-                      <option value="Vehículo">Vehículo</option>
-                      <option value="Consumo Personal">Consumo Personal</option>
+                      <option value="" data-i18n="pqSelecciona"></option>
+                      <option value="Vivienda" data-i18n="pqDestVivienda"></option>
+                      <option value="Vehículo" data-i18n="pqDestVehiculo"></option>
+                      <option value="Consumo Personal" data-i18n="pqDestConsumo"></option>
                     </select>
                   </div>
-                  <div class="fld"><label for="pq-perfil">Tipo de perfil</label>
+                  <div class="fld"><label for="pq-perfil" data-i18n="pqTipoPerfil"></label>
                     <select id="pq-perfil">
-                      <option value="">Selecciona…</option>
-                      <option value="asalariado">Asalariado</option>
-                      <option value="independiente">Independiente</option>
+                      <option value="" data-i18n="pqSelecciona"></option>
+                      <option value="asalariado" data-i18n="pqPerfilAsalariado"></option>
+                      <option value="independiente" data-i18n="pqPerfilIndependiente"></option>
                     </select>
                   </div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-dpi">DPI (13 dígitos)</label><input id="pq-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
-                  <div class="fld"><label for="pq-nit">NIT</label><input id="pq-nit" type="text" placeholder="Ej. 1234567-8"></div>
+                  <div class="fld"><label for="pq-dpi" data-i18n="pqDpi"></label><input id="pq-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
+                  <div class="fld"><label for="pq-nit" data-i18n="pqNit"></label><input id="pq-nit" type="text" data-i18n-ph="pqNitPh"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-tel">Teléfono celular</label><input id="pq-tel" type="tel" placeholder="+502 0000 0000"></div>
-                  <div class="fld"><label for="pq-correo">Correo electrónico</label><input id="pq-correo" type="email" placeholder="nombre@correo.com"></div>
+                  <div class="fld"><label for="pq-tel" data-i18n="pqTelefono"></label><input id="pq-tel" type="tel" placeholder="+502 0000 0000"></div>
+                  <div class="fld"><label for="pq-correo" data-i18n="pqCorreo"></label><input id="pq-correo" type="email" placeholder="nombre@correo.com"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-escolaridad">Grado de escolaridad</label>
+                  <div class="fld"><label for="pq-escolaridad" data-i18n="pqEscolaridad"></label>
                     <select id="pq-escolaridad">
-                      <option value="">Selecciona…</option>
-                      <option value="Sin estudios">Sin estudios</option>
-                      <option value="Primaria">Primaria</option>
-                      <option value="Básicos">Básicos</option>
-                      <option value="Diversificado">Diversificado</option>
-                      <option value="Técnico">Técnico</option>
-                      <option value="Universitario">Universitario</option>
-                      <option value="Postgrado">Postgrado (Maestría / Doctorado)</option>
-                      <option value="Otro">Otro</option>
+                      <option value="" data-i18n="pqSelecciona"></option>
+                      <option value="Sin estudios" data-i18n="pqEscSin"></option>
+                      <option value="Primaria" data-i18n="pqEscPrimaria"></option>
+                      <option value="Básicos" data-i18n="pqEscBasicos"></option>
+                      <option value="Diversificado" data-i18n="pqEscDiversificado"></option>
+                      <option value="Técnico" data-i18n="pqEscTecnico"></option>
+                      <option value="Universitario" data-i18n="pqEscUniversitario"></option>
+                      <option value="Postgrado" data-i18n="pqEscPostgrado"></option>
+                      <option value="Otro" data-i18n="pqEscOtro"></option>
                     </select>
                   </div>
-                  <div class="fld"><label for="pq-profesion">Profesión / Ocupación</label><input id="pq-profesion" type="text" placeholder="Ej. Maestro, comerciante, ingeniero…"></div>
+                  <div class="fld"><label for="pq-profesion" data-i18n="pqProfesion"></label><input id="pq-profesion" type="text" data-i18n-ph="pqProfesionPh"></div>
                 </div>
 
-                <p class="x-est-h" style="margin-top:18px">Identidad</p>
+                <p class="x-est-h" style="margin-top:18px" data-i18n="pqIdentidad"></p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-dpi"><span>DPI (Documento Personal de Identificación) vigente</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi">📎 Subir PDF</label><span class="pq-status" id="pqs-req-dpi">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-nit"><span>Número de NIT</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nit"><label class="btn btn-line-dark btn-sm" for="pqf-req-nit">📎 Subir PDF</label><span class="pq-status" id="pqs-req-nit">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-dpi"><span data-i18n="pqDocDpi"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-dpi" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-nit"><span data-i18n="pqDocNit"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nit"><label class="btn btn-line-dark btn-sm" for="pqf-req-nit" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-nit" data-i18n="pqSinGuardar"></span></span></li>
                 </ul>
 
-                <p class="x-est-h" style="margin-top:14px">Ingresos</p>
+                <p class="x-est-h" style="margin-top:14px" data-i18n="pqIngresos"></p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-boletas"><span>Si eres asalariado: boletas o constancia de salario de los últimos 3 meses</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-boletas"><label class="btn btn-line-dark btn-sm" for="pqf-req-boletas">📎 Subir PDF</label><span class="pq-status" id="pqs-req-boletas">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-estados-cuenta"><span>Estados de cuenta bancarios recientes (usualmente los últimos 3 a 6 meses)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-cuenta"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-cuenta">📎 Subir PDF</label><span class="pq-status" id="pqs-req-estados-cuenta">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-patente-isr"><span>Si eres independiente: patente de comercio y declaraciones de ISR</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-isr"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-isr">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-isr">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-boletas"><span data-i18n="pqDocBoletas"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-boletas"><label class="btn btn-line-dark btn-sm" for="pqf-req-boletas" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-boletas" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-estados-cuenta"><span data-i18n="pqDocEstadosCuenta"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-cuenta"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-cuenta" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-estados-cuenta" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-patente-isr"><span data-i18n="pqDocPatenteIsr"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-isr"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-isr" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-patente-isr" data-i18n="pqSinGuardar"></span></span></li>
                 </ul>
 
-                <p class="x-est-h" style="margin-top:14px">Estabilidad laboral</p>
+                <p class="x-est-h" style="margin-top:14px" data-i18n="pqEstabilidadLaboral"></p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-carta-trabajo"><span>Carta de trabajo que indique el tiempo laborado en la empresa</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-carta-trabajo"><label class="btn btn-line-dark btn-sm" for="pqf-req-carta-trabajo">📎 Subir PDF</label><span class="pq-status" id="pqs-req-carta-trabajo">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-antiguedad"><span>Antigüedad laboral (muchos bancos piden al menos 1 año en el empleo actual)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-antiguedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-antiguedad">📎 Subir PDF</label><span class="pq-status" id="pqs-req-antiguedad">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-historial"><span>Historial crediticio favorable (consulta en buró de crédito)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-historial"><label class="btn btn-line-dark btn-sm" for="pqf-req-historial">📎 Subir PDF</label><span class="pq-status" id="pqs-req-historial">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-carta-trabajo"><span data-i18n="pqDocCartaTrabajo"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-carta-trabajo"><label class="btn btn-line-dark btn-sm" for="pqf-req-carta-trabajo" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-carta-trabajo" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-antiguedad"><span data-i18n="pqDocAntiguedad"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-antiguedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-antiguedad" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-antiguedad" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-historial"><span data-i18n="pqDocHistorial"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-historial"><label class="btn btn-line-dark btn-sm" for="pqf-req-historial" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-historial" data-i18n="pqSinGuardar"></span></span></li>
                 </ul>
               </div>
 
               <!-- ===== Persona Jurídica (Empresa) ===== -->
               <div id="pq-block-juridica" hidden>
-                <p class="x-est-h" style="margin-top:18px">Datos de la empresa</p>
+                <p class="x-est-h" style="margin-top:18px" data-i18n="pqDatosEmpresa"></p>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-banco">Banco de preferencia</label>
-                  <select id="pqj-banco">
-                    <option value="">Selecciona…</option>
+                  <div class="fld"><label for="pqj-banco" data-i18n="pqBanco"></label>
+                  <select id="pqj-banco" data-pq-bank-select>
+                    <option value="" data-i18n="pqSelecciona"></option>
                     <option value="Crédito Hipotecario Nacional de Guatemala (CHN)">Crédito Hipotecario Nacional de Guatemala (CHN)</option>
                     <option value="Banco de los Trabajadores (Bantrab)">Banco de los Trabajadores (Bantrab)</option>
                     <option value="Banco Cuscatlán Guatemala">Banco Cuscatlán Guatemala</option>
@@ -633,60 +633,60 @@
                     <option value="Banco Credicorp">Banco Credicorp</option>
                     <option value="Banco Nexa">Banco Nexa</option>
                     <option value="Banco Multimoney">Banco Multimoney</option>
-                    <option value="Otro">Otro</option>
+                    <option value="Otro" data-i18n="pqBancoOtro"></option>
                   </select>
                 </div>
-                  <div class="fld"><label for="pqj-monto">Monto solicitado (Q)</label><input id="pqj-monto" type="text" inputmode="decimal" placeholder="Ej. 500,000"></div>
+                  <div class="fld"><label for="pqj-monto" data-i18n="pqMontoSolicitado"></label><input id="pqj-monto" type="text" inputmode="decimal" data-i18n-ph="pqMontoPhJ"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-destino">Destino del crédito</label>
+                  <div class="fld"><label for="pqj-destino" data-i18n="pqDestinoCredito"></label>
                     <select id="pqj-destino">
-                      <option value="">Selecciona…</option>
-                      <option value="Capital de trabajo">Capital de trabajo</option>
-                      <option value="Compra de equipo">Compra de equipo</option>
-                      <option value="Expansión del negocio">Expansión del negocio</option>
-                      <option value="Vivienda">Vivienda</option>
-                      <option value="Vehículo">Vehículo</option>
+                      <option value="" data-i18n="pqSelecciona"></option>
+                      <option value="Capital de trabajo" data-i18n="pqDestCapitalTrabajo"></option>
+                      <option value="Compra de equipo" data-i18n="pqDestCompraEquipo"></option>
+                      <option value="Expansión del negocio" data-i18n="pqDestExpansion"></option>
+                      <option value="Vivienda" data-i18n="pqDestVivienda"></option>
+                      <option value="Vehículo" data-i18n="pqDestVehiculo"></option>
                     </select>
                   </div>
-                  <div class="fld"><label for="pqj-razon">Razón social / Nombre de la empresa</label><input id="pqj-razon" type="text" placeholder="Ej. Inversiones ABC, S.A."></div>
+                  <div class="fld"><label for="pqj-razon" data-i18n="pqRazonSocial"></label><input id="pqj-razon" type="text" data-i18n-ph="pqRazonSocialPh"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-nit">NIT de la empresa</label><input id="pqj-nit" type="text" placeholder="Ej. 1234567-8"></div>
-                  <div class="fld"><label for="pqj-rep-nombre">Nombre del representante legal</label><input id="pqj-rep-nombre" type="text" placeholder="Nombre completo"></div>
+                  <div class="fld"><label for="pqj-nit" data-i18n="pqNitEmpresa"></label><input id="pqj-nit" type="text" data-i18n-ph="pqNitPh"></div>
+                  <div class="fld"><label for="pqj-rep-nombre" data-i18n="pqRepNombre"></label><input id="pqj-rep-nombre" type="text" data-i18n-ph="pqNombreCompletoPh"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-rep-dpi">DPI del representante legal (13 dígitos)</label><input id="pqj-rep-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
-                  <div class="fld"><label for="pqj-tel">Teléfono celular</label><input id="pqj-tel" type="tel" placeholder="+502 0000 0000"></div>
+                  <div class="fld"><label for="pqj-rep-dpi" data-i18n="pqRepDpi"></label><input id="pqj-rep-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
+                  <div class="fld"><label for="pqj-tel" data-i18n="pqTelefono"></label><input id="pqj-tel" type="tel" placeholder="+502 0000 0000"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-correo">Correo electrónico</label><input id="pqj-correo" type="email" placeholder="nombre@empresa.com"></div>
+                  <div class="fld"><label for="pqj-correo" data-i18n="pqCorreo"></label><input id="pqj-correo" type="email" data-i18n-ph="pqCorreoPhEmpresa"></div>
                 </div>
 
-                <p class="x-est-h" style="margin-top:18px">Documentos legales de la empresa</p>
+                <p class="x-est-h" style="margin-top:18px" data-i18n="pqDocLegalesEmpresa"></p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-patente-comercio-empresa"><span>Patente de Comercio de Empresa</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-empresa"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-empresa">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-comercio-empresa">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-patente-sociedad"><span>Patente de Comercio de Sociedad (si aplica)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-sociedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-sociedad">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-sociedad">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-escritura-constitucion"><span>Escritura de Constitución de la Sociedad</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-escritura-constitucion"><label class="btn btn-line-dark btn-sm" for="pqf-req-escritura-constitucion">📎 Subir PDF</label><span class="pq-status" id="pqs-req-escritura-constitucion">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-rtu"><span>RTU (Registro Tributario Unificado) de la empresa</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-rtu"><label class="btn btn-line-dark btn-sm" for="pqf-req-rtu">📎 Subir PDF</label><span class="pq-status" id="pqs-req-rtu">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-patente-comercio-empresa"><span data-i18n="pqDocPatenteComercioEmpresa"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-empresa"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-empresa" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-patente-comercio-empresa" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-patente-sociedad"><span data-i18n="pqDocPatenteSociedad"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-sociedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-sociedad" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-patente-sociedad" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-escritura-constitucion"><span data-i18n="pqDocEscrituraConstitucion"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-escritura-constitucion"><label class="btn btn-line-dark btn-sm" for="pqf-req-escritura-constitucion" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-escritura-constitucion" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-rtu"><span data-i18n="pqDocRtu"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-rtu"><label class="btn btn-line-dark btn-sm" for="pqf-req-rtu" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-rtu" data-i18n="pqSinGuardar"></span></span></li>
                 </ul>
 
-                <p class="x-est-h" style="margin-top:14px">Representante legal y finanzas</p>
+                <p class="x-est-h" style="margin-top:14px" data-i18n="pqRepLegalFinanzas"></p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-dpi-representante"><span>DPI del Representante Legal vigente</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi-representante">📎 Subir PDF</label><span class="pq-status" id="pqs-req-dpi-representante">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-nombramiento-representante"><span>Nombramiento del Representante Legal (vigente)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nombramiento-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-nombramiento-representante">📎 Subir PDF</label><span class="pq-status" id="pqs-req-nombramiento-representante">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-patente-comercio-sociedad-rep"><span>Patente de Comercio y Sociedad</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-sociedad-rep"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-sociedad-rep">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-comercio-sociedad-rep">Sin guardar aún</span></span></li>
-                  <li class="pq-item" data-doc="req-estados-financieros"><span>Estados Financieros de la empresa (último periodo)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-financieros"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-financieros">📎 Subir PDF</label><span class="pq-status" id="pqs-req-estados-financieros">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-dpi-representante"><span data-i18n="pqDocDpiRepresentante"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi-representante" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-dpi-representante" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-nombramiento-representante"><span data-i18n="pqDocNombramientoRepresentante"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nombramiento-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-nombramiento-representante" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-nombramiento-representante" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-patente-comercio-sociedad-rep"><span data-i18n="pqDocPatenteComercioSociedadRep"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-sociedad-rep"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-sociedad-rep" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-patente-comercio-sociedad-rep" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-estados-financieros"><span data-i18n="pqDocEstadosFinancieros"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-financieros"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-financieros" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-estados-financieros" data-i18n="pqSinGuardar"></span></span></li>
                 </ul>
               </div>
 
-              <p class="hint" style="margin-top:14px">Esta información es de carácter general y orientativo; no sustituye la evaluación oficial de cada banco. Con gusto te ayudamos a reunir y organizar estos documentos.</p>
+              <p class="hint" style="margin-top:14px" data-i18n="pqAviso"></p>
 
               <div class="acts" style="margin-top:16px">
-                <button class="btn btn-dark" type="button" id="pqSave">💾 Guardar</button>
-                <button class="btn btn-line-dark" type="button" id="pqUpdate">🔄 Actualizar</button>
-                <button class="btn btn-danger" type="button" id="pqDelete">🗑️ Eliminar</button>
-                <button class="btn btn-line-dark" type="button" id="pqDownloadPdf" style="margin-left:auto;gap:10px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg><span>Descargar documentos en PDF</span></button>
+                <button class="btn btn-dark" type="button" id="pqSave" data-i18n-html="pqGuardarHtml"></button>
+                <button class="btn btn-line-dark" type="button" id="pqUpdate" data-i18n-html="pqActualizarHtml"></button>
+                <button class="btn btn-danger" type="button" id="pqDelete" data-i18n-html="pqEliminarHtml"></button>
+                <button class="btn btn-line-dark" type="button" id="pqDownloadPdf" style="margin-left:auto;gap:10px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg><span data-i18n="pqDescargarPdf"></span></button>
               </div>
               <p class="hint" id="pqMsg" style="margin-top:8px"></p>
             </div>
@@ -841,9 +841,9 @@
         </div>
 
         <div class="acts" style="margin-top:16px">
-          <button class="btn btn-dark" type="button" id="qSaveBtn">💾 Guardar</button>
-          <button class="btn btn-line-dark" type="button" id="qModifyBtn">🔄 Modificar</button>
-          <button class="btn btn-danger" type="button" id="qDeleteBtn">🗑️ Eliminar</button>
+          <button class="btn btn-dark" type="button" id="qSaveBtn" data-i18n-html="qSaveBtnHtml"></button>
+          <button class="btn btn-line-dark" type="button" id="qModifyBtn" data-i18n-html="qModifyBtnHtml"></button>
+          <button class="btn btn-danger" type="button" id="qDeleteBtn" data-i18n-html="qDeleteBtnHtml"></button>
         </div>
         <p class="hint" id="qSaveMsg" style="margin-top:8px"></p>
 
@@ -950,16 +950,16 @@
   </section>
 </main>
 <section id="serviciosDinamicos" class="servicios" hidden>
-  <h2>Nuestros servicios</h2>
+  <h2 data-i18n="nuestrosServicios"></h2>
   <div id="servicios-contenedor">
-    <p class="servicios-estado">Cargando servicios...</p>
+    <p class="servicios-estado" data-i18n="cargandoServicios"></p>
   </div>
 </section>
 <footer class="ftr">
   <div class="wrap">
     <div class="ftr-grid">
       <img src="assets/logo.webp" alt="ARMOPA">
-      <div><strong>ARMOPA</strong><span>Administración Inmobiliaria</span><span>Guatemala</span></div>
+      <div><strong>ARMOPA</strong><span data-i18n="ftrTagline"></span><span>Guatemala</span></div>
       <div><strong data-i18n="fAtt"></strong><span>+502 4918-3411</span><span>servicios@armopa.com</span></div>
       <div><strong data-i18n="fFollow"></strong><span>Facebook</span><span>Instagram</span><span>YouTube</span></div>
     </div>
@@ -986,7 +986,7 @@
   <button class="scrim" type="button" id="buscarPropScrim" data-i18n-label="close"></button>
   <div class="pcard" id="buscarPropCard" role="dialog" aria-modal="true" aria-labelledby="buscarPropTitle">
     <button class="mx" type="button" id="buscarPropClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="buscarPropTitle">Buscar propiedades</h2><p class="ph-sub">Filtra por ciudad, sector, tipo, zona, especificaciones y presupuesto para encontrar la ubicación que buscas.</p></div>
+    <div class="ph"><h2 id="buscarPropTitle" data-i18n="buscarPropTitulo"></h2><p class="ph-sub" data-i18n="buscarPropSub"></p></div>
     <div class="cq-bar" id="cityQuickMenu"></div>
   </div>
 </div>
@@ -995,14 +995,14 @@
   <button class="scrim" type="button" id="buscarServScrim" data-i18n-label="close"></button>
   <div class="pcard" id="buscarServCard" role="dialog" aria-modal="true" aria-labelledby="buscarServTitle">
     <button class="mx" type="button" id="buscarServClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="buscarServTitle">Buscar servicios</h2><p class="ph-sub">Elige uno de los servicios que ofrecemos para ir directamente a su información.</p></div>
+    <div class="ph"><h2 id="buscarServTitle" data-i18n="btnBuscarServ"></h2><p class="ph-sub" data-i18n="buscarServSub"></p></div>
     <div class="cq-bar">
       <div class="cq-row">
         <div class="cq-field cq-field-city">
           <span class="cq-label">Servicio</span>
-          <select class="cq-select" id="servSelect"><option value="">Cargando servicios...</option></select>
+          <select class="cq-select" id="servSelect"><option value="" data-i18n="cargandoServicios"></option></select>
         </div>
-        <button class="btn btn-dark cq-search-btn" type="button" id="servSearchBtn">Buscar</button>
+        <button class="btn btn-dark cq-search-btn" type="button" id="servSearchBtn" data-i18n="btnBuscar"></button>
       </div>
       <div class="cq-results" id="servSearchMsg"></div>
     </div>
@@ -1018,7 +1018,7 @@
 
     <div class="fld">
       <span class="lbl">No. de solicitud</span>
-      <p class="hint" id="solNumeroPreview">Se genera automáticamente al guardar.</p>
+      <p class="hint" id="solNumeroPreview" data-i18n="solNumeroPreview"></p>
     </div>
 
     <div class="fld">
@@ -1074,13 +1074,13 @@
               <button class="arr loc-hero-arr loc-hero-arr-l" type="button" id="pHeroPrev" aria-label="Foto anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
               <button class="arr loc-hero-arr loc-hero-arr-r" type="button" id="pHeroNext" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
             </div>
-            <p class="hint" id="pHeroEmpty" hidden>Todavía no hay fotos de esta ubicación.</p>
+            <p class="hint" id="pHeroEmpty" hidden data-i18n="admSinFotosUbicacion"></p>
           </div>
 
           <button class="desc-toggle" type="button" id="pDescToggle" aria-expanded="true" hidden>
             <span class="desc-toggle-main">
               <span class="desc-toggle-value" id="pDescValue" hidden></span>
-              <span class="desc-toggle-label">Descripción Propiedad</span>
+              <span class="desc-toggle-label" data-i18n="admDescripcionPropiedad"></span>
               <span class="desc-toggle-summary" id="pDescSummary" hidden></span>
             </span>
             <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
@@ -1088,7 +1088,7 @@
 
           <div id="pForm" hidden>
             <div class="x-row">
-              <div class="fld"><label for="p-tipo">Tipo de propiedad</label><input id="p-tipo" class="fld-list" type="text" list="pTipoList" placeholder="Ej. Casa, Local comercial, Finca cafetalera…"><datalist id="pTipoList"></datalist></div>
+              <div class="fld"><label for="p-tipo" data-i18n="admTipoPropiedadLbl"></label><input id="p-tipo" class="fld-list" type="text" list="pTipoList" data-i18n-ph="pTipoPh"><datalist id="pTipoList"></datalist></div>
               <div class="fld"><span class="lbl" data-i18n="opL"></span>
                 <div class="seg-g" id="pOps">
                   <button class="seg" type="button" data-op="renta" data-i18n="opRent"></button>
@@ -1105,8 +1105,8 @@
               <div class="fld" id="fSale"><label for="p-sale" data-i18n="saleL"></label><input id="p-sale" type="text" data-i18n-ph="salePh"></div>
             </div>
             <div class="x-row" style="margin-top:16px">
-              <div class="fld"><label for="p-sector">Sector</label><input id="p-sector" class="fld-list" type="text" list="pSectorList" placeholder="Ej. Cayalá, Vista Hermosa…"><datalist id="pSectorList"></datalist></div>
-              <div class="fld"><label for="p-zona">Zona</label><input id="p-zona" class="fld-list" type="text" list="pZonaList" placeholder="Ej. Zona 10, Zona 4…"><datalist id="pZonaList"></datalist></div>
+              <div class="fld"><label for="p-sector" data-i18n="admSectorLbl"></label><input id="p-sector" class="fld-list" type="text" list="pSectorList" data-i18n-ph="pSectorPh"><datalist id="pSectorList"></datalist></div>
+              <div class="fld"><label for="p-zona" data-i18n="admZonaLbl"></label><input id="p-zona" class="fld-list" type="text" list="pZonaList" data-i18n-ph="pZonaPh"><datalist id="pZonaList"></datalist></div>
             </div>
             <div class="fld" style="margin-top:16px"><label for="p-addr" data-i18n="addrL"></label><input id="p-addr" type="text"></div>
             <div class="up" style="margin-top:20px">
@@ -1125,41 +1125,41 @@
             </div>
 
             <div class="loc-admin" id="pLocAdminBlock" hidden>
-              <h3>Gestión interna</h3>
+              <h3 data-i18n="admGestionInterna"></h3>
               <div class="x-row">
                 <div class="fld">
-                  <label for="p-estado">Estado de ubicación</label>
+                  <label for="p-estado" data-i18n="admEstadoUbicacion"></label>
                   <select id="p-estado">
-                    <option value="activa">Activa</option>
-                    <option value="arrendada">Arrendada</option>
-                    <option value="vendida">Vendida</option>
-                    <option value="suspendida">Suspendida</option>
-                    <option value="baja">Baja</option>
+                    <option value="activa" data-i18n="ubicEstActiva"></option>
+                    <option value="arrendada" data-i18n="ubicEstArrendada"></option>
+                    <option value="vendida" data-i18n="ubicEstVendida"></option>
+                    <option value="suspendida" data-i18n="ubicEstSuspendida"></option>
+                    <option value="baja" data-i18n="ubicEstBaja"></option>
                   </select>
                   <span class="loc-estado-badge" id="pEstadoBadge"></span>
                 </div>
                 <div class="fld">
-                  <label for="p-vendedor-asignado">Vendedor asignado</label>
-                  <input id="p-vendedor-asignado" class="fld-list" type="text" list="pVendedorList" placeholder="Elige o escribe un vendedor">
+                  <label for="p-vendedor-asignado" data-i18n="admVendedorAsignado"></label>
+                  <input id="p-vendedor-asignado" class="fld-list" type="text" list="pVendedorList" data-i18n-ph="admPlaceholderVendedorAsignado">
                   <datalist id="pVendedorList"></datalist>
                 </div>
               </div>
               <div class="x-row">
                 <div class="fld">
-                  <label for="p-comision">% Comisión</label>
+                  <label for="p-comision" data-i18n="admPctComision"></label>
                   <input id="p-comision" type="number" min="0" max="100" step="0.1" placeholder="Ej. 5">
                 </div>
                 <div class="fld">
-                  <span class="lbl">Valor de comisión</span>
+                  <span class="lbl" data-i18n="admValorComisionLbl"></span>
                   <p style="margin-top:9px;font-weight:700;color:var(--ink)" id="pComisionValor">—</p>
                 </div>
               </div>
               <div class="loc-admin-meta">
-                <span>Fecha cambio de estado: <strong id="pEstadoFecha">—</strong></span>
-                <span>Usuario que cambia el estado: <strong id="pEstadoUsuario">—</strong></span>
+                <span data-i18n="admFechaCambioEstadoLbl"></span> <strong id="pEstadoFecha">—</strong>
+                <span data-i18n="admUsuarioCambiaEstadoLbl"></span> <strong id="pEstadoUsuario">—</strong>
               </div>
               <div class="acts">
-                <button class="btn btn-line-dark btn-sm" type="button" id="pLocAdminUpdate">🔄 Actualizar</button>
+                <button class="btn btn-line-dark btn-sm" type="button" id="pLocAdminUpdate" data-i18n-html="btnActualizarHtml"></button>
               </div>
             </div>
 
@@ -1188,8 +1188,8 @@
             </div>
 
             <div class="acts" style="margin-top:20px">
-              <button class="btn btn-dark" type="button" id="pSaveTop">💾 Guardar</button>
-              <button class="btn btn-line-dark" type="button" id="pUpdateTop">🔄 Actualizar</button>
+              <button class="btn btn-dark" type="button" id="pSaveTop" data-i18n-html="qSaveBtnHtml"></button>
+              <button class="btn btn-line-dark" type="button" id="pUpdateTop" data-i18n-html="btnActualizarHtml"></button>
               <a class="btn btn-line-dark" id="pMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
               <button class="btn btn-danger" type="button" id="pDel"></button>
             </div>
@@ -1252,109 +1252,109 @@
   <button class="scrim" type="button" id="authScrim" data-i18n-label="close"></button>
   <div class="pcard" id="authCard" role="dialog" aria-modal="true" aria-labelledby="authTitle">
     <button class="mx" type="button" id="authClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="authTitle">Formulario de Autorización de Promoción y Venta</h2><p class="ph-sub">Como propietario del inmueble que se describe a continuación, autorizo a Armopa Group a promocionar en Alquiler y/o Venta mi inmueble por los medios que este considere pertinentes.</p></div>
+    <div class="ph"><h2 id="authTitle" data-i18n="authTitle"></h2><p class="ph-sub" data-i18n="authSub"></p></div>
 
-    <h3 class="x-est-h" style="margin-top:6px">Datos del Propietario</h3>
+    <h3 class="x-est-h" style="margin-top:6px" data-i18n="fpDatosPropietario"></h3>
     <div class="x-row">
-      <div class="fld"><label for="fp-nombre">Nombre completo</label><input id="fp-nombre" type="text"></div>
-      <div class="fld"><label for="fp-nacimiento">Fecha de Nacimiento</label><input id="fp-nacimiento" type="date"></div>
+      <div class="fld"><label for="fp-nombre" data-i18n="fpNombreCompleto"></label><input id="fp-nombre" type="text"></div>
+      <div class="fld"><label for="fp-nacimiento" data-i18n="fpFechaNacimiento"></label><input id="fp-nacimiento" type="date"></div>
     </div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-dpi">DPI/CUI o Pasaporte</label><input id="fp-dpi" type="text"></div>
-      <div class="fld"><label for="fp-repleg">Representante Legal</label><input id="fp-repleg" type="text"></div>
+      <div class="fld"><label for="fp-dpi" data-i18n="fpDpi"></label><input id="fp-dpi" type="text"></div>
+      <div class="fld"><label for="fp-repleg" data-i18n="fpRepLegal"></label><input id="fp-repleg" type="text"></div>
     </div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-razon">Razón Social</label><input id="fp-razon" type="text"></div>
-      <div class="fld"><label for="fp-nit">NIT</label><input id="fp-nit" type="text"></div>
+      <div class="fld"><label for="fp-razon" data-i18n="fpRazonSocial"></label><input id="fp-razon" type="text"></div>
+      <div class="fld"><label for="fp-nit" data-i18n="fpNit"></label><input id="fp-nit" type="text"></div>
     </div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-tel">Teléfono móvil</label><input id="fp-tel" type="tel"></div>
-      <div class="fld"><label for="fp-correo">Correo Electrónico</label><input id="fp-correo" type="email"></div>
+      <div class="fld"><label for="fp-tel" data-i18n="fpTelMovil"></label><input id="fp-tel" type="tel"></div>
+      <div class="fld"><label for="fp-correo" data-i18n="fpCorreo"></label><input id="fp-correo" type="email"></div>
     </div>
-    <div class="fld" style="margin-top:16px"><label for="fp-domicilio">Dirección domicilio actual</label><input id="fp-domicilio" type="text"></div>
+    <div class="fld" style="margin-top:16px"><label for="fp-domicilio" data-i18n="fpDomicilio"></label><input id="fp-domicilio" type="text"></div>
 
-    <h3 class="x-est-h" style="margin-top:22px">Descripción Propiedad</h3>
+    <h3 class="x-est-h" style="margin-top:22px" data-i18n="fpDescripcionProp"></h3>
     <div class="x-row">
-      <div class="fld"><label for="fp-tipo">Tipo</label><input id="fp-tipo" type="text" placeholder="Ej. Casa, Apartamento, Terreno…"></div>
-      <div class="fld"><label for="fp-dirprop">Dirección</label><input id="fp-dirprop" type="text"></div>
+      <div class="fld"><label for="fp-tipo" data-i18n="fpTipo"></label><input id="fp-tipo" type="text" data-i18n-ph="fpTipoPh"></div>
+      <div class="fld"><label for="fp-dirprop" data-i18n="fpDireccion"></label><input id="fp-dirprop" type="text"></div>
     </div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-numero">Número</label><input id="fp-numero" type="text"></div>
-      <div class="fld"><label for="fp-finca">Finca</label><input id="fp-finca" type="text"></div>
+      <div class="fld"><label for="fp-numero" data-i18n="fpNumero"></label><input id="fp-numero" type="text"></div>
+      <div class="fld"><label for="fp-finca" data-i18n="fpFinca"></label><input id="fp-finca" type="text"></div>
     </div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-folio">Folio</label><input id="fp-folio" type="text"></div>
-      <div class="fld"><label for="fp-libro">Libro</label><input id="fp-libro" type="text"></div>
+      <div class="fld"><label for="fp-folio" data-i18n="fpFolio"></label><input id="fp-folio" type="text"></div>
+      <div class="fld"><label for="fp-libro" data-i18n="fpLibro"></label><input id="fp-libro" type="text"></div>
     </div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-gravamen">Gravamen</label><input id="fp-gravamen" type="text"></div>
-      <div class="fld"><label for="fp-institucion">Institución</label><input id="fp-institucion" type="text"></div>
+      <div class="fld"><label for="fp-gravamen" data-i18n="fpGravamen"></label><input id="fp-gravamen" type="text"></div>
+      <div class="fld"><label for="fp-institucion" data-i18n="fpInstitucion"></label><input id="fp-institucion" type="text"></div>
     </div>
-    <div class="fld" style="margin-top:16px"><label for="fp-monto">Monto</label><input id="fp-monto" type="text"></div>
+    <div class="fld" style="margin-top:16px"><label for="fp-monto" data-i18n="fpMonto"></label><input id="fp-monto" type="text"></div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-mfrente">Mts. Frente</label><input id="fp-mfrente" type="text"></div>
-      <div class="fld"><label for="fp-mfondo">Mts. Fondo</label><input id="fp-mfondo" type="text"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-mconst">Mts. Construcción</label><input id="fp-mconst" type="text"></div>
-      <div class="fld"><label for="fp-terreno">Terreno Vrs2</label><input id="fp-terreno" type="text"></div>
+      <div class="fld"><label for="fp-mfrente" data-i18n="fpMFrente"></label><input id="fp-mfrente" type="text"></div>
+      <div class="fld"><label for="fp-mfondo" data-i18n="fpMFondo"></label><input id="fp-mfondo" type="text"></div>
     </div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-mts2">Mts2</label><input id="fp-mts2" type="text"></div>
-      <div class="fld"><label for="fp-niveles">Niveles</label><input id="fp-niveles" type="text"></div>
+      <div class="fld"><label for="fp-mconst" data-i18n="fpMConst"></label><input id="fp-mconst" type="text"></div>
+      <div class="fld"><label for="fp-terreno" data-i18n="fpTerrenoVrs2"></label><input id="fp-terreno" type="text"></div>
     </div>
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-estac">Estacionamientos</label><input id="fp-estac" type="text"></div>
-      <div class="fld"><label for="fp-habitaciones">Habitaciones</label><input id="fp-habitaciones" type="text"></div>
+      <div class="fld"><label for="fp-mts2" data-i18n="fpMts2"></label><input id="fp-mts2" type="text"></div>
+      <div class="fld"><label for="fp-niveles" data-i18n="fpNiveles"></label><input id="fp-niveles" type="text"></div>
     </div>
-    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-banos">Baños</label><input id="fp-banos" type="text"></div>
+    <div class="x-row" style="margin-top:16px">
+      <div class="fld"><label for="fp-estac" data-i18n="fpEstacionamientos"></label><input id="fp-estac" type="text"></div>
+      <div class="fld"><label for="fp-habitaciones" data-i18n="fpHabitaciones"></label><input id="fp-habitaciones" type="text"></div>
+    </div>
+    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-banos" data-i18n="fpBanos"></label><input id="fp-banos" type="text"></div>
 
     <div class="chk-grid" style="margin-top:16px">
-      <label class="chk-it"><input type="checkbox" id="fp-lavanderia"> Lavandería</label>
-      <label class="chk-it"><input type="checkbox" id="fp-linea-blanca"> Línea Blanca</label>
-      <label class="chk-it"><input type="checkbox" id="fp-hab-servicio"> Habitación Servicio</label>
-      <label class="chk-it"><input type="checkbox" id="fp-bodega"> Bodega</label>
-      <label class="chk-it"><input type="checkbox" id="fp-amueblado"> Amueblado</label>
-      <label class="chk-it"><input type="checkbox" id="fp-balcon"> Balcón y/o Terraza / Jardín</label>
-      <label class="chk-it"><input type="checkbox" id="fp-mascota"> Mascota</label>
+      <label class="chk-it"><input type="checkbox" id="fp-lavanderia"> <span data-i18n="fpLavanderia"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-linea-blanca"> <span data-i18n="fpLineaBlanca"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-hab-servicio"> <span data-i18n="fpHabServicio"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-bodega"> <span data-i18n="fpBodega"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-amueblado"> <span data-i18n="fpAmueblado"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-balcon"> <span data-i18n="fpBalcon"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-mascota"> <span data-i18n="fpMascota"></span></label>
     </div>
 
-    <h3 class="x-est-h" style="margin-top:22px">Amenidades del Edificio / Condominio</h3>
+    <h3 class="x-est-h" style="margin-top:22px" data-i18n="fpAmenidades"></h3>
     <div class="chk-grid">
-      <label class="chk-it"><input type="checkbox" id="fp-am-motorlobby"> Motor Lobby</label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-piscina"> Piscina</label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-sauna"> Sauna</label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-juegos"> Juegos de Niños</label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-areaverde"> Área Verde</label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-salon"> Salón Usos Múltiples</label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-gimnasio"> Gimnasio</label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-business"> Business Center</label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-canchas"> Canchas Deportivas</label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-cisterna"> Cisterna y/o Pozo</label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-motorlobby"> <span data-i18n="fpAmMotorLobby"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-piscina"> <span data-i18n="fpAmPiscina"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-sauna"> <span data-i18n="fpAmSauna"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-juegos"> <span data-i18n="fpAmJuegos"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-areaverde"> <span data-i18n="fpAmAreaVerde"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-salon"> <span data-i18n="fpAmSalon"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-gimnasio"> <span data-i18n="fpAmGimnasio"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-business"> <span data-i18n="fpAmBusiness"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-canchas"> <span data-i18n="fpAmCanchas"></span></label>
+      <label class="chk-it"><input type="checkbox" id="fp-am-cisterna"> <span data-i18n="fpAmCisterna"></span></label>
     </div>
-    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-am-parqueos">Número de parqueos de visita</label><input id="fp-am-parqueos" type="number" min="0"></div>
+    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-am-parqueos" data-i18n="fpAmParqueos"></label><input id="fp-am-parqueos" type="number" min="0"></div>
 
-    <h3 class="x-est-h" style="margin-top:22px">Precio de Venta</h3>
+    <h3 class="x-est-h" style="margin-top:22px" data-i18n="fpPrecioVenta"></h3>
     <div class="x-row">
-      <div class="fld"><label for="fp-precio-venta">Precio de Venta</label><input id="fp-precio-venta" type="text"></div>
-      <div class="fld"><label for="fp-valor-registro">Valor del Registro</label><input id="fp-valor-registro" type="text"></div>
+      <div class="fld"><label for="fp-precio-venta" data-i18n="fpPrecioVenta"></label><input id="fp-precio-venta" type="text"></div>
+      <div class="fld"><label for="fp-valor-registro" data-i18n="fpValorRegistro"></label><input id="fp-valor-registro" type="text"></div>
     </div>
-    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-iusi">IUSI Trimestral</label><input id="fp-iusi" type="text"></div>
+    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-iusi" data-i18n="fpIusi"></label><input id="fp-iusi" type="text"></div>
 
-    <h3 class="x-est-h" style="margin-top:22px">Precio de Alquiler</h3>
+    <h3 class="x-est-h" style="margin-top:22px" data-i18n="fpPrecioAlquiler"></h3>
     <div class="x-row">
-      <div class="fld"><label for="fp-precio-alquiler">Precio de Alquiler</label><input id="fp-precio-alquiler" type="text"></div>
-      <div class="fld"><label for="fp-mantenimiento">Mantenimiento</label><input id="fp-mantenimiento" type="text"></div>
+      <div class="fld"><label for="fp-precio-alquiler" data-i18n="fpPrecioAlquiler"></label><input id="fp-precio-alquiler" type="text"></div>
+      <div class="fld"><label for="fp-mantenimiento" data-i18n="fpMantenimiento"></label><input id="fp-mantenimiento" type="text"></div>
     </div>
-    <div class="fld" style="margin-top:16px"><label for="fp-incluye-mant">Qué incluye el mantenimiento</label><textarea id="fp-incluye-mant" rows="2"></textarea></div>
+    <div class="fld" style="margin-top:16px"><label for="fp-incluye-mant" data-i18n="fpIncluyeMant"></label><textarea id="fp-incluye-mant" rows="2"></textarea></div>
 
-    <div class="fld" style="margin-top:16px"><label for="fp-obs">Observaciones</label><textarea id="fp-obs" rows="3"></textarea></div>
+    <div class="fld" style="margin-top:16px"><label for="fp-obs" data-i18n="fpObservaciones"></label><textarea id="fp-obs" rows="3"></textarea></div>
 
     <div class="acts" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="fpSave">💾 Guardar autorización</button>
+      <button class="btn btn-dark" type="button" id="fpSave" data-i18n-html="fpSaveBtnHtml"></button>
       <button class="btn btn-line-dark" type="button" id="fpPrint">🖨️ Imprimir reporte</button>
     </div>
-    <p class="note" id="fpNote" hidden>Autorización guardada correctamente. Gracias.</p>
+    <p class="note" id="fpNote" hidden data-i18n="fpNoteSaved"></p>
   </div>
 </div>
 
@@ -1362,59 +1362,59 @@
   <button class="scrim" type="button" id="reqScrim" data-i18n-label="close"></button>
   <div class="pcard" id="reqCard" role="dialog" aria-modal="true" aria-labelledby="reqTitle">
     <button class="mx" type="button" id="reqClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="reqTitle">Requisitos para vender tu propiedad en Guatemala</h2><p class="ph-sub">Esta guía fue generada con IA a partir de los requisitos habituales que piden bancos, notarios y el Registro General de la Propiedad en Guatemala. Sube el PDF de cada documento que ya tengas listo; puedes completar los demás después.</p></div>
+    <div class="ph"><h2 id="reqTitle" data-i18n="reqTitle"></h2><p class="ph-sub" data-i18n="reqSub"></p></div>
 
     <ul class="x-est-l" id="reqList">
       <li class="pq-item" data-doc="dpi">
-        <span><b>DPI del propietario</b><br><small>Documento Personal de Identificación vigente.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-dpi"><label class="btn btn-line-dark btn-sm" for="reqf-dpi">📎 Subir PDF</label><span class="pq-status" id="reqs-dpi">Sin subir</span></span>
+        <span><b data-i18n="reqDpiTitulo"></b><br><small data-i18n="reqDpiDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-dpi"><label class="btn btn-line-dark btn-sm" for="reqf-dpi" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-dpi" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="nit">
-        <span><b>NIT del propietario</b><br><small>Número de Identificación Tributaria.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-nit"><label class="btn btn-line-dark btn-sm" for="reqf-nit">📎 Subir PDF</label><span class="pq-status" id="reqs-nit">Sin subir</span></span>
+        <span><b data-i18n="reqNitTitulo"></b><br><small data-i18n="reqNitDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-nit"><label class="btn btn-line-dark btn-sm" for="reqf-nit" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-nit" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="escritura">
-        <span><b>Escritura pública de propiedad</b><br><small>Título de propiedad o escritura traslativa de dominio, debidamente registrada.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-escritura"><label class="btn btn-line-dark btn-sm" for="reqf-escritura">📎 Subir PDF</label><span class="pq-status" id="reqs-escritura">Sin subir</span></span>
+        <span><b data-i18n="reqEscrituraTitulo"></b><br><small data-i18n="reqEscrituraDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-escritura"><label class="btn btn-line-dark btn-sm" for="reqf-escritura" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-escritura" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="certificacion-rgp">
-        <span><b>Certificación del Registro General de la Propiedad (RGP)</b><br><small>Con vigencia no mayor a 30 días; confirma quién es el propietario actual.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-certificacion-rgp"><label class="btn btn-line-dark btn-sm" for="reqf-certificacion-rgp">📎 Subir PDF</label><span class="pq-status" id="reqs-certificacion-rgp">Sin subir</span></span>
+        <span><b data-i18n="reqRgpTitulo"></b><br><small data-i18n="reqRgpDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-certificacion-rgp"><label class="btn btn-line-dark btn-sm" for="reqf-certificacion-rgp" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-certificacion-rgp" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="gravamenes">
-        <span><b>Certificación de gravámenes</b><br><small>Descarta hipotecas, embargos o anotaciones sobre el inmueble.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-gravamenes"><label class="btn btn-line-dark btn-sm" for="reqf-gravamenes">📎 Subir PDF</label><span class="pq-status" id="reqs-gravamenes">Sin subir</span></span>
+        <span><b data-i18n="reqGravamenesTitulo"></b><br><small data-i18n="reqGravamenesDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-gravamenes"><label class="btn btn-line-dark btn-sm" for="reqf-gravamenes" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-gravamenes" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="iusi">
-        <span><b>Solvencia y recibo de pago del IUSI</b><br><small>Impuesto Único Sobre Inmuebles al día.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-iusi"><label class="btn btn-line-dark btn-sm" for="reqf-iusi">📎 Subir PDF</label><span class="pq-status" id="reqs-iusi">Sin subir</span></span>
+        <span><b data-i18n="reqIusiTitulo"></b><br><small data-i18n="reqIusiDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-iusi"><label class="btn btn-line-dark btn-sm" for="reqf-iusi" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-iusi" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="solvencia-municipal">
-        <span><b>Solvencia municipal</b><br><small>Boleto de ornato y arbitrios municipales al día.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-solvencia-municipal"><label class="btn btn-line-dark btn-sm" for="reqf-solvencia-municipal">📎 Subir PDF</label><span class="pq-status" id="reqs-solvencia-municipal">Sin subir</span></span>
+        <span><b data-i18n="reqSolvMunTitulo"></b><br><small data-i18n="reqSolvMunDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-solvencia-municipal"><label class="btn btn-line-dark btn-sm" for="reqf-solvencia-municipal" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-solvencia-municipal" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="catastro">
-        <span><b>Certificación catastral</b><br><small>Cuando el municipio donde está ubicado el inmueble cuenta con catastro.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-catastro"><label class="btn btn-line-dark btn-sm" for="reqf-catastro">📎 Subir PDF</label><span class="pq-status" id="reqs-catastro">Sin subir</span></span>
+        <span><b data-i18n="reqCatastroTitulo"></b><br><small data-i18n="reqCatastroDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-catastro"><label class="btn btn-line-dark btn-sm" for="reqf-catastro" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-catastro" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="planos">
-        <span><b>Planos registrados de la propiedad</b><br><small>Si existen planos de construcción o de finca registrados.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-planos"><label class="btn btn-line-dark btn-sm" for="reqf-planos">📎 Subir PDF</label><span class="pq-status" id="reqs-planos">Sin subir</span></span>
+        <span><b data-i18n="reqPlanosTitulo"></b><br><small data-i18n="reqPlanosDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-planos"><label class="btn btn-line-dark btn-sm" for="reqf-planos" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-planos" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="empresa">
-        <span><b>Escritura de constitución y patente de comercio</b><br><small>Solo si el propietario es una sociedad o empresa.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-empresa"><label class="btn btn-line-dark btn-sm" for="reqf-empresa">📎 Subir PDF</label><span class="pq-status" id="reqs-empresa">Sin subir</span></span>
+        <span><b data-i18n="reqEmpresaTitulo"></b><br><small data-i18n="reqEmpresaDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-empresa"><label class="btn btn-line-dark btn-sm" for="reqf-empresa" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-empresa" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="poder">
-        <span><b>Poder legal notarial</b><br><small>Solo si actúa un representante o apoderado en lugar del propietario.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-poder"><label class="btn btn-line-dark btn-sm" for="reqf-poder">📎 Subir PDF</label><span class="pq-status" id="reqs-poder">Sin subir</span></span>
+        <span><b data-i18n="reqPoderTitulo"></b><br><small data-i18n="reqPoderDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-poder"><label class="btn btn-line-dark btn-sm" for="reqf-poder" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-poder" data-i18n="reqSinSubir"></span></span>
       </li>
       <li class="pq-item" data-doc="avaluo">
-        <span><b>Avalúo comercial del inmueble</b><br><small>Recomendado, no obligatorio: ayuda a definir un precio de venta realista.</small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-avaluo"><label class="btn btn-line-dark btn-sm" for="reqf-avaluo">📎 Subir PDF</label><span class="pq-status" id="reqs-avaluo">Sin subir</span></span>
+        <span><b data-i18n="reqAvaluoTitulo"></b><br><small data-i18n="reqAvaluoDesc"></small></span>
+        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-avaluo"><label class="btn btn-line-dark btn-sm" for="reqf-avaluo" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-avaluo" data-i18n="reqSinSubir"></span></span>
       </li>
     </ul>
-    <p class="hint" style="margin-top:8px">Esta guía es informativa y puede variar según el municipio, si el inmueble está en régimen de propiedad horizontal o si intervienen bancos. Para tu caso particular, consulta con un notario o con nuestro equipo.</p>
+    <p class="hint" style="margin-top:8px" data-i18n="reqNota"></p>
   </div>
 </div>
 
@@ -1422,55 +1422,55 @@
   <button class="scrim" type="button" id="remodelScrim" data-i18n-label="close"></button>
   <div class="pcard" id="remodelCard" role="dialog" aria-modal="true" aria-labelledby="remodelTitle">
     <button class="mx" type="button" id="remodelClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="remodelTitle">Solicitud de Remodelación</h2><p class="ph-sub">Cuéntanos qué quieres remodelar y adjunta fotografías para que podamos ayudarte a planificar, coordinar y supervisar el proyecto.</p></div>
+    <div class="ph"><h2 id="remodelTitle" data-i18n="frTitulo"></h2><p class="ph-sub" data-i18n="frSubtitulo"></p></div>
 
-    <div class="fld" style="margin-top:6px"><label for="fr-nombre">Nombre Cliente</label><input id="fr-nombre" type="text"></div>
+    <div class="fld" style="margin-top:6px"><label for="fr-nombre" data-i18n="frNombreCliente"></label><input id="fr-nombre" type="text"></div>
 
-    <div class="fld" style="margin-top:16px"><label for="fr-detalles">Detalles que se desean de la remodelación</label><textarea id="fr-detalles" rows="4" placeholder="Ej. Remodelar cocina y sala, cambiar piso, ampliar un cuarto…"></textarea></div>
+    <div class="fld" style="margin-top:16px"><label for="fr-detalles" data-i18n="frDetalles"></label><textarea id="fr-detalles" rows="4" data-i18n-ph="frDetallesPh"></textarea></div>
 
     <div class="fld" style="margin-top:16px">
-      <label>Adjuntar fotografías (estado actual)</label>
+      <label data-i18n="frFotosActuales"></label>
       <div class="up">
         <div class="acts">
           <input id="fr-files1" class="sr" type="file" accept="image/*" multiple>
-          <label class="btn btn-gold btn-sm" for="fr-files1">📷 Subir fotografías</label>
+          <label class="btn btn-gold btn-sm" for="fr-files1" data-i18n-html="xSubirFotosHtml"></label>
         </div>
         <div class="tg" id="frGrid1"></div>
       </div>
     </div>
 
     <div class="fld" style="margin-top:16px">
-      <label>Adjuntar fotografías (referencia / inspiración)</label>
+      <label data-i18n="frFotosReferencia"></label>
       <div class="up">
         <div class="acts">
           <input id="fr-files2" class="sr" type="file" accept="image/*" multiple>
-          <label class="btn btn-gold btn-sm" for="fr-files2">📷 Subir fotografías</label>
+          <label class="btn btn-gold btn-sm" for="fr-files2" data-i18n-html="xSubirFotosHtml"></label>
         </div>
         <div class="tg" id="frGrid2"></div>
       </div>
     </div>
 
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fr-tiempo">Tiempo estimado de remodelación</label>
+      <div class="fld"><label for="fr-tiempo" data-i18n="frTiempoEstimado"></label>
         <select id="fr-tiempo">
-          <option value="">Selecciona…</option>
-          <option value="1-2 semanas">1 a 2 semanas</option>
-          <option value="3-4 semanas">3 a 4 semanas</option>
-          <option value="1-2 meses">1 a 2 meses</option>
-          <option value="3-6 meses">3 a 6 meses</option>
-          <option value="Más de 6 meses">Más de 6 meses</option>
-          <option value="No estoy seguro">No estoy seguro</option>
+          <option value="" data-i18n="frSelecciona"></option>
+          <option value="1-2 semanas" data-i18n="frT12sem"></option>
+          <option value="3-4 semanas" data-i18n="frT34sem"></option>
+          <option value="1-2 meses" data-i18n="frT12mes"></option>
+          <option value="3-6 meses" data-i18n="frT36mes"></option>
+          <option value="Más de 6 meses" data-i18n="frTMas6mes"></option>
+          <option value="No estoy seguro" data-i18n="frTNoSeguro"></option>
         </select>
       </div>
-      <div class="fld"><label for="fr-presupuesto">Presupuesto estimado de remodelación (Q)</label><input id="fr-presupuesto" type="text" placeholder="Ej. 50,000"></div>
+      <div class="fld"><label for="fr-presupuesto" data-i18n="frPresupuestoEstimado"></label><input id="fr-presupuesto" type="text" placeholder="Ej. 50,000"></div>
     </div>
 
-    <div class="fld" id="frPromotorField" hidden style="margin-top:16px"><label for="fr-promotor">Promotor de Negocios</label><select id="fr-promotor"></select></div>
+    <div class="fld" id="frPromotorField" hidden style="margin-top:16px"><label for="fr-promotor" data-i18n="admPromotorNegocios"></label><select id="fr-promotor"></select></div>
 
     <div class="acts" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="frSend">Enviar solicitud</button>
+      <button class="btn btn-dark" type="button" id="frSend" data-i18n="send"></button>
     </div>
-    <p class="note" id="frNote" hidden>Solicitud enviada correctamente. Gracias.</p>
+    <p class="note" id="frNote" hidden data-i18n="frEnviadaOk"></p>
   </div>
 </div>
 
@@ -1478,47 +1478,47 @@
   <button class="scrim" type="button" id="presupuestoScrim" data-i18n-label="close"></button>
   <div class="pcard" id="presupuestoCard" role="dialog" aria-modal="true" aria-labelledby="presupuestoTitle">
     <button class="mx" type="button" id="presupuestoClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="presupuestoTitle">Adaptamos tu presupuesto</h2><p class="ph-sub">Cuéntanos qué deseas realizar y diseñaremos alternativas de acuerdo con tus necesidades y objetivos.</p></div>
+    <div class="ph"><h2 id="presupuestoTitle" data-i18n="s2"></h2><p class="ph-sub" data-i18n="ppSubtitulo"></p></div>
 
-    <h3 style="font-size:30px;color:#10243c;margin:14px 0 4px">Presupuesto</h3>
+    <h3 style="font-size:30px;color:#10243c;margin:14px 0 4px" data-i18n="ppPresupuestoH"></h3>
 
-    <div class="fld" style="margin-top:6px"><label for="pp-valor">Valor del presupuesto (Q)</label><input id="pp-valor" type="text" placeholder="Ej. 50,000"></div>
+    <div class="fld" style="margin-top:6px"><label for="pp-valor" data-i18n="ppValorPresupuesto"></label><input id="pp-valor" type="text" placeholder="Ej. 50,000"></div>
 
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="pp-nombre">Nombre del cliente</label><input id="pp-nombre" type="text"></div>
-      <div class="fld"><label for="pp-telefono">Teléfono</label><input id="pp-telefono" type="tel" placeholder="Ej. 5555-1234"></div>
+      <div class="fld"><label for="pp-nombre" data-i18n="ppNombreCliente"></label><input id="pp-nombre" type="text"></div>
+      <div class="fld"><label for="pp-telefono" data-i18n="phoneL"></label><input id="pp-telefono" type="tel" placeholder="Ej. 5555-1234"></div>
     </div>
 
-    <div class="fld" style="margin-top:16px"><label for="pp-fecha">Fecha</label><input id="pp-fecha" type="text" readonly></div>
+    <div class="fld" style="margin-top:16px"><label for="pp-fecha" data-i18n="ppFecha"></label><input id="pp-fecha" type="text" readonly></div>
 
-    <div class="fld" id="ppPromotorField" hidden style="margin-top:16px"><label for="pp-promotor">Promotor de Negocios</label><select id="pp-promotor"></select></div>
+    <div class="fld" id="ppPromotorField" hidden style="margin-top:16px"><label for="pp-promotor" data-i18n="admPromotorNegocios"></label><select id="pp-promotor"></select></div>
 
     <div class="fld" style="margin-top:16px">
-      <span class="lbl">¿Qué deseas realizar con una propiedad?</span>
+      <span class="lbl" data-i18n="ppQueDeseasRealizar"></span>
       <div class="seg-g" id="ppOpciones">
-        <button class="seg" type="button" data-op="comprar">Comprar</button>
-        <button class="seg" type="button" data-op="rentar">Rentar</button>
-        <button class="seg" type="button" data-op="remodelar">Remodelar</button>
-        <button class="seg" type="button" data-op="servicios-especiales" id="ppServiciosBtn">Servicios especiales</button>
-        <button class="seg" type="button" data-op="emprendimiento">Emprendimiento financiero</button>
+        <button class="seg" type="button" data-op="comprar" data-i18n="ppOpComprar"></button>
+        <button class="seg" type="button" data-op="rentar" data-i18n="ppOpRentar"></button>
+        <button class="seg" type="button" data-op="remodelar" data-i18n="ppOpRemodelar"></button>
+        <button class="seg" type="button" data-op="servicios-especiales" id="ppServiciosBtn" data-i18n="ppOpServiciosEspeciales"></button>
+        <button class="seg" type="button" data-op="emprendimiento" data-i18n="ppOpEmprendimiento"></button>
       </div>
     </div>
 
-    <div class="fld" style="margin-top:16px"><label for="pp-descripcion">Describe lo que deseas realizar</label><textarea id="pp-descripcion" rows="4" placeholder="Cuéntanos con el mayor detalle posible qué necesitas…"></textarea></div>
+    <div class="fld" style="margin-top:16px"><label for="pp-descripcion" data-i18n="ppDescribeRealizar"></label><textarea id="pp-descripcion" rows="4" data-i18n-ph="ppDescribeRealizarPh"></textarea></div>
 
     <div class="fld" style="margin-top:16px">
-      <label>Adjuntar PDF (opcional)</label>
+      <label data-i18n="ppAdjuntarPdf"></label>
       <div class="pq-upl">
         <input type="file" accept="application/pdf" class="sr" id="pp-file">
-        <label class="btn btn-line-dark btn-sm" for="pp-file">📎 Subir PDF</label>
-        <span class="pq-status" id="pp-file-status">Sin subir</span>
+        <label class="btn btn-line-dark btn-sm" for="pp-file" data-i18n-html="xQuoteBtn"></label>
+        <span class="pq-status" id="pp-file-status" data-i18n="xQuoteNone"></span>
       </div>
     </div>
 
     <div class="acts" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="ppSend">Enviar solicitud</button>
+      <button class="btn btn-dark" type="button" id="ppSend" data-i18n="send"></button>
     </div>
-    <p class="note" id="ppNote" hidden>Solicitud enviada correctamente. Gracias.</p>
+    <p class="note" id="ppNote" hidden data-i18n="frEnviadaOk"></p>
   </div>
 </div>
 
@@ -1616,64 +1616,64 @@
   <button class="scrim" type="button" id="construirScrim" data-i18n-label="close"></button>
   <div class="pcard" id="construirCard" role="dialog" aria-modal="true" aria-labelledby="construirTitle">
     <button class="mx" type="button" id="construirClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="construirTitle">Construimos en tu terreno</h2><p class="ph-sub">Cuéntanos los datos generales de tu proyecto; con gusto te ayudamos con el diseño, el presupuesto y la ejecución.</p></div>
+    <div class="ph"><h2 id="construirTitle" data-i18n="s5"></h2><p class="ph-sub" data-i18n="csSubtitulo"></p></div>
 
-    <div class="fld" style="margin-top:6px"><label for="cs-valor">Valor Presupuesto (Q)</label><input id="cs-valor" type="text" placeholder="Ej. 350,000"></div>
+    <div class="fld" style="margin-top:6px"><label for="cs-valor" data-i18n="csValorPresupuesto"></label><input id="cs-valor" type="text" placeholder="Ej. 350,000"></div>
 
     <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="cs-nombre">Nombre completo</label><input id="cs-nombre" type="text"></div>
-      <div class="fld"><label for="cs-fecha-inicio">Fecha de Inicio estimada</label><input id="cs-fecha-inicio" type="date"></div>
+      <div class="fld"><label for="cs-nombre" data-i18n="csNombreCompleto"></label><input id="cs-nombre" type="text"></div>
+      <div class="fld"><label for="cs-fecha-inicio" data-i18n="csFechaInicioEstimada"></label><input id="cs-fecha-inicio" type="date"></div>
     </div>
 
-    <div class="fld" id="csPromotorField" hidden style="margin-top:16px"><label for="cs-promotor">Promotor de Negocios</label><select id="cs-promotor"></select></div>
+    <div class="fld" id="csPromotorField" hidden style="margin-top:16px"><label for="cs-promotor" data-i18n="admPromotorNegocios"></label><select id="cs-promotor"></select></div>
 
-    <div class="fld" style="margin-top:16px"><label for="cs-que-hacer">Describe qué deseas hacer en la construcción</label><textarea id="cs-que-hacer" rows="3" placeholder="Ej. Construir mi casa de habitación en un terreno propio de 300 mts2…"></textarea></div>
+    <div class="fld" style="margin-top:16px"><label for="cs-que-hacer" data-i18n="csQueDeseasHacer"></label><textarea id="cs-que-hacer" rows="3" data-i18n-ph="csQueDeseasHacerPh"></textarea></div>
 
-    <div class="fld" style="margin-top:16px"><label for="cs-m2">Metros cuadrados</label><input id="cs-m2" type="number" min="0" step="1" placeholder="Ej. 200"></div>
+    <div class="fld" style="margin-top:16px"><label for="cs-m2" data-i18n="csMetrosCuadrados"></label><input id="cs-m2" type="number" min="0" step="1" placeholder="Ej. 200"></div>
 
-    <div class="fld" style="margin-top:16px"><label for="cs-descripcion-diseno">Describe lo que deseas construir</label><textarea id="cs-descripcion-diseno" rows="4" placeholder="Ej. Casa moderna de un nivel, fachada blanca con detalles de madera, techo plano, ventanales grandes, 3 habitaciones…"></textarea></div>
+    <div class="fld" style="margin-top:16px"><label for="cs-descripcion-diseno" data-i18n="csDescribeConstruir"></label><textarea id="cs-descripcion-diseno" rows="4" data-i18n-ph="csDescribeConstruirPh"></textarea></div>
 
     <div id="csPlanoBox" hidden style="margin-top:14px"></div>
 
     <div id="csDisenoBox" style="margin-top:14px">
       <p class="pq-status" id="csDisenoStatus"></p>
-      <img id="csDisenoImg" alt="Vista exterior generada con IA" hidden style="width:100%;border-radius:12px;border:1px solid var(--line);margin-top:8px">
+      <img id="csDisenoImg" data-i18n-alt="csVistaIaAlt" hidden style="width:100%;border-radius:12px;border:1px solid var(--line);margin-top:8px">
     </div>
 
     <div class="fld" style="margin-top:16px">
-      <label>Fotografías del terreno (imágenes o PDF)</label>
+      <label data-i18n="csFotosTerreno"></label>
       <div class="up">
         <div class="acts">
           <input id="cs-files" class="sr" type="file" accept="image/*,application/pdf" multiple>
-          <label class="btn btn-gold btn-sm" for="cs-files">📎 Subir fotografías / PDF</label>
+          <label class="btn btn-gold btn-sm" for="cs-files" data-i18n-html="csSubirFotosPdfHtml"></label>
         </div>
         <div class="tg" id="csGrid"></div>
       </div>
     </div>
 
     <div class="acts" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="csSend">Enviar solicitud</button>
-      <button class="btn btn-line-dark" type="button" id="csReqBtn" aria-expanded="false" aria-controls="csReqBlock">📋 Requisitos para construir</button>
-      <button class="btn btn-line-dark" type="button" id="csGenerarDisenoBtn">🎨 Generar diseño con IA</button>
+      <button class="btn btn-dark" type="button" id="csSend" data-i18n="send"></button>
+      <button class="btn btn-line-dark" type="button" id="csReqBtn" aria-expanded="false" aria-controls="csReqBlock" data-i18n-html="csReqBtnHtml"></button>
+      <button class="btn btn-line-dark" type="button" id="csGenerarDisenoBtn" data-i18n-html="csGenerarDisenoHtml"></button>
     </div>
-    <p class="note" id="csNote" hidden>Solicitud enviada correctamente. Gracias.</p>
+    <p class="note" id="csNote" hidden data-i18n="frEnviadaOk"></p>
 
     <div id="csReqBlock" hidden style="margin-top:22px;border-top:1px solid var(--line);padding-top:18px">
-      <h3 style="font-size:20px;color:#10243c;margin:0 0 4px">Pasos para construir una propiedad en Guatemala</h3>
-      <p class="ph-sub" style="margin:0 0 14px">Esta guía fue generada con IA a partir del proceso habitual ante municipalidades, colegios profesionales y entidades de servicios en Guatemala. Es informativa y puede variar según el municipio y el tipo de proyecto.</p>
+      <h3 style="font-size:20px;color:#10243c;margin:0 0 4px" data-i18n="csPasosTitulo"></h3>
+      <p class="ph-sub" style="margin:0 0 14px" data-i18n="csPasosSubtitulo"></p>
       <ol class="stp-list" id="csReqList">
-        <li><b>Verificar el uso de suelo y el Plan de Ordenamiento Territorial (POT)</b><br><small>Confirma en la municipalidad que el terreno permite el tipo de construcción que deseas.</small></li>
-        <li><b>Reunir la documentación legal del terreno</b><br><small>Escritura registrada, certificación del RGP y solvencia del IUSI al día.</small></li>
-        <li><b>Contratar a un profesional colegiado (arquitecto o ingeniero civil)</b><br><small>Debe estar activo en el CIG (Colegio de Ingenieros) o CAG (Colegio de Arquitectos).</small></li>
-        <li><b>Elaborar el anteproyecto y los planos</b><br><small>Diseño arquitectónico, planos estructurales, eléctricos e hidrosanitarios.</small></li>
-        <li><b>Realizar un estudio de suelos</b><br><small>Recomendado para definir el tipo de cimentación adecuado.</small></li>
-        <li><b>Gestionar la licencia municipal de construcción</b><br><small>Presentar planos, boleta de pago de arbitrios y demás requisitos ante la municipalidad correspondiente.</small></li>
-        <li><b>Confirmar factibilidad de servicios</b><br><small>Agua, drenajes y energía eléctrica (EEGSA u otra distribuidora local).</small></li>
-        <li><b>Iniciar la obra con bitácora y supervisión</b><br><small>Llevar bitácora de obra y supervisión periódica del profesional responsable.</small></li>
-        <li><b>Solicitar la recepción de obra / permiso de habitabilidad</b><br><small>Trámite final ante la municipalidad al concluir la construcción.</small></li>
-        <li><b>Registrar las mejoras en el Registro General de la Propiedad</b><br><small>Actualiza el valor y la descripción del inmueble ya construido.</small></li>
+        <li data-i18n-html="csPaso1"></li>
+        <li data-i18n-html="csPaso2"></li>
+        <li data-i18n-html="csPaso3"></li>
+        <li data-i18n-html="csPaso4"></li>
+        <li data-i18n-html="csPaso5"></li>
+        <li data-i18n-html="csPaso6"></li>
+        <li data-i18n-html="csPaso7"></li>
+        <li data-i18n-html="csPaso8"></li>
+        <li data-i18n-html="csPaso9"></li>
+        <li data-i18n-html="csPaso10"></li>
       </ol>
-      <p class="hint" style="margin-top:8px">Para tu caso particular, te recomendamos confirmar los pasos exactos con un profesional colegiado o con nuestro equipo.</p>
+      <p class="hint" style="margin-top:8px" data-i18n="csPasosHint"></p>
     </div>
   </div>
 </div>
@@ -1682,13 +1682,13 @@
   <button class="scrim" type="button" id="adminProyectosScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminProyectosCard" role="dialog" aria-modal="true" aria-labelledby="adminProyectosTitle">
     <button class="mx" type="button" id="adminProyectosClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminProyectosTitle">Propiedades — Listado general</h2><p class="ph-sub">Estado, seguimiento y comisión de cada ubicación registrada.</p></div>
+    <div class="ph"><h2 id="adminProyectosTitle" data-i18n="admPropTituloModal"></h2><p class="ph-sub" data-i18n="admPropSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:18px">
-      <select id="adminPropCiudadSel" aria-label="Ciudad"></select>
-      <select id="adminPropUbicacionSel" aria-label="Ubicación"></select>
-      <select id="adminPropEstadoSel" aria-label="Estado"></select>
-      <select id="adminPropVendedorSel" aria-label="Vendedor"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminPropMostrarBtn">Mostrar</button>
+      <select id="adminPropCiudadSel" data-i18n-label="admCiudades"></select>
+      <select id="adminPropUbicacionSel" data-i18n-label="admTodasLasUbicaciones"></select>
+      <select id="adminPropEstadoSel" data-i18n-label="admEstado"></select>
+      <select id="adminPropVendedorSel" data-i18n-label="admVendedorAsignado"></select>
+      <button class="btn btn-dark btn-sm" type="button" id="adminPropMostrarBtn" data-i18n="btnMostrar"></button>
     </div>
     <div id="adminProyectosList" class="proy-list"></div>
   </div>
@@ -1743,12 +1743,12 @@
   <button class="scrim" type="button" id="adminSolicitudesScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminSolicitudesCard" role="dialog" aria-modal="true" aria-labelledby="adminSolicitudesTitle">
     <button class="mx" type="button" id="adminSolicitudesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminSolicitudesTitle">Proyectos — Listado general</h2><p class="ph-sub">Seguimiento, vendedor y comisión de cada proyecto registrado.</p></div>
+    <div class="ph"><h2 id="adminSolicitudesTitle" data-i18n="admProyTituloModal"></h2><p class="ph-sub" data-i18n="admProySubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:18px">
-      <select id="adminSolProyectoSel" aria-label="Proyecto"></select>
-      <select id="adminSolEstadoSel" aria-label="Estado"></select>
-      <select id="adminSolVendedorSel" aria-label="Vendedor o promotor de negocio"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminSolMostrarBtn">Mostrar</button>
+      <select id="adminSolProyectoSel" data-i18n-label="admTodosLosProyectos"></select>
+      <select id="adminSolEstadoSel" data-i18n-label="admEstado"></select>
+      <select id="adminSolVendedorSel" data-i18n-label="admVendedorAsignado"></select>
+      <button class="btn btn-dark btn-sm" type="button" id="adminSolMostrarBtn" data-i18n="btnMostrar"></button>
     </div>
     <div id="adminSolicitudesList" class="proy-list"></div>
   </div>
@@ -1758,15 +1758,15 @@
   <button class="scrim" type="button" id="adminServiciosScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminServiciosCard" role="dialog" aria-modal="true" aria-labelledby="adminServiciosTitle">
     <button class="mx" type="button" id="adminServiciosClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminServiciosTitle">Servicios — Listado general</h2><p class="ph-sub">Estado, vendedor y comisión de cada solicitud de servicio.</p></div>
+    <div class="ph"><h2 id="adminServiciosTitle" data-i18n="admServTituloModal"></h2><p class="ph-sub" data-i18n="admServSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="adminSrvTipoSel" aria-label="Tipo de servicio"></select>
-      <select id="adminSrvEstadoSel" aria-label="Estado"></select>
-      <select id="adminSrvPromotorSel" aria-label="Promotor de negocio"></select>
-      <input type="date" id="adminSrvFechaDesde" aria-label="Fecha inicial del servicio">
-      <input type="date" id="adminSrvFechaHasta" aria-label="Fecha final del servicio">
-      <select id="adminSrvListaSel" aria-label="Lista de registros"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminSrvMostrarBtn">Mostrar</button>
+      <select id="adminSrvTipoSel" data-i18n-label="admTodosLosServicios"></select>
+      <select id="adminSrvEstadoSel" data-i18n-label="admEstado"></select>
+      <select id="adminSrvPromotorSel" data-i18n-label="admTodosLosPromotores"></select>
+      <input type="date" id="adminSrvFechaDesde" data-i18n-label="admFechaInicioServicioLabel">
+      <input type="date" id="adminSrvFechaHasta" data-i18n-label="admFechaFinServicioLabel">
+      <select id="adminSrvListaSel" data-i18n-label="admListaRegistrosLabel"></select>
+      <button class="btn btn-dark btn-sm" type="button" id="adminSrvMostrarBtn" data-i18n="btnMostrar"></button>
     </div>
     <p class="hint" id="adminSrvHint" style="margin-top:2px;margin-bottom:12px"></p>
     <div id="adminServiciosResult" class="qbuscar-result"></div>
@@ -1777,11 +1777,11 @@
   <button class="scrim" type="button" id="adminVendedoresScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminVendedoresCard" role="dialog" aria-modal="true" aria-labelledby="adminVendedoresTitle">
     <button class="mx" type="button" id="adminVendedoresClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminVendedoresTitle">Vendedores — Listado general</h2><p class="ph-sub">Código, contacto y fotografía de cada vendedor registrado.</p></div>
+    <div class="ph"><h2 id="adminVendedoresTitle" data-i18n="admVendTituloModal"></h2><p class="ph-sub" data-i18n="admVendSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:18px">
-      <input type="text" id="adminVendBuscarInput" class="cq-input" placeholder="Buscar por nombre">
-      <button class="btn btn-dark btn-sm" type="button" id="adminVendMostrarBtn">Mostrar</button>
-      <button class="btn btn-gold btn-sm" type="button" id="adminVendNuevoBtn">+ Agregar vendedor</button>
+      <input type="text" id="adminVendBuscarInput" class="cq-input" data-i18n-ph="admBuscarPorNombrePh">
+      <button class="btn btn-dark btn-sm" type="button" id="adminVendMostrarBtn" data-i18n="btnMostrar"></button>
+      <button class="btn btn-gold btn-sm" type="button" id="adminVendNuevoBtn" data-i18n="admAgregarVendedor"></button>
     </div>
     <div id="adminVendedoresList" class="proy-list"></div>
   </div>
@@ -1791,16 +1791,16 @@
   <button class="scrim" type="button" id="adminTiposComisionScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminTiposComisionCard" role="dialog" aria-modal="true" aria-labelledby="adminTiposComisionTitle">
     <button class="mx" type="button" id="adminTiposComisionClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminTiposComisionTitle">Tipos de comisión — Catálogo</h2><p class="ph-sub">Tipos de comisión según el negocio: Propiedades, Proyectos o Servicios.</p></div>
+    <div class="ph"><h2 id="adminTiposComisionTitle" data-i18n="admTipoComTituloModal"></h2><p class="ph-sub" data-i18n="admTipoComSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:18px">
-      <select id="adminTipoComNegocioSel" aria-label="Negocio">
-        <option value="">Todos los negocios</option>
-        <option value="propiedades">Propiedades</option>
-        <option value="proyectos">Proyectos</option>
-        <option value="servicios">Servicios</option>
+      <select id="adminTipoComNegocioSel" data-i18n-label="admNegocio">
+        <option value="" data-i18n="admTodosLosNegocios"></option>
+        <option value="propiedades" data-i18n="admNegocioPropiedades"></option>
+        <option value="proyectos" data-i18n="admNegocioProyectos"></option>
+        <option value="servicios" data-i18n="admNegocioServicios"></option>
       </select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminTipoComMostrarBtn">Mostrar</button>
-      <button class="btn btn-gold btn-sm" type="button" id="adminTipoComNuevoBtn">+ Agregar tipo de comisión</button>
+      <button class="btn btn-dark btn-sm" type="button" id="adminTipoComMostrarBtn" data-i18n="btnMostrar"></button>
+      <button class="btn btn-gold btn-sm" type="button" id="adminTipoComNuevoBtn" data-i18n="admAgregarTipoComision"></button>
     </div>
     <div id="adminTiposComisionList" class="proy-list"></div>
   </div>
@@ -1810,18 +1810,18 @@
   <button class="scrim" type="button" id="adminComisionesScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminComisionesCard" role="dialog" aria-modal="true" aria-labelledby="adminComisionesTitle">
     <button class="mx" type="button" id="adminComisionesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminComisionesTitle">Comisiones Ventas — Listado general</h2><p class="ph-sub">Comisiones por vendedor, a partir de una fecha y por tipo.</p></div>
+    <div class="ph"><h2 id="adminComisionesTitle" data-i18n="comVentasTituloModal"></h2><p class="ph-sub" data-i18n="comVentasSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="adminComVendedorSel" aria-label="Vendedor"></select>
-      <input type="date" id="adminComFechaDesde" aria-label="Fecha inicial">
-      <input type="date" id="adminComFechaHasta" aria-label="Fecha final">
-      <select id="adminComTipoSel" aria-label="Tipo de comisión">
-        <option value="">Todas</option>
-        <option value="propiedades">Propiedades</option>
-        <option value="proyectos">Proyectos</option>
-        <option value="servicios">Servicios</option>
+      <select id="adminComVendedorSel" data-i18n-label="comLblVendedor"></select>
+      <input type="date" id="adminComFechaDesde" data-i18n-label="comLblFechaInicial">
+      <input type="date" id="adminComFechaHasta" data-i18n-label="comLblFechaFinal">
+      <select id="adminComTipoSel" data-i18n-label="comLblTipoComision">
+        <option value="" data-i18n="comTipoTodas"></option>
+        <option value="propiedades" data-i18n="comTipoPropiedades"></option>
+        <option value="proyectos" data-i18n="comTipoProyectos"></option>
+        <option value="servicios" data-i18n="comTipoServicios"></option>
       </select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminComMostrarBtn">Mostrar</button>
+      <button class="btn btn-dark btn-sm" type="button" id="adminComMostrarBtn" data-i18n="btnMostrar"></button>
     </div>
     <div id="adminComisionesResult" class="qbuscar-result"></div>
   </div>
@@ -1831,12 +1831,12 @@
   <button class="scrim" type="button" id="adminComisionesGeneradasScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminComisionesGeneradasCard" role="dialog" aria-modal="true" aria-labelledby="adminComisionesGeneradasTitle">
     <button class="mx" type="button" id="adminComisionesGeneradasClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminComisionesGeneradasTitle">Comisiones Generadas — Listado general</h2><p class="ph-sub">Comisiones ya generadas, su estado de pago y los datos de la operación bancaria.</p></div>
+    <div class="ph"><h2 id="adminComisionesGeneradasTitle" data-i18n="comGenTituloModal"></h2><p class="ph-sub" data-i18n="comGenSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="adminComGenVendedorSel" aria-label="Vendedor"></select>
-      <input type="date" id="adminComGenFechaDesde" aria-label="Fecha inicial">
-      <input type="date" id="adminComGenFechaHasta" aria-label="Fecha final">
-      <button class="btn btn-dark btn-sm" type="button" id="adminComGenMostrarBtn">Mostrar</button>
+      <select id="adminComGenVendedorSel" data-i18n-label="comLblVendedor"></select>
+      <input type="date" id="adminComGenFechaDesde" data-i18n-label="comLblFechaInicial">
+      <input type="date" id="adminComGenFechaHasta" data-i18n-label="comLblFechaFinal">
+      <button class="btn btn-dark btn-sm" type="button" id="adminComGenMostrarBtn" data-i18n="btnMostrar"></button>
     </div>
     <div id="adminComisionesGeneradasResult" class="qbuscar-result"></div>
   </div>
@@ -1846,13 +1846,13 @@
   <button class="scrim" type="button" id="adminComisionesPagadasScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminComisionesPagadasCard" role="dialog" aria-modal="true" aria-labelledby="adminComisionesPagadasTitle">
     <button class="mx" type="button" id="adminComisionesPagadasClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminComisionesPagadasTitle">Comisiones Pagadas</h2><p class="ph-sub">Historial de comisiones por vendedor, fecha y estado.</p></div>
+    <div class="ph"><h2 id="adminComisionesPagadasTitle" data-i18n="comPagTituloModal"></h2><p class="ph-sub" data-i18n="comPagSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="adminComPagVendedorSel" aria-label="Vendedor"></select>
-      <input type="date" id="adminComPagFechaDesde" aria-label="Fecha inicial">
-      <input type="date" id="adminComPagFechaHasta" aria-label="Fecha final">
-      <select id="adminComPagEstadoSel" aria-label="Estado"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminComPagMostrarBtn">Mostrar</button>
+      <select id="adminComPagVendedorSel" data-i18n-label="comLblVendedor"></select>
+      <input type="date" id="adminComPagFechaDesde" data-i18n-label="comLblFechaInicial">
+      <input type="date" id="adminComPagFechaHasta" data-i18n-label="comLblFechaFinal">
+      <select id="adminComPagEstadoSel" data-i18n-label="comLblEstado"></select>
+      <button class="btn btn-dark btn-sm" type="button" id="adminComPagMostrarBtn" data-i18n="btnMostrar"></button>
     </div>
     <div id="adminComisionesPagadasResult" class="qbuscar-result"></div>
   </div>
@@ -1862,13 +1862,13 @@
   <button class="scrim" type="button" id="repPropiedadesScrim" data-i18n-label="close"></button>
   <div class="pcard" id="repPropiedadesCard" role="dialog" aria-modal="true" aria-labelledby="repPropiedadesTitle">
     <button class="mx" type="button" id="repPropiedadesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="repPropiedadesTitle">Reporte — Listado de Propiedades</h2><p class="ph-sub">Inventario completo de propiedades y su estado.</p></div>
+    <div class="ph"><h2 id="repPropiedadesTitle" data-i18n="repPropTituloModal"></h2><p class="ph-sub" data-i18n="repPropSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="repPropCiudadSel" aria-label="Ciudad"></select>
-      <select id="repPropOperacionSel" aria-label="Tipo de operación"></select>
-      <select id="repPropEstadoSel" aria-label="Estado"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="repPropMostrarBtn">Mostrar</button>
-      <button class="btn btn-line btn-sm" type="button" id="repPropImprimirBtn">🖨️ Imprimir</button>
+      <select id="repPropCiudadSel" data-i18n-label="repLblCiudad"></select>
+      <select id="repPropOperacionSel" data-i18n-label="repLblTipoOperacion"></select>
+      <select id="repPropEstadoSel" data-i18n-label="repLblEstado"></select>
+      <button class="btn btn-dark btn-sm" type="button" id="repPropMostrarBtn" data-i18n="btnMostrar"></button>
+      <button class="btn btn-line btn-sm" type="button" id="repPropImprimirBtn" data-i18n-html="repBtnImprimirHtml"></button>
     </div>
     <div id="repPropiedadesResult" class="qbuscar-result"></div>
   </div>
@@ -1878,14 +1878,14 @@
   <button class="scrim" type="button" id="repServiciosScrim" data-i18n-label="close"></button>
   <div class="pcard" id="repServiciosCard" role="dialog" aria-modal="true" aria-labelledby="repServiciosTitle">
     <button class="mx" type="button" id="repServiciosClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="repServiciosTitle">Reporte — Estado de Servicios</h2><p class="ph-sub">Solicitudes de servicio y su estado actual.</p></div>
+    <div class="ph"><h2 id="repServiciosTitle" data-i18n="repServTituloModal"></h2><p class="ph-sub" data-i18n="repServSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="repServEstadoSel" aria-label="Estado"></select>
-      <select id="repServPrioridadSel" aria-label="Prioridad"></select>
-      <input type="date" id="repServFechaDesde" aria-label="Fecha inicial">
-      <input type="date" id="repServFechaHasta" aria-label="Fecha final">
-      <button class="btn btn-dark btn-sm" type="button" id="repServMostrarBtn">Mostrar</button>
-      <button class="btn btn-line btn-sm" type="button" id="repServImprimirBtn">🖨️ Imprimir</button>
+      <select id="repServEstadoSel" data-i18n-label="repLblEstado"></select>
+      <select id="repServPrioridadSel" data-i18n-label="repLblPrioridad"></select>
+      <input type="date" id="repServFechaDesde" data-i18n-label="repLblFechaInicial">
+      <input type="date" id="repServFechaHasta" data-i18n-label="repLblFechaFinal">
+      <button class="btn btn-dark btn-sm" type="button" id="repServMostrarBtn" data-i18n="btnMostrar"></button>
+      <button class="btn btn-line btn-sm" type="button" id="repServImprimirBtn" data-i18n-html="repBtnImprimirHtml"></button>
     </div>
     <div id="repServiciosResult" class="qbuscar-result"></div>
   </div>
@@ -1895,10 +1895,10 @@
   <button class="scrim" type="button" id="repClientesScrim" data-i18n-label="close"></button>
   <div class="pcard" id="repClientesCard" role="dialog" aria-modal="true" aria-labelledby="repClientesTitle">
     <button class="mx" type="button" id="repClientesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="repClientesTitle">Reporte — Seguimiento Clientes</h2><p class="ph-sub">Clientes registrados y su actividad: solicitudes y cotizaciones.</p></div>
+    <div class="ph"><h2 id="repClientesTitle" data-i18n="repCliTituloModal"></h2><p class="ph-sub" data-i18n="repCliSubtituloModal"></p></div>
     <div class="q-buscar-fields" style="margin-bottom:10px">
-      <input type="text" id="repCliBuscar" placeholder="Buscar por nombre o usuario" aria-label="Buscar cliente">
-      <button class="btn btn-dark btn-sm" type="button" id="repCliMostrarBtn">Mostrar</button>
+      <input type="text" id="repCliBuscar" data-i18n-ph="repBuscarClientePh" data-i18n-label="repBtnBuscarCliente">
+      <button class="btn btn-dark btn-sm" type="button" id="repCliMostrarBtn" data-i18n="btnMostrar"></button>
     </div>
     <div id="repClientesResult" class="qbuscar-result"></div>
   </div>
@@ -1913,6 +1913,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261022-0069"></script>
+<script src="script.js?v=20261022-0074"></script>
 </body>
 </html>
