@@ -5953,20 +5953,98 @@ function shrink(file, max) {
   });
 }
 
-/* "Ingreso de Ciudades" e "Ingreso de Propiedades" en el menú de
-   Administración > Catálogos: ambas abren el mismo panel de administración
-   de ciudades/ubicaciones (openProp), empezando en la pantalla de
-   ciudades; desde allí se entra a una ciudad para administrar sus
-   propiedades. */
+/* "Ingreso de Ciudades" en el menú de Administración > Catálogos: abre el
+   panel de administración de ciudades/ubicaciones (openProp), empezando en
+   la pantalla de ciudades (crear, buscar, editar o eliminar ciudades). */
 $('#navAdminIngresoCiudadesBtn')?.addEventListener('click', () => {
   cerrarNavAdminMenu();
   navwrap.classList.remove('open');
   openProp();
 });
+
+/* "Ingreso de Propiedades": primero solicita elegir una ciudad (diálogo
+   propio con buscador), y al elegirla entra directo al panel de
+   ubicaciones/propiedades de esa ciudad (openCity), sin pasar por la
+   pantalla general de ciudades. */
+function openSelectCityForPropsDialog() {
+  if (!estaConectado()) { if (typeof openLoginModal === 'function') openLoginModal(); return; }
+  const overlay = el('div', 'ncw-overlay');
+  Object.assign(overlay.style, {
+    position: 'fixed', inset: '0', background: 'rgba(3,12,22,.6)',
+    display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: '200', padding: '20px'
+  });
+
+  const card = el('div', 'ncw-card');
+  Object.assign(card.style, {
+    background: '#fff', borderRadius: '16px', padding: '26px', width: 'min(420px, 100%)',
+    maxHeight: '80vh', boxShadow: '0 24px 70px rgba(0,0,0,.4)', display: 'flex', flexDirection: 'column', gap: '14px'
+  });
+
+  const title = el('h3', '', 'Ingreso de Propiedades');
+  title.style.margin = '0';
+  card.appendChild(title);
+
+  const sub = el('p', '', '¿En qué ciudad vas a ingresar propiedades?');
+  sub.style.cssText = 'margin:0;color:var(--muted);font-size:13.5px';
+  card.appendChild(sub);
+
+  const searchInput = document.createElement('input');
+  searchInput.type = 'text';
+  searchInput.className = 'cq-input';
+  searchInput.placeholder = 'Buscar ciudad...';
+  searchInput.autocomplete = 'off';
+  card.appendChild(searchInput);
+
+  const listWrap = el('div', '');
+  listWrap.style.cssText = 'display:flex;flex-direction:column;gap:8px;overflow:auto;max-height:260px';
+  card.appendChild(listWrap);
+
+  function closeDialog() { overlay.remove(); }
+
+  function renderCities() {
+    const q = searchInput.value.trim().toLowerCase();
+    const names = cityNames().filter((n) => !q || n.toLowerCase().includes(q));
+    listWrap.innerHTML = '';
+    if (!names.length) {
+      const noRes = el('p', '', 'No se encontraron ciudades.');
+      noRes.style.cssText = 'color:var(--muted);font-size:13px;margin:4px 0';
+      listWrap.appendChild(noRes);
+      return;
+    }
+    names.forEach((name) => {
+      const b = el('button', 'li', '');
+      b.type = 'button';
+      b.append(el('span', '', name), el('small', '', String((data[name] || []).length)));
+      b.addEventListener('click', () => {
+        closeDialog();
+        openCity(name);
+      });
+      listWrap.appendChild(b);
+    });
+  }
+  searchInput.addEventListener('input', renderCities);
+  renderCities();
+
+  const btnRow = el('div', '');
+  btnRow.style.cssText = 'display:flex;gap:10px;justify-content:space-between;align-items:center;margin-top:4px';
+  const newCityBtn = el('button', 'btn btn-line-dark btn-sm', '+ Nueva ciudad');
+  newCityBtn.type = 'button';
+  newCityBtn.addEventListener('click', () => { closeDialog(); openNewCityDialog(); });
+  const cancelBtn = el('button', 'btn btn-line-dark', 'Cancelar');
+  cancelBtn.type = 'button';
+  cancelBtn.addEventListener('click', closeDialog);
+  btnRow.append(newCityBtn, cancelBtn);
+  card.appendChild(btnRow);
+
+  overlay.appendChild(card);
+  document.body.appendChild(overlay);
+  searchInput.focus();
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) closeDialog(); });
+}
 $('#navAdminIngresoPropiedadesBtn')?.addEventListener('click', () => {
   cerrarNavAdminMenu();
   navwrap.classList.remove('open');
-  openProp();
+  openSelectCityForPropsDialog();
 });
 
 /* Datos para precalificar un préstamo (Gestión de Préstamos Bancarios) */
