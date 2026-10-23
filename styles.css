@@ -811,11 +811,11 @@ section[id]{scroll-margin-top:148px}
    contiguas más pequeñas e inclinadas hacia los costados-, rotando
    automáticamente sola. */
 .rotv-card{max-width:1280px}
-.rotv-card .ph{margin-bottom:6px}
+.rotv-card .ph{position:absolute;width:1px;height:1px;padding:0;margin:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* Barra superior izquierda: tipo de operación (más grande), el aviso
    "Presione la propiedad..." y, por último, el botón para volver a todas
    las propiedades -en ese orden, uno debajo del otro-. */
-.rotv-topbar{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:18px;margin-bottom:10px}
+.rotv-topbar{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:14px;margin-bottom:6px}
 .rotv-topbar-row{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
 .rotv-op-top{margin-bottom:0;font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;padding:7px 20px}
 .rotv-topbar .rotv-hint{margin:0}
@@ -861,6 +861,6 @@ section[id]{scroll-margin-top:148px}
    su propia línea bajo el escenario, con el mismo estilo de botón "pill"
    que el resto del sitio (.loc-tab) -"Todas" siempre primero y activa
    por defecto-. */
-.rotv-filtros{display:flex;flex-direction:column;gap:14px;margin-top:18px}
+.rotv-filtros{display:flex;flex-direction:column;gap:14px;margin-top:4px}
 .rotv-filtro-fila{display:flex;flex-direction:column;gap:8px}
 .rotv-filtro-label{font-size:13px;font-weight:700;color:var(--ink);text-transform:uppercase;letter-spacing:.03em}
