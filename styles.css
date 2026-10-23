@@ -861,6 +861,17 @@ section[id]{scroll-margin-top:148px}
 .cita-fecha-dia{display:block;margin-top:6px;font-size:13px;font-weight:700;color:var(--goldtx)}
 .cita-fecha-dia:empty{display:none}
 
+.cita-etiqueta-sel{text-transform:uppercase;font-weight:700;letter-spacing:.02em}
+.cita-etq-opt{text-transform:uppercase;font-weight:700}
+.cita-etq-cliente{color:#0b4d91}
+.cita-etq-muy{color:#15803d}
+.cita-etq-interesado{color:#9a6a00}
+.cita-etq-poco{color:#b3261e}
+.cita-etiqueta-sel.etq-cliente{color:#0b4d91;border-color:#0b4d91}
+.cita-etiqueta-sel.etq-muy{color:#15803d;border-color:#15803d}
+.cita-etiqueta-sel.etq-interesado{color:#9a6a00;border-color:#9a6a00}
+.cita-etiqueta-sel.etq-poco{color:#b3261e;border-color:#b3261e}
+
 /* Filtros de "Rotación Visual": Ciudad y Tipo de Propiedad, cada uno en
    su propia línea bajo el escenario, con el mismo estilo de botón "pill"
    que el resto del sitio (.loc-tab) -"Todas" siempre primero y activa

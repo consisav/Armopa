@@ -5840,6 +5840,19 @@ function actualizarCitaFechaDia() {
 }
 $('#cita-fecha')?.addEventListener('change', actualizarCitaFechaDia);
 
+/* Colorea el <select> de Etiqueta según el valor elegido (cliente, muy
+   interesado, interesado, poco interesado), mostrando el texto en
+   mayúsculas con un color distinto por cada opción. */
+const CITA_ETQ_CLASES = { cliente: 'etq-cliente', muy_interesado: 'etq-muy', interesado: 'etq-interesado', poco_interesado: 'etq-poco' };
+function actualizarCitaEtiquetaColor() {
+  const sel = $('#cita-etiqueta');
+  if (!sel) return;
+  Object.values(CITA_ETQ_CLASES).forEach((cls) => sel.classList.remove(cls));
+  const cls = CITA_ETQ_CLASES[sel.value];
+  if (cls) sel.classList.add(cls);
+}
+$('#cita-etiqueta')?.addEventListener('change', actualizarCitaEtiquetaColor);
+
 /* prefill: datos opcionales de una propiedad ya seleccionada (desde
    Rotación Visual) para precargar ubicación/ciudad/asesor al agendar. */
 const openCitaModal = (prefill) => {
@@ -5856,6 +5869,7 @@ const openCitaModal = (prefill) => {
   $('#cita-accion').value = '';
   $('#cita-estado').value = 'agendado';
   $('#cita-etiqueta').value = 'cliente';
+  actualizarCitaEtiquetaColor();
   $('#citaMsg').textContent = '';
   $('#citaMsg').style.color = '';
   $('#citaWaBtn').hidden = true;
