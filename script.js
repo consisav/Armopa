@@ -478,6 +478,7 @@ const T = {
     admCliSeccionContacto: 'Contacto', admCliSeccionUbicacion: 'Ubicación', admCliSeccionAdmin: 'Administrativo',
     admAgregarCliente: '+ Agregar cliente', admCodigoCliente: 'Código de cliente', admDpi: 'DPI', admDepartamento: 'Departamento', admMunicipio: 'Municipio',
     admDetalleDireccion: 'Detalle dirección', admEstadoCliente: 'Estado', admEstCliActivo: 'Activo', admEstCliInactivo: 'Inactivo', admEstCliBaja: 'Baja',
+    admProfesion: 'Profesión',
     admClienteSinNombre: 'Cliente sin nombre', admPlaceholderNombreCliente: 'Nombre del cliente', admPlaceholderDpi: 'Número de DPI',
     admPlaceholderDetalleDireccion: 'Ej. Residenciales Las Flores, lote 12', admEscribeNombreCliente: 'Escribe el nombre del cliente.',
     admErrorGuardarCliente: 'No se pudo guardar el cliente.', admErrorEliminarCliente: 'No se pudo eliminar el cliente.',
@@ -815,6 +816,7 @@ const T = {
     admCliSeccionContacto: 'Contact', admCliSeccionUbicacion: 'Location', admCliSeccionAdmin: 'Administrative',
     admAgregarCliente: '+ Add client', admCodigoCliente: 'Client code', admDpi: 'National ID (DPI)', admDepartamento: 'Department', admMunicipio: 'Municipality',
     admDetalleDireccion: 'Address details', admEstadoCliente: 'Status', admEstCliActivo: 'Active', admEstCliInactivo: 'Inactive', admEstCliBaja: 'Discharged',
+    admProfesion: 'Profession',
     admClienteSinNombre: 'Client with no name', admPlaceholderNombreCliente: 'Client name', admPlaceholderDpi: 'National ID number',
     admPlaceholderDetalleDireccion: 'E.g. Las Flores Residences, lot 12', admEscribeNombreCliente: 'Enter the client name.',
     admErrorGuardarCliente: 'Could not save the client.', admErrorEliminarCliente: 'Could not delete the client.',
@@ -2392,6 +2394,19 @@ const DEPARTAMENTOS_GT = {
   'Zacapa': ['Zacapa', 'Estanzuela', 'Río Hondo', 'Gualán', 'Teculután', 'Usumatlán', 'Cabañas', 'San Diego', 'La Unión', 'Huité']
 };
 
+/* Lista de profesiones/ocupaciones comunes en Guatemala, para el campo
+   "Profesión" del catálogo de Clientes (select con lista dinámica). */
+const PROFESIONES_GT = [
+  'Abogado/a y notario/a', 'Administrador/a de empresas', 'Agente de seguros', 'Agricultor/a', 'Agrónomo/a',
+  'Ama de casa', 'Arquitecto/a', 'Artista', 'Auditor/a', 'Chef / Gastronómico', 'Comerciante', 'Conductor/a',
+  'Contador/a', 'Diseñador/a gráfico', 'Docente / Maestro/a', 'Economista', 'Electricista', 'Empresario/a',
+  'Enfermero/a', 'Estudiante', 'Fontanero/a', 'Ingeniero/a civil', 'Ingeniero/a industrial', 'Ingeniero/a en sistemas',
+  'Médico/a', 'Militar', 'Músico/a', 'Odontólogo/a', 'Oficial de policía', 'Operador/a de maquinaria',
+  'Periodista', 'Piloto', 'Piloto automovilístico (transporte)', 'Psicólogo/a', 'Publicista', 'Químico/a farmacéutico',
+  'Sastre / Modista', 'Técnico/a en electrónica', 'Trabajador/a de la construcción', 'Trabajador/a independiente',
+  'Veterinario/a', 'Vendedor/a', 'Jubilado/a', 'Otro'
+];
+
 /* Lista de bancos de Guatemala, igual a la usada en "Datos para
    precalificar un préstamo" (#pq-banco / #pqj-banco), para que el banco
    de pago del vendedor se elija de la misma lista estándar. */
@@ -2779,6 +2794,7 @@ function cliRenderView(card, c) {
   const gridAdmin = el('div', 'cli-grid');
   gridAdmin.append(
     labeledCell(t.admEstadoCliente, el('span', '', estadoClienteLabel(c.estado))),
+    labeledCell(t.admProfesion, el('span', '', c.profesion || '—')),
     labeledCell(t.admUsuario, el('span', '', c.usuario || '—')),
     labeledCell(t.admFechaGrabacion, el('span', '', c.created_at ? formatQBuscarRegFecha(c.created_at) : '—'))
   );
@@ -2902,8 +2918,10 @@ function cliRenderEdit(card, c, isNew) {
     });
     munSel.value = munActual && (DEPARTAMENTOS_GT[depSeleccionado] || []).includes(munActual) ? munActual : '';
   }
-  depSel.value = c.departamento || '';
-  poblarMunicipios(c.departamento || '', c.municipio || '');
+  const depDefault = isNew ? 'Guatemala' : (c.departamento || '');
+  const munDefault = isNew ? 'Guatemala' : (c.municipio || '');
+  depSel.value = depDefault;
+  poblarMunicipios(depDefault, munDefault);
   depSel.addEventListener('change', () => poblarMunicipios(depSel.value, ''));
 
   const dirInput = document.createElement('input');
@@ -2916,6 +2934,22 @@ function cliRenderEdit(card, c, isNew) {
     estadoSel.appendChild(opt);
   });
   estadoSel.value = c.estado || 'activo';
+
+  const profesionSel = document.createElement('select');
+  const profOptVacio = document.createElement('option');
+  profOptVacio.value = ''; profOptVacio.textContent = t.adminSelecciona;
+  profesionSel.appendChild(profOptVacio);
+  PROFESIONES_GT.forEach((prof) => {
+    const opt = document.createElement('option');
+    opt.value = prof; opt.textContent = prof;
+    profesionSel.appendChild(opt);
+  });
+  if (c.profesion && !PROFESIONES_GT.includes(c.profesion)) {
+    const opt = document.createElement('option');
+    opt.value = c.profesion; opt.textContent = c.profesion;
+    profesionSel.appendChild(opt);
+  }
+  profesionSel.value = c.profesion || '';
 
   const hoyDate = new Date();
   const hoyDisplay = hoyDate.toLocaleDateString('es-GT', { year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -2935,7 +2969,8 @@ function cliRenderEdit(card, c, isNew) {
   const gridIdent = el('div', 'cli-grid');
   gridIdent.append(
     labeledCell(t.admNombre, nombreInput),
-    labeledCell(t.admEstadoCliente, estadoSel)
+    labeledCell(t.admEstadoCliente, estadoSel),
+    labeledCell(t.admProfesion, profesionSel)
   );
   secIdent.append(gridIdent);
 
@@ -2993,6 +3028,7 @@ function cliRenderEdit(card, c, isNew) {
       municipio: munSel.value || null,
       direccion: dirInput.value.trim() || null,
       estado: estadoSel.value || 'activo',
+      profesion: profesionSel.value || null,
       foto_url: fotoUrl || null,
       usuario: localStorage.getItem(LOGIN_STORE) || null
     };
