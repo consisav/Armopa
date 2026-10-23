@@ -40,38 +40,38 @@
           <button class="btn btn-line btn-sm nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false"><span data-i18n="adminMenuBtn"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
           <div class="nav-admin-menu" id="navAdminMenu" hidden>
             <div class="nav-admin-group" data-grp="catalogos">
-              <button type="button" class="nav-admin-group-h" aria-expanded="false">Catálogos<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <button type="button" class="nav-admin-group-h" aria-expanded="false"><span data-i18n="adminGrpCatalogos"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
               <div class="nav-admin-group-items" hidden>
-                <button type="button" id="navAdminIngresoCiudadesBtn">Ingreso de Ciudades</button>
-                <button type="button" id="navAdminIngresoPropiedadesBtn">Ingreso de Propiedades</button>
+                <button type="button" id="navAdminIngresoCiudadesBtn" data-i18n="adminMenuIngresoCiudades"></button>
+                <button type="button" id="navAdminIngresoPropiedadesBtn" data-i18n="adminMenuIngresoPropiedades"></button>
                 <div class="nav-admin-sep" role="separator"></div>
                 <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
-                <button type="button" id="navAdminTiposComisionBtn">Tipos de comisión</button>
+                <button type="button" id="navAdminTiposComisionBtn" data-i18n="adminMenuTiposComision"></button>
               </div>
             </div>
             <div class="nav-admin-group" data-grp="negocios">
-              <button type="button" class="nav-admin-group-h" aria-expanded="false">Negocios<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <button type="button" class="nav-admin-group-h" aria-expanded="false"><span data-i18n="adminGrpNegocios"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
               <div class="nav-admin-group-items" hidden>
                 <button type="button" id="navAdminPropiedadesBtn" data-i18n="adminMenuProp"></button>
                 <button type="button" id="navAdminProyectosBtn" data-i18n="adminMenuProy"></button>
                 <button type="button" id="navAdminServiciosBtn" data-i18n="adminMenuServ"></button>
-                <button type="button" id="navAdminRotacionVisualBtn">Rotación Visual</button>
+                <button type="button" id="navAdminRotacionVisualBtn" data-i18n="adminMenuRotVisual"></button>
               </div>
             </div>
             <div class="nav-admin-group" data-grp="comisiones">
-              <button type="button" class="nav-admin-group-h" aria-expanded="false">Comisiones<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <button type="button" class="nav-admin-group-h" aria-expanded="false"><span data-i18n="adminGrpComisiones"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
               <div class="nav-admin-group-items" hidden>
-                <button type="button" id="navAdminComisionesBtn">Comisiones Ventas</button>
-                <button type="button" id="navAdminComisionesGeneradasBtn">Comisiones Generadas</button>
-                <button type="button" id="navAdminComisionesPagadasBtn">Comisiones Pagadas</button>
+                <button type="button" id="navAdminComisionesBtn" data-i18n="adminMenuComisionesVentas"></button>
+                <button type="button" id="navAdminComisionesGeneradasBtn" data-i18n="adminMenuComisionesGeneradas"></button>
+                <button type="button" id="navAdminComisionesPagadasBtn" data-i18n="adminMenuComisionesPagadas"></button>
               </div>
             </div>
             <div class="nav-admin-group" data-grp="reportes">
-              <button type="button" class="nav-admin-group-h" aria-expanded="false">Reportes<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+              <button type="button" class="nav-admin-group-h" aria-expanded="false"><span data-i18n="adminGrpReportes"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
               <div class="nav-admin-group-items" hidden>
-                <button type="button" id="navAdminRepPropiedadesBtn">Listado de Propiedades</button>
-                <button type="button" id="navAdminRepServiciosBtn">Estado de Servicios</button>
-                <button type="button" id="navAdminRepClientesBtn">Seguimiento Clientes</button>
+                <button type="button" id="navAdminRepPropiedadesBtn" data-i18n="adminMenuRepProp"></button>
+                <button type="button" id="navAdminRepServiciosBtn" data-i18n="adminMenuRepServ"></button>
+                <button type="button" id="navAdminRepClientesBtn" data-i18n="adminMenuRepClientes"></button>
               </div>
             </div>
           </div>
@@ -200,9 +200,9 @@
         <h2 data-i18n="propH"></h2>
       </div>
       <div class="cq-trigger-row cq-trigger-row-multi cq-trigger-row-line">
-        <p class="car-hint">Presione la imagen para ver las propiedades de la ciudad.</p>
-        <button class="btn btn-dark" type="button" id="abrirBuscarPropBtn">🔍 Buscar propiedades</button>
-        <button class="btn btn-dark" type="button" id="abrirBuscarServBtn">🔧 Buscar servicios</button>
+        <p class="car-hint" data-i18n="carHint"></p>
+        <button class="btn btn-dark" type="button" id="abrirBuscarPropBtn" data-i18n-html="catalogHtml"></button>
+        <button class="btn btn-dark" type="button" id="abrirBuscarServBtn" data-i18n-html="btnBuscarServHtml"></button>
       </div>
       <div class="car-row">
         <div class="car car-3d" id="car">
@@ -1698,36 +1698,36 @@
   <button class="scrim" type="button" id="rotVisualScrim" data-i18n-label="close"></button>
   <div class="pcard rotv-card" id="rotVisualCard" role="dialog" aria-modal="true" aria-labelledby="rotVisualTitle">
     <button class="mx" type="button" id="rotVisualClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="rotVisualTitle">Rotación Visual</h2></div>
-    <p class="car-hint rotv-hint">Presione la propiedad para ver las fotos y detalles</p>
-    <button type="button" id="rotVisualVolverBtn" class="btn btn-line btn-sm rotv-volver" hidden>← Volver a todas las propiedades</button>
+    <div class="ph"><h2 id="rotVisualTitle" data-i18n="rotVisualTitle"></h2></div>
+    <p class="car-hint rotv-hint" data-i18n="rotVisualHint"></p>
+    <button type="button" id="rotVisualVolverBtn" class="btn btn-line btn-sm rotv-volver" data-i18n="rotVisualVolver" hidden></button>
     <div id="rotVisualStage" class="rotv-stage">
       <div id="rotVisualTrack" class="rotv-track"></div>
     </div>
-    <p id="rotVisualEmpty" class="qbr-empty" hidden>No hay propiedades con fotografías para mostrar.</p>
+    <p id="rotVisualEmpty" class="qbr-empty" data-i18n="rotVisualEmpty" hidden></p>
     <div class="rotv-info" id="rotVisualDetalle" hidden>
       <span class="rotv-op" id="rotVisualDetOp" hidden></span>
       <h3 class="rotv-dname" id="rotVisualDetName"></h3>
       <p class="rotv-daddr" id="rotVisualDetAddr"></p>
-      <a class="btn btn-gold" id="rotVisualDetMap" target="_blank" rel="noopener">Ver en Google Maps</a>
+      <a class="btn btn-gold" id="rotVisualDetMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
     </div>
     <div class="rotv-prices" id="rotVisualDetPrices" hidden>
-      <div class="rotv-price" id="rotVisualDetRentBox" hidden><span>Renta</span><strong id="rotVisualDetRent"></strong></div>
-      <div class="rotv-price" id="rotVisualDetSaleBox" hidden><span>Precio de venta</span><strong id="rotVisualDetSale"></strong></div>
+      <div class="rotv-price" id="rotVisualDetRentBox" hidden><span data-i18n="rotVisualRenta"></span><strong id="rotVisualDetRent"></strong></div>
+      <div class="rotv-price" id="rotVisualDetSaleBox" hidden><span data-i18n="rotVisualPrecioVenta"></span><strong id="rotVisualDetSale"></strong></div>
     </div>
-    <div class="rotv-desc" id="rotVisualDetDescBox" hidden><h4>Descripción</h4><p id="rotVisualDetDesc"></p></div>
+    <div class="rotv-desc" id="rotVisualDetDescBox" hidden><h4 data-i18n="rotVisualDescripcion"></h4><p id="rotVisualDetDesc"></p></div>
     <div class="rotv-seller" id="rotVisualDetSeller" hidden>
       <button class="av-btn" type="button" id="rotVisualDetSBtn" hidden><img class="rotv-savatar" id="rotVisualDetSImg" alt=""></button>
-      <div class="rotv-sinfo"><p class="rotv-slabel">Contacto del vendedor</p><p class="rotv-sname" id="rotVisualDetSName"></p><p class="rotv-snum" id="rotVisualDetSNum"></p></div>
-      <a class="btn btn-wa" id="rotVisualDetSWa" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span>Contactar por WhatsApp</span></a>
+      <div class="rotv-sinfo"><p class="rotv-slabel" data-i18n="rotVisualContactoVendedor"></p><p class="rotv-sname" id="rotVisualDetSName"></p><p class="rotv-snum" id="rotVisualDetSNum"></p></div>
+      <a class="btn btn-wa" id="rotVisualDetSWa" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="rotVisualWa"></span></a>
     </div>
     <div class="rotv-filtros">
       <div class="rotv-filtro-fila">
-        <span class="rotv-filtro-label">Ciudad</span>
+        <span class="rotv-filtro-label" data-i18n="rotVisualCiudad"></span>
         <div id="rotVisualCiudadTabs" class="loc-tabs-grid"></div>
       </div>
       <div class="rotv-filtro-fila">
-        <span class="rotv-filtro-label">Tipo de Propiedad</span>
+        <span class="rotv-filtro-label" data-i18n="rotVisualTipo"></span>
         <div id="rotVisualTipoTabs" class="loc-tabs-grid"></div>
       </div>
     </div>
@@ -1908,6 +1908,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261022-0066"></script>
+<script src="script.js?v=20261022-0067"></script>
 </body>
 </html>

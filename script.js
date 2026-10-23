@@ -307,6 +307,15 @@ const T = {
     cMsg: 'Acceso de demostración: conecta este formulario a tu sistema de usuarios.',
     adminUsersBtn: 'Administrar usuarios', logoutBtn: 'Salir', connectBtn: 'Conectarse',
     adminMenuBtn: 'Administración', adminMenuProp: 'Propiedades', adminMenuProy: 'Proyectos', adminMenuServ: 'Servicios', adminMenuVend: 'Vendedores',
+    adminGrpCatalogos: 'Catálogos', adminGrpNegocios: 'Negocios', adminGrpComisiones: 'Comisiones', adminGrpReportes: 'Reportes',
+    adminMenuIngresoCiudades: 'Ingreso de Ciudades', adminMenuIngresoPropiedades: 'Ingreso de Propiedades', adminMenuTiposComision: 'Tipos de comisión', adminMenuRotVisual: 'Rotación Visual',
+    adminMenuComisionesVentas: 'Comisiones Ventas', adminMenuComisionesGeneradas: 'Comisiones Generadas', adminMenuComisionesPagadas: 'Comisiones Pagadas',
+    adminMenuRepProp: 'Listado de Propiedades', adminMenuRepServ: 'Estado de Servicios', adminMenuRepClientes: 'Seguimiento Clientes',
+    carHint: 'Presione la imagen para ver las propiedades de la ciudad.', btnBuscarServ: 'Buscar servicios',
+    catalogHtml: '🔍 Buscar propiedades', btnBuscarServHtml: '🔧 Buscar servicios',
+    rotVisualTitle: 'Rotación Visual', rotVisualHint: 'Presione la propiedad para ver las fotos y detalles', rotVisualVolver: '← Volver a todas las propiedades', rotVisualEmpty: 'No hay propiedades con fotografías para mostrar.', rotVisualLoadErr: 'No se pudo cargar la rotación visual.',
+    rotVisualCiudad: 'Ciudad', rotVisualTipo: 'Tipo de Propiedad', rotVisualTodas: 'Todas',
+    rotVisualRenta: 'Renta', rotVisualPrecioVenta: 'Precio de venta', rotVisualDescripcion: 'Descripción', rotVisualContactoVendedor: 'Contacto del vendedor', rotVisualWa: 'Contactar por WhatsApp',
     visionTitle: 'Nuestra Visión',
     visionLead: 'Ser un grupo inmobiliario de referencia, reconocido por la integridad, transparencia y excelencia en la gestión de bienes inmuebles, ofreciendo soluciones integrales que protejan y fortalezcan el patrimonio de nuestros clientes.',
     visionBody: 'Desde 2001, construimos relaciones de confianza mediante servicios de compra, venta, renta, administración, asesoría legal, construcción y remodelación, extendiendo nuestra experiencia a nuestros paisanos en el extranjero para facilitar la gestión y el crecimiento de su patrimonio en Guatemala.',
@@ -362,6 +371,15 @@ const T = {
     cMsg: 'Demo access: connect this form to your user system.',
     adminUsersBtn: 'Manage users', logoutBtn: 'Log out', connectBtn: 'Log in',
     adminMenuBtn: 'Admin', adminMenuProp: 'Properties', adminMenuProy: 'Projects', adminMenuServ: 'Services', adminMenuVend: 'Vendors',
+    adminGrpCatalogos: 'Catalogs', adminGrpNegocios: 'Business', adminGrpComisiones: 'Commissions', adminGrpReportes: 'Reports',
+    adminMenuIngresoCiudades: 'Add Cities', adminMenuIngresoPropiedades: 'Add Properties', adminMenuTiposComision: 'Commission Types', adminMenuRotVisual: 'Visual Rotation',
+    adminMenuComisionesVentas: 'Sales Commissions', adminMenuComisionesGeneradas: 'Generated Commissions', adminMenuComisionesPagadas: 'Paid Commissions',
+    adminMenuRepProp: 'Property Listing', adminMenuRepServ: 'Service Status', adminMenuRepClientes: 'Client Follow-up',
+    carHint: 'Click the image to see the city’s properties.', btnBuscarServ: 'Browse services',
+    catalogHtml: '🔍 Browse properties', btnBuscarServHtml: '🔧 Browse services',
+    rotVisualTitle: 'Visual Rotation', rotVisualHint: 'Click a property to see its photos and details', rotVisualVolver: '← Back to all properties', rotVisualEmpty: 'No properties with photos to show.', rotVisualLoadErr: 'Could not load the visual rotation.',
+    rotVisualCiudad: 'City', rotVisualTipo: 'Property Type', rotVisualTodas: 'All',
+    rotVisualRenta: 'Rent', rotVisualPrecioVenta: 'Sale price', rotVisualDescripcion: 'Description', rotVisualContactoVendedor: 'Seller contact', rotVisualWa: 'Contact on WhatsApp',
     visionTitle: 'Our Vision',
     visionLead: 'To be a leading real estate group, recognized for integrity, transparency and excellence in property management, offering comprehensive solutions that protect and strengthen our clients\' wealth.',
     visionBody: 'Since 2001, we have built relationships of trust through buying, selling, renting, management, legal advisory, construction and remodeling services, extending our expertise to our fellow citizens abroad to help manage and grow their wealth in Guatemala.',
@@ -1548,12 +1566,13 @@ function rotVisualPoblarFiltros() {
   const ciudades = [...new Set(rotVisualAllRows.map((r) => r.ciudad).filter(Boolean))].sort();
   const tipos = [...new Set(rotVisualAllRows.map((r) => r.tipo_propiedad).filter(Boolean))].sort();
 
+  const todasLbl = T[lang].rotVisualTodas;
   ciudadWrap.innerHTML = '';
-  rotVisualBuildTab(ciudadWrap, 'Todas', '', () => rotVisualCiudadSel, (v) => { rotVisualCiudadSel = v; rotVisualAplicarFiltro(); });
+  rotVisualBuildTab(ciudadWrap, todasLbl, '', () => rotVisualCiudadSel, (v) => { rotVisualCiudadSel = v; rotVisualAplicarFiltro(); });
   ciudades.forEach((c) => rotVisualBuildTab(ciudadWrap, c, c, () => rotVisualCiudadSel, (v) => { rotVisualCiudadSel = v; rotVisualAplicarFiltro(); }));
 
   tipoWrap.innerHTML = '';
-  rotVisualBuildTab(tipoWrap, 'Todas', '', () => rotVisualTipoSel, (v) => { rotVisualTipoSel = v; rotVisualAplicarFiltro(); });
+  rotVisualBuildTab(tipoWrap, todasLbl, '', () => rotVisualTipoSel, (v) => { rotVisualTipoSel = v; rotVisualAplicarFiltro(); });
   tipos.forEach((t) => rotVisualBuildTab(tipoWrap, t, t, () => rotVisualTipoSel, (v) => { rotVisualTipoSel = v; rotVisualAplicarFiltro(); }));
 }
 
@@ -1605,10 +1624,11 @@ function rotVisualPintarDetalle() {
   if (!it || !r) { rotVisualOcultarDetalle(); return; }
   det.hidden = false;
 
+  const t = T[lang];
   const op = r.tipo_operacion || '';
   const opEl = $('#rotVisualDetOp');
   opEl.hidden = !op;
-  opEl.textContent = op === 'renta' ? 'En renta' : op === 'venta' ? 'En venta' : op === 'ambos' ? 'En renta o venta' : '';
+  opEl.textContent = op === 'renta' ? t.viewOpRent : op === 'venta' ? t.viewOpSale : op === 'ambos' ? t.viewOpBoth : '';
 
   $('#rotVisualDetName').textContent = it.nombre || r.nombre || '';
   const dir = (r.direccion || '').trim();
@@ -1641,7 +1661,7 @@ function rotVisualPintarDetalle() {
   $('#rotVisualDetSNum').textContent = (r.vendedor_whatsapp || '').trim();
   const sWa = $('#rotVisualDetSWa');
   sWa.hidden = !sWaDigits;
-  if (sWaDigits) sWa.href = 'https://wa.me/' + (sWaDigits.length === 8 ? '502' + sWaDigits : sWaDigits) + '?text=' + encodeURIComponent('Hola, me interesa la propiedad: ' + (it.nombre || r.nombre || ''));
+  if (sWaDigits) sWa.href = 'https://wa.me/' + (sWaDigits.length === 8 ? '502' + sWaDigits : sWaDigits) + '?text=' + encodeURIComponent(t.waMsg + (it.nombre || r.nombre || ''));
 }
 
 function rotVisualAplicarFiltro() {
@@ -1663,7 +1683,7 @@ function rotVisualAplicarFiltro() {
   rotVisualItems = filtradas.filter((r) => Array.isArray(r.fotos) && r.fotos.length > 0).map((r) => ({ nombre: r.nombre || 'Propiedad', foto: r.fotos[0], fotos: r.fotos, ciudad: r.ciudad || '', valor: rotVisualValorTexto(r), row: r }));
 
   if (!rotVisualItems.length) {
-    if (empty) { empty.hidden = false; empty.textContent = 'No hay propiedades con fotografías para mostrar.'; }
+    if (empty) { empty.hidden = false; empty.textContent = T[lang].rotVisualEmpty; }
     rotVisualOcultarDetalle();
     return;
   }
@@ -1704,7 +1724,6 @@ function rotVisualMostrarFotos(item) {
   track.innerHTML = '';
   if (empty) empty.hidden = true;
   if (backBtn) backBtn.hidden = false;
-  if (backBtn) backBtn.textContent = '← Volver a todas las propiedades';
 
   const totalFotos = fotos.length;
   const nombreConValor = item.valor ? (item.nombre + ' — ' + item.valor) : item.nombre;
@@ -1752,7 +1771,7 @@ async function abrirRotVisualModal(ciudadInicial) {
     rotVisualAplicarFiltro();
   } catch (e) {
     console.error('Error cargando la rotación visual de propiedades:', e);
-    if (empty) { empty.hidden = false; empty.textContent = 'No se pudo cargar la rotación visual.'; }
+    if (empty) { empty.hidden = false; empty.textContent = T[lang].rotVisualLoadErr; }
   }
 }
 function cerrarRotVisualModal() {
