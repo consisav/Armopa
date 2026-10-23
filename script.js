@@ -2809,13 +2809,9 @@ function cliRenderView(card, c) {
   card.classList.remove('proy-card-edit');
   card.classList.add('cli-card');
   const actions = el('div', 'proy-actions');
-  const segBtn = el('button', 'btn btn-line-dark btn-sm', t.btnSeguimientos); segBtn.type = 'button';
-  const actBtn = el('button', 'btn btn-line-dark btn-sm', t.btnVerActividades); actBtn.type = 'button';
   const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
   const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
-  actions.append(segBtn, actBtn, modBtn, delBtn);
-  segBtn.addEventListener('click', () => abrirSegModal(c));
-  actBtn.addEventListener('click', () => abrirActModal(c));
+  actions.append(modBtn, delBtn);
 
   card.append(cliCardHead(c));
 
@@ -2861,6 +2857,7 @@ function cliRenderView(card, c) {
       if (error) throw error;
       adminCliData = adminCliData.filter((x) => x.id !== c.id);
       card.remove();
+      actualizarCliAccionesGlobales();
       if (!$('#adminClientesList').children.length) pintarAdminClientesList();
     } catch (e) {
       console.error('Error eliminando el cliente:', e);
@@ -3113,10 +3110,26 @@ async function guardarClienteDesdeListado(c, payload) {
   Object.assign(c, payload);
 }
 
+/* Los botones "Seguimientos" y "Ver actividades" viven en la barra de
+   búsqueda (no por tarjeta) y solo se habilitan cuando la búsqueda deja
+   exactamente un cliente visible en la lista, ya que ambos paneles
+   necesitan un único cliente al cual aplicar. */
+function actualizarCliAccionesGlobales() {
+  const segBtn = $('#adminCliSegBtn');
+  const actBtn = $('#adminCliActBtn');
+  if (!segBtn || !actBtn) return;
+  const unico = adminCliData.length === 1 ? adminCliData[0] : null;
+  segBtn.disabled = !unico;
+  actBtn.disabled = !unico;
+  segBtn.onclick = unico ? () => abrirSegModal(unico) : null;
+  actBtn.onclick = unico ? () => abrirActModal(unico) : null;
+}
+
 function pintarAdminClientesList() {
   const list = $('#adminClientesList');
   if (!list) return;
   list.innerHTML = '';
+  actualizarCliAccionesGlobales();
   if (!adminCliData.length) { list.innerHTML = '<p class="proy-empty">' + T[lang].admNoHayClientes + '</p>'; return; }
   adminCliData.forEach((c) => {
     const card = el('div', 'proy-card');

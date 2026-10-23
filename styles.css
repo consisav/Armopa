@@ -437,6 +437,7 @@ section[id]{scroll-margin-top:148px}
 .btn-dark:hover{background:var(--navy2)}
 .btn-line-dark{background:transparent;color:var(--navy);border-color:var(--navy)}
 .btn-line-dark:hover{background:var(--navy);color:#fff}
+.btn:disabled,.btn[disabled]{opacity:.4;cursor:not-allowed;pointer-events:none}
 .btn-danger{background:transparent;color:#9b2c2c;border-color:#9b2c2c}
 .btn-danger:hover,.btn-danger.on{background:#9b2c2c;color:#fff}
 .vw-stage{position:relative;border-radius:12px;overflow:hidden;background:#04101d}
