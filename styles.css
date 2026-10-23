@@ -818,7 +818,8 @@ section[id]{scroll-margin-top:148px}
 .rotv-topbar{display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:14px;margin-bottom:6px}
 .rotv-topbar-row{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
 .rotv-op-top{margin-bottom:0;font-size:20px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;padding:7px 20px}
-.rotv-topbar .rotv-hint{margin:0}
+.rotv-topbar .rotv-hint{margin:0;flex:1}
+.rotv-cita-topbtn{margin-left:auto;white-space:nowrap}
 .rotv-volver{margin-bottom:0}
 .rotv-stage{position:relative;height:560px;margin-top:0;display:flex;align-items:center;justify-content:center;overflow:hidden;perspective:1700px;border-radius:16px;background:linear-gradient(180deg,#0d1f35,#142c48)}
 .rotv-track{position:relative;width:100%;height:100%;transform-style:preserve-3d}
@@ -852,8 +853,6 @@ section[id]{scroll-margin-top:148px}
 .rotv-sname{font-family:'Marcellus',Georgia,serif;font-size:21px;line-height:1.2;color:var(--ink)}
 .rotv-sname:empty{display:none}
 .rotv-snum{color:var(--muted);font-size:14px}
-.rotv-cita-row{margin-top:18px}
-.rotv-cita-row .btn{width:100%}
 @media (max-width:640px){
   .rotv-dname{font-size:21px}
   .rotv-savatar{width:72px;height:72px}

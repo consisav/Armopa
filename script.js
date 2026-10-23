@@ -2134,7 +2134,7 @@ function rotVisualOcultarDetalle() {
   if (d) d.hidden = true;
   const s = $('#rotVisualDetSeller');
   if (s) s.hidden = true;
-  const c = $('#rotVisualCitaRow');
+  const c = $('#rotVisualAgendarCitaBtn');
   if (c) c.hidden = true;
 }
 
@@ -2190,8 +2190,8 @@ function rotVisualPintarDetalle() {
   sWa.hidden = !sWaDigits;
   if (sWaDigits) sWa.href = 'https://wa.me/' + (sWaDigits.length === 8 ? '502' + sWaDigits : sWaDigits) + '?text=' + encodeURIComponent(t.waMsg + (it.nombre || r.nombre || ''));
 
-  const citaRow = $('#rotVisualCitaRow');
-  if (citaRow) citaRow.hidden = false;
+  const citaBtn = $('#rotVisualAgendarCitaBtn');
+  if (citaBtn) citaBtn.hidden = false;
 }
 
 function rotVisualAplicarFiltro() {
