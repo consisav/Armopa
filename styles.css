@@ -53,6 +53,7 @@ section[id]{scroll-margin-top:148px}
 .nav-admin-group-h[aria-expanded="true"] .chev{transform:rotate(180deg)}
 .nav-admin-group-items{padding-bottom:4px}
 .nav-admin-group-items button{padding-left:26px}
+.nav-admin-sep{height:1px;margin:6px 16px;background:var(--line)}
 @media (max-width:1000px){
   .nav-admin-menu{position:static;right:auto;box-shadow:none;border:1px solid rgba(230,189,97,.28);margin-top:6px;background:var(--navy2)}
   .nav-admin-menu a,.nav-admin-menu button{color:#fff}
