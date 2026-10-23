@@ -478,7 +478,7 @@ const T = {
     admCliVendedorAsignado: 'Vendedor asignado', admCliSinVendedor: 'Sin vendedor asignado',
     admCliSeccionContacto: 'Contacto', admCliSeccionUbicacion: 'Ubicación', admCliSeccionAdmin: 'Administrativo',
     admAgregarCliente: '+ Agregar cliente', admCodigoCliente: 'Código de cliente', admDpi: 'DPI', admDepartamento: 'Departamento', admMunicipio: 'Municipio',
-    admDetalleDireccion: 'Detalle dirección', admEstadoCliente: 'Estado', admEstCliActivo: 'Activo', admEstCliInactivo: 'Inactivo', admEstCliBaja: 'Baja',
+    admDetalleDireccion: 'Detalle dirección', admEstadoCliente: 'Estado', admEstCliActivo: 'Activo', admEstCliInactivo: 'Inactivo', admEstCliBaja: 'Baja', admEstCliInquilino: 'Inquilino', admEstCliPropietario: 'Propietario',
     admProfesion: 'Profesión',
     admClienteSinNombre: 'Cliente sin nombre', admPlaceholderNombreCliente: 'Nombre del cliente', admPlaceholderDpi: 'Número de DPI',
     admPlaceholderDetalleDireccion: 'Ej. Residenciales Las Flores, lote 12', admEscribeNombreCliente: 'Escribe el nombre del cliente.',
@@ -826,7 +826,7 @@ const T = {
     admCliVendedorAsignado: 'Assigned seller', admCliSinVendedor: 'No seller assigned',
     admCliSeccionContacto: 'Contact', admCliSeccionUbicacion: 'Location', admCliSeccionAdmin: 'Administrative',
     admAgregarCliente: '+ Add client', admCodigoCliente: 'Client code', admDpi: 'National ID (DPI)', admDepartamento: 'Department', admMunicipio: 'Municipality',
-    admDetalleDireccion: 'Address details', admEstadoCliente: 'Status', admEstCliActivo: 'Active', admEstCliInactivo: 'Inactive', admEstCliBaja: 'Discharged',
+    admDetalleDireccion: 'Address details', admEstadoCliente: 'Status', admEstCliActivo: 'Active', admEstCliInactivo: 'Inactive', admEstCliBaja: 'Discharged', admEstCliInquilino: 'Tenant', admEstCliPropietario: 'Owner',
     admProfesion: 'Profession',
     admClienteSinNombre: 'Client with no name', admPlaceholderNombreCliente: 'Client name', admPlaceholderDpi: 'National ID number',
     admPlaceholderDetalleDireccion: 'E.g. Las Flores Residences, lot 12', admEscribeNombreCliente: 'Enter the client name.',
@@ -2728,7 +2728,9 @@ function getEstadosCliente() {
   return [
     { v: 'activo', l: t.admEstCliActivo },
     { v: 'inactivo', l: t.admEstCliInactivo },
-    { v: 'baja', l: t.admEstCliBaja }
+    { v: 'baja', l: t.admEstCliBaja },
+    { v: 'inquilino', l: t.admEstCliInquilino },
+    { v: 'propietario', l: t.admEstCliPropietario }
   ];
 }
 Object.defineProperty(window, 'ESTADOS_CLIENTE', { get: getEstadosCliente });
@@ -2771,7 +2773,7 @@ function cliCardHead(c) {
   const info = el('div', 'cli-head-info');
   info.append(el('div', 'cli-head-name', c.nombre || t.admClienteSinNombre));
   info.append(el('div', 'cli-head-code', cliCodigo(c)));
-  const estadoCls = { activo: 'cli-badge-activo', inactivo: 'cli-badge-inactivo', baja: 'cli-badge-baja' }[c.estado] || 'cli-badge-activo';
+  const estadoCls = { activo: 'cli-badge-activo', inactivo: 'cli-badge-inactivo', baja: 'cli-badge-baja', inquilino: 'cli-badge-inquilino', propietario: 'cli-badge-propietario' }[c.estado] || 'cli-badge-activo';
   if (c.estado || c.id != null) info.append(el('span', 'cli-head-badge ' + estadoCls, estadoClienteLabel(c.estado || 'activo')));
   head.append(info);
   return head;
@@ -5254,7 +5256,7 @@ function repCliBuildFila(c) {
   const info = el('div', 'cli-head-info');
   info.append(el('div', 'cli-head-name', c.nombre || T[lang].repCliNombreFallback));
   info.append(el('div', 'cli-head-code', c.codigo || '—'));
-  const estadoCls = { activo: 'cli-badge-activo', inactivo: 'cli-badge-inactivo', baja: 'cli-badge-baja' }[c.estado] || 'cli-badge-activo';
+  const estadoCls = { activo: 'cli-badge-activo', inactivo: 'cli-badge-inactivo', baja: 'cli-badge-baja', inquilino: 'cli-badge-inquilino', propietario: 'cli-badge-propietario' }[c.estado] || 'cli-badge-activo';
   info.append(el('span', 'cli-head-badge ' + estadoCls, estadoClienteLabel(c.estado || 'activo')));
   head.append(info);
   card.append(head);
