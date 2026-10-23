@@ -713,12 +713,6 @@ section[id]{scroll-margin-top:148px}
 .car-row{display:flex;align-items:center;gap:16px}
 .car-row .car{flex:1;min-width:0}
 
-/* Botón "Agregar ciudad" debajo del panel de fotos */
-.add-city-row{display:flex;justify-content:center;margin-top:16px}
-@media (max-width:820px){
-  .add-city-row #addCityBtn{width:100%}
-}
-
 /* Panel de ubicaciones: pestañas horizontales + fotos + "Descripción Propiedad" colegible */
 .ed.locs-mode{grid-template-columns:1fr}
 .ed.locs-mode .ll{display:none}

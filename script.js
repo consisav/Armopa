@@ -3907,7 +3907,6 @@ function pintarEstadoUsuario() {
   const codigo = localStorage.getItem(LOGIN_CODIGO_STORE);
   const badge = $('#userBadge');
   const loginBtn = $('#openLoginBtn');
-  const addCityBtn = $('#addCityBtn');
   const adminBtn = $('#adminUsuariosBtn');
   const serviciosSec = $('#serviciosDinamicos');
   const buscarServBtn = $('#abrirBuscarServBtn');
@@ -3919,7 +3918,6 @@ function pintarEstadoUsuario() {
     $('#userBadgeName').textContent = 'Hola, ' + usuario + extra;
     badge.hidden = false;
     loginBtn.hidden = true;
-    if (addCityBtn) addCityBtn.hidden = false;
     if (adminBtn) adminBtn.hidden = tipo !== 'super_administrador';
     if (serviciosSec) serviciosSec.hidden = tipo !== 'super_administrador';
     if (buscarServBtn) buscarServBtn.hidden = tipo !== 'super_administrador';
@@ -3933,7 +3931,6 @@ function pintarEstadoUsuario() {
   } else {
     badge.hidden = true;
     loginBtn.hidden = false;
-    if (addCityBtn) addCityBtn.hidden = true;
     if (adminBtn) adminBtn.hidden = true;
     if (serviciosSec) serviciosSec.hidden = true;
     if (aboutRBlock) aboutRBlock.hidden = true;
@@ -5494,6 +5491,13 @@ function renderList() {
       });
     }
 
+    const add = el('button', 'btn btn-dark', '+ Nueva ciudad');
+    add.type = 'button';
+    add.style.width = '100%';
+    add.style.marginBottom = '12px';
+    add.addEventListener('click', () => openNewCityDialog());
+    box.appendChild(add);
+
     const q = citySearch.trim().toLowerCase();
     const namesToShow = q ? cityNames().filter((n) => n.toLowerCase().includes(q)) : cityNames();
 
@@ -5594,11 +5598,7 @@ function renderList() {
       rowActions.appendChild(btnDelete);
       box.appendChild(rowActions);
     });
-   const add = el('button', 'btn btn-dark', '+ Nueva ciudad');
-add.type = 'button';
-add.addEventListener('click', () => openNewCityDialog());
-box.appendChild(add);
-return;
+    return;
   }
 }
 
@@ -5952,8 +5952,6 @@ function shrink(file, max) {
     fr.readAsDataURL(file);
   });
 }
-
-$('#addCityBtn').addEventListener('click', () => openProp());
 
 /* "Ingreso de Ciudades" e "Ingreso de Propiedades" en el menú de
    Administración > Catálogos: ambas abren el mismo panel de administración
