@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023k">
+<link rel="stylesheet" href="styles.css?v=20261023l">
 </head>
 <body>
 
@@ -1129,44 +1129,53 @@
             </div>
 
             <div class="loc-admin" id="pLocAdminBlock" hidden>
-              <h3 data-i18n="admGestionInterna"></h3>
-              <div class="x-row">
-                <div class="fld">
-                  <label for="p-estado" data-i18n="admEstadoUbicacion"></label>
-                  <select id="p-estado">
-                    <option value="activa" data-i18n="ubicEstActiva"></option>
-                    <option value="arrendada" data-i18n="ubicEstArrendada"></option>
-                    <option value="vendida" data-i18n="ubicEstVendida"></option>
-                    <option value="suspendida" data-i18n="ubicEstSuspendida"></option>
-                    <option value="baja" data-i18n="ubicEstBaja"></option>
-                  </select>
-                  <span class="loc-estado-badge" id="pEstadoBadge"></span>
-                </div>
-                <div class="fld">
-                  <label for="p-vendedor-asignado" data-i18n="admVendedorAsignado"></label>
-                  <input id="p-vendedor-asignado" class="fld-list" type="text" list="pVendedorList" data-i18n-ph="admPlaceholderVendedorAsignado">
-                  <datalist id="pVendedorList"></datalist>
+              <div class="loc-admin-h">
+                <h3 data-i18n="admGestionInterna"></h3>
+                <span class="loc-estado-badge" id="pEstadoBadge"></span>
+              </div>
+
+              <div class="cli-sec loc-admin-sec">
+                <div class="cli-sec-h" data-i18n="admLocSeccionAsignacion"></div>
+                <div class="cli-grid loc-admin-grid-3">
+                  <div class="fld">
+                    <label for="p-estado" data-i18n="admEstadoUbicacion"></label>
+                    <select id="p-estado">
+                      <option value="activa" data-i18n="ubicEstActiva"></option>
+                      <option value="arrendada" data-i18n="ubicEstArrendada"></option>
+                      <option value="vendida" data-i18n="ubicEstVendida"></option>
+                      <option value="suspendida" data-i18n="ubicEstSuspendida"></option>
+                      <option value="baja" data-i18n="ubicEstBaja"></option>
+                    </select>
+                  </div>
+                  <div class="fld">
+                    <label for="p-vendedor-asignado" data-i18n="admVendedorAsignado"></label>
+                    <input id="p-vendedor-asignado" class="fld-list" type="text" list="pVendedorList" data-i18n-ph="admPlaceholderVendedorAsignado">
+                    <datalist id="pVendedorList"></datalist>
+                  </div>
+                  <div class="fld">
+                    <label for="p-cliente-asignado" data-i18n="admClienteAsignado"></label>
+                    <select id="p-cliente-asignado"></select>
+                  </div>
                 </div>
               </div>
-              <div class="x-row">
-                <div class="fld">
-                  <label for="p-cliente-asignado" data-i18n="admClienteAsignado"></label>
-                  <select id="p-cliente-asignado"></select>
+
+              <div class="cli-sec loc-admin-sec">
+                <div class="cli-sec-h" data-i18n="admLocSeccionComision"></div>
+                <div class="cli-grid loc-admin-grid-2">
+                  <div class="fld">
+                    <label for="p-comision" data-i18n="admPctComision"></label>
+                    <input id="p-comision" type="number" min="0" max="100" step="0.1" placeholder="Ej. 5">
+                  </div>
+                  <div class="loc-admin-comvalor">
+                    <span class="lbl" data-i18n="admValorComisionLbl"></span>
+                    <p class="loc-admin-comvalor-num" id="pComisionValor">—</p>
+                  </div>
                 </div>
               </div>
-              <div class="x-row">
-                <div class="fld">
-                  <label for="p-comision" data-i18n="admPctComision"></label>
-                  <input id="p-comision" type="number" min="0" max="100" step="0.1" placeholder="Ej. 5">
-                </div>
-                <div class="fld">
-                  <span class="lbl" data-i18n="admValorComisionLbl"></span>
-                  <p style="margin-top:9px;font-weight:700;color:var(--ink)" id="pComisionValor">—</p>
-                </div>
-              </div>
+
               <div class="loc-admin-meta">
-                <span data-i18n="admFechaCambioEstadoLbl"></span> <strong id="pEstadoFecha">—</strong>
-                <span data-i18n="admUsuarioCambiaEstadoLbl"></span> <strong id="pEstadoUsuario">—</strong>
+                <span><span data-i18n="admFechaCambioEstadoLbl"></span> <strong id="pEstadoFecha">—</strong></span>
+                <span><span data-i18n="admUsuarioCambiaEstadoLbl"></span> <strong id="pEstadoUsuario">—</strong></span>
               </div>
               <div class="acts">
                 <button class="btn btn-line-dark btn-sm" type="button" id="pLocAdminUpdate" data-i18n-html="btnActualizarHtml"></button>
@@ -2073,6 +2082,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0092"></script>
+<script src="script.js?v=20261023-0093"></script>
 </body>
 </html>
