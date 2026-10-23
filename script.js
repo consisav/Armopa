@@ -3833,7 +3833,7 @@ async function cargarAdminVendData(filtroNombre) {
   const list = $('#adminVendedoresList');
   if (list) list.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
   try {
-    let query = supabaseClient.from('vendedores').select('*').order('id', { ascending: false });
+    let query = supabaseClient.from('vendedores').select('*').order('id', { ascending: true });
     if (filtroNombre) query = query.ilike('nombre', '%' + filtroNombre + '%');
     const { data: rows, error } = await query;
     if (error) throw error;
