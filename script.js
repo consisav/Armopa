@@ -1523,7 +1523,6 @@ function rotVisualNext() {
   if (!rotVisualItems.length) return;
   rotVisualIdx = (rotVisualIdx + 1) % rotVisualItems.length;
   rotVisualLayout();
-  rotVisualPintarDetalle();
 }
 
 function rotVisualStart() {
@@ -1572,78 +1571,6 @@ function rotVisualValorTexto(r) {
   return v;
 }
 
-/* Enlace de Google Maps para el detalle de Rotación Visual: usa la dirección
-   guardada si existe (o el enlace, si eso fue lo que se guardó); si no hay
-   dirección, cae de regreso a "nombre de la propiedad, ciudad, Guatemala". */
-function rotVisualMapUrlDet(r) {
-  const dir = ((r && r.direccion) || '').trim();
-  const q = dir || [(r && r.nombre) || '', (r && r.ciudad) || '', 'Guatemala'].filter(Boolean).join(', ');
-  return /^https?:\/\//i.test(q) ? q : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q);
-}
-
-function rotVisualOcultarDetalle() {
-  const det = $('#rotVisualDetalle');
-  if (det) det.hidden = true;
-  const p = $('#rotVisualDetPrices');
-  if (p) p.hidden = true;
-  const d = $('#rotVisualDetDescBox');
-  if (d) d.hidden = true;
-  const s = $('#rotVisualDetSeller');
-  if (s) s.hidden = true;
-}
-
-/* Pinta, debajo de las fotografías de Rotación Visual, el detalle completo
-   de la propiedad actualmente al frente: nombre, dirección y enlace a
-   Google Maps, precio de renta/venta, descripción y contacto del vendedor
-   (foto, nombre, número y botón de WhatsApp) -igual que en la ficha pública
-   de una ubicación-. */
-function rotVisualPintarDetalle() {
-  const det = $('#rotVisualDetalle');
-  if (!det) return;
-  const it = rotVisualItems[rotVisualIdx];
-  const r = it && it.row;
-  if (!it || !r) { rotVisualOcultarDetalle(); return; }
-  det.hidden = false;
-
-  const op = r.tipo_operacion || '';
-  const opEl = $('#rotVisualDetOp');
-  opEl.hidden = !op;
-  opEl.textContent = op === 'renta' ? 'En renta' : op === 'venta' ? 'En venta' : op === 'ambos' ? 'En renta o venta' : '';
-
-  $('#rotVisualDetName').textContent = it.nombre || r.nombre || '';
-  const dir = (r.direccion || '').trim();
-  $('#rotVisualDetAddr').textContent = dir && !/^https?:\/\//i.test(dir) ? dir : ((r.ciudad || '') + ', Guatemala');
-  $('#rotVisualDetMap').href = rotVisualMapUrlDet(r);
-
-  const renta = (r.valor_renta || '').toString().trim();
-  const venta = (r.valor_venta || '').toString().trim();
-  const showR = (op === 'renta' || op === 'ambos') && !!renta;
-  const showS = (op === 'venta' || op === 'ambos') && !!venta;
-  $('#rotVisualDetRentBox').hidden = !showR;
-  $('#rotVisualDetRent').textContent = showR ? renta : '';
-  $('#rotVisualDetSaleBox').hidden = !showS;
-  $('#rotVisualDetSale').textContent = showS ? venta : '';
-  $('#rotVisualDetPrices').hidden = !(showR || showS);
-
-  const desc = (r.descripcion || '').trim();
-  $('#rotVisualDetDesc').textContent = desc;
-  $('#rotVisualDetDescBox').hidden = !desc;
-
-  const sName = (r.vendedor_nombre || '').trim();
-  const sFoto = r.vendedor_foto || '';
-  const sWaDigits = (r.vendedor_whatsapp || '').replace(/\D/g, '');
-  const hasSeller = !!(sName || sFoto || sWaDigits);
-  $('#rotVisualDetSeller').hidden = !hasSeller;
-  const sBtn = $('#rotVisualDetSBtn');
-  sBtn.hidden = !sFoto;
-  if (sFoto) $('#rotVisualDetSImg').src = sFoto;
-  $('#rotVisualDetSName').textContent = sName;
-  $('#rotVisualDetSNum').textContent = (r.vendedor_whatsapp || '').trim();
-  const sWa = $('#rotVisualDetSWa');
-  sWa.hidden = !sWaDigits;
-  if (sWaDigits) sWa.href = 'https://wa.me/' + (sWaDigits.length === 8 ? '502' + sWaDigits : sWaDigits) + '?text=' + encodeURIComponent('Hola, me interesa la propiedad: ' + (it.nombre || r.nombre || ''));
-}
-
 function rotVisualAplicarFiltro() {
   const track = $('#rotVisualTrack');
   const empty = $('#rotVisualEmpty');
@@ -1664,12 +1591,9 @@ function rotVisualAplicarFiltro() {
 
   if (!rotVisualItems.length) {
     if (empty) { empty.hidden = false; empty.textContent = 'No hay propiedades con fotografías para mostrar.'; }
-    rotVisualOcultarDetalle();
     return;
   }
   if (empty) empty.hidden = true;
-  const backBtn = $('#rotVisualVolverBtn');
-  if (backBtn) backBtn.hidden = true;
   rotVisualItems.forEach((it, i) => {
     const card = el('div', 'rotv-item');
     const img = document.createElement('img');
@@ -1679,58 +1603,35 @@ function rotVisualAplicarFiltro() {
     const etiqueta = it.valor ? (it.nombre + ' — ' + it.valor) : it.nombre;
     card.append(img, el('div', 'rotv-name', etiqueta));
     card.addEventListener('click', () => {
-      // Al presionar cualquier propiedad (esté centrada o no), se abre
-      // de inmediato la rotación con todas sus fotografías.
-      rotVisualMostrarFotos(it);
+      // Al presionar cualquier propiedad (esté centrada o no), se abre un
+      // nuevo bloque (la ficha pública de la propiedad) con sus fotografías
+      // y, debajo, toda su información y el contacto del vendedor.
+      rotVisualAbrirDetalleCompleto(it);
     });
     track.appendChild(card);
   });
   rotVisualIdx = 0;
   rotVisualLayout();
   rotVisualStart();
-  rotVisualPintarDetalle();
 }
 
-/* Al presionar una propiedad, se reemplaza el carrusel general por uno con
-   TODAS las fotografías de esa propiedad (mismo efecto de rotación 3D),
-   con un botón para volver al listado general de propiedades. */
-function rotVisualMostrarFotos(item) {
-  const track = $('#rotVisualTrack');
-  const empty = $('#rotVisualEmpty');
-  const backBtn = $('#rotVisualVolverBtn');
-  if (!track || !item) return;
-  const fotos = Array.isArray(item.fotos) && item.fotos.length ? item.fotos : [item.foto];
-  rotVisualStop();
-  track.innerHTML = '';
-  if (empty) empty.hidden = true;
-  if (backBtn) backBtn.hidden = false;
-  if (backBtn) backBtn.textContent = '← Volver a todas las propiedades';
-
-  const totalFotos = fotos.length;
-  const nombreConValor = item.valor ? (item.nombre + ' — ' + item.valor) : item.nombre;
-  rotVisualItems = fotos.map((f) => ({ nombre: item.nombre, foto: f, row: item.row }));
-  rotVisualItems.forEach((it, i) => {
-    const card = el('div', 'rotv-item');
-    const img = document.createElement('img');
-    img.src = it.foto;
-    img.alt = it.nombre + ' — foto ' + (i + 1);
-    img.loading = 'lazy';
-    const etiqueta = totalFotos > 1 ? (nombreConValor + ' · Foto ' + (i + 1) + ' de ' + totalFotos) : nombreConValor;
-    card.append(img, el('div', 'rotv-name', etiqueta));
-    card.addEventListener('click', () => {
-      if (i !== rotVisualIdx) {
-        rotVisualIdx = i;
-        rotVisualLayout();
-        rotVisualStart();
-        rotVisualPintarDetalle();
-      }
-    });
-    track.appendChild(card);
-  });
-  rotVisualIdx = 0;
-  rotVisualLayout();
-  rotVisualStart();
-  rotVisualPintarDetalle();
+/* Al presionar una propiedad en la Rotación Visual, se cierra este modal y
+   se abre la ficha pública de esa ubicación (el mismo bloque que usa
+   "Buscar propiedades"): ahí se ven sus fotografías arriba y, debajo,
+   dirección, mapa, precio, descripción y el contacto del vendedor con
+   WhatsApp. Se busca la ubicación por local_id (o por nombre si no hay
+   coincidencia por id) dentro de los datos ya cargados de esa ciudad. */
+function rotVisualAbrirDetalleCompleto(item) {
+  const r = item && item.row;
+  if (!r) return;
+  const ciudad = r.ciudad || item.ciudad || '';
+  const locs = data[ciudad] || [];
+  let idx = -1;
+  if (r.local_id != null) idx = locs.findIndex((l) => l.id === r.local_id);
+  if (idx === -1) idx = locs.findIndex((l) => (l.name || '') === (r.nombre || item.nombre || ''));
+  if (idx === -1) return;
+  cerrarRotVisualModal();
+  openLocationDirect(ciudad, idx);
 }
 
 async function abrirRotVisualModal(ciudadInicial) {
@@ -1745,7 +1646,7 @@ async function abrirRotVisualModal(ciudadInicial) {
   rotVisualCiudadSel = '';
   rotVisualTipoSel = '';
   try {
-    const { data: rows, error } = await supabaseClient.from('propiedades').select('nombre,fotos,ciudad,tipo_propiedad,tipo_operacion,valor_renta,valor_venta,direccion,descripcion,vendedor_nombre,vendedor_whatsapp,vendedor_foto').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
+    const { data: rows, error } = await supabaseClient.from('propiedades').select('local_id,nombre,fotos,ciudad,tipo_propiedad,tipo_operacion,valor_renta,valor_venta,direccion,descripcion,vendedor_nombre,vendedor_whatsapp,vendedor_foto').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
     if (error) throw error;
     rotVisualAllRows = rows || [];
     if (ciudadInicial && rotVisualAllRows.some((r) => r.ciudad === ciudadInicial)) rotVisualCiudadSel = ciudadInicial;
@@ -1768,7 +1669,6 @@ $('#navAdminRotacionVisualBtn')?.addEventListener('click', () => {
 $('#rotVisualClose')?.addEventListener('click', cerrarRotVisualModal);
 $('#rotVisualScrim')?.addEventListener('click', cerrarRotVisualModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#rotVisualModal') && !$('#rotVisualModal').hidden) cerrarRotVisualModal(); });
-$('#rotVisualVolverBtn')?.addEventListener('click', () => rotVisualAplicarFiltro());
 
 /* "Vendedores" dentro del menú Administración: catálogo centralizado de
    vendedores (tabla propia en Supabase, independiente de "vendedor
