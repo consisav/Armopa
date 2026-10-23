@@ -3910,7 +3910,6 @@ function pintarEstadoUsuario() {
   const loginBtn = $('#openLoginBtn');
   const adminBtn = $('#adminUsuariosBtn');
   const serviciosSec = $('#serviciosDinamicos');
-  const buscarServBtn = $('#abrirBuscarServBtn');
   const aboutRBlock = $('#aboutRBlock');
   const navAdmin = $('#navAdminDrop');
   const openClientBtn = $('#openClient');
@@ -3921,7 +3920,6 @@ function pintarEstadoUsuario() {
     loginBtn.hidden = true;
     if (adminBtn) adminBtn.hidden = tipo !== 'super_administrador';
     if (serviciosSec) serviciosSec.hidden = tipo !== 'super_administrador';
-    if (buscarServBtn) buscarServBtn.hidden = tipo !== 'super_administrador';
     if (aboutRBlock) aboutRBlock.hidden = false;
     if (navAdmin) navAdmin.hidden = tipo !== 'super_administrador';
     if (navAdmin && navAdmin.hidden) cerrarNavAdminMenu();
@@ -3942,7 +3940,6 @@ function pintarEstadoUsuario() {
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
-    if (buscarServBtn) buscarServBtn.hidden = true;
   }
 }
 
