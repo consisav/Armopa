@@ -1707,6 +1707,16 @@
       <button type="button" id="rotVisualVolverBtn" class="btn btn-line btn-sm rotv-volver" data-i18n="rotVisualVolver" hidden></button>
       <button type="button" id="rotVisualVolverCiudadesBtn" class="btn btn-line btn-sm rotv-volver" data-i18n="rotVisualVolverCiudades"></button>
     </div>
+    <div class="rotv-filtros">
+      <div class="rotv-filtro-fila">
+        <span class="rotv-filtro-label" data-i18n="rotVisualCiudad"></span>
+        <div id="rotVisualCiudadTabs" class="loc-tabs-grid"></div>
+      </div>
+      <div class="rotv-filtro-fila">
+        <span class="rotv-filtro-label" data-i18n="rotVisualTipo"></span>
+        <div id="rotVisualTipoTabs" class="loc-tabs-grid"></div>
+      </div>
+    </div>
     <div id="rotVisualStage" class="rotv-stage">
       <div id="rotVisualTrack" class="rotv-track"></div>
     </div>
@@ -1725,16 +1735,6 @@
       <button class="av-btn" type="button" id="rotVisualDetSBtn" hidden><img class="rotv-savatar" id="rotVisualDetSImg" alt=""></button>
       <div class="rotv-sinfo"><p class="rotv-slabel" data-i18n="rotVisualContactoVendedor"></p><p class="rotv-sname" id="rotVisualDetSName"></p><p class="rotv-snum" id="rotVisualDetSNum"></p></div>
       <a class="btn btn-wa" id="rotVisualDetSWa" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="rotVisualWa"></span></a>
-    </div>
-    <div class="rotv-filtros">
-      <div class="rotv-filtro-fila">
-        <span class="rotv-filtro-label" data-i18n="rotVisualCiudad"></span>
-        <div id="rotVisualCiudadTabs" class="loc-tabs-grid"></div>
-      </div>
-      <div class="rotv-filtro-fila">
-        <span class="rotv-filtro-label" data-i18n="rotVisualTipo"></span>
-        <div id="rotVisualTipoTabs" class="loc-tabs-grid"></div>
-      </div>
     </div>
   </div>
 </div>
@@ -1913,6 +1913,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261022-0074"></script>
+<script src="script.js?v=20261023-0075"></script>
 </body>
 </html>
