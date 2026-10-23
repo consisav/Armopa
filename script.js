@@ -308,7 +308,7 @@ const T = {
     adminUsersBtn: 'Administrar usuarios', logoutBtn: 'Salir', connectBtn: 'Conectarse',
     adminMenuBtn: 'Administración', adminMenuProp: 'Propiedades', adminMenuProy: 'Proyectos', adminMenuServ: 'Servicios', adminMenuVend: 'Vendedores',
     adminGrpCatalogos: 'Catálogos', adminGrpNegocios: 'Negocios', adminGrpComisiones: 'Comisiones', adminGrpReportes: 'Reportes',
-    adminMenuIngresoCiudades: 'Ingreso de Ciudades', adminMenuIngresoPropiedades: 'Ingreso de Propiedades', adminMenuClientes: 'Clientes', adminMenuAgendaCitas: 'Agenda de citas', adminMenuTiposComision: 'Tipos de comisión', adminMenuRotVisual: 'Rotación Visual',
+    adminMenuIngresoCiudades: 'Ingreso de Ciudades', adminMenuIngresoPropiedades: 'Ingreso de Propiedades', adminMenuClientes: 'Clientes', adminMenuCitas: 'Citas', adminMenuAgendaCitas: 'Agenda de citas', adminMenuTiposComision: 'Tipos de comisión', adminMenuRotVisual: 'Rotación Visual',
     adminMenuComisionesVentas: 'Comisiones Ventas', adminMenuComisionesGeneradas: 'Comisiones Generadas', adminMenuComisionesPagadas: 'Comisiones Pagadas',
     adminMenuRepProp: 'Listado de Propiedades', adminMenuRepServ: 'Estado de Servicios', adminMenuRepClientes: 'Seguimiento Clientes',
     carHint: 'Presione la imagen para ver las propiedades de la ciudad.', btnBuscarServ: 'Buscar servicios',
@@ -487,6 +487,11 @@ const T = {
     admAgeVistaDia: 'Día', admAgeVistaSemana: 'Semana', admAgeVistaMes: 'Mes', admAgeHoy: 'Hoy',
     admAgeDetalleTitulo: 'Detalle de la cita', admAgeNoHayCitasDia: 'No hay citas agendadas para este día.',
     admAgeMasCitas: '+{n} más',
+    admCitTituloModal: 'Citas — Consulta', admCitSubtituloModal: 'Consulta las citas realizadas con los filtros a continuación.',
+    admCitTodosLosClientes: 'Todos los clientes', admCitTodosLosDepartamentos: 'Todos los departamentos', admCitTodosLosMunicipios: 'Todos los municipios',
+    admCitFechaInicial: 'Fecha inicial', admCitFechaFinal: 'Fecha final', admCitNoHayCitas: 'No hay citas que coincidan con la búsqueda.',
+    admCitErrorEliminar: 'No se pudo eliminar la cita.', admCitConfirmEliminar: '¿Eliminar esta cita? Esta acción no se puede deshacer.',
+    admCitErrorGuardar: 'No se pudo guardar la cita.',
     admTipoComTituloModal: 'Tipos de comisión — Catálogo', admTipoComSubtituloModal: 'Tipos de comisión según el negocio: Propiedades, Proyectos o Servicios.',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -646,7 +651,7 @@ const T = {
     adminUsersBtn: 'Manage users', logoutBtn: 'Log out', connectBtn: 'Log in',
     adminMenuBtn: 'Admin', adminMenuProp: 'Properties', adminMenuProy: 'Projects', adminMenuServ: 'Services', adminMenuVend: 'Vendors',
     adminGrpCatalogos: 'Catalogs', adminGrpNegocios: 'Business', adminGrpComisiones: 'Commissions', adminGrpReportes: 'Reports',
-    adminMenuIngresoCiudades: 'Add Cities', adminMenuIngresoPropiedades: 'Add Properties', adminMenuClientes: 'Clients', adminMenuAgendaCitas: 'Appointment schedule', adminMenuTiposComision: 'Commission Types', adminMenuRotVisual: 'Visual Rotation',
+    adminMenuIngresoCiudades: 'Add Cities', adminMenuIngresoPropiedades: 'Add Properties', adminMenuClientes: 'Clients', adminMenuCitas: 'Appointments', adminMenuAgendaCitas: 'Appointment schedule', adminMenuTiposComision: 'Commission Types', adminMenuRotVisual: 'Visual Rotation',
     adminMenuComisionesVentas: 'Sales Commissions', adminMenuComisionesGeneradas: 'Generated Commissions', adminMenuComisionesPagadas: 'Paid Commissions',
     adminMenuRepProp: 'Property Listing', adminMenuRepServ: 'Service Status', adminMenuRepClientes: 'Client Follow-up',
     carHint: 'Click the image to see the city’s properties.', btnBuscarServ: 'Browse services',
@@ -825,6 +830,11 @@ const T = {
     admAgeVistaDia: 'Day', admAgeVistaSemana: 'Week', admAgeVistaMes: 'Month', admAgeHoy: 'Today',
     admAgeDetalleTitulo: 'Appointment detail', admAgeNoHayCitasDia: 'No appointments scheduled for this day.',
     admAgeMasCitas: '+{n} more',
+    admCitTituloModal: 'Appointments — Search', admCitSubtituloModal: 'Browse appointments made, using the filters below.',
+    admCitTodosLosClientes: 'All clients', admCitTodosLosDepartamentos: 'All departments', admCitTodosLosMunicipios: 'All municipalities',
+    admCitFechaInicial: 'Start date', admCitFechaFinal: 'End date', admCitNoHayCitas: 'No appointments match the search.',
+    admCitErrorEliminar: 'Could not delete the appointment.', admCitConfirmEliminar: 'Delete this appointment? This action cannot be undone.',
+    admCitErrorGuardar: 'Could not save the appointment.',
     admTipoComTituloModal: 'Commission Types — Catalog', admTipoComSubtituloModal: 'Commission types by business: Properties, Projects or Services.',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -3125,6 +3135,247 @@ $('#navAdminClientesBtn')?.addEventListener('click', () => {
 $('#adminClientesClose')?.addEventListener('click', cerrarAdminClientesModal);
 $('#adminClientesScrim')?.addEventListener('click', cerrarAdminClientesModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminClientesModal && !adminClientesModal.hidden) cerrarAdminClientesModal(); });
+
+/* ===== Citas (catálogo: consulta general) =====
+   Panel de consulta de "citas_propiedades" con filtros por Cliente,
+   Departamento, Municipio (resueltos vía el catálogo de Clientes, ya que
+   la cita solo guarda el nombre del cliente como texto) y rango de
+   fechas, con Modificar (reutiliza el modal de Agendar Cita) y Eliminar
+   por cada resultado. */
+function citPrimerDiaMesIso() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-01';
+}
+function citUltimoDiaMesIso() {
+  const d = new Date();
+  const ultimo = new Date(d.getFullYear(), d.getMonth() + 1, 0);
+  return ultimo.getFullYear() + '-' + String(ultimo.getMonth() + 1).padStart(2, '0') + '-' + String(ultimo.getDate()).padStart(2, '0');
+}
+
+function citClientePorNombre(nombre) {
+  if (!nombre) return null;
+  return clientesCatalogoFull.find((c) => (c.nombre || '').trim().toLowerCase() === nombre.trim().toLowerCase()) || null;
+}
+
+/* El catálogo liviano (clientesCatalogo, usado en el select de Propiedades)
+   solo trae id+nombre; aquí necesitamos también departamento/municipio,
+   así que se carga un catálogo completo aparte, también perezoso. */
+let clientesCatalogoFull = [];
+let clientesCatalogoFullCargado = false;
+async function cargarClientesCatalogoFull() {
+  try {
+    const { data: rows, error } = await supabaseClient.from('clientes').select('id, nombre, departamento, municipio').order('nombre', { ascending: true });
+    if (error) throw error;
+    clientesCatalogoFull = rows || [];
+  } catch (e) {
+    console.error('Error cargando el catálogo de clientes (completo):', e);
+    clientesCatalogoFull = [];
+  }
+  clientesCatalogoFullCargado = true;
+}
+
+function poblarCitFiltroClienteSel() {
+  const sel = $('#adminCitClienteSel');
+  if (!sel) return;
+  const actual = sel.value;
+  sel.innerHTML = '';
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = T[lang].admCitTodosLosClientes;
+  sel.appendChild(optTodos);
+  clientesCatalogoFull.forEach((c) => {
+    const opt = document.createElement('option');
+    opt.value = c.nombre; opt.textContent = c.nombre;
+    sel.appendChild(opt);
+  });
+  sel.value = actual && Array.from(sel.options).some((o) => o.value === actual) ? actual : '';
+}
+
+function poblarCitFiltroDeptoSel() {
+  const sel = $('#adminCitDeptoSel');
+  if (!sel) return;
+  const actual = sel.value;
+  sel.innerHTML = '';
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = T[lang].admCitTodosLosDepartamentos;
+  sel.appendChild(optTodos);
+  Object.keys(DEPARTAMENTOS_GT).sort().forEach((dep) => {
+    const opt = document.createElement('option');
+    opt.value = dep; opt.textContent = dep;
+    sel.appendChild(opt);
+  });
+  sel.value = actual && Array.from(sel.options).some((o) => o.value === actual) ? actual : '';
+}
+
+function poblarCitFiltroMunSel(depSeleccionado, munActual) {
+  const sel = $('#adminCitMunSel');
+  if (!sel) return;
+  sel.innerHTML = '';
+  const optTodos = document.createElement('option');
+  optTodos.value = ''; optTodos.textContent = T[lang].admCitTodosLosMunicipios;
+  sel.appendChild(optTodos);
+  (DEPARTAMENTOS_GT[depSeleccionado] || []).forEach((mun) => {
+    const opt = document.createElement('option');
+    opt.value = mun; opt.textContent = mun;
+    sel.appendChild(opt);
+  });
+  sel.value = munActual && (DEPARTAMENTOS_GT[depSeleccionado] || []).includes(munActual) ? munActual : '';
+}
+$('#adminCitDeptoSel')?.addEventListener('change', () => poblarCitFiltroMunSel($('#adminCitDeptoSel').value, ''));
+
+function citEtqLabel(etiqueta) {
+  const t = T[lang];
+  const map = { cliente: 'citaEtqCliente', muy_interesado: 'citaEtqMuyInteresado', interesado: 'citaEtqInteresado', poco_interesado: 'citaEtqPocoInteresado' };
+  return t[map[etiqueta]] || etiqueta || '—';
+}
+function citEstLabel(estado) {
+  const t = T[lang];
+  const map = { agendado: 'citaEstAgendado', efectuado: 'citaEstEfectuado', reagendado: 'citaEstReagendado', no_asistio: 'citaEstNoAsistio' };
+  return t[map[estado]] || estado || '—';
+}
+
+function citCrearTarjeta(row) {
+  const t = T[lang];
+  const card = el('div', 'proy-card cli-card');
+  const head = el('div', 'cli-head');
+  const ph = el('div', 'avatar ph');
+  ph.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg>';
+  head.appendChild(ph);
+  const info = el('div', 'cli-head-info');
+  info.append(el('div', 'cli-head-name', row.nombre_cliente || '—'));
+  info.append(el('div', 'cli-head-code', (row.fecha_cita_texto || row.fecha_cita || '—') + (row.hora_cita ? ' · ' + row.hora_cita : '')));
+  const etqCls = { cliente: 'cli-badge-activo', muy_interesado: 'cli-badge-activo', interesado: 'cli-badge-inactivo', poco_interesado: 'cli-badge-baja' }[row.etiqueta] || 'cli-badge-activo';
+  info.append(el('span', 'cli-head-badge ' + etqCls, citEtqLabel(row.etiqueta)));
+  head.append(info);
+  card.append(head);
+
+  const sec = el('div', 'cli-sec');
+  const grid = el('div', 'cli-grid');
+  grid.append(
+    labeledCell(t.citaTelefono, el('span', '', row.telefono_cliente || '—')),
+    labeledCell(t.citaCiudad, el('span', '', row.ciudad || '—')),
+    labeledCell(t.citaAsesor, el('span', '', row.vendedor_asignado || '—')),
+    labeledCell(t.citaEstado, el('span', '', citEstLabel(row.estado))),
+    labeledCell(t.citaUbicacion, el('span', '', row.ubicacion || '—'))
+  );
+  sec.append(grid);
+  card.append(sec);
+  if (row.accion) {
+    const accSec = el('div', 'cli-sec');
+    accSec.append(el('div', 'cli-sec-h', t.citaAccion));
+    accSec.append(el('p', '', row.accion));
+    card.append(accSec);
+  }
+
+  const actions = el('div', 'proy-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+  card.append(actions);
+
+  modBtn.addEventListener('click', () => {
+    cerrarAdminCitasModal();
+    openCitaModal({ ciudad: row.ciudad, ubicacion: row.ubicacion, vendedor: row.vendedor_asignado });
+    citaGuardadaId = row.id;
+    $('#cita-nombre').value = row.nombre_cliente || '';
+    $('#cita-tel').value = row.telefono_cliente || '';
+    $('#cita-fecha').value = row.fecha_cita || '';
+    actualizarCitaFechaDia();
+    poblarCitaHoraSelect();
+    $('#cita-hora').value = row.hora_cita || '07:00';
+    $('#cita-ciudad').value = row.ciudad || '';
+    $('#cita-ubicacion').value = row.ubicacion || '';
+    $('#cita-accion').value = row.accion || '';
+    $('#cita-estado').value = row.estado || 'agendado';
+    $('#cita-etiqueta').value = row.etiqueta || 'cliente';
+    actualizarCitaEtiquetaColor();
+    $('#citaModBtn').hidden = false;
+    $('#citaSaveBtn').hidden = true;
+    const applyVendedor = () => { if (row.vendedor_asignado) $('#cita-vendedor').value = row.vendedor_asignado; };
+    if (vendedoresCatalogoCargado) applyVendedor(); else cargarVendedoresCatalogo().then(applyVendedor);
+  });
+  delBtn.addEventListener('click', async () => {
+    if (!confirm(t.admCitConfirmEliminar)) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('citas_propiedades').delete().eq('id', row.id);
+      if (error) throw error;
+      card.remove();
+      if (!$('#adminCitasList').children.length) pintarCitCardsVacio();
+    } catch (e) {
+      console.error('Error eliminando la cita:', e);
+      alert(t.admCitErrorEliminar);
+      delBtn.disabled = false;
+    }
+  });
+
+  return card;
+}
+
+function pintarCitCardsVacio() {
+  const list = $('#adminCitasList');
+  if (!list) return;
+  list.innerHTML = '';
+  list.appendChild(el('p', 'proy-empty', T[lang].admCitNoHayCitas));
+}
+
+async function buscarCitas() {
+  const list = $('#adminCitasList');
+  if (!list) return;
+  list.innerHTML = '<p class="proy-empty">' + T[lang].cargando + '</p>';
+  const clienteVal = $('#adminCitClienteSel')?.value || '';
+  const deptoVal = $('#adminCitDeptoSel')?.value || '';
+  const munVal = $('#adminCitMunSel')?.value || '';
+  const desdeVal = $('#adminCitFechaDesde')?.value || citPrimerDiaMesIso();
+  const hastaVal = $('#adminCitFechaHasta')?.value || citUltimoDiaMesIso();
+  try {
+    let q = supabaseClient.from('citas_propiedades').select('*').order('fecha_cita', { ascending: true }).order('hora_cita', { ascending: true });
+    if (desdeVal) q = q.gte('fecha_cita', desdeVal);
+    if (hastaVal) q = q.lte('fecha_cita', hastaVal);
+    if (clienteVal) q = q.eq('nombre_cliente', clienteVal);
+    const { data: rows, error } = await q;
+    if (error) throw error;
+    let filtrados = rows || [];
+    if (deptoVal || munVal) {
+      filtrados = filtrados.filter((row) => {
+        const cli = citClientePorNombre(row.nombre_cliente);
+        if (!cli) return false;
+        if (deptoVal && (cli.departamento || '') !== deptoVal) return false;
+        if (munVal && (cli.municipio || '') !== munVal) return false;
+        return true;
+      });
+    }
+    list.innerHTML = '';
+    if (!filtrados.length) { pintarCitCardsVacio(); return; }
+    filtrados.forEach((row) => list.appendChild(citCrearTarjeta(row)));
+  } catch (e) {
+    console.error('Error buscando citas:', e);
+    list.innerHTML = '<p class="proy-empty">' + T[lang].admCitErrorGuardar + '</p>';
+  }
+}
+$('#adminCitBuscarBtn')?.addEventListener('click', buscarCitas);
+
+const adminCitasModal = $('#adminCitasModal');
+async function abrirAdminCitasModal() {
+  if (!adminCitasModal) return;
+  adminCitasModal.hidden = false;
+  $('#adminCitFechaDesde').value = citPrimerDiaMesIso();
+  $('#adminCitFechaHasta').value = citUltimoDiaMesIso();
+  $('#adminCitDeptoSel').value = '';
+  poblarCitFiltroDeptoSel();
+  poblarCitFiltroMunSel('', '');
+  if (!clientesCatalogoFullCargado) { clientesCatalogoFullCargado = true; await cargarClientesCatalogoFull(); }
+  poblarCitFiltroClienteSel();
+  buscarCitas();
+}
+function cerrarAdminCitasModal() { if (adminCitasModal) adminCitasModal.hidden = true; }
+$('#navAdminCitasBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminCitasModal();
+});
+$('#adminCitasClose')?.addEventListener('click', cerrarAdminCitasModal);
+$('#adminCitasScrim')?.addEventListener('click', cerrarAdminCitasModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminCitasModal && !adminCitasModal.hidden) cerrarAdminCitasModal(); });
 
 /* ===== Agenda de citas (catálogo) =====
    Calendario de solo lectura sobre "citas_propiedades" con tres vistas

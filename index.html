@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023i">
+<link rel="stylesheet" href="styles.css?v=20261023j">
 </head>
 <body>
 
@@ -44,7 +44,9 @@
               <div class="nav-admin-group-items" hidden>
                 <button type="button" id="navAdminIngresoCiudadesBtn" data-i18n="adminMenuIngresoCiudades"></button>
                 <button type="button" id="navAdminIngresoPropiedadesBtn" data-i18n="adminMenuIngresoPropiedades"></button>
+                <div class="nav-admin-sep" role="separator"></div>
                 <button type="button" id="navAdminClientesBtn" data-i18n="adminMenuClientes"></button>
+                <button type="button" id="navAdminCitasBtn" data-i18n="adminMenuCitas"></button>
                 <button type="button" id="navAdminAgendaCitasBtn" data-i18n="adminMenuAgendaCitas"></button>
                 <div class="nav-admin-sep" role="separator"></div>
                 <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
@@ -1865,6 +1867,38 @@
   </div>
 </div>
 
+<div class="modal" id="adminCitasModal" hidden>
+  <button class="scrim" type="button" id="adminCitasScrim" data-i18n-label="close"></button>
+  <div class="pcard pcard-wide" id="adminCitasCard" role="dialog" aria-modal="true" aria-labelledby="adminCitasTitle">
+    <button class="mx" type="button" id="adminCitasClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminCitasTitle" data-i18n="admCitTituloModal"></h2><p class="ph-sub" data-i18n="admCitSubtituloModal"></p></div>
+    <div class="q-buscar-fields cit-filtros">
+      <div class="fld">
+        <label for="adminCitClienteSel" data-i18n="citaNombreCliente"></label>
+        <select id="adminCitClienteSel"><option value="" data-i18n="admCitTodosLosClientes"></option></select>
+      </div>
+      <div class="fld">
+        <label for="adminCitDeptoSel" data-i18n="admDepartamento"></label>
+        <select id="adminCitDeptoSel"><option value="" data-i18n="admCitTodosLosDepartamentos"></option></select>
+      </div>
+      <div class="fld">
+        <label for="adminCitMunSel" data-i18n="admMunicipio"></label>
+        <select id="adminCitMunSel"><option value="" data-i18n="admCitTodosLosMunicipios"></option></select>
+      </div>
+      <div class="fld">
+        <label for="adminCitFechaDesde" data-i18n="admCitFechaInicial"></label>
+        <input type="date" id="adminCitFechaDesde">
+      </div>
+      <div class="fld">
+        <label for="adminCitFechaHasta" data-i18n="admCitFechaFinal"></label>
+        <input type="date" id="adminCitFechaHasta">
+      </div>
+      <button class="btn btn-dark btn-sm" type="button" id="adminCitBuscarBtn" data-i18n="btnMostrar"></button>
+    </div>
+    <div id="adminCitasList" class="proy-list"></div>
+  </div>
+</div>
+
 <div class="modal" id="adminAgendaModal" hidden>
   <button class="scrim" type="button" id="adminAgendaScrim" data-i18n-label="close"></button>
   <div class="pcard pcard-wide" id="adminAgendaCard" role="dialog" aria-modal="true" aria-labelledby="adminAgendaTitle">
@@ -2033,6 +2067,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0090"></script>
+<script src="script.js?v=20261023-0091"></script>
 </body>
 </html>
