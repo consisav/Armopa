@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023q">
+<link rel="stylesheet" href="styles.css?v=20261023r">
 </head>
 <body>
 
@@ -1119,13 +1119,21 @@
                 <button class="btn btn-gold" type="button" id="pView" data-i18n="view"></button>
                 <input id="p-files" class="sr" type="file" accept="image/*" multiple>
                 <label class="btn btn-gold" for="p-files" data-i18n="upload"></label>
+                <input id="p-videofiles" class="sr" type="file" accept="video/*" multiple>
+                <label class="btn btn-gold" for="p-videofiles" data-i18n="uploadVideos"></label>
               </div>
               <p class="hint" data-i18n="uploadHint"></p>
+              <p class="hint" data-i18n="uploadVideosHint"></p>
               <button class="grid-toggle" type="button" id="pGridToggle" aria-expanded="false" hidden>
                 <span id="pGridToggleLabel"></span>
                 <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
               </button>
               <div class="tg" id="pGrid" style="margin-top:16px" hidden></div>
+              <button class="grid-toggle" type="button" id="pVideoGridToggle" aria-expanded="false" hidden>
+                <span id="pVideoGridToggleLabel"></span>
+                <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+              </button>
+              <div class="tg" id="pVideoGrid" style="margin-top:16px" hidden></div>
             </div>
 
             <div class="loc-admin" id="pLocAdminBlock" hidden>
@@ -2104,6 +2112,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0098"></script>
+<script src="script.js?v=20261023-0099"></script>
 </body>
 </html>

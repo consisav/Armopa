@@ -283,6 +283,7 @@ const T = {
     addLoc: 'Agregar ubicación', locDefault: 'Ubicación', emptyH: 'Aún no hay ubicaciones', emptyP: 'Agrega la primera para subir sus imágenes y su dirección.',
     nameL: 'Nombre de la ubicación', zoom: 'Ver foto del vendedor en tamaño original', zoomToggle: 'Alternar entre ajustar a la pantalla y tamaño real', opL: 'Tipo de operación', opRent: 'Renta', opSale: 'Venta', opBoth: 'Renta o venta', rentL: 'Valor de renta', saleL: 'Valor de la propiedad (venta)', rentPh: 'Ej. Q 4,500 al mes', salePh: 'Ej. Q 850,000', opHint: 'Elige el tipo de operación para indicar los valores.', viewOpRent: 'En renta', viewOpSale: 'En venta', viewOpBoth: 'En renta o venta', rentView: 'Renta', saleView: 'Precio de venta', sellerH: 'Vendedor', sellerFotoHint: 'La fotografía se completa automáticamente al elegir el vendedor de la lista.', sellerSuperAdminHint: 'Solo el super administrador puede modificar el vendedor de esta ubicación.', sellerName: 'Nombre del vendedor', sellerWa: 'WhatsApp del vendedor', waHint: 'Incluye el código de país, por ejemplo +502. Si escribes 8 dígitos se agrega el 502 automáticamente.', sellerLabel: 'Contacto del vendedor', waBtn: 'Contactar por WhatsApp', waMsg: 'Hola, me interesa la propiedad: ', descL: 'Descripción de la propiedad', descPh: 'Características, habitaciones, amenidades, precio y cualquier detalle importante…', descH: 'Descripción', addrL: 'Dirección o enlace de Google Maps', photo: 'Imagen ', photosH: 'Imágenes de la ubicación', upload: 'Subir imágenes',
     uploadHint: 'Puedes seleccionar varias imágenes (JPG o PNG).', remove: 'Quitar imagen', uploaded: 'Imágenes agregadas.', saved: 'Cambios guardados.',
+    uploadVideos: 'Subir videos', uploadVideosHint: 'Puedes seleccionar varios videos (MP4 o similar).', removeVideo: 'Quitar video', videosUploaded: 'Videos agregados.', videosUploadErr: 'No se pudo subir uno o más videos.', noVideos: 'Esta ubicación aún no tiene videos.', verVideosSubidos: 'Ver videos subidos', ocultarVideos: 'Ocultar videos',
     del: 'Eliminar ubicación', delSure: '¿Confirmar eliminación?', view: 'Ver fotografías', edit: 'Volver a editar', mapOpen: 'Ver en Google Maps',
     prevImg: 'Imagen anterior', nextImg: 'Imagen siguiente', noImgs: 'Esta ubicación aún no tiene imágenes.',
     storeNote: 'Los cambios se guardan automáticamente en este navegador. Para mostrarlos a todos los visitantes, la página debe conectarse a un servidor o base de datos.',
@@ -643,6 +644,7 @@ const T = {
     addLoc: 'Add location', locDefault: 'Location', emptyH: 'No locations yet', emptyP: 'Add the first one to upload its images and address.',
     nameL: 'Location name', zoom: 'View seller photo at original size', zoomToggle: 'Toggle between fit to screen and actual size', opL: 'Type of listing', opRent: 'Rent', opSale: 'Sale', opBoth: 'Rent or sale', rentL: 'Rent value', saleL: 'Property value (sale)', rentPh: 'e.g. Q 4,500 per month', salePh: 'e.g. Q 850,000', opHint: 'Choose the listing type to enter the values.', viewOpRent: 'For rent', viewOpSale: 'For sale', viewOpBoth: 'For rent or sale', rentView: 'Rent', saleView: 'Sale price', sellerH: 'Seller', sellerFotoHint: 'The photo is filled in automatically when you choose the seller from the list.', sellerSuperAdminHint: 'Only the super administrator can change the seller for this location.', sellerName: 'Seller name', sellerWa: 'Seller WhatsApp', waHint: 'Include the country code, for example +502. If you type 8 digits, 502 is added automatically.', sellerLabel: 'Seller contact', waBtn: 'Contact on WhatsApp', waMsg: 'Hello, I am interested in the property: ', descL: 'Property description', descPh: 'Features, rooms, amenities, price and any important details…', descH: 'Description', addrL: 'Address or Google Maps link', photo: 'Image ', photosH: 'Location images', upload: 'Upload images',
     uploadHint: 'You can select several images (JPG or PNG).', remove: 'Remove image', uploaded: 'Images added.', saved: 'Changes saved.',
+    uploadVideos: 'Upload videos', uploadVideosHint: 'You can select several videos (MP4 or similar).', removeVideo: 'Remove video', videosUploaded: 'Videos added.', videosUploadErr: 'Could not upload one or more videos.', noVideos: 'This location does not have videos yet.', verVideosSubidos: 'View uploaded videos', ocultarVideos: 'Hide videos',
     del: 'Delete location', delSure: 'Confirm deletion?', view: 'Preview', edit: 'Back to editing', mapOpen: 'View on Google Maps',
     prevImg: 'Previous image', nextImg: 'Next image', noImgs: 'This location has no images yet.',
     storeNote: 'Changes are saved automatically in this browser. To show them to every visitor, the site must be connected to a server or database.',
@@ -7732,6 +7734,7 @@ let panelView = 'cities'; // 'cities' = viendo ciudades | 'locs' = viendo ubicac
 let mode = 'edit', sel = -1, vi = 0, confirmDel = false;
 let heroIdx = 0;         // índice de la foto grande mostrada en el panel de ubicación
 let gridOpen = false;    // si la galería de miniaturas (con opción de eliminar) está desplegada
+let videoGridOpen = false; // si la galería de videos subidos está desplegada
 let citySearch = '';      // texto de búsqueda de ciudad en el modal
 let descOpen = true;      // si el segmento "Descripción Propiedad" está expandido
 let locFilterIdx = null;  // índices (dentro de la ciudad activa) que coinciden con la última búsqueda, o null = mostrar todas
@@ -8029,7 +8032,7 @@ function renderLocTabs() {
   add.addEventListener('click', () => {
     if (!estaConectado()) return;
     const l = list();
-    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], sPhoto: '', sName: '', sWa: '', estado: 'activa', estadoFecha: '', estadoUsuario: '', vendedorAsignado: '', comisionPorcentaje: '' });
+    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], videos: [], sPhoto: '', sName: '', sWa: '', estado: 'activa', estadoFecha: '', estadoUsuario: '', vendedorAsignado: '', comisionPorcentaje: '' });
     sel = l.length - 1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; descOpen = true;
     note(persist() ? '' : t.storeErr);
     render();
@@ -8155,6 +8158,32 @@ function renderEdit() {
     });
     wrap.append(b, x);
     grid.appendChild(wrap);
+  });
+
+  const videoGridToggle = $('#pVideoGridToggle');
+  const videos = c.videos || [];
+  const hasVideos = videos.length > 0;
+  videoGridToggle.hidden = !hasVideos;
+  videoGridToggle.setAttribute('aria-expanded', String(videoGridOpen));
+  $('#pVideoGridToggleLabel').textContent = (videoGridOpen ? t.ocultarVideos : t.verVideosSubidos) + (hasVideos ? ' (' + videos.length + ')' : '');
+  const videoGrid = $('#pVideoGrid');
+  videoGrid.hidden = !hasVideos || !videoGridOpen;
+  videoGrid.innerHTML = '';
+  videos.forEach((src, i) => {
+    const wrap = el('div', 'th th-video');
+    const vid = document.createElement('video');
+    vid.src = src; vid.controls = true; vid.preload = 'metadata';
+    wrap.appendChild(vid);
+    const x = el('button', 'th-x', '×');
+    x.type = 'button';
+    x.setAttribute('aria-label', t.removeVideo);
+    x.addEventListener('click', () => {
+      c.videos.splice(i, 1);
+      note(persist() ? t.saved : t.storeErr);
+      renderEdit();
+    });
+    wrap.appendChild(x);
+    videoGrid.appendChild(wrap);
   });
 }
 
@@ -8759,6 +8788,10 @@ $('#pGridToggle').addEventListener('click', () => {
   gridOpen = !gridOpen;
   renderEdit();
 });
+$('#pVideoGridToggle').addEventListener('click', () => {
+  videoGridOpen = !videoGridOpen;
+  renderEdit();
+});
 $('#p-addr').addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
   c.addr = $('#p-addr').value;
@@ -8856,6 +8889,21 @@ $('#p-files').addEventListener('change', async (e) => {
   if (!urls.length) return;
   c.imgs = c.imgs.concat(urls);
   note(persist() ? T[lang].uploaded : T[lang].storeErr);
+  renderEdit();
+});
+$('#p-videofiles').addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files || []);
+  e.target.value = '';
+  const c = list()[sel]; if (!c) return;
+  if (!c.videos) c.videos = [];
+  const urls = [];
+  let huboError = false;
+  for (const f of files) {
+    try { urls.push(await uploadPropVideoFile(f)); } catch (err) { huboError = true; }
+  }
+  if (urls.length) c.videos = c.videos.concat(urls);
+  note(persist() && !huboError ? T[lang].videosUploaded : T[lang].videosUploadErr);
+  videoGridOpen = true;
   renderEdit();
 });
 
@@ -9679,6 +9727,18 @@ function uploadPropFile(file, max) {
   });
 }
 
+/* Sube un video de propiedad tal cual (sin recomprimir) al mismo bucket de
+   Storage que las fotos, en una subcarpeta "videos/" para mantenerlos
+   separados. Devuelve la URL pública para guardarla en propiedades.videos. */
+async function uploadPropVideoFile(file) {
+  const ext = (file.name && file.name.includes('.')) ? file.name.split('.').pop().toLowerCase() : 'mp4';
+  const path = 'videos/' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.' + ext;
+  const { error } = await supabaseClient.storage.from(PROPS_BUCKET).upload(path, file, { contentType: file.type || 'video/mp4' });
+  if (error) throw error;
+  const pub = supabaseClient.storage.from(PROPS_BUCKET).getPublicUrl(path);
+  return pub.data.publicUrl;
+}
+
 /* ===== Precalificación bancaria: expediente + documentos PDF ===== */
 const DOCS_BUCKET = 'expedientes'; // bucket de Supabase Storage — debe crearse como PRIVADO
 let pqExpedienteId = null;
@@ -9930,6 +9990,7 @@ function toSupaRow(cityName, l) {
     valor_renta: l.pRent || '',
     valor_venta: l.pSale || '',
     fotos: l.imgs || [],
+    videos: l.videos || [],
     vendedor_nombre: l.sName || '',
     vendedor_whatsapp: l.sWa || '',
     vendedor_foto: l.sPhoto || '',
@@ -9993,6 +10054,7 @@ async function cargarPropiedadesArmopa() {
         pRent: row.valor_renta || '',
         pSale: row.valor_venta || '',
         imgs: row.fotos || [],
+        videos: row.videos || [],
         sPhoto: row.vendedor_foto || '',
         sName: row.vendedor_nombre || '',
         sWa: row.vendedor_whatsapp || '',
