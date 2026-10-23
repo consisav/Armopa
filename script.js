@@ -463,6 +463,7 @@ const T = {
     admResultadosBusqueda: 'Resultados de tu búsqueda (', admVerTodasUbicaciones: 'Ver todas las ubicaciones', admNoSeEncontraronUbicaciones: 'No se encontraron ubicaciones para "',
     admSeleccionaOAgregaUbicacion: 'Selecciona o agrega una ubicación primero.', admUbicacionGuardadaExito: 'Ubicación guardada con éxito.', admUbicacionActualizadaExito: 'Ubicación actualizada con éxito.', admErrorGuardarUbicacion: 'Error al guardar la ubicación.',
     admGestionInterna: 'Gestión interna', admFechaCambioEstadoLbl: 'Fecha cambio de estado: ', admUsuarioCambiaEstadoLbl: 'Usuario que cambia el estado: ',
+    admClienteAsignado: 'Cliente', admSinClienteAsignado: 'Sin cliente asignado',
     admTipoPropiedadLbl: 'Tipo de propiedad', admSectorLbl: 'Sector', admZonaLbl: 'Zona', admValorComisionLbl: 'Valor de comisión',
     ubicEstLabels: { activa: 'Activa', arrendada: 'Arrendada', vendida: 'Vendida', suspendida: 'Suspendida', baja: 'Baja' },
     solEstLabels: { solicitado: 'Solicitado', presupuesto_enviado: 'Enviado presupuesto', aprobado: 'Aprobado', en_proceso: 'En proceso', ejecutado: 'Ejecutado', anulado: 'Anulado' },
@@ -799,6 +800,7 @@ const T = {
     admResultadosBusqueda: 'Your search results (', admVerTodasUbicaciones: 'View all locations', admNoSeEncontraronUbicaciones: 'No locations found for "',
     admSeleccionaOAgregaUbicacion: 'Select or add a location first.', admUbicacionGuardadaExito: 'Location saved successfully.', admUbicacionActualizadaExito: 'Location updated successfully.', admErrorGuardarUbicacion: 'Error saving the location.',
     admGestionInterna: 'Internal management', admFechaCambioEstadoLbl: 'Status change date: ', admUsuarioCambiaEstadoLbl: 'User who changed the status: ',
+    admClienteAsignado: 'Client', admSinClienteAsignado: 'No client assigned',
     admTipoPropiedadLbl: 'Property type', admSectorLbl: 'Sector', admZonaLbl: 'Zone', admValorComisionLbl: 'Commission value',
     ubicEstLabels: { activa: 'Active', arrendada: 'Leased', vendida: 'Sold', suspendida: 'Suspended', baja: 'Deactivated' },
     solEstLabels: { solicitado: 'Requested', presupuesto_enviado: 'Quote sent', aprobado: 'Approved', en_proceso: 'In progress', ejecutado: 'Completed', anulado: 'Canceled' },
@@ -5081,6 +5083,52 @@ async function cargarVendedoresCatalogo() {
   }
 }
 
+/* Catálogo de clientes (tabla "clientes") para que el campo "Cliente" de
+   cada ubicación (sección "Gestión interna" del formulario de edición de
+   propiedad) sea una lista real de los clientes ya registrados en
+   Administración > Clientes, en vez de texto libre. Se carga de forma
+   perezosa, la primera vez que se abre una ubicación en modo edición. */
+let clientesCatalogo = [];
+let clientesCatalogoCargado = false;
+async function cargarClientesCatalogo() {
+  try {
+    const { data: rows, error } = await supabaseClient.from('clientes').select('id, nombre').order('nombre', { ascending: true });
+    if (error) throw error;
+    clientesCatalogo = rows || [];
+  } catch (e) {
+    console.error('Error cargando el catálogo de clientes:', e);
+    clientesCatalogo = [];
+  }
+  clientesCatalogoCargado = true;
+  if (typeof render === 'function' && pModal && !pModal.hidden) render();
+}
+
+/* Arma la lista desplegable "Cliente" (select) a partir del catálogo de
+   Clientes, con "Sin cliente asignado" como primera opción y por
+   defecto. Si el nombre actual no está en el catálogo (texto libre
+   previo, o un cliente ya eliminado), se agrega como una opción aparte
+   para no perderlo. */
+function poblarPClienteSelect(nombreActual) {
+  const sel = $('#p-cliente-asignado');
+  if (!sel) return;
+  const t = T[lang];
+  sel.innerHTML = '';
+  const optVacio = document.createElement('option');
+  optVacio.value = ''; optVacio.textContent = t.admSinClienteAsignado;
+  sel.appendChild(optVacio);
+  clientesCatalogo.forEach((c) => {
+    const opt = document.createElement('option');
+    opt.value = c.nombre; opt.textContent = c.nombre;
+    sel.appendChild(opt);
+  });
+  if (nombreActual && !clientesCatalogo.some((c) => (c.nombre || '').trim() === nombreActual.trim())) {
+    const opt = document.createElement('option');
+    opt.value = nombreActual; opt.textContent = nombreActual;
+    sel.appendChild(opt);
+  }
+  sel.value = nombreActual || '';
+}
+
 /* Arma la lista desplegable de "Nombre del vendedor" a partir del
    catálogo de Vendedores y selecciona el nombre actual de la ubicación.
    Si ese nombre no está en el catálogo (texto libre que se haya escrito
@@ -7380,6 +7428,8 @@ function renderEdit() {
       badge.style.color = info.fg;
       fillDatalist($('#pVendedorList'), vendedoresConocidos());
       $('#p-vendedor-asignado').value = c.vendedorAsignado || '';
+      if (!clientesCatalogoCargado) { clientesCatalogoCargado = true; cargarClientesCatalogo(); }
+      poblarPClienteSelect(c.clienteAsignado || '');
       $('#p-comision').value = c.comisionPorcentaje || '';
       $('#pComisionValor').textContent = formatQ(comisionValorCalc(c));
       $('#pEstadoFecha').textContent = c.estadoFecha ? formatQBuscarRegFecha(c.estadoFecha) : '—';
@@ -8096,6 +8146,11 @@ $('#p-estado')?.addEventListener('change', () => {
 $('#p-vendedor-asignado')?.addEventListener('input', () => {
   const c = list()[sel]; if (!c) return;
   c.vendedorAsignado = $('#p-vendedor-asignado').value;
+  note(persist() ? '' : T[lang].storeErr);
+});
+$('#p-cliente-asignado')?.addEventListener('change', () => {
+  const c = list()[sel]; if (!c) return;
+  c.clienteAsignado = $('#p-cliente-asignado').value;
   note(persist() ? '' : T[lang].storeErr);
 });
 $('#p-comision')?.addEventListener('input', () => {
@@ -9213,6 +9268,7 @@ function toSupaRow(cityName, l) {
     estado_ubicacion_fecha: l.estadoFecha || null,
     estado_ubicacion_usuario: l.estadoUsuario || null,
     vendedor_asignado: l.vendedorAsignado || null,
+    cliente_asignado: l.clienteAsignado || null,
     comision_porcentaje: l.comisionPorcentaje || null,
     activo: true
   };
@@ -9275,6 +9331,7 @@ async function cargarPropiedadesArmopa() {
         estadoFecha: row.estado_ubicacion_fecha || '',
         estadoUsuario: row.estado_ubicacion_usuario || '',
         vendedorAsignado: row.vendedor_asignado || '',
+        clienteAsignado: row.cliente_asignado || '',
         comisionPorcentaje: row.comision_porcentaje != null ? String(row.comision_porcentaje) : ''
       });
     });
