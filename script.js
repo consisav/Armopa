@@ -284,6 +284,7 @@ const T = {
     nameL: 'Nombre de la ubicación', zoom: 'Ver foto del vendedor en tamaño original', zoomToggle: 'Alternar entre ajustar a la pantalla y tamaño real', opL: 'Tipo de operación', opRent: 'Renta', opSale: 'Venta', opBoth: 'Renta o venta', rentL: 'Valor de renta', saleL: 'Valor de la propiedad (venta)', rentPh: 'Ej. Q 4,500 al mes', salePh: 'Ej. Q 850,000', opHint: 'Elige el tipo de operación para indicar los valores.', viewOpRent: 'En renta', viewOpSale: 'En venta', viewOpBoth: 'En renta o venta', rentView: 'Renta', saleView: 'Precio de venta', sellerH: 'Vendedor', sellerFotoHint: 'La fotografía se completa automáticamente al elegir el vendedor de la lista.', sellerSuperAdminHint: 'Solo el super administrador puede modificar el vendedor de esta ubicación.', sellerName: 'Nombre del vendedor', sellerWa: 'WhatsApp del vendedor', waHint: 'Incluye el código de país, por ejemplo +502. Si escribes 8 dígitos se agrega el 502 automáticamente.', sellerLabel: 'Contacto del vendedor', waBtn: 'Contactar por WhatsApp', waMsg: 'Hola, me interesa la propiedad: ', descL: 'Descripción de la propiedad', descPh: 'Características, habitaciones, amenidades, precio y cualquier detalle importante…', descH: 'Descripción', addrL: 'Dirección o enlace de Google Maps', photo: 'Imagen ', photosH: 'Imágenes de la ubicación', upload: 'Subir imágenes',
     uploadHint: 'Puedes seleccionar varias imágenes (JPG o PNG).', remove: 'Quitar imagen', uploaded: 'Imágenes agregadas.', saved: 'Cambios guardados.',
     uploadVideos: 'Subir videos', uploadVideosHint: 'Puedes seleccionar varios videos (MP4 o similar).', removeVideo: 'Quitar video', videosUploaded: 'Videos agregados.', videosUploadErr: 'No se pudo subir uno o más videos.', noVideos: 'Esta ubicación aún no tiene videos.', verVideosSubidos: 'Ver videos subidos', ocultarVideos: 'Ocultar videos',
+    verVideosBtn: '🎬 Ver videos',
     del: 'Eliminar ubicación', delSure: '¿Confirmar eliminación?', view: 'Ver fotografías', edit: 'Volver a editar', mapOpen: 'Ver en Google Maps',
     prevImg: 'Imagen anterior', nextImg: 'Imagen siguiente', noImgs: 'Esta ubicación aún no tiene imágenes.',
     storeNote: 'Los cambios se guardan automáticamente en este navegador. Para mostrarlos a todos los visitantes, la página debe conectarse a un servidor o base de datos.',
@@ -645,6 +646,7 @@ const T = {
     nameL: 'Location name', zoom: 'View seller photo at original size', zoomToggle: 'Toggle between fit to screen and actual size', opL: 'Type of listing', opRent: 'Rent', opSale: 'Sale', opBoth: 'Rent or sale', rentL: 'Rent value', saleL: 'Property value (sale)', rentPh: 'e.g. Q 4,500 per month', salePh: 'e.g. Q 850,000', opHint: 'Choose the listing type to enter the values.', viewOpRent: 'For rent', viewOpSale: 'For sale', viewOpBoth: 'For rent or sale', rentView: 'Rent', saleView: 'Sale price', sellerH: 'Seller', sellerFotoHint: 'The photo is filled in automatically when you choose the seller from the list.', sellerSuperAdminHint: 'Only the super administrator can change the seller for this location.', sellerName: 'Seller name', sellerWa: 'Seller WhatsApp', waHint: 'Include the country code, for example +502. If you type 8 digits, 502 is added automatically.', sellerLabel: 'Seller contact', waBtn: 'Contact on WhatsApp', waMsg: 'Hello, I am interested in the property: ', descL: 'Property description', descPh: 'Features, rooms, amenities, price and any important details…', descH: 'Description', addrL: 'Address or Google Maps link', photo: 'Image ', photosH: 'Location images', upload: 'Upload images',
     uploadHint: 'You can select several images (JPG or PNG).', remove: 'Remove image', uploaded: 'Images added.', saved: 'Changes saved.',
     uploadVideos: 'Upload videos', uploadVideosHint: 'You can select several videos (MP4 or similar).', removeVideo: 'Remove video', videosUploaded: 'Videos added.', videosUploadErr: 'Could not upload one or more videos.', noVideos: 'This location does not have videos yet.', verVideosSubidos: 'View uploaded videos', ocultarVideos: 'Hide videos',
+    verVideosBtn: '🎬 View videos',
     del: 'Delete location', delSure: 'Confirm deletion?', view: 'Preview', edit: 'Back to editing', mapOpen: 'View on Google Maps',
     prevImg: 'Previous image', nextImg: 'Next image', noImgs: 'This location has no images yet.',
     storeNote: 'Changes are saved automatically in this browser. To show them to every visitor, the site must be connected to a server or database.',
@@ -2212,6 +2214,8 @@ function rotVisualOcultarDetalle() {
   if (s) s.hidden = true;
   const c = $('#rotVisualAgendarCitaBtn');
   if (c) c.hidden = true;
+  const vb = $('#rotVisualVerVideosBtn');
+  if (vb) vb.hidden = true;
 }
 
 /* Pinta, debajo de las fotografías de Rotación Visual, el detalle completo
@@ -2268,6 +2272,10 @@ function rotVisualPintarDetalle() {
 
   const citaBtn = $('#rotVisualAgendarCitaBtn');
   if (citaBtn) citaBtn.hidden = false;
+
+  const videos = Array.isArray(r.videos) ? r.videos : [];
+  const videosBtn = $('#rotVisualVerVideosBtn');
+  if (videosBtn) { videosBtn.hidden = videos.length === 0; videosBtn.onclick = videos.length ? () => abrirVerVideosModal(videos) : null; }
 }
 
 function rotVisualAplicarFiltro() {
@@ -2370,7 +2378,7 @@ async function abrirRotVisualModal(ciudadInicial) {
   rotVisualCiudadSel = '';
   rotVisualTipoSel = '';
   try {
-    const { data: rows, error } = await supabaseClient.from('propiedades').select('local_id,nombre,fotos,ciudad,tipo_propiedad,tipo_operacion,valor_renta,valor_venta,direccion,descripcion,vendedor_nombre,vendedor_whatsapp,vendedor_foto').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
+    const { data: rows, error } = await supabaseClient.from('propiedades').select('local_id,nombre,fotos,videos,ciudad,tipo_propiedad,tipo_operacion,valor_renta,valor_venta,direccion,descripcion,vendedor_nombre,vendedor_whatsapp,vendedor_foto').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
     if (error) throw error;
     rotVisualAllRows = rows || [];
     if (ciudadInicial && rotVisualAllRows.some((r) => r.ciudad === ciudadInicial)) rotVisualCiudadSel = ciudadInicial;
@@ -6935,6 +6943,34 @@ $('#rotVisualAgendarCitaBtn')?.addEventListener('click', () => {
   cerrarRotVisualModal();
   openCitaModal(prefill);
 });
+
+/* "Ver videos" dentro de Rotación Visual: solo se muestra cuando la
+   propiedad al frente tiene videos cargados (propiedades.videos); abre un
+   modal simple con un reproductor <video> por cada uno. */
+const verVideosModal = $('#verVideosModal');
+function abrirVerVideosModal(videos) {
+  if (!verVideosModal) return;
+  const list = $('#verVideosList');
+  if (list) {
+    list.innerHTML = '';
+    videos.forEach((src) => {
+      const vid = document.createElement('video');
+      vid.src = src; vid.controls = true; vid.preload = 'metadata';
+      vid.className = 'vv-video';
+      list.appendChild(vid);
+    });
+  }
+  verVideosModal.hidden = false;
+}
+function cerrarVerVideosModal() {
+  if (!verVideosModal) return;
+  verVideosModal.hidden = true;
+  const list = $('#verVideosList');
+  if (list) list.querySelectorAll('video').forEach((v) => v.pause());
+}
+$('#verVideosClose')?.addEventListener('click', cerrarVerVideosModal);
+$('#verVideosScrim')?.addEventListener('click', cerrarVerVideosModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && verVideosModal && !verVideosModal.hidden) cerrarVerVideosModal(); });
 
 /* Convierte el valor de un <input type="date"> (AAAA-MM-DD) al formato
    "Nombre del día DD-MM-AAAA" para guardarlo tal como se mostrará al

@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023r">
+<link rel="stylesheet" href="styles.css?v=20261023s">
 </head>
 <body>
 
@@ -1795,6 +1795,7 @@
         <span class="rotv-op rotv-op-top" id="rotVisualDetOp" hidden></span>
         <p class="car-hint rotv-hint" data-i18n="rotVisualHint"></p>
         <button class="btn btn-gold btn-sm rotv-cita-topbtn" type="button" id="rotVisualAgendarCitaBtn" data-i18n-html="citaBtnHtml" hidden></button>
+        <button class="btn btn-line-dark btn-sm rotv-cita-topbtn" type="button" id="rotVisualVerVideosBtn" data-i18n="verVideosBtn" hidden></button>
       </div>
       <button type="button" id="rotVisualVolverBtn" class="btn btn-line btn-sm rotv-volver" data-i18n="rotVisualVolver" hidden></button>
       <button type="button" id="rotVisualVolverCiudadesBtn" class="btn btn-line btn-sm rotv-volver" data-i18n="rotVisualVolverCiudades"></button>
@@ -1818,6 +1819,15 @@
       <div class="rotv-sinfo"><p class="rotv-slabel" data-i18n="rotVisualContactoVendedor"></p><p class="rotv-sname" id="rotVisualDetSName"></p><p class="rotv-snum" id="rotVisualDetSNum"></p></div>
       <a class="btn btn-wa" id="rotVisualDetSWa" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="rotVisualWa"></span></a>
     </div>
+  </div>
+</div>
+
+<div class="modal" id="verVideosModal" hidden>
+  <button class="scrim" type="button" id="verVideosScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="verVideosCard" role="dialog" aria-modal="true" aria-labelledby="verVideosTitle">
+    <button class="mx" type="button" id="verVideosClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="verVideosTitle" data-i18n="verVideosBtn"></h2></div>
+    <div id="verVideosList" class="vv-list"></div>
   </div>
 </div>
 
@@ -2112,6 +2122,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0099"></script>
+<script src="script.js?v=20261023-0100"></script>
 </body>
 </html>
