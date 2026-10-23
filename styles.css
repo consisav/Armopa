@@ -872,6 +872,40 @@ section[id]{scroll-margin-top:148px}
 .cita-etiqueta-sel.etq-interesado{color:#9a6a00;border-color:#9a6a00}
 .cita-etiqueta-sel.etq-poco{color:#b3261e;border-color:#b3261e}
 
+/* ===== Ficha de Cliente: cabecera con foto + nombre/código/estado, y el
+   resto de los datos agrupados en secciones (Contacto, Ubicación,
+   Administrativo) en vez del grid genérico de .proy-grid, para que el
+   panel se lea como una ficha y no como una tabla de campos sueltos. */
+.cli-card{padding:22px 24px}
+.cli-head{display:flex;align-items:center;gap:20px;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--line)}
+.cli-head .avatar{width:84px;height:84px}
+.cli-head-info{flex:1;min-width:180px}
+.cli-head-name{font-family:'Marcellus',Georgia,serif;font-size:22px;color:var(--ink);line-height:1.2}
+.cli-head-code{margin-top:3px;font-size:13.5px;font-weight:700;color:var(--goldtx);letter-spacing:.02em}
+.cli-head-badge{display:inline-flex;align-items:center;gap:6px;margin-top:8px;padding:4px 12px;border-radius:999px;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+.cli-head-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.cli-badge-activo{background:#e4f8ea;color:#15803d}
+.cli-badge-inactivo{background:#f1f3f6;color:#5b6676}
+.cli-badge-baja{background:#fde8e8;color:#b3261e}
+
+.cli-sec{margin-top:18px}
+.cli-sec-h{font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
+.cli-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}
+.cli-grid>div{min-width:0}
+.cli-grid .lbl{display:block;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.cli-grid span:not(.lbl),.cli-grid strong{font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+.cli-grid input,.cli-grid select{width:100%;min-height:40px;border:1px solid #bfc8d4;border-radius:9px;padding:8px 12px;font-size:14px;color:var(--ink);background:#fff;font-family:inherit}
+.cli-grid input:focus,.cli-grid select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.cli-photo-col{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+.cli-photo-col .avatar{width:104px;height:104px}
+.cli-photo-col .acts{display:flex;flex-direction:column;gap:8px;width:100%;max-width:180px}
+@media (min-width:640px){
+  .cli-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (min-width:860px){
+  .cli-edit-layout{display:grid;grid-template-columns:150px 1fr;gap:24px;align-items:start}
+}
+
 /* Filtros de "Rotación Visual": Ciudad y Tipo de Propiedad, cada uno en
    su propia línea bajo el escenario, con el mismo estilo de botón "pill"
    que el resto del sitio (.loc-tab) -"Todas" siempre primero y activa

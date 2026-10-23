@@ -473,6 +473,8 @@ const T = {
     admServTituloModal: 'Servicios — Listado general', admServSubtituloModal: 'Estado, vendedor y comisión de cada solicitud de servicio.',
     admVendTituloModal: 'Vendedores — Listado general', admVendSubtituloModal: 'Código, contacto y fotografía de cada vendedor registrado.',
     admCliTituloModal: 'Clientes — Listado general', admCliSubtituloModal: 'Código, contacto y datos de cada cliente registrado.',
+    admCliVendedorAsignado: 'Vendedor asignado', admCliSinVendedor: 'Sin vendedor asignado',
+    admCliSeccionContacto: 'Contacto', admCliSeccionUbicacion: 'Ubicación', admCliSeccionAdmin: 'Administrativo',
     admAgregarCliente: '+ Agregar cliente', admCodigoCliente: 'Código de cliente', admDpi: 'DPI', admDepartamento: 'Departamento', admMunicipio: 'Municipio',
     admDetalleDireccion: 'Detalle dirección', admEstadoCliente: 'Estado', admEstCliActivo: 'Activo', admEstCliInactivo: 'Inactivo', admEstCliBaja: 'Baja',
     admClienteSinNombre: 'Cliente sin nombre', admPlaceholderNombreCliente: 'Nombre del cliente', admPlaceholderDpi: 'Número de DPI',
@@ -803,6 +805,8 @@ const T = {
     admServTituloModal: 'Services — General listing', admServSubtituloModal: 'Status, seller and commission for each service request.',
     admVendTituloModal: 'Vendors — General listing', admVendSubtituloModal: 'Code, contact and photo for each registered seller.',
     admCliTituloModal: 'Clients — General listing', admCliSubtituloModal: 'Code, contact and details for each registered client.',
+    admCliVendedorAsignado: 'Assigned seller', admCliSinVendedor: 'No seller assigned',
+    admCliSeccionContacto: 'Contact', admCliSeccionUbicacion: 'Location', admCliSeccionAdmin: 'Administrative',
     admAgregarCliente: '+ Add client', admCodigoCliente: 'Client code', admDpi: 'National ID (DPI)', admDepartamento: 'Department', admMunicipio: 'Municipality',
     admDetalleDireccion: 'Address details', admEstadoCliente: 'Status', admEstCliActivo: 'Active', admEstCliInactivo: 'Inactive', admEstCliBaja: 'Discharged',
     admClienteSinNombre: 'Client with no name', admPlaceholderNombreCliente: 'Client name', admPlaceholderDpi: 'National ID number',
@@ -2701,7 +2705,7 @@ async function cliSiguienteCorrelativo(anio) {
 }
 
 function cliAvatarEl(c) {
-  const wrap = el('div', 'srow');
+  const wrap = el('div');
   const img = document.createElement('img');
   img.className = 'avatar'; img.alt = c.nombre || '';
   const ph = el('div', 'avatar ph');
@@ -2713,12 +2717,18 @@ function cliAvatarEl(c) {
   return wrap;
 }
 
+/* Cabecera de la ficha: foto + nombre + código + una pastilla de color
+   según el Estado (verde Activo, gris Inactivo, rojo Baja). */
 function cliCardHead(c) {
-  const head = el('div', 'proy-card-h');
-  const nameWrap = el('div', 'proy-name-wrap');
-  const nameEl = el('div', 'proy-name', c.nombre || T[lang].admClienteSinNombre);
-  nameWrap.append(nameEl, el('div', 'proy-city', cliCodigo(c)));
-  head.append(nameWrap);
+  const t = T[lang];
+  const head = el('div', 'cli-head');
+  head.append(cliAvatarEl(c));
+  const info = el('div', 'cli-head-info');
+  info.append(el('div', 'cli-head-name', c.nombre || t.admClienteSinNombre));
+  info.append(el('div', 'cli-head-code', cliCodigo(c)));
+  const estadoCls = { activo: 'cli-badge-activo', inactivo: 'cli-badge-inactivo', baja: 'cli-badge-baja' }[c.estado] || 'cli-badge-activo';
+  if (c.estado || c.id != null) info.append(el('span', 'cli-head-badge ' + estadoCls, estadoClienteLabel(c.estado || 'activo')));
+  head.append(info);
   return head;
 }
 
@@ -2726,27 +2736,45 @@ function cliRenderView(card, c) {
   const t = T[lang];
   card.innerHTML = '';
   card.classList.remove('proy-card-edit');
+  card.classList.add('cli-card');
   const actions = el('div', 'proy-actions');
   const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
   const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
   actions.append(modBtn, delBtn);
 
   card.append(cliCardHead(c));
-  const grid = el('div', 'proy-grid');
-  grid.append(
-    labeledCell(t.admFoto, cliAvatarEl(c)),
-    labeledCell(t.admCodigoCliente, el('strong', '', cliCodigo(c))),
-    labeledCell(t.admNombre, el('span', '', c.nombre || '—')),
+
+  const secContacto = el('div', 'cli-sec');
+  secContacto.append(el('div', 'cli-sec-h', t.admCliSeccionContacto));
+  const gridContacto = el('div', 'cli-grid');
+  gridContacto.append(
     labeledCell(t.admTelefono, el('span', '', c.telefono || '—')),
     labeledCell(t.admDpi, el('span', '', c.dpi || '—')),
+    labeledCell(t.admCliVendedorAsignado, el('span', '', c.vendedor_asignado || t.admCliSinVendedor))
+  );
+  secContacto.append(gridContacto);
+
+  const secUbicacion = el('div', 'cli-sec');
+  secUbicacion.append(el('div', 'cli-sec-h', t.admCliSeccionUbicacion));
+  const gridUbicacion = el('div', 'cli-grid');
+  gridUbicacion.append(
     labeledCell(t.admDepartamento, el('span', '', c.departamento || '—')),
     labeledCell(t.admMunicipio, el('span', '', c.municipio || '—')),
-    labeledCell(t.admDetalleDireccion, el('span', '', c.direccion || '—')),
+    labeledCell(t.admDetalleDireccion, el('span', '', c.direccion || '—'))
+  );
+  secUbicacion.append(gridUbicacion);
+
+  const secAdmin = el('div', 'cli-sec');
+  secAdmin.append(el('div', 'cli-sec-h', t.admCliSeccionAdmin));
+  const gridAdmin = el('div', 'cli-grid');
+  gridAdmin.append(
     labeledCell(t.admEstadoCliente, el('span', '', estadoClienteLabel(c.estado))),
     labeledCell(t.admUsuario, el('span', '', c.usuario || '—')),
     labeledCell(t.admFechaGrabacion, el('span', '', c.created_at ? formatQBuscarRegFecha(c.created_at) : '—'))
   );
-  card.append(grid, actions);
+  secAdmin.append(gridAdmin);
+
+  card.append(secContacto, secUbicacion, secAdmin, actions);
 
   modBtn.addEventListener('click', () => cliRenderEdit(card, c, false));
   delBtn.addEventListener('click', async () => {
@@ -2766,10 +2794,25 @@ function cliRenderView(card, c) {
   });
 }
 
+/* Select de "Vendedor asignado" para el formulario de Clientes, con "Sin
+   vendedor asignado" como primera opción y por defecto. */
+function cliPoblarVendedorSelect(sel, actual) {
+  sel.innerHTML = '';
+  const optVacio = document.createElement('option');
+  optVacio.value = ''; optVacio.textContent = T[lang].admCliSinVendedor;
+  sel.appendChild(optVacio);
+  vendedoresCatalogo.forEach((v) => {
+    const opt = document.createElement('option');
+    opt.value = v.nombre; opt.textContent = v.nombre;
+    sel.appendChild(opt);
+  });
+  sel.value = actual || '';
+}
+
 function cliRenderEdit(card, c, isNew) {
   const t = T[lang];
   card.innerHTML = '';
-  card.classList.add('proy-card-edit');
+  card.classList.add('proy-card-edit', 'cli-card');
 
   let fotoUrl = c.foto_url || '';
   const avImg = document.createElement('img');
@@ -2782,10 +2825,10 @@ function cliRenderEdit(card, c, isNew) {
   const fileLabel = document.createElement('label');
   fileLabel.className = 'btn btn-gold btn-sm'; fileLabel.htmlFor = fileInput.id; fileLabel.textContent = t.admSubirFoto;
   const rmBtn = el('button', 'btn btn-danger btn-sm', t.admQuitarFoto); rmBtn.type = 'button';
+  const photoCol = el('div', 'cli-photo-col');
   const actsPhoto = el('div', 'acts');
   actsPhoto.append(fileInput, fileLabel, rmBtn);
-  const avWrap = el('div', 'srow');
-  avWrap.append(avImg, avPh, actsPhoto);
+  photoCol.append(avImg, avPh, actsPhoto);
 
   function refreshAvatar() {
     avImg.hidden = !fotoUrl;
@@ -2821,6 +2864,10 @@ function cliRenderEdit(card, c, isNew) {
 
   const dpiInput = document.createElement('input');
   dpiInput.type = 'text'; dpiInput.maxLength = 15; dpiInput.value = c.dpi || ''; dpiInput.placeholder = t.admPlaceholderDpi;
+
+  const vendSel = document.createElement('select');
+  cliPoblarVendedorSelect(vendSel, c.vendedor_asignado || '');
+  if (!vendedoresCatalogoCargado) cargarVendedoresCatalogo().then(() => cliPoblarVendedorSelect(vendSel, c.vendedor_asignado || ''));
 
   const depSel = document.createElement('select');
   const depOptVacio = document.createElement('option');
@@ -2868,22 +2915,52 @@ function cliRenderEdit(card, c, isNew) {
   const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
   actions.append(saveBtn, cancelBtn);
 
-  card.append(cliCardHead(c));
-  const grid = el('div', 'proy-grid');
-  grid.append(
-    labeledCell(t.admFoto, avWrap),
-    labeledCell(t.admCodigoCliente, el('strong', '', isNew ? t.admCodigoSeAsignaAutomatico : cliCodigo(c))),
+  const editLayout = el('div', 'cli-edit-layout');
+  const rightCol = el('div');
+
+  const secIdent = el('div', 'cli-sec');
+  const identHead = el('div', 'cli-sec-h');
+  identHead.textContent = t.admCodigoCliente + ' — ' + (isNew ? t.admCodigoSeAsignaAutomatico : cliCodigo(c));
+  secIdent.append(identHead);
+  const gridIdent = el('div', 'cli-grid');
+  gridIdent.append(
     labeledCell(t.admNombre, nombreInput),
+    labeledCell(t.admEstadoCliente, estadoSel)
+  );
+  secIdent.append(gridIdent);
+
+  const secContacto = el('div', 'cli-sec');
+  secContacto.append(el('div', 'cli-sec-h', t.admCliSeccionContacto));
+  const gridContacto = el('div', 'cli-grid');
+  gridContacto.append(
     labeledCell(t.admTelefono, telInput),
     labeledCell(t.admDpi, dpiInput),
+    labeledCell(t.admCliVendedorAsignado, vendSel)
+  );
+  secContacto.append(gridContacto);
+
+  const secUbicacion = el('div', 'cli-sec');
+  secUbicacion.append(el('div', 'cli-sec-h', t.admCliSeccionUbicacion));
+  const gridUbicacion = el('div', 'cli-grid');
+  gridUbicacion.append(
     labeledCell(t.admDepartamento, depSel),
     labeledCell(t.admMunicipio, munSel),
-    labeledCell(t.admDetalleDireccion, dirInput),
-    labeledCell(t.admEstadoCliente, estadoSel),
+    labeledCell(t.admDetalleDireccion, dirInput)
+  );
+  secUbicacion.append(gridUbicacion);
+
+  const secAdmin = el('div', 'cli-sec');
+  secAdmin.append(el('div', 'cli-sec-h', t.admCliSeccionAdmin));
+  const gridAdmin = el('div', 'cli-grid');
+  gridAdmin.append(
     labeledCell(t.admUsuario, el('span', '', t.admSeGrabaAutomaticamente + (localStorage.getItem(LOGIN_STORE) || t.admUsuarioActualFallback) + ')')),
     labeledCell(t.admFechaGrabacion, el('span', '', isNew ? t.admSeAsignaAutomaticoFecha + hoyDisplay + ')' : (c.created_at ? formatQBuscarRegFecha(c.created_at) : '—')))
   );
-  card.append(grid, actions);
+  secAdmin.append(gridAdmin);
+
+  rightCol.append(secIdent, secContacto, secUbicacion, secAdmin);
+  editLayout.append(photoCol, rightCol);
+  card.append(editLayout, actions);
 
   cancelBtn.addEventListener('click', () => {
     if (isNew) {
@@ -2901,6 +2978,7 @@ function cliRenderEdit(card, c, isNew) {
       nombre,
       telefono: telInput.value.trim() || null,
       dpi: dpiInput.value.trim() || null,
+      vendedor_asignado: vendSel.value || null,
       departamento: depSel.value || null,
       municipio: munSel.value || null,
       direccion: dirInput.value.trim() || null,
@@ -2989,6 +3067,7 @@ function abrirAdminClientesModal() {
   if (!adminClientesModal) return;
   if ($('#adminCliBuscarInput')) $('#adminCliBuscarInput').value = '';
   adminClientesModal.hidden = false;
+  if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
   cargarAdminCliData();
 }
 function cerrarAdminClientesModal() { if (adminClientesModal) adminClientesModal.hidden = true; }
