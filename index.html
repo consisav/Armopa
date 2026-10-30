@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261030a">
+<link rel="stylesheet" href="styles.css?v=20261030b">
 </head>
 <body>
 
@@ -1998,12 +1998,65 @@
   <div class="pcard pcard-wide" id="adminGeografiaCard" role="dialog" aria-modal="true" aria-labelledby="adminGeografiaTitle">
     <button class="mx" type="button" id="adminGeografiaClose" data-i18n-label="close">×</button>
     <div class="ph"><h2 id="adminGeografiaTitle" data-i18n="admGeoTituloModal"></h2><p class="ph-sub" data-i18n="admGeoSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:18px">
-      <input type="text" id="adminGeoDeptoBuscarInput" class="cq-input" data-i18n-ph="admGeoBuscarDeptoPh">
-      <button class="btn btn-dark btn-sm" type="button" id="adminGeoDeptoMostrarBtn" data-i18n="btnMostrar"></button>
-      <button class="btn btn-gold btn-sm" type="button" id="adminGeoDeptoNuevoBtn" data-i18n="admGeoAgregarDepto"></button>
-    </div>
-    <div id="adminGeoDeptosList" class="proy-list"></div>
+
+    <section class="geo-tbl-sec">
+      <div class="geo-tbl-head">
+        <h3 data-i18n="admGeoSeccionDeptos"></h3>
+        <div class="geo-tbl-head-actions">
+          <button class="btn btn-line-dark btn-sm" type="button" id="adminGeoRegionesBtn" data-i18n="admGeoBtnRegiones"></button>
+          <button class="btn btn-gold btn-sm" type="button" id="adminGeoDeptoNuevoBtn" data-i18n="admGeoAgregarDepto"></button>
+        </div>
+      </div>
+      <div class="q-buscar-fields" style="margin-bottom:12px">
+        <input type="text" id="adminGeoDeptoBuscarInput" class="cq-input" data-i18n-ph="admGeoBuscarDeptoPh">
+        <button class="btn btn-dark btn-sm" type="button" id="adminGeoDeptoMostrarBtn" data-i18n="btnMostrar"></button>
+      </div>
+      <div class="geo-tbl-wrap">
+        <table class="geo-tbl">
+          <thead>
+            <tr>
+              <th data-i18n="admGeoColCodigo"></th>
+              <th data-i18n="admGeoColDepto"></th>
+              <th data-i18n="admGeoColRegion"></th>
+              <th data-i18n="admGeoColCodTel"></th>
+              <th data-i18n="admGeoColCodPostal"></th>
+              <th data-i18n="admGeoColMunicipios"></th>
+              <th class="geo-tbl-th-edit"></th>
+            </tr>
+          </thead>
+          <tbody id="adminGeoDeptosTbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="geo-tbl-sec">
+      <div class="geo-tbl-head">
+        <h3 id="adminGeoMunSeccionTitulo" data-i18n="admGeoSeccionMunicipios"></h3>
+        <div class="geo-tbl-head-actions">
+          <button class="btn btn-gold btn-sm" type="button" id="adminGeoMunNuevoBtn" data-i18n="admGeoAgregarMunicipio"></button>
+        </div>
+      </div>
+      <div class="q-buscar-fields" style="margin-bottom:12px">
+        <input type="text" id="adminGeoMunBuscarInput" class="cq-input" data-i18n-ph="admGeoBuscarMunPh">
+        <button class="btn btn-dark btn-sm" type="button" id="adminGeoMunMostrarBtn" data-i18n="btnMostrar"></button>
+      </div>
+      <div class="geo-tbl-wrap">
+        <table class="geo-tbl">
+          <thead>
+            <tr>
+              <th data-i18n="admGeoColCodigo"></th>
+              <th data-i18n="admGeoColMunNombre"></th>
+              <th data-i18n="admGeoColPrefijo"></th>
+              <th data-i18n="admGeoColCodTel"></th>
+              <th data-i18n="admGeoColPrefijoCiudad"></th>
+              <th data-i18n="admGeoColCodPostal"></th>
+              <th class="geo-tbl-th-edit"></th>
+            </tr>
+          </thead>
+          <tbody id="adminGeoMunTbody"></tbody>
+        </table>
+      </div>
+    </section>
   </div>
 </div>
 
@@ -2153,6 +2206,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261030-0100"></script>
+<script src="script.js?v=20261030-0200"></script>
 </body>
 </html>

@@ -939,6 +939,40 @@ section[id]{scroll-margin-top:148px}
   .proy-card-sm .proy-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
 
+/* ===== Geografía: tablas maestro-detalle (Departamentos / Municipios) ===== */
+.geo-tbl-sec{margin-top:24px}
+.geo-tbl-sec:first-of-type{margin-top:4px}
+.geo-tbl-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.geo-tbl-head h3{font-family:'Marcellus',Georgia,serif;font-size:15px;letter-spacing:.02em;color:var(--ink);margin:0}
+.geo-tbl-head-actions{display:flex;gap:10px;flex-wrap:wrap}
+.geo-tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;max-height:360px;overflow-y:auto}
+table.geo-tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:620px}
+table.geo-tbl thead th{position:sticky;top:0;z-index:1;background:var(--paper);text-align:left;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:12px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.geo-tbl tbody td{padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:middle}
+table.geo-tbl tbody tr:last-child td{border-bottom:none}
+table.geo-tbl tbody tr:not(.geo-row-edit){cursor:pointer;transition:background-color .15s}
+table.geo-tbl tbody tr:not(.geo-row-edit):hover{background:var(--paper)}
+table.geo-tbl tbody tr.geo-row-sel{background:#e4f8ea}
+table.geo-tbl .geo-td-strong{font-weight:700}
+table.geo-tbl .geo-td-empty{padding:26px;text-align:center;color:var(--muted)}
+table.geo-tbl .geo-td-edit,table.geo-tbl .geo-tbl-th-edit{width:44px;text-align:center}
+.geo-edit-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--goldtx);cursor:pointer;font-size:14px;line-height:1;transition:border-color .15s,background-color .15s}
+.geo-edit-btn:hover{border-color:var(--gold);background:#fdf6e8}
+tr.geo-row-edit td{padding:8px 10px;background:#fdf6e8}
+tr.geo-row-edit input{width:100%;min-width:70px;min-height:36px;border:1px solid #bfc8d4;border-radius:8px;padding:6px 9px;font-size:13.5px;color:var(--ink);background:#fff;font-family:inherit}
+tr.geo-row-edit input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.geo-td-edit-actions{display:flex;gap:6px;justify-content:center;white-space:nowrap}
+.geo-row-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:14px;line-height:1}
+.geo-row-btn-save{color:#15803d;border-color:#9fdbb4}
+.geo-row-btn-save:hover{background:#e4f8ea}
+.geo-row-btn-cancel{color:var(--muted)}
+.geo-row-btn-cancel:hover{background:var(--paper)}
+.geo-row-btn-del{color:#b3261e;border-color:#f3b4ae}
+.geo-row-btn-del:hover{background:#fde8e8}
+.geo-regiones-list{display:flex;flex-direction:column;gap:14px;max-height:60vh;overflow-y:auto}
+.geo-region-block h4{font-family:'Marcellus',Georgia,serif;font-size:14.5px;color:var(--goldtx);margin:0 0 4px}
+.geo-region-block p{font-size:13.5px;color:var(--ink);margin:0;line-height:1.5}
+
 .cli-sec{margin-top:18px}
 .cli-sec-h{font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px dashed var(--line)}
 .cli-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 22px}
