@@ -533,6 +533,16 @@ const T = {
     admOrgSeccionOrgs: 'ORGANIZACIÓN', admOrgColCodigo: 'Cód.', admOrgColNombre: 'Organización', admOrgColRepresentante: 'Representante Legal', admOrgColTelefonos: 'Teléfonos', admOrgColUbicacion: 'Ubicación', admOrgColEstado: 'Estado',
     admOrgGrabadoPor: 'Grabado por', admOrgModificadoPor: 'Última modificación por', admOrgSelecOrgPrimero: 'Selecciona una organización arriba para ver sus localidades.',
     admOrgLocSeccion: 'Organización y Localidad (solo super administrador)',
+    adminMenuUsuariosCatalogo: 'Usuarios',
+    admUsrTituloModal: 'Usuarios — Catálogo', admUsrSubtituloModal: 'Usuarios existentes del sistema, su tipo y la organización/localidad a la que pertenecen.',
+    admUsrConfirmHint: 'Por seguridad, confirma tu clave de Super Administrador para ver y editar el catálogo de usuarios.',
+    admUsrClavePropiaPh: 'Tu clave', btnConfirmar: 'Confirmar',
+    admUsrConfirmErrorClave: 'Clave incorrecta. No se pudo confirmar tu identidad.', admUsrConfirmErrorGenerico: 'No pudimos confirmar en este momento. Intenta de nuevo.',
+    admUsrSeccionLista: 'USUARIOS', admUsrBuscarPh: 'Buscar usuario…',
+    admUsrColCodigo: 'Código', admUsrColUsuario: 'Usuario', admUsrColTipo: 'Tipo',
+    admUsrNoHayUsuarios: 'No hay usuarios que coincidan con la búsqueda.',
+    admUsrErrorCargar: 'No se pudo cargar la lista de usuarios.', admUsrErrorGuardar: 'No se pudo guardar. Intenta de nuevo.',
+    admUsrNoAutorizado: 'Tu sesión de Super Administrador no pudo validarse. Vuelve a confirmar tu clave.',
     admEstadoActivo: 'Activo', admEstadoInactivo: 'Inactivo',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -921,6 +931,16 @@ const T = {
     admOrgSeccionOrgs: 'ORGANIZATION', admOrgColCodigo: 'Code', admOrgColNombre: 'Organization', admOrgColRepresentante: 'Legal Representative', admOrgColTelefonos: 'Phones', admOrgColUbicacion: 'Location', admOrgColEstado: 'Status',
     admOrgGrabadoPor: 'Saved by', admOrgModificadoPor: 'Last modified by', admOrgSelecOrgPrimero: 'Select an organization above to see its locations.',
     admOrgLocSeccion: 'Organization and Location (super admin only)',
+    adminMenuUsuariosCatalogo: 'Users',
+    admUsrTituloModal: 'Users — Catalog', admUsrSubtituloModal: 'Existing system users, their type, and the organization/location they belong to.',
+    admUsrConfirmHint: 'For security, confirm your Super Administrator password to view and edit the users catalog.',
+    admUsrClavePropiaPh: 'Your password', btnConfirmar: 'Confirm',
+    admUsrConfirmErrorClave: 'Incorrect password. Your identity could not be confirmed.', admUsrConfirmErrorGenerico: 'We could not confirm this right now. Please try again.',
+    admUsrSeccionLista: 'USERS', admUsrBuscarPh: 'Search user…',
+    admUsrColCodigo: 'Code', admUsrColUsuario: 'User', admUsrColTipo: 'Type',
+    admUsrNoHayUsuarios: 'No users match your search.',
+    admUsrErrorCargar: 'Could not load the user list.', admUsrErrorGuardar: 'Could not save. Please try again.',
+    admUsrNoAutorizado: 'Your Super Administrator session could not be validated. Please confirm your password again.',
     admEstadoActivo: 'Active', admEstadoInactivo: 'Inactive',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -7570,6 +7590,207 @@ $('#logoutBtn')?.addEventListener('click', () => {
   localStorage.removeItem(LOGIN_CODIGO_STORE);
   pintarEstadoUsuario();
 });
+
+/* ===== Catálogo de Usuarios (menú Catálogos > Usuarios) =====
+   Lista de solo-lectura de los usuarios del sistema (usuario, código,
+   tipo) con edición de Organización/Localidad, visible únicamente para
+   Super Administrador. La tabla "usuarios" tiene RLS sin políticas
+   (nunca se lee por select directo), así que todo pasa por funciones
+   RPC SECURITY DEFINER (admin_listar_usuarios /
+   admin_actualizar_org_loc_usuario) que validan usuario+hash de quien
+   llama. Reutiliza el mismo adminHashConfirmado que llena el panel
+   "Administrar usuarios" si ya fue confirmado en esta sesión del
+   navegador; si no, pide la clave aquí mismo. */
+const adminUsuariosCatalogoModal = $('#adminUsuariosCatalogoModal');
+let adminUsrData = [];
+let adminUsrBuscar = '';
+let adminUsrEditUsuario = null;
+
+function abrirAdminUsuariosCatalogoModal() {
+  if (!adminUsuariosCatalogoModal) return;
+  adminUsuariosCatalogoModal.hidden = false;
+  $('#adminUsrConfirmError').hidden = true;
+  $('#adminUsrClavePropia').value = '';
+  adminUsrEditUsuario = null;
+  if (adminHashConfirmado) {
+    $('#adminUsrConfirmBox').hidden = true;
+    $('#adminUsrListaSec').hidden = false;
+    cargarAdminUsrData();
+  } else {
+    $('#adminUsrConfirmBox').hidden = false;
+    $('#adminUsrListaSec').hidden = true;
+  }
+}
+function cerrarAdminUsuariosCatalogoModal() { if (adminUsuariosCatalogoModal) adminUsuariosCatalogoModal.hidden = true; }
+$('#navAdminUsuariosCatalogoBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminUsuariosCatalogoModal();
+});
+$('#adminUsuariosCatalogoClose')?.addEventListener('click', cerrarAdminUsuariosCatalogoModal);
+$('#adminUsuariosCatalogoScrim')?.addEventListener('click', cerrarAdminUsuariosCatalogoModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminUsuariosCatalogoModal && !adminUsuariosCatalogoModal.hidden) cerrarAdminUsuariosCatalogoModal(); });
+
+$('#adminUsrConfirmarBtn')?.addEventListener('click', async () => {
+  const errorEl = $('#adminUsrConfirmError');
+  const t = T[lang];
+  errorEl.hidden = true;
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  const clave = $('#adminUsrClavePropia')?.value;
+  if (!miUsuario || !clave) { errorEl.textContent = t.admUsrConfirmErrorClave; errorEl.hidden = false; return; }
+  const btn = $('#adminUsrConfirmarBtn');
+  btn.disabled = true;
+  try {
+    const hash = await csHashClave(clave);
+    const { data, error } = await supabaseClient.rpc('conectar_usuario', { p_usuario: miUsuario, p_hash: hash, p_crear: false });
+    if (error) throw error;
+    if (data && data.status === 'ok' && data.tipo_usuario === 'super_administrador') {
+      adminHashConfirmado = hash;
+      $('#adminUsrConfirmBox').hidden = true;
+      $('#adminUsrListaSec').hidden = false;
+      cargarAdminUsrData();
+    } else {
+      errorEl.textContent = t.admUsrConfirmErrorClave;
+      errorEl.hidden = false;
+    }
+  } catch (err) {
+    console.error('Error al confirmar identidad para el catálogo de usuarios:', err);
+    errorEl.textContent = t.admUsrConfirmErrorGenerico;
+    errorEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+async function cargarAdminUsrData() {
+  const tbody = $('#adminUsrTbody');
+  const t = T[lang];
+  const miUsuario = localStorage.getItem(LOGIN_STORE);
+  if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="geo-td-empty">' + t.adminCargandoPuntos + '</td></tr>';
+  try {
+    const { data, error } = await supabaseClient.rpc('admin_listar_usuarios', { p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado });
+    if (error) throw error;
+    if (data && data.status === 'no_autorizado') {
+      adminHashConfirmado = null;
+      $('#adminUsrConfirmBox').hidden = false;
+      $('#adminUsrListaSec').hidden = true;
+      return;
+    }
+    adminUsrData = (data && data.usuarios) || [];
+    await cargarOrgGenericaCache();
+    pintarAdminUsrTbody();
+  } catch (e) {
+    console.error('Error cargando usuarios:', e);
+    if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="geo-td-empty">' + t.admUsrErrorCargar + '</td></tr>';
+  }
+}
+
+$('#adminUsrBuscarInput')?.addEventListener('input', () => {
+  adminUsrBuscar = $('#adminUsrBuscarInput').value.trim().toLowerCase();
+  pintarAdminUsrTbody();
+});
+
+function usrFilaVista(u) {
+  const t = T[lang];
+  const tr = document.createElement('tr');
+  const orgTxt = u.organizacion_id ? (orgGenericaCache.find((o) => o.id === u.organizacion_id)?.nombre || ('#' + u.organizacion_id)) : '—';
+  tr.innerHTML =
+    '<td class="geo-td-strong">' + (u.codigo_usuario != null ? u.codigo_usuario : '—') + '</td>' +
+    '<td>' + (u.usuario || '—') + '</td>' +
+    '<td>' + (TIPOS_USUARIO_LABEL[u.tipo_usuario] || u.tipo_usuario || '—') + '</td>' +
+    '<td>' + orgTxt + '</td>' +
+    '<td>—</td>' +
+    '<td class="geo-td-edit"></td>';
+  const editTd = tr.lastElementChild;
+  const editBtn = document.createElement('button');
+  editBtn.type = 'button'; editBtn.className = 'geo-edit-btn'; editBtn.setAttribute('aria-label', t.btnModificar); editBtn.textContent = '✎';
+  editTd.appendChild(editBtn);
+  editBtn.addEventListener('click', () => { adminUsrEditUsuario = u.usuario; pintarAdminUsrTbody(); });
+
+  const locTd = tr.children[4];
+  // Resuelve el nombre de la localidad de forma asíncrona (no está en el cache de organizaciones)
+  if (u.organizacion_id && u.localidad_id) {
+    supabaseClient.from('org_localidades').select('id,codigo,nombre_comercial').eq('id', u.localidad_id).then(({ data }) => {
+      const loc = data && data[0];
+      locTd.textContent = loc ? ((loc.codigo ? loc.codigo + ' · ' : '') + (loc.nombre_comercial || '')) : '—';
+    });
+  } else {
+    locTd.textContent = '—';
+  }
+
+  return tr;
+}
+
+function usrFilaEdit(u) {
+  const t = T[lang];
+  const tr = document.createElement('tr');
+  tr.classList.add('geo-row-edit');
+
+  const tdCod = document.createElement('td'); tdCod.className = 'geo-td-strong'; tdCod.textContent = u.codigo_usuario != null ? u.codigo_usuario : '—';
+  const tdUsr = document.createElement('td'); tdUsr.textContent = u.usuario || '—';
+  const tdTipo = document.createElement('td'); tdTipo.textContent = TIPOS_USUARIO_LABEL[u.tipo_usuario] || u.tipo_usuario || '—';
+  const orgSel = document.createElement('select');
+  const locSel = document.createElement('select');
+  const tdOrg = document.createElement('td'); tdOrg.appendChild(orgSel);
+  const tdLoc = document.createElement('td'); tdLoc.appendChild(locSel);
+  const tdActions = document.createElement('td'); tdActions.className = 'geo-td-edit-actions';
+
+  const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'geo-row-btn geo-row-btn-save'; saveBtn.setAttribute('aria-label', t.btnGuardar); saveBtn.textContent = '✓';
+  const cancelBtn = document.createElement('button'); cancelBtn.type = 'button'; cancelBtn.className = 'geo-row-btn geo-row-btn-cancel'; cancelBtn.setAttribute('aria-label', t.btnCancelar); cancelBtn.textContent = '×';
+  tdActions.append(saveBtn, cancelBtn);
+
+  tr.append(tdCod, tdUsr, tdTipo, tdOrg, tdLoc, tdActions);
+
+  poblarOrgLocSelectsGenerico(orgSel, locSel, u.organizacion_id, u.localidad_id);
+
+  cancelBtn.addEventListener('click', () => { adminUsrEditUsuario = null; pintarAdminUsrTbody(); });
+  saveBtn.addEventListener('click', async () => {
+    saveBtn.disabled = true;
+    const miUsuario = localStorage.getItem(LOGIN_STORE);
+    try {
+      const { data, error } = await supabaseClient.rpc('admin_actualizar_org_loc_usuario', {
+        p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado, p_usuario_objetivo: u.usuario,
+        p_organizacion_id: orgSel.value || null, p_localidad_id: locSel.value || null
+      });
+      if (error) throw error;
+      if (data && data.status === 'ok') {
+        u.organizacion_id = orgSel.value ? Number(orgSel.value) : null;
+        u.localidad_id = locSel.value ? Number(locSel.value) : null;
+        adminUsrEditUsuario = null;
+        pintarAdminUsrTbody();
+      } else if (data && data.status === 'no_autorizado') {
+        adminHashConfirmado = null;
+        $('#adminUsrListaSec').hidden = true;
+        $('#adminUsrConfirmBox').hidden = false;
+      } else {
+        alert(t.admUsrErrorGuardar);
+        saveBtn.disabled = false;
+      }
+    } catch (e) {
+      console.error('Error guardando organización/localidad del usuario:', e);
+      alert(t.admUsrErrorGuardar);
+      saveBtn.disabled = false;
+    }
+  });
+
+  return tr;
+}
+
+function pintarAdminUsrTbody() {
+  const tbody = $('#adminUsrTbody');
+  if (!tbody) return;
+  const t = T[lang];
+  const q = adminUsrBuscar;
+  const lista = q ? adminUsrData.filter((u) => (u.usuario || '').toLowerCase().includes(q)) : adminUsrData;
+  tbody.innerHTML = '';
+  if (!lista.length) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td'); td.colSpan = 6; td.className = 'geo-td-empty'; td.textContent = t.admUsrNoHayUsuarios;
+    tr.appendChild(td); tbody.appendChild(tr);
+    return;
+  }
+  lista.forEach((u) => { tbody.appendChild(adminUsrEditUsuario === u.usuario ? usrFilaEdit(u) : usrFilaVista(u)); });
+}
 
 $('#loginSubmitBtn')?.addEventListener('click', async () => {
   const usuario = $('#login-usuario')?.value.trim();

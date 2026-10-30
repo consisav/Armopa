@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261030g">
+<link rel="stylesheet" href="styles.css?v=20261030h">
 </head>
 <body>
 
@@ -54,6 +54,7 @@
                 <div class="nav-admin-sep" role="separator"></div>
                 <button type="button" id="navAdminGeografiaBtn" data-i18n="adminMenuGeografia"></button>
                 <button type="button" id="navAdminOrganizacionesBtn" data-i18n="adminMenuOrganizaciones"></button>
+                <button type="button" id="navAdminUsuariosCatalogoBtn" data-i18n="adminMenuUsuariosCatalogo"></button>
               </div>
             </div>
             <div class="nav-admin-group" data-grp="negocios">
@@ -2139,6 +2140,47 @@
   </div>
 </div>
 
+<div class="modal" id="adminUsuariosCatalogoModal" hidden>
+  <button class="scrim" type="button" id="adminUsuariosCatalogoScrim" data-i18n-label="close"></button>
+  <div class="pcard pcard-wide" id="adminUsuariosCatalogoCard" role="dialog" aria-modal="true" aria-labelledby="adminUsuariosCatalogoTitle">
+    <button class="mx" type="button" id="adminUsuariosCatalogoClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminUsuariosCatalogoTitle" data-i18n="admUsrTituloModal"></h2><p class="ph-sub" data-i18n="admUsrSubtituloModal"></p></div>
+
+    <div id="adminUsrConfirmBox">
+      <p class="hint" data-i18n="admUsrConfirmHint"></p>
+      <div class="geo-buscar-fields">
+        <input type="password" id="adminUsrClavePropia" autocomplete="current-password" data-i18n-ph="admUsrClavePropiaPh">
+        <button class="btn btn-dark btn-sm" type="button" id="adminUsrConfirmarBtn" data-i18n="btnConfirmar"></button>
+      </div>
+      <p class="hint hint-err" id="adminUsrConfirmError" hidden></p>
+    </div>
+
+    <section class="geo-tbl-sec" id="adminUsrListaSec" hidden>
+      <div class="geo-tbl-head">
+        <h3 data-i18n="admUsrSeccionLista"></h3>
+      </div>
+      <div class="geo-buscar-fields">
+        <input type="text" id="adminUsrBuscarInput" class="cq-input" data-i18n-ph="admUsrBuscarPh">
+      </div>
+      <div class="geo-tbl-wrap">
+        <table class="geo-tbl">
+          <thead>
+            <tr>
+              <th data-i18n="admUsrColCodigo"></th>
+              <th data-i18n="admUsrColUsuario"></th>
+              <th data-i18n="admUsrColTipo"></th>
+              <th data-i18n="admOrgNombre"></th>
+              <th data-i18n="admOrgLocalidades"></th>
+              <th class="geo-tbl-th-edit"></th>
+            </tr>
+          </thead>
+          <tbody id="adminUsrTbody"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+
 <div class="modal" id="adminTiposComisionModal" hidden>
   <button class="scrim" type="button" id="adminTiposComisionScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminTiposComisionCard" role="dialog" aria-modal="true" aria-labelledby="adminTiposComisionTitle">
@@ -2271,6 +2313,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261030-0730"></script>
+<script src="script.js?v=20261030-0800"></script>
 </body>
 </html>
