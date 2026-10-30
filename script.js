@@ -2780,7 +2780,7 @@ function vendRenderEdit(card, v, isNew) {
     orgLocSel = document.createElement('select');
     grid.appendChild(labeledCell(t.admOrgNombre, orgSel));
     grid.appendChild(labeledCell(t.admOrgLocalidades, orgLocSel));
-    poblarOrgLocSelectsGenerico(orgSel, orgLocSel, v.organizacion_id, v.localidad_id);
+    poblarOrgLocSelectsGenerico(orgSel, orgLocSel, v.organizacion_id || (isNew ? 2 : null), v.localidad_id || (isNew ? 1 : null));
   }
   card.append(grid, actions);
 
@@ -3149,7 +3149,7 @@ function cliRenderEdit(card, c, isNew) {
     const gridOrg = el('div', 'cli-grid');
     gridOrg.append(labeledCell(t.admOrgNombre, orgSel), labeledCell(t.admOrgLocalidades, orgLocSel));
     secOrg.append(gridOrg);
-    poblarOrgLocSelectsGenerico(orgSel, orgLocSel, c.organizacion_id, c.localidad_id);
+    poblarOrgLocSelectsGenerico(orgSel, orgLocSel, c.organizacion_id || (isNew ? 2 : null), c.localidad_id || (isNew ? 1 : null));
   }
 
   rightCol.append(secIdent, secContacto, secUbicacion, secAdmin);
@@ -4149,7 +4149,7 @@ function tipoComRenderEdit(card, tc, isNew) {
     orgLocSel = document.createElement('select');
     grid.appendChild(labeledCell(t.admOrgNombre, orgSel));
     grid.appendChild(labeledCell(t.admOrgLocalidades, orgLocSel));
-    poblarOrgLocSelectsGenerico(orgSel, orgLocSel, tc.organizacion_id, tc.localidad_id);
+    poblarOrgLocSelectsGenerico(orgSel, orgLocSel, tc.organizacion_id || (isNew ? 2 : null), tc.localidad_id || (isNew ? 1 : null));
   }
   card.append(grid, actions);
 
@@ -8337,7 +8337,7 @@ const openCitaModal = (prefill) => {
   const citaOrgRow = $('#citaOrgRow');
   if (citaOrgRow) {
     citaOrgRow.hidden = !esSuperAdmin();
-    if (!citaOrgRow.hidden) poblarOrgLocSelectsGenerico('#cita-org', '#cita-org-loc', null, null);
+    if (!citaOrgRow.hidden) poblarOrgLocSelectsGenerico('#cita-org', '#cita-org-loc', 2, 1);
   }
   poblarCitaVendedorSelect();
   poblarCitaCiudadList();
@@ -9494,7 +9494,7 @@ function renderLocTabs() {
   add.addEventListener('click', () => {
     if (!estaConectado()) return;
     const l = list();
-    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], videos: [], sPhoto: '', sName: '', sWa: '', estado: 'activa', estadoFecha: '', estadoUsuario: '', vendedorAsignado: '', comisionPorcentaje: '' });
+    l.push({ id: Date.now(), name: t.locDefault + ' ' + (l.length + 1), addr: '', sector: '', zona: '', tipo: '', desc: '', op: 'renta', pRent: '', pSale: '', imgs: [], videos: [], sPhoto: '', sName: '', sWa: '', estado: 'activa', estadoFecha: '', estadoUsuario: '', vendedorAsignado: '', comisionPorcentaje: '', organizacionId: 2, localidadId: 1 });
     sel = l.length - 1; vi = 0; heroIdx = 0; gridOpen = false; confirmDel = false; descOpen = true;
     note(persist() ? '' : t.storeErr);
     render();
