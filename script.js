@@ -543,6 +543,8 @@ const T = {
     admUsrNoHayUsuarios: 'No hay usuarios que coincidan con la búsqueda.',
     admUsrErrorCargar: 'No se pudo cargar la lista de usuarios.', admUsrErrorGuardar: 'No se pudo guardar. Intenta de nuevo.',
     admUsrNoAutorizado: 'Tu sesión de Super Administrador no pudo validarse. Vuelve a confirmar tu clave.',
+    admUsrColEstado: 'Estado', admUsrColFechaCreacion: 'Fecha de creación', admUsrColFechaActualizacion: 'Última actualización',
+    admUsrEstadoActivo: 'Activo', admUsrEstadoInactivo: 'Inactivo', admUsrEstadoBaja: 'Baja',
     admEstadoActivo: 'Activo', admEstadoInactivo: 'Inactivo',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -941,6 +943,8 @@ const T = {
     admUsrNoHayUsuarios: 'No users match your search.',
     admUsrErrorCargar: 'Could not load the user list.', admUsrErrorGuardar: 'Could not save. Please try again.',
     admUsrNoAutorizado: 'Your Super Administrator session could not be validated. Please confirm your password again.',
+    admUsrColEstado: 'Status', admUsrColFechaCreacion: 'Creation date', admUsrColFechaActualizacion: 'Last update',
+    admUsrEstadoActivo: 'Active', admUsrEstadoInactivo: 'Inactive', admUsrEstadoBaja: 'Discharged',
     admEstadoActivo: 'Active', admEstadoInactivo: 'Inactive',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -7666,7 +7670,7 @@ async function cargarAdminUsrData() {
   const tbody = $('#adminUsrTbody');
   const t = T[lang];
   const miUsuario = localStorage.getItem(LOGIN_STORE);
-  if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="geo-td-empty">' + t.adminCargandoPuntos + '</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="geo-td-empty">' + t.adminCargandoPuntos + '</td></tr>';
   try {
     const { data, error } = await supabaseClient.rpc('admin_listar_usuarios', { p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado });
     if (error) throw error;
@@ -7681,7 +7685,7 @@ async function cargarAdminUsrData() {
     pintarAdminUsrTbody();
   } catch (e) {
     console.error('Error cargando usuarios:', e);
-    if (tbody) tbody.innerHTML = '<tr><td colspan="6" class="geo-td-empty">' + t.admUsrErrorCargar + '</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="geo-td-empty">' + t.admUsrErrorCargar + '</td></tr>';
   }
 }
 
@@ -7689,6 +7693,17 @@ $('#adminUsrBuscarInput')?.addEventListener('input', () => {
   adminUsrBuscar = $('#adminUsrBuscarInput').value.trim().toLowerCase();
   pintarAdminUsrTbody();
 });
+
+function getEstadosUsr() {
+  const t = T[lang] || T.es;
+  return [{ v: 'activo', l: t.admUsrEstadoActivo }, { v: 'inactivo', l: t.admUsrEstadoInactivo }, { v: 'baja', l: t.admUsrEstadoBaja }];
+}
+function usrEstadoBadgeClase(v) { return v === 'baja' ? 'cli-badge-baja' : (v === 'inactivo' ? 'cli-badge-inactivo' : 'cli-badge-activo'); }
+function usrEstadoBadge(v) {
+  const estado = v || 'activo';
+  const label = (getEstadosUsr().find((e) => e.v === estado) || {}).l || estado;
+  return el('span', 'cli-badge ' + usrEstadoBadgeClase(estado), label);
+}
 
 function usrFilaVista(u) {
   const t = T[lang];
@@ -7700,7 +7715,11 @@ function usrFilaVista(u) {
     '<td>' + (TIPOS_USUARIO_LABEL[u.tipo_usuario] || u.tipo_usuario || '—') + '</td>' +
     '<td>' + orgTxt + '</td>' +
     '<td>—</td>' +
+    '<td class="geo-td-badge"></td>' +
+    '<td>' + (u.created_at ? formatFechaHora(u.created_at) : '—') + '</td>' +
+    '<td>' + (u.actualizado_en ? formatFechaHora(u.actualizado_en) : '—') + '</td>' +
     '<td class="geo-td-edit"></td>';
+  tr.children[5].appendChild(usrEstadoBadge(u.estado));
   const editTd = tr.lastElementChild;
   const editBtn = document.createElement('button');
   editBtn.type = 'button'; editBtn.className = 'geo-edit-btn'; editBtn.setAttribute('aria-label', t.btnModificar); editBtn.textContent = '✎';
@@ -7733,13 +7752,19 @@ function usrFilaEdit(u) {
   const locSel = document.createElement('select');
   const tdOrg = document.createElement('td'); tdOrg.appendChild(orgSel);
   const tdLoc = document.createElement('td'); tdLoc.appendChild(locSel);
+  const estadoSel = document.createElement('select');
+  getEstadosUsr().forEach((e) => { const opt = document.createElement('option'); opt.value = e.v; opt.textContent = e.l; estadoSel.appendChild(opt); });
+  estadoSel.value = u.estado || 'activo';
+  const tdEstado = document.createElement('td'); tdEstado.appendChild(estadoSel);
+  const tdCreado = document.createElement('td'); tdCreado.textContent = u.created_at ? formatFechaHora(u.created_at) : '—';
+  const tdActualizado = document.createElement('td'); tdActualizado.textContent = u.actualizado_en ? formatFechaHora(u.actualizado_en) : '—';
   const tdActions = document.createElement('td'); tdActions.className = 'geo-td-edit-actions';
 
   const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'geo-row-btn geo-row-btn-save'; saveBtn.setAttribute('aria-label', t.btnGuardar); saveBtn.textContent = '✓';
   const cancelBtn = document.createElement('button'); cancelBtn.type = 'button'; cancelBtn.className = 'geo-row-btn geo-row-btn-cancel'; cancelBtn.setAttribute('aria-label', t.btnCancelar); cancelBtn.textContent = '×';
   tdActions.append(saveBtn, cancelBtn);
 
-  tr.append(tdCod, tdUsr, tdTipo, tdOrg, tdLoc, tdActions);
+  tr.append(tdCod, tdUsr, tdTipo, tdOrg, tdLoc, tdEstado, tdCreado, tdActualizado, tdActions);
 
   poblarOrgLocSelectsGenerico(orgSel, locSel, u.organizacion_id, u.localidad_id);
 
@@ -7748,26 +7773,50 @@ function usrFilaEdit(u) {
     saveBtn.disabled = true;
     const miUsuario = localStorage.getItem(LOGIN_STORE);
     try {
+      const nuevoEstado = estadoSel.value;
+      const estadoCambio = nuevoEstado !== (u.estado || 'activo');
       const { data, error } = await supabaseClient.rpc('admin_actualizar_org_loc_usuario', {
         p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado, p_usuario_objetivo: u.usuario,
         p_organizacion_id: orgSel.value || null, p_localidad_id: locSel.value || null
       });
       if (error) throw error;
-      if (data && data.status === 'ok') {
-        u.organizacion_id = orgSel.value ? Number(orgSel.value) : null;
-        u.localidad_id = locSel.value ? Number(locSel.value) : null;
-        adminUsrEditUsuario = null;
-        pintarAdminUsrTbody();
-      } else if (data && data.status === 'no_autorizado') {
-        adminHashConfirmado = null;
-        $('#adminUsrListaSec').hidden = true;
-        $('#adminUsrConfirmBox').hidden = false;
-      } else {
+      if (!(data && data.status === 'ok')) {
+        if (data && data.status === 'no_autorizado') {
+          adminHashConfirmado = null;
+          $('#adminUsrListaSec').hidden = true;
+          $('#adminUsrConfirmBox').hidden = false;
+          return;
+        }
         alert(t.admUsrErrorGuardar);
         saveBtn.disabled = false;
+        return;
       }
+      u.organizacion_id = orgSel.value ? Number(orgSel.value) : null;
+      u.localidad_id = locSel.value ? Number(locSel.value) : null;
+
+      if (estadoCambio) {
+        const resp = await supabaseClient.rpc('admin_actualizar_estado_usuario', {
+          p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado, p_usuario_objetivo: u.usuario, p_nuevo_estado: nuevoEstado
+        });
+        if (resp.error) throw resp.error;
+        if (resp.data && resp.data.status === 'ok') {
+          u.estado = nuevoEstado;
+        } else if (resp.data && resp.data.status === 'no_autorizado') {
+          adminHashConfirmado = null;
+          $('#adminUsrListaSec').hidden = true;
+          $('#adminUsrConfirmBox').hidden = false;
+          return;
+        } else {
+          alert(t.admUsrErrorGuardar);
+          saveBtn.disabled = false;
+          return;
+        }
+      }
+      u.actualizado_en = new Date().toISOString();
+      adminUsrEditUsuario = null;
+      pintarAdminUsrTbody();
     } catch (e) {
-      console.error('Error guardando organización/localidad del usuario:', e);
+      console.error('Error guardando el usuario:', e);
       alert(t.admUsrErrorGuardar);
       saveBtn.disabled = false;
     }
@@ -7785,7 +7834,7 @@ function pintarAdminUsrTbody() {
   tbody.innerHTML = '';
   if (!lista.length) {
     const tr = document.createElement('tr');
-    const td = document.createElement('td'); td.colSpan = 6; td.className = 'geo-td-empty'; td.textContent = t.admUsrNoHayUsuarios;
+    const td = document.createElement('td'); td.colSpan = 9; td.className = 'geo-td-empty'; td.textContent = t.admUsrNoHayUsuarios;
     tr.appendChild(td); tbody.appendChild(tr);
     return;
   }
