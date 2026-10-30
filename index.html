@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261030e">
+<link rel="stylesheet" href="styles.css?v=20261030f">
 </head>
 <body>
 
@@ -1195,6 +1195,20 @@
                 </div>
               </div>
 
+              <div class="cli-sec loc-admin-sec" id="pOrgSec" hidden>
+                <div class="cli-sec-h" data-i18n="admOrgLocSeccion"></div>
+                <div class="cli-grid loc-admin-grid-2">
+                  <div class="fld">
+                    <label for="p-org" data-i18n="admOrgNombre"></label>
+                    <select id="p-org"></select>
+                  </div>
+                  <div class="fld">
+                    <label for="p-org-loc" data-i18n="admOrgLocalidades"></label>
+                    <select id="p-org-loc"></select>
+                  </div>
+                </div>
+              </div>
+
               <div class="loc-admin-meta">
                 <span><span data-i18n="admFechaCambioEstadoLbl"></span> <strong id="pEstadoFecha">—</strong></span>
                 <span><span data-i18n="admUsuarioCambiaEstadoLbl"></span> <strong id="pEstadoUsuario">—</strong></span>
@@ -1423,6 +1437,10 @@
       </div>
     </div>
     <div class="fld" style="margin-top:16px"><label for="cita-accion" data-i18n="citaAccion"></label><textarea id="cita-accion" rows="3" data-i18n-ph="citaAccionPh"></textarea></div>
+    <div class="x-row" id="citaOrgRow" style="margin-top:16px" hidden>
+      <div class="fld"><label for="cita-org" data-i18n="admOrgNombre"></label><select id="cita-org"></select></div>
+      <div class="fld"><label for="cita-org-loc" data-i18n="admOrgLocalidades"></label><select id="cita-org-loc"></select></div>
+    </div>
     <div class="fld" style="margin-top:16px">
       <label for="cita-estado" data-i18n="citaEstado"></label>
       <select id="cita-estado">
@@ -2253,6 +2271,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261030-0600"></script>
+<script src="script.js?v=20261030-0700"></script>
 </body>
 </html>

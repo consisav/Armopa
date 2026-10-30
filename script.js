@@ -532,6 +532,7 @@ const T = {
     admOrgErrorEliminar: 'No se pudo eliminar. Intenta de nuevo.', admOrgErrorGuardar: 'No se pudo guardar. Revisa los datos e intenta de nuevo.', admOrgErrorCargar: 'No se pudo cargar la información.',
     admOrgSeccionOrgs: 'ORGANIZACIÓN', admOrgColCodigo: 'Cód.', admOrgColNombre: 'Organización', admOrgColRepresentante: 'Representante Legal', admOrgColTelefonos: 'Teléfonos', admOrgColUbicacion: 'Ubicación', admOrgColEstado: 'Estado',
     admOrgGrabadoPor: 'Grabado por', admOrgModificadoPor: 'Última modificación por', admOrgSelecOrgPrimero: 'Selecciona una organización arriba para ver sus localidades.',
+    admOrgLocSeccion: 'Organización y Localidad (solo super administrador)',
     admEstadoActivo: 'Activo', admEstadoInactivo: 'Inactivo',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -919,6 +920,7 @@ const T = {
     admOrgErrorEliminar: 'Could not delete. Please try again.', admOrgErrorGuardar: 'Could not save. Check the data and try again.', admOrgErrorCargar: 'Could not load the information.',
     admOrgSeccionOrgs: 'ORGANIZATION', admOrgColCodigo: 'Code', admOrgColNombre: 'Organization', admOrgColRepresentante: 'Legal Representative', admOrgColTelefonos: 'Phones', admOrgColUbicacion: 'Location', admOrgColEstado: 'Status',
     admOrgGrabadoPor: 'Saved by', admOrgModificadoPor: 'Last modified by', admOrgSelecOrgPrimero: 'Select an organization above to see its locations.',
+    admOrgLocSeccion: 'Organization and Location (super admin only)',
     admEstadoActivo: 'Active', admEstadoInactivo: 'Inactive',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -2751,8 +2753,14 @@ function vendRenderEdit(card, v, isNew) {
     labeledCell(t.admNumeroCuentaBancaria, cuentaInput),
     labeledCell(t.admTipoCuenta, tipoCuentaSel)
   );
+  let orgSel = null, orgLocSel = null;
   if (esSuperAdmin()) {
     grid.appendChild(labeledCell(t.admPctComisionVentas, comisionInput));
+    orgSel = document.createElement('select');
+    orgLocSel = document.createElement('select');
+    grid.appendChild(labeledCell(t.admOrgNombre, orgSel));
+    grid.appendChild(labeledCell(t.admOrgLocalidades, orgLocSel));
+    poblarOrgLocSelectsGenerico(orgSel, orgLocSel, v.organizacion_id, v.localidad_id);
   }
   card.append(grid, actions);
 
@@ -2783,7 +2791,9 @@ function vendRenderEdit(card, v, isNew) {
     };
     if (esSuperAdmin()) {
       payload.comision_porcentaje = comisionInput.value !== '' ? comisionInput.value : null;
+      if (orgSel) { payload.organizacion_id = orgSel.value || null; payload.localidad_id = orgLocSel.value || null; }
     }
+    if (isNew && !payload.organizacion_id) { payload.organizacion_id = 2; payload.localidad_id = 1; }
     try {
       if (isNew) {
         const nuevo = await crearVendedor(payload);
@@ -3110,7 +3120,20 @@ function cliRenderEdit(card, c, isNew) {
   );
   secAdmin.append(gridAdmin);
 
+  let orgSel = null, orgLocSel = null;
+  const secOrg = el('div', 'cli-sec');
+  if (esSuperAdmin()) {
+    secOrg.append(el('div', 'cli-sec-h', t.admOrgLocSeccion));
+    orgSel = document.createElement('select');
+    orgLocSel = document.createElement('select');
+    const gridOrg = el('div', 'cli-grid');
+    gridOrg.append(labeledCell(t.admOrgNombre, orgSel), labeledCell(t.admOrgLocalidades, orgLocSel));
+    secOrg.append(gridOrg);
+    poblarOrgLocSelectsGenerico(orgSel, orgLocSel, c.organizacion_id, c.localidad_id);
+  }
+
   rightCol.append(secIdent, secContacto, secUbicacion, secAdmin);
+  if (esSuperAdmin()) rightCol.append(secOrg);
   editLayout.append(photoCol, rightCol);
   card.append(editLayout, actions);
 
@@ -3139,10 +3162,15 @@ function cliRenderEdit(card, c, isNew) {
       foto_url: fotoUrl || null,
       usuario: localStorage.getItem(LOGIN_STORE) || null
     };
+    if (esSuperAdmin() && orgSel) {
+      payload.organizacion_id = orgSel.value || null;
+      payload.localidad_id = orgLocSel.value || null;
+    }
     try {
       if (isNew) {
         const anio = new Date().getFullYear();
         const correlativo = await cliSiguienteCorrelativo(anio);
+        if (!payload.organizacion_id) { payload.organizacion_id = 2; payload.localidad_id = 1; }
         const nuevo = await crearCliente({ ...payload, anio, correlativo });
         adminCliData.unshift(nuevo);
         cliRenderView(card, nuevo);
@@ -3403,6 +3431,11 @@ function citCrearTarjeta(row) {
     actualizarCitaEtiquetaColor();
     $('#citaModBtn').hidden = false;
     $('#citaSaveBtn').hidden = true;
+    const citaOrgRowMod = $('#citaOrgRow');
+    if (citaOrgRowMod) {
+      citaOrgRowMod.hidden = !esSuperAdmin();
+      if (!citaOrgRowMod.hidden) poblarOrgLocSelectsGenerico('#cita-org', '#cita-org-loc', row.organizacion_id, row.localidad_id);
+    }
     const applyVendedor = () => { if (row.vendedor_asignado) $('#cita-vendedor').value = row.vendedor_asignado; };
     if (vendedoresCatalogoCargado) applyVendedor(); else cargarVendedoresCatalogo().then(applyVendedor);
   });
@@ -4090,6 +4123,14 @@ function tipoComRenderEdit(card, tc, isNew) {
     labeledCell(t.admNombre, nombreInput),
     labeledCell(t.admPctComisionDefecto, pctInput)
   );
+  let orgSel = null, orgLocSel = null;
+  if (esSuperAdmin()) {
+    orgSel = document.createElement('select');
+    orgLocSel = document.createElement('select');
+    grid.appendChild(labeledCell(t.admOrgNombre, orgSel));
+    grid.appendChild(labeledCell(t.admOrgLocalidades, orgLocSel));
+    poblarOrgLocSelectsGenerico(orgSel, orgLocSel, tc.organizacion_id, tc.localidad_id);
+  }
   card.append(grid, actions);
 
   cancelBtn.addEventListener('click', () => {
@@ -4111,6 +4152,8 @@ function tipoComRenderEdit(card, tc, isNew) {
       porcentaje_default: pctInput.value !== '' ? pctInput.value : null,
       usuario: localStorage.getItem(LOGIN_STORE) || null
     };
+    if (orgSel) { payload.organizacion_id = orgSel.value || null; payload.localidad_id = orgLocSel.value || null; }
+    if (isNew && !payload.organizacion_id) { payload.organizacion_id = 2; payload.localidad_id = 1; }
     try {
       if (isNew) {
         const { data: row, error } = await supabaseClient.from('tipos_comision').insert(payload).select().single();
@@ -4756,6 +4799,51 @@ async function poblarGeoMunSelect(sel, deptoId, actual) {
     (data || []).forEach((m) => { const opt = document.createElement('option'); opt.value = m.id; opt.textContent = m.nombre; sel.appendChild(opt); });
   } catch (e) { console.error('Error cargando municipios:', e); }
   sel.value = actual ? String(actual) : '';
+}
+
+/* ---- Selects genéricos de Organización / Localidad (para formularios de
+   otros catálogos: propiedades, clientes, citas, vendedores, tipos de
+   comisión, servicios). Solo se usan cuando esSuperAdmin(). ---- */
+let orgGenericaCache = null;
+async function cargarOrgGenericaCache() {
+  if (orgGenericaCache) return orgGenericaCache;
+  try {
+    const { data, error } = await supabaseClient.from('organizaciones').select('id,codigo,nombre').order('codigo', { ascending: true });
+    if (error) throw error;
+    orgGenericaCache = data || [];
+  } catch (e) {
+    console.error('Error cargando organizaciones:', e);
+    orgGenericaCache = [];
+  }
+  return orgGenericaCache;
+}
+async function poblarOrgLocSelectsGenerico(orgSelOrSelector, locSelOrSelector, orgIdActual, locIdActual, onChange) {
+  const orgSel = (typeof orgSelOrSelector === 'string') ? $(orgSelOrSelector) : orgSelOrSelector;
+  const locSel = (typeof locSelOrSelector === 'string') ? $(locSelOrSelector) : locSelOrSelector;
+  if (!orgSel || !locSel) return;
+  if (orgSel.dataset.poblado !== '1') {
+    const orgs = await cargarOrgGenericaCache();
+    orgSel.innerHTML = '<option value="">—</option>';
+    orgs.forEach((o) => { const opt = document.createElement('option'); opt.value = o.id; opt.textContent = (o.codigo ? o.codigo + ' · ' : '') + o.nombre; orgSel.appendChild(opt); });
+    orgSel.dataset.poblado = '1';
+    orgSel.addEventListener('change', async () => {
+      await poblarLocSelectGenerico(locSel, orgSel.value, '');
+      if (onChange) onChange(orgSel.value || null, locSel.value || null);
+    });
+    locSel.addEventListener('change', () => { if (onChange) onChange(orgSel.value || null, locSel.value || null); });
+  }
+  orgSel.value = orgIdActual ? String(orgIdActual) : '';
+  await poblarLocSelectGenerico(locSel, orgSel.value, locIdActual);
+}
+async function poblarLocSelectGenerico(locSel, orgId, locIdActual) {
+  locSel.innerHTML = '<option value="">—</option>';
+  if (!orgId) return;
+  try {
+    const { data, error } = await supabaseClient.from('org_localidades').select('id,codigo,nombre_comercial').eq('organizacion_id', orgId).order('codigo', { ascending: true });
+    if (error) throw error;
+    (data || []).forEach((l) => { const opt = document.createElement('option'); opt.value = l.id; opt.textContent = (l.codigo ? l.codigo + ' · ' : '') + (l.nombre_comercial || ''); locSel.appendChild(opt); });
+  } catch (e) { console.error('Error cargando localidades:', e); }
+  locSel.value = locIdActual ? String(locIdActual) : '';
 }
 
 /* ---- Tabla de organizaciones (maestro) ---- */
@@ -8025,6 +8113,11 @@ const openCitaModal = (prefill) => {
   $('#citaWaBtn').hidden = true;
   $('#citaModBtn').hidden = true;
   $('#citaSaveBtn').hidden = false;
+  const citaOrgRow = $('#citaOrgRow');
+  if (citaOrgRow) {
+    citaOrgRow.hidden = !esSuperAdmin();
+    if (!citaOrgRow.hidden) poblarOrgLocSelectsGenerico('#cita-org', '#cita-org-loc', null, null);
+  }
   poblarCitaVendedorSelect();
   poblarCitaCiudadList();
   if (prefill && prefill.vendedor) $('#cita-vendedor').value = prefill.vendedor;
@@ -8142,7 +8235,9 @@ function citaLeerRowFormulario() {
     vendedor_asignado: vendedor,
     accion: $('#cita-accion').value.trim() || null,
     estado: $('#cita-estado').value || 'agendado',
-    etiqueta: $('#cita-etiqueta').value || 'cliente'
+    etiqueta: $('#cita-etiqueta').value || 'cliente',
+    organizacion_id: (esSuperAdmin() && $('#cita-org')?.value) ? $('#cita-org').value : (citaGuardadaId ? undefined : 2),
+    localidad_id: (esSuperAdmin() && $('#cita-org-loc')?.value) ? $('#cita-org-loc').value : (citaGuardadaId ? undefined : 1)
   };
 }
 
@@ -9256,6 +9351,11 @@ function renderEdit() {
       $('#pComisionValor').textContent = formatQ(comisionValorCalc(c));
       $('#pEstadoFecha').textContent = c.estadoFecha ? formatQBuscarRegFecha(c.estadoFecha) : '—';
       $('#pEstadoUsuario').textContent = c.estadoUsuario || '—';
+      const orgSec = $('#pOrgSec');
+      if (orgSec) {
+        orgSec.hidden = !esSuperAdmin();
+        if (!orgSec.hidden) poblarOrgLocSelectsGenerico('#p-org', '#p-org-loc', c.organizacionId, c.localidadId, (orgId, locId) => { c.organizacionId = orgId; c.localidadId = locId; syncLoc(); });
+      }
     }
   }
   $('#sAvBtn').hidden = !c.sPhoto;
@@ -11146,6 +11246,8 @@ function toSupaRow(cityName, l) {
     vendedor_asignado: l.vendedorAsignado || null,
     cliente_asignado: l.clienteAsignado || null,
     comision_porcentaje: l.comisionPorcentaje || null,
+    organizacion_id: l.organizacionId || null,
+    localidad_id: l.localidadId || null,
     activo: true
   };
 }
@@ -11209,7 +11311,9 @@ async function cargarPropiedadesArmopa() {
         estadoUsuario: row.estado_ubicacion_usuario || '',
         vendedorAsignado: row.vendedor_asignado || '',
         clienteAsignado: row.cliente_asignado || '',
-        comisionPorcentaje: row.comision_porcentaje != null ? String(row.comision_porcentaje) : ''
+        comisionPorcentaje: row.comision_porcentaje != null ? String(row.comision_porcentaje) : '',
+        organizacionId: row.organizacion_id || null,
+        localidadId: row.localidad_id || null
       });
     });
     data = nuevo;
