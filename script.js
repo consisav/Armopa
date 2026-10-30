@@ -4630,11 +4630,12 @@ function abrirAdminGeoRegionesModal() {
   adminGeoRegionesModalEl.hidden = false;
 }
 
-$('#adminGeoDeptoMostrarBtn')?.addEventListener('click', () => {
-  cargarAdminGeoDeptosData(($('#adminGeoDeptoBuscarInput')?.value || '').trim());
-});
-$('#adminGeoDeptoBuscarInput')?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); $('#adminGeoDeptoMostrarBtn')?.click(); }
+let adminGeoDeptoBuscarTimer = null;
+$('#adminGeoDeptoBuscarInput')?.addEventListener('input', () => {
+  clearTimeout(adminGeoDeptoBuscarTimer);
+  adminGeoDeptoBuscarTimer = setTimeout(() => {
+    cargarAdminGeoDeptosData(($('#adminGeoDeptoBuscarInput')?.value || '').trim());
+  }, 250);
 });
 $('#adminGeoDeptoNuevoBtn')?.addEventListener('click', () => {
   adminGeoDeptoEditId = 'new';
@@ -4642,11 +4643,12 @@ $('#adminGeoDeptoNuevoBtn')?.addEventListener('click', () => {
 });
 $('#adminGeoRegionesBtn')?.addEventListener('click', abrirAdminGeoRegionesModal);
 
-$('#adminGeoMunMostrarBtn')?.addEventListener('click', () => {
-  cargarAdminGeoMunData(($('#adminGeoMunBuscarInput')?.value || '').trim());
-});
-$('#adminGeoMunBuscarInput')?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); $('#adminGeoMunMostrarBtn')?.click(); }
+let adminGeoMunBuscarTimer = null;
+$('#adminGeoMunBuscarInput')?.addEventListener('input', () => {
+  clearTimeout(adminGeoMunBuscarTimer);
+  adminGeoMunBuscarTimer = setTimeout(() => {
+    cargarAdminGeoMunData(($('#adminGeoMunBuscarInput')?.value || '').trim());
+  }, 250);
 });
 $('#adminGeoMunNuevoBtn')?.addEventListener('click', () => {
   if (!adminGeoDeptoSeleccionado) { alert(T[lang].admGeoSelecDeptoPrimero); return; }

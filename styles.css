@@ -942,15 +942,21 @@ section[id]{scroll-margin-top:148px}
 }
 
 /* ===== Geografía: tablas maestro-detalle (Departamentos / Municipios) ===== */
-.geo-tbl-sec{margin-top:24px}
-.geo-tbl-sec:first-of-type{margin-top:4px}
-.geo-tbl-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
-.geo-tbl-head h3{font-family:'Marcellus',Georgia,serif;font-size:15px;letter-spacing:.02em;color:var(--ink);margin:0}
+#adminGeografiaCard .ph{margin-bottom:10px}
+#adminGeografiaCard .ph h2{font-size:20px}
+#adminGeografiaCard .ph-sub{font-size:13px;margin-top:2px}
+.geo-tbl-sec{margin-top:12px}
+.geo-tbl-sec:first-of-type{margin-top:0}
+.geo-tbl-head{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:8px}
+.geo-tbl-head h3{font-family:'Marcellus',Georgia,serif;font-size:14px;letter-spacing:.02em;color:var(--ink);margin:0}
 .geo-tbl-head-actions{display:flex;gap:10px;flex-wrap:wrap}
-.geo-tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;max-height:360px;overflow-y:auto}
+.geo-buscar-fields{margin-bottom:8px}
+.geo-buscar-fields .cq-input{width:100%;min-height:38px;border:1px solid #bfc8d4;border-radius:9px;padding:7px 12px;font-size:13.5px;color:var(--ink);background:#fff;font-family:inherit}
+.geo-buscar-fields .cq-input:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.geo-tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;max-height:230px;overflow-y:auto}
 table.geo-tbl{width:100%;border-collapse:collapse;font-size:13.5px;min-width:620px}
-table.geo-tbl thead th{position:sticky;top:0;z-index:1;background:var(--paper);text-align:left;font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:12px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
-table.geo-tbl tbody td{padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:middle}
+table.geo-tbl thead th{position:sticky;top:0;z-index:1;background:var(--paper);text-align:left;font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:8px 16px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.geo-tbl tbody td{padding:8px 16px;border-bottom:1px solid var(--line);color:var(--ink);vertical-align:middle}
 table.geo-tbl tbody tr:last-child td{border-bottom:none}
 table.geo-tbl tbody tr:not(.geo-row-edit){cursor:pointer;transition:background-color .15s}
 table.geo-tbl tbody tr:not(.geo-row-edit):hover{background:var(--paper)}
