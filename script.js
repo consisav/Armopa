@@ -5073,7 +5073,7 @@ async function pintarOrgDetalleEdit(box, o) {
   bar.append(el('span', '', ''), barActions);
   box.append(bar);
 
-  const grid = el('div', 'proy-grid org-detalle-grid');
+  const grid = el('div', 'proy-grid org-detalle-grid org-detalle-grid-edit');
   grid.append(
     labeledCell(t.admOrgNombre, nomInput),
     labeledCell(t.admOrgRepresentante, repInput),
@@ -5341,7 +5341,7 @@ async function pintarOrgLocDetalleEdit(box, org, loc) {
   bar.append(el('span', '', ''), barActions);
   box.append(bar);
 
-  const grid = el('div', 'proy-grid org-detalle-grid');
+  const grid = el('div', 'proy-grid org-detalle-grid org-detalle-grid-edit');
   grid.append(
     labeledCell(t.admOrgLocNombreComercial, nomInput),
     labeledCell(t.admOrgLocRazonSocial, razonInput),
