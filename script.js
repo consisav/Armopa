@@ -2915,7 +2915,7 @@ function cliRenderView(card, c) {
 
   const secContacto = el('div', 'cli-sec');
   secContacto.append(el('div', 'cli-sec-h', t.admCliSeccionContacto));
-  const gridContacto = el('div', 'cli-grid');
+  const gridContacto = el('div', 'cli-grid cli-grid-view');
   gridContacto.append(
     labeledCell(t.admTelefono, el('span', '', c.telefono || '—')),
     labeledCell(t.admDpi, el('span', '', c.dpi || '—')),
@@ -2925,7 +2925,7 @@ function cliRenderView(card, c) {
 
   const secUbicacion = el('div', 'cli-sec');
   secUbicacion.append(el('div', 'cli-sec-h', t.admCliSeccionUbicacion));
-  const gridUbicacion = el('div', 'cli-grid');
+  const gridUbicacion = el('div', 'cli-grid cli-grid-view');
   gridUbicacion.append(
     labeledCell(t.admDepartamento, el('span', '', c.departamento || '—')),
     labeledCell(t.admMunicipio, el('span', '', c.municipio || '—')),
@@ -2935,7 +2935,7 @@ function cliRenderView(card, c) {
 
   const secAdmin = el('div', 'cli-sec');
   secAdmin.append(el('div', 'cli-sec-h', t.admCliSeccionAdmin));
-  const gridAdmin = el('div', 'cli-grid');
+  const gridAdmin = el('div', 'cli-grid cli-grid-view');
   gridAdmin.append(
     labeledCell(t.admEstadoCliente, el('span', '', estadoClienteLabel(c.estado))),
     labeledCell(t.admProfesion, el('span', '', c.profesion || '—')),
@@ -2949,7 +2949,7 @@ function cliRenderView(card, c) {
   if (esSuperAdmin()) {
     const secOrgView = el('div', 'cli-sec');
     secOrgView.append(el('div', 'cli-sec-h', t.admOrgLocSeccion));
-    const gridOrgView = el('div', 'cli-grid');
+    const gridOrgView = el('div', 'cli-grid cli-grid-view');
     const orgNombre = c.organizacion_id ? (orgGenericaCache?.find((o) => o.id === c.organizacion_id)?.nombre || ('#' + c.organizacion_id)) : '—';
     const locSpan = el('span', '', '—');
     gridOrgView.append(labeledCell(t.admOrgNombre, el('span', '', orgNombre)), labeledCell(t.admOrgLocalidades, locSpan));
