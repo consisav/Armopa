@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261023s">
+<link rel="stylesheet" href="styles.css?v=20261030a">
 </head>
 <body>
 
@@ -51,6 +51,9 @@
                 <div class="nav-admin-sep" role="separator"></div>
                 <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
                 <button type="button" id="navAdminTiposComisionBtn" data-i18n="adminMenuTiposComision"></button>
+                <div class="nav-admin-sep" role="separator"></div>
+                <button type="button" id="navAdminGeografiaBtn" data-i18n="adminMenuGeografia"></button>
+                <button type="button" id="navAdminOrganizacionesBtn" data-i18n="adminMenuOrganizaciones"></button>
               </div>
             </div>
             <div class="nav-admin-group" data-grp="negocios">
@@ -1990,6 +1993,34 @@
   </div>
 </div>
 
+<div class="modal" id="adminGeografiaModal" hidden>
+  <button class="scrim" type="button" id="adminGeografiaScrim" data-i18n-label="close"></button>
+  <div class="pcard pcard-wide" id="adminGeografiaCard" role="dialog" aria-modal="true" aria-labelledby="adminGeografiaTitle">
+    <button class="mx" type="button" id="adminGeografiaClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminGeografiaTitle" data-i18n="admGeoTituloModal"></h2><p class="ph-sub" data-i18n="admGeoSubtituloModal"></p></div>
+    <div class="q-buscar-fields" style="margin-bottom:18px">
+      <input type="text" id="adminGeoDeptoBuscarInput" class="cq-input" data-i18n-ph="admGeoBuscarDeptoPh">
+      <button class="btn btn-dark btn-sm" type="button" id="adminGeoDeptoMostrarBtn" data-i18n="btnMostrar"></button>
+      <button class="btn btn-gold btn-sm" type="button" id="adminGeoDeptoNuevoBtn" data-i18n="admGeoAgregarDepto"></button>
+    </div>
+    <div id="adminGeoDeptosList" class="proy-list"></div>
+  </div>
+</div>
+
+<div class="modal" id="adminOrganizacionesModal" hidden>
+  <button class="scrim" type="button" id="adminOrganizacionesScrim" data-i18n-label="close"></button>
+  <div class="pcard pcard-wide" id="adminOrganizacionesCard" role="dialog" aria-modal="true" aria-labelledby="adminOrganizacionesTitle">
+    <button class="mx" type="button" id="adminOrganizacionesClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminOrganizacionesTitle" data-i18n="admOrgTituloModal"></h2><p class="ph-sub" data-i18n="admOrgSubtituloModal"></p></div>
+    <div class="q-buscar-fields" style="margin-bottom:18px">
+      <input type="text" id="adminOrgBuscarInput" class="cq-input" data-i18n-ph="admOrgBuscarPh">
+      <button class="btn btn-dark btn-sm" type="button" id="adminOrgMostrarBtn" data-i18n="btnMostrar"></button>
+      <button class="btn btn-gold btn-sm" type="button" id="adminOrgNuevoBtn" data-i18n="admOrgAgregar"></button>
+    </div>
+    <div id="adminOrgList" class="proy-list"></div>
+  </div>
+</div>
+
 <div class="modal" id="adminTiposComisionModal" hidden>
   <button class="scrim" type="button" id="adminTiposComisionScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminTiposComisionCard" role="dialog" aria-modal="true" aria-labelledby="adminTiposComisionTitle">
@@ -2122,6 +2153,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261023-0100"></script>
+<script src="script.js?v=20261030-0100"></script>
 </body>
 </html>

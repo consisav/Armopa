@@ -924,6 +924,20 @@ section[id]{scroll-margin-top:148px}
 .cli-badge-baja{background:#fde8e8;color:#b3261e}
 .cli-badge-inquilino{background:#eaf1fc;color:#1d4ed8}
 .cli-badge-propietario{background:#fdf3e2;color:#8b641d}
+.cli-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:999px;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.cli-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+
+/* ===== Geografía / Organizaciones: acordeón anidado dentro de .proy-card ===== */
+.geo-mun-wrap{border-top:1px dashed var(--line);padding-top:14px;margin-top:2px;display:flex;flex-direction:column;gap:12px}
+.proy-pane-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.proy-pane-head h4{font-size:13px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:0}
+.proy-list-nested{margin-top:2px}
+.proy-card-sm{padding:14px 16px;border-radius:12px;background:var(--paper,#f7f8fa)}
+.proy-card-sm::before{width:2px;border-radius:12px 0 0 12px}
+.proy-card-sm .proy-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(min-width:720px){
+  .proy-card-sm .proy-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
 
 .cli-sec{margin-top:18px}
 .cli-sec-h{font-size:11.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;padding-bottom:6px;border-bottom:1px dashed var(--line)}

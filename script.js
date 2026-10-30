@@ -310,7 +310,7 @@ const T = {
     adminUsersBtn: 'Administrar usuarios', logoutBtn: 'Salir', connectBtn: 'Conectarse',
     adminMenuBtn: 'Administración', adminMenuProp: 'Propiedades', adminMenuProy: 'Proyectos', adminMenuServ: 'Servicios', adminMenuVend: 'Vendedores',
     adminGrpCatalogos: 'Catálogos', adminGrpNegocios: 'Negocios', adminGrpComisiones: 'Comisiones', adminGrpReportes: 'Reportes',
-    adminMenuIngresoCiudades: 'Ingreso de Ciudades', adminMenuIngresoPropiedades: 'Ingreso de Propiedades', adminMenuClientes: 'Clientes', adminMenuCitas: 'Citas', adminMenuAgendaCitas: 'Agenda de citas', adminMenuTiposComision: 'Tipos de comisión', adminMenuRotVisual: 'Rotación Visual',
+    adminMenuIngresoCiudades: 'Ingreso de Ciudades', adminMenuIngresoPropiedades: 'Ingreso de Propiedades', adminMenuClientes: 'Clientes', adminMenuCitas: 'Citas', adminMenuAgendaCitas: 'Agenda de citas', adminMenuTiposComision: 'Tipos de comisión', adminMenuRotVisual: 'Rotación Visual', adminMenuGeografia: 'Geografía', adminMenuOrganizaciones: 'Catálogo de Organizaciones y Localidades',
     adminMenuComisionesVentas: 'Comisiones Ventas', adminMenuComisionesGeneradas: 'Comisiones Generadas', adminMenuComisionesPagadas: 'Comisiones Pagadas',
     adminMenuRepProp: 'Listado de Propiedades', adminMenuRepServ: 'Estado de Servicios', adminMenuRepClientes: 'Seguimiento Clientes',
     carHint: 'Presione la imagen para ver las propiedades de la ciudad.', btnBuscarServ: 'Buscar servicios',
@@ -508,6 +508,22 @@ const T = {
     admCitErrorEliminar: 'No se pudo eliminar la cita.', admCitConfirmEliminar: '¿Eliminar esta cita? Esta acción no se puede deshacer.',
     admCitErrorGuardar: 'No se pudo guardar la cita.',
     admTipoComTituloModal: 'Tipos de comisión — Catálogo', admTipoComSubtituloModal: 'Tipos de comisión según el negocio: Propiedades, Proyectos o Servicios.',
+    admGeoTituloModal: 'Geografía — Catálogo', admGeoSubtituloModal: 'Departamentos de Guatemala y, dentro de cada uno, sus municipios.',
+    admGeoBuscarDeptoPh: 'Buscar departamento…', admGeoAgregarDepto: '+ Agregar departamento', admGeoNoHayDeptos: 'No hay departamentos que coincidan con la búsqueda.',
+    admGeoCodigo: 'Código', admGeoNombre: 'Departamento', admGeoRegion: 'Región', admGeoCodigoTel: 'Código telefónico', admGeoCodigoPostal: 'Código postal',
+    admGeoVerMunicipios: 'Ver municipios', admGeoOcultarMunicipios: 'Ocultar municipios', admGeoMunicipios: 'Municipios', admGeoAgregarMunicipio: '+ Agregar municipio',
+    admGeoNoHayMunicipios: 'Este departamento aún no tiene municipios registrados.', admGeoMunNombre: 'Municipio', admGeoMunPrefijo: 'Prefijo',
+    admGeoConfirmEliminarDepto: '¿Eliminar este departamento? También se eliminarán sus municipios.', admGeoConfirmEliminarMun: '¿Eliminar este municipio?',
+    admGeoErrorEliminar: 'No se pudo eliminar. Intenta de nuevo.', admGeoErrorGuardar: 'No se pudo guardar. Revisa los datos e intenta de nuevo.', admGeoErrorCargar: 'No se pudo cargar la información.',
+    admOrgTituloModal: 'Organizaciones y Localidades — Catálogo', admOrgSubtituloModal: 'Organizaciones (grupos corporativos) y, dentro de cada una, sus localidades o empresas.',
+    admOrgBuscarPh: 'Buscar organización…', admOrgAgregar: '+ Agregar organización', admOrgNoHayOrgs: 'No hay organizaciones que coincidan con la búsqueda.',
+    admOrgCodigo: 'Código', admOrgNombre: 'Organización', admOrgRepresentante: 'Representante legal', admOrgTelefonos: 'Teléfonos', admOrgCorreos: 'Correos',
+    admOrgDireccion: 'Dirección', admOrgDepartamento: 'Departamento', admOrgMunicipio: 'Municipio', admOrgEstado: 'Estado',
+    admOrgVerLocalidades: 'Ver localidades', admOrgOcultarLocalidades: 'Ocultar localidades', admOrgLocalidades: 'Localidades', admOrgAgregarLocalidad: '+ Agregar localidad',
+    admOrgNoHayLocalidades: 'Esta organización aún no tiene localidades registradas.', admOrgLocNombreComercial: 'Nombre comercial', admOrgLocRazonSocial: 'Razón social', admOrgLocNit: 'NIT',
+    admOrgConfirmEliminarOrg: '¿Eliminar esta organización? También se eliminarán sus localidades.', admOrgConfirmEliminarLoc: '¿Eliminar esta localidad?',
+    admOrgErrorEliminar: 'No se pudo eliminar. Intenta de nuevo.', admOrgErrorGuardar: 'No se pudo guardar. Revisa los datos e intenta de nuevo.', admOrgErrorCargar: 'No se pudo cargar la información.',
+    admEstadoActivo: 'Activo', admEstadoInactivo: 'Inactivo',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
     admSeleccionaVendedor: 'Selecciona un vendedor',
@@ -672,7 +688,7 @@ const T = {
     adminUsersBtn: 'Manage users', logoutBtn: 'Log out', connectBtn: 'Log in',
     adminMenuBtn: 'Admin', adminMenuProp: 'Properties', adminMenuProy: 'Projects', adminMenuServ: 'Services', adminMenuVend: 'Vendors',
     adminGrpCatalogos: 'Catalogs', adminGrpNegocios: 'Business', adminGrpComisiones: 'Commissions', adminGrpReportes: 'Reports',
-    adminMenuIngresoCiudades: 'Add Cities', adminMenuIngresoPropiedades: 'Add Properties', adminMenuClientes: 'Clients', adminMenuCitas: 'Appointments', adminMenuAgendaCitas: 'Appointment schedule', adminMenuTiposComision: 'Commission Types', adminMenuRotVisual: 'Visual Rotation',
+    adminMenuIngresoCiudades: 'Add Cities', adminMenuIngresoPropiedades: 'Add Properties', adminMenuClientes: 'Clients', adminMenuCitas: 'Appointments', adminMenuAgendaCitas: 'Appointment schedule', adminMenuTiposComision: 'Commission Types', adminMenuRotVisual: 'Visual Rotation', adminMenuGeografia: 'Geography', adminMenuOrganizaciones: 'Organizations & Locations Catalog',
     adminMenuComisionesVentas: 'Sales Commissions', adminMenuComisionesGeneradas: 'Generated Commissions', adminMenuComisionesPagadas: 'Paid Commissions',
     adminMenuRepProp: 'Property Listing', adminMenuRepServ: 'Service Status', adminMenuRepClientes: 'Client Follow-up',
     carHint: 'Click the image to see the city’s properties.', btnBuscarServ: 'Browse services',
@@ -870,6 +886,22 @@ const T = {
     admCitErrorEliminar: 'Could not delete the appointment.', admCitConfirmEliminar: 'Delete this appointment? This action cannot be undone.',
     admCitErrorGuardar: 'Could not save the appointment.',
     admTipoComTituloModal: 'Commission Types — Catalog', admTipoComSubtituloModal: 'Commission types by business: Properties, Projects or Services.',
+    admGeoTituloModal: 'Geography — Catalog', admGeoSubtituloModal: 'Departments of Guatemala and, within each one, their municipalities.',
+    admGeoBuscarDeptoPh: 'Search department…', admGeoAgregarDepto: '+ Add department', admGeoNoHayDeptos: 'No departments match your search.',
+    admGeoCodigo: 'Code', admGeoNombre: 'Department', admGeoRegion: 'Region', admGeoCodigoTel: 'Phone code', admGeoCodigoPostal: 'Postal code',
+    admGeoVerMunicipios: 'View municipalities', admGeoOcultarMunicipios: 'Hide municipalities', admGeoMunicipios: 'Municipalities', admGeoAgregarMunicipio: '+ Add municipality',
+    admGeoNoHayMunicipios: 'This department has no municipalities registered yet.', admGeoMunNombre: 'Municipality', admGeoMunPrefijo: 'Prefix',
+    admGeoConfirmEliminarDepto: 'Delete this department? Its municipalities will be deleted too.', admGeoConfirmEliminarMun: 'Delete this municipality?',
+    admGeoErrorEliminar: 'Could not delete. Please try again.', admGeoErrorGuardar: 'Could not save. Check the data and try again.', admGeoErrorCargar: 'Could not load the information.',
+    admOrgTituloModal: 'Organizations & Locations — Catalog', admOrgSubtituloModal: 'Organizations (corporate groups) and, within each one, their locations or companies.',
+    admOrgBuscarPh: 'Search organization…', admOrgAgregar: '+ Add organization', admOrgNoHayOrgs: 'No organizations match your search.',
+    admOrgCodigo: 'Code', admOrgNombre: 'Organization', admOrgRepresentante: 'Legal representative', admOrgTelefonos: 'Phone numbers', admOrgCorreos: 'Emails',
+    admOrgDireccion: 'Address', admOrgDepartamento: 'Department', admOrgMunicipio: 'Municipality', admOrgEstado: 'Status',
+    admOrgVerLocalidades: 'View locations', admOrgOcultarLocalidades: 'Hide locations', admOrgLocalidades: 'Locations', admOrgAgregarLocalidad: '+ Add location',
+    admOrgNoHayLocalidades: 'This organization has no locations registered yet.', admOrgLocNombreComercial: 'Trade name', admOrgLocRazonSocial: 'Legal name', admOrgLocNit: 'Tax ID',
+    admOrgConfirmEliminarOrg: 'Delete this organization? Its locations will be deleted too.', admOrgConfirmEliminarLoc: 'Delete this location?',
+    admOrgErrorEliminar: 'Could not delete. Please try again.', admOrgErrorGuardar: 'Could not save. Check the data and try again.', admOrgErrorCargar: 'Could not load the information.',
+    admEstadoActivo: 'Active', admEstadoInactivo: 'Inactive',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
     admSeleccionaVendedor: 'Select a seller',
@@ -4218,6 +4250,798 @@ $('#navAdminVendedoresBtn')?.addEventListener('click', () => {
 $('#adminVendedoresClose')?.addEventListener('click', cerrarAdminVendedoresModal);
 $('#adminVendedoresScrim')?.addEventListener('click', cerrarAdminVendedoresModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminVendedoresModal && !adminVendedoresModal.hidden) cerrarAdminVendedoresModal(); });
+
+
+/* ===== Geografía (catálogo maestro-detalle) =====
+   Departamentos de Guatemala (código, nombre, región, código telefónico,
+   código postal) y, dentro de cada tarjeta, un acordeón con sus
+   municipios (código, nombre, prefijo, código telefónico, código postal).
+   Mismo patrón de tarjetas .proy-card que Vendedores/Clientes, con un
+   bloque de municipios que se expande/colapsa dentro de la misma tarjeta
+   del departamento en vez de abrir un segundo modal. */
+let adminGeoDeptosData = [];
+const geoMunicipiosCache = {}; // departamento_id -> array de municipios (cache por sesión del modal)
+const geoMunAbiertos = {};     // departamento_id -> bool (acordeón abierto)
+
+function geoDeptoCardHead(d) {
+  const head = el('div', 'proy-card-h');
+  head.append(el('h3', '', d.nombre || '—'));
+  return head;
+}
+
+function geoDeptoRenderView(card, d) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.remove('proy-card-edit');
+  const actions = el('div', 'proy-actions');
+  const verMunBtn = el('button', 'btn btn-line-dark btn-sm', geoMunAbiertos[d.id] ? t.admGeoOcultarMunicipios : t.admGeoVerMunicipios); verMunBtn.type = 'button';
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
+  actions.append(verMunBtn, modBtn, delBtn);
+
+  card.append(geoDeptoCardHead(d));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admGeoCodigo, el('strong', '', d.codigo || '—')),
+    labeledCell(t.admGeoNombre, el('span', '', d.nombre || '—')),
+    labeledCell(t.admGeoRegion, el('span', '', d.region || '—')),
+    labeledCell(t.admGeoCodigoTel, el('span', '', d.codigo_tel || '—')),
+    labeledCell(t.admGeoCodigoPostal, el('span', '', d.codigo_postal || '—'))
+  );
+  card.append(grid, actions);
+
+  const munWrap = el('div', 'geo-mun-wrap');
+  munWrap.hidden = !geoMunAbiertos[d.id];
+  card.append(munWrap);
+  if (geoMunAbiertos[d.id]) pintarGeoMunicipios(munWrap, d);
+
+  verMunBtn.addEventListener('click', async () => {
+    geoMunAbiertos[d.id] = !geoMunAbiertos[d.id];
+    verMunBtn.textContent = geoMunAbiertos[d.id] ? t.admGeoOcultarMunicipios : t.admGeoVerMunicipios;
+    munWrap.hidden = !geoMunAbiertos[d.id];
+    if (geoMunAbiertos[d.id]) await pintarGeoMunicipios(munWrap, d);
+  });
+  modBtn.addEventListener('click', () => geoDeptoRenderEdit(card, d, false));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm(t.admGeoConfirmEliminarDepto)) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('geo_departamentos').delete().eq('id', d.id);
+      if (error) throw error;
+      adminGeoDeptosData = adminGeoDeptosData.filter((x) => x.id !== d.id);
+      card.remove();
+      if (!$('#adminGeoDeptosList').children.length) pintarAdminGeoDeptosList();
+    } catch (e) {
+      console.error('Error eliminando el departamento:', e);
+      alert(t.admGeoErrorEliminar);
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function geoDeptoRenderEdit(card, d, isNew) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.add('proy-card-edit');
+
+  const codInput = document.createElement('input');
+  codInput.type = 'text'; codInput.maxLength = 10; codInput.value = d.codigo || '';
+  const nomInput = document.createElement('input');
+  nomInput.type = 'text'; nomInput.value = d.nombre || '';
+  const regInput = document.createElement('input');
+  regInput.type = 'text'; regInput.value = d.region || '';
+  const telInput = document.createElement('input');
+  telInput.type = 'text'; telInput.value = d.codigo_tel || '502';
+  const cpInput = document.createElement('input');
+  cpInput.type = 'text'; cpInput.value = d.codigo_postal || '';
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+
+  card.append(geoDeptoCardHead(d));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admGeoCodigo, codInput),
+    labeledCell(t.admGeoNombre, nomInput),
+    labeledCell(t.admGeoRegion, regInput),
+    labeledCell(t.admGeoCodigoTel, telInput),
+    labeledCell(t.admGeoCodigoPostal, cpInput)
+  );
+  card.append(grid, actions);
+
+  cancelBtn.addEventListener('click', () => {
+    if (isNew) { card.remove(); if (!$('#adminGeoDeptosList').children.length) pintarAdminGeoDeptosList(); }
+    else geoDeptoRenderView(card, d);
+  });
+  saveBtn.addEventListener('click', async () => {
+    const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
+    if (!nombre || !codigo) { alert(t.admGeoErrorGuardar); return; }
+    saveBtn.disabled = true;
+    const payload = { codigo, nombre, region: regInput.value.trim() || null, codigo_tel: telInput.value.trim() || null, codigo_postal: cpInput.value.trim() || null };
+    try {
+      if (isNew) {
+        const { data, error } = await supabaseClient.from('geo_departamentos').insert(payload).select().single();
+        if (error) throw error;
+        adminGeoDeptosData.unshift(data);
+        geoDeptoRenderView(card, data);
+      } else {
+        const { error } = await supabaseClient.from('geo_departamentos').update(payload).eq('id', d.id);
+        if (error) throw error;
+        Object.assign(d, payload);
+        geoDeptoRenderView(card, d);
+      }
+    } catch (e) {
+      console.error('Error guardando el departamento:', e);
+      alert(t.admGeoErrorGuardar);
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+async function pintarGeoMunicipios(wrap, d) {
+  const t = T[lang];
+  wrap.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
+  let municipios = geoMunicipiosCache[d.id];
+  if (!municipios) {
+    try {
+      const { data, error } = await supabaseClient.from('geo_municipios').select('*').eq('departamento_id', d.id).order('codigo', { ascending: true });
+      if (error) throw error;
+      municipios = data || [];
+      geoMunicipiosCache[d.id] = municipios;
+    } catch (e) {
+      console.error('Error cargando los municipios:', e);
+      wrap.innerHTML = '<p class="proy-empty">' + t.admGeoErrorCargar + '</p>';
+      return;
+    }
+  }
+  renderGeoMunList(wrap, d, municipios);
+}
+
+function renderGeoMunList(wrap, d, municipios) {
+  const t = T[lang];
+  wrap.innerHTML = '';
+  const head = el('div', 'proy-pane-head');
+  head.append(el('h4', '', t.admGeoMunicipios));
+  const nuevoBtn = el('button', 'btn btn-gold btn-sm', t.admGeoAgregarMunicipio); nuevoBtn.type = 'button';
+  head.append(nuevoBtn);
+  wrap.append(head);
+
+  const list = el('div', 'proy-list proy-list-nested');
+  wrap.append(list);
+  if (!municipios.length) list.innerHTML = '<p class="proy-empty">' + t.admGeoNoHayMunicipios + '</p>';
+  municipios.forEach((m) => {
+    const card = el('div', 'proy-card proy-card-sm');
+    munRenderView(card, d, m, list);
+    list.appendChild(card);
+  });
+
+  nuevoBtn.addEventListener('click', () => {
+    if (list.querySelector('.proy-card-edit')) return;
+    const emptyMsg = list.querySelector('.proy-empty');
+    if (emptyMsg) emptyMsg.remove();
+    const card = el('div', 'proy-card proy-card-sm');
+    list.prepend(card);
+    munRenderEdit(card, d, {}, true, list);
+  });
+}
+
+function munRenderView(card, depto, m, list) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.remove('proy-card-edit');
+  const actions = el('div', 'proy-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admGeoCodigo, el('strong', '', m.codigo || '—')),
+    labeledCell(t.admGeoMunNombre, el('span', '', m.nombre || '—')),
+    labeledCell(t.admGeoMunPrefijo, el('span', '', m.prefijo || '—')),
+    labeledCell(t.admGeoCodigoTel, el('span', '', m.codigo_tel || '—')),
+    labeledCell(t.admGeoCodigoPostal, el('span', '', m.codigo_postal || '—'))
+  );
+  card.append(grid, actions);
+
+  modBtn.addEventListener('click', () => munRenderEdit(card, depto, m, false, list));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm(t.admGeoConfirmEliminarMun)) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('geo_municipios').delete().eq('id', m.id);
+      if (error) throw error;
+      geoMunicipiosCache[depto.id] = (geoMunicipiosCache[depto.id] || []).filter((x) => x.id !== m.id);
+      card.remove();
+      if (!list.children.length) list.innerHTML = '<p class="proy-empty">' + t.admGeoNoHayMunicipios + '</p>';
+    } catch (e) {
+      console.error('Error eliminando el municipio:', e);
+      alert(t.admGeoErrorEliminar);
+      delBtn.disabled = false;
+    }
+  });
+}
+
+function munRenderEdit(card, depto, m, isNew, list) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.add('proy-card-edit');
+
+  const codInput = document.createElement('input');
+  codInput.type = 'text'; codInput.maxLength = 10; codInput.value = m.codigo || '';
+  const nomInput = document.createElement('input');
+  nomInput.type = 'text'; nomInput.value = m.nombre || '';
+  const prefInput = document.createElement('input');
+  prefInput.type = 'text'; prefInput.value = m.prefijo || '';
+  const telInput = document.createElement('input');
+  telInput.type = 'text'; telInput.value = m.codigo_tel || depto.codigo_tel || '502';
+  const cpInput = document.createElement('input');
+  cpInput.type = 'text'; cpInput.value = m.codigo_postal || '';
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admGeoCodigo, codInput),
+    labeledCell(t.admGeoMunNombre, nomInput),
+    labeledCell(t.admGeoMunPrefijo, prefInput),
+    labeledCell(t.admGeoCodigoTel, telInput),
+    labeledCell(t.admGeoCodigoPostal, cpInput)
+  );
+  card.append(grid, actions);
+
+  cancelBtn.addEventListener('click', () => {
+    if (isNew) { card.remove(); if (!list.children.length) list.innerHTML = '<p class="proy-empty">' + t.admGeoNoHayMunicipios + '</p>'; }
+    else munRenderView(card, depto, m, list);
+  });
+  saveBtn.addEventListener('click', async () => {
+    const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
+    if (!nombre || !codigo) { alert(t.admGeoErrorGuardar); return; }
+    saveBtn.disabled = true;
+    const payload = { departamento_id: depto.id, codigo, nombre, prefijo: prefInput.value.trim() || null, codigo_tel: telInput.value.trim() || null, codigo_postal: cpInput.value.trim() || null };
+    try {
+      if (isNew) {
+        const { data, error } = await supabaseClient.from('geo_municipios').insert(payload).select().single();
+        if (error) throw error;
+        geoMunicipiosCache[depto.id] = (geoMunicipiosCache[depto.id] || []);
+        geoMunicipiosCache[depto.id].unshift(data);
+        munRenderView(card, depto, data, list);
+      } else {
+        const { error } = await supabaseClient.from('geo_municipios').update(payload).eq('id', m.id);
+        if (error) throw error;
+        Object.assign(m, payload);
+        munRenderView(card, depto, m, list);
+      }
+    } catch (e) {
+      console.error('Error guardando el municipio:', e);
+      alert(t.admGeoErrorGuardar);
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+function pintarAdminGeoDeptosList() {
+  const list = $('#adminGeoDeptosList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!adminGeoDeptosData.length) { list.innerHTML = '<p class="proy-empty">' + T[lang].admGeoNoHayDeptos + '</p>'; return; }
+  adminGeoDeptosData.forEach((d) => {
+    const card = el('div', 'proy-card');
+    geoDeptoRenderView(card, d);
+    list.appendChild(card);
+  });
+}
+
+async function cargarAdminGeoDeptosData(filtroNombre) {
+  const list = $('#adminGeoDeptosList');
+  if (list) list.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
+  try {
+    let query = supabaseClient.from('geo_departamentos').select('*').order('codigo', { ascending: true });
+    if (filtroNombre) query = query.ilike('nombre', '%' + filtroNombre + '%');
+    const { data: rows, error } = await query;
+    if (error) throw error;
+    adminGeoDeptosData = rows || [];
+  } catch (e) {
+    console.error('Error cargando los departamentos:', e);
+    adminGeoDeptosData = [];
+  }
+  pintarAdminGeoDeptosList();
+}
+
+$('#adminGeoDeptoMostrarBtn')?.addEventListener('click', () => {
+  cargarAdminGeoDeptosData(($('#adminGeoDeptoBuscarInput')?.value || '').trim());
+});
+$('#adminGeoDeptoBuscarInput')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); $('#adminGeoDeptoMostrarBtn')?.click(); }
+});
+$('#adminGeoDeptoNuevoBtn')?.addEventListener('click', () => {
+  const list = $('#adminGeoDeptosList');
+  if (!list) return;
+  if (list.querySelector('.proy-card-edit')) return;
+  const emptyMsg = list.querySelector('.proy-empty');
+  if (emptyMsg) emptyMsg.remove();
+  const card = el('div', 'proy-card');
+  list.prepend(card);
+  geoDeptoRenderEdit(card, {}, true);
+});
+
+const adminGeografiaModal = $('#adminGeografiaModal');
+function abrirAdminGeografiaModal() {
+  if (!adminGeografiaModal) return;
+  if ($('#adminGeoDeptoBuscarInput')) $('#adminGeoDeptoBuscarInput').value = '';
+  adminGeografiaModal.hidden = false;
+  cargarAdminGeoDeptosData();
+}
+function cerrarAdminGeografiaModal() { if (adminGeografiaModal) adminGeografiaModal.hidden = true; }
+$('#navAdminGeografiaBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminGeografiaModal();
+});
+$('#adminGeografiaClose')?.addEventListener('click', cerrarAdminGeografiaModal);
+$('#adminGeografiaScrim')?.addEventListener('click', cerrarAdminGeografiaModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminGeografiaModal && !adminGeografiaModal.hidden) cerrarAdminGeografiaModal(); });
+
+
+/* ===== Organizaciones y Localidades (catálogo maestro-detalle) =====
+   Organizaciones (grupos corporativos): código, nombre, representante
+   legal, teléfonos, correos, dirección, departamento/municipio, estado.
+   Dentro de cada tarjeta, un acordeón con sus localidades (empresas o
+   sedes): código, nombre comercial, razón social, NIT, municipio, estado.
+   Mismo patrón que Geografía (tarjetas .proy-card con acordeón anidado). */
+let adminOrgData = [];
+const orgLocCache = {};  // organizacion_id -> array de localidades
+const orgLocAbiertos = {}; // organizacion_id -> bool
+
+function getEstadosOrg() {
+  const t = T[lang] || T.es;
+  return [{ v: 'activo', l: t.admEstadoActivo }, { v: 'inactivo', l: t.admEstadoInactivo }];
+}
+const estadoOrgLabel = (v) => (getEstadosOrg().find((e) => e.v === v) || {}).l || '—';
+
+function orgEstadoBadge(v) {
+  const span = el('span', 'cli-badge ' + (v === 'inactivo' ? 'cli-badge-inactivo' : 'cli-badge-activo'), estadoOrgLabel(v || 'activo'));
+  return span;
+}
+
+async function poblarGeoDeptoSelect(sel, actual) {
+  if (!sel) return;
+  sel.innerHTML = '<option value="">—</option>';
+  try {
+    const { data, error } = await supabaseClient.from('geo_departamentos').select('id,nombre').order('nombre', { ascending: true });
+    if (error) throw error;
+    (data || []).forEach((d) => {
+      const opt = document.createElement('option');
+      opt.value = d.id; opt.textContent = d.nombre;
+      sel.appendChild(opt);
+    });
+  } catch (e) { console.error('Error cargando departamentos:', e); }
+  sel.value = actual ? String(actual) : '';
+}
+
+async function poblarGeoMunSelect(sel, deptoId, actual) {
+  if (!sel) return;
+  sel.innerHTML = '<option value="">—</option>';
+  if (!deptoId) return;
+  try {
+    const { data, error } = await supabaseClient.from('geo_municipios').select('id,nombre').eq('departamento_id', deptoId).order('nombre', { ascending: true });
+    if (error) throw error;
+    (data || []).forEach((m) => {
+      const opt = document.createElement('option');
+      opt.value = m.id; opt.textContent = m.nombre;
+      sel.appendChild(opt);
+    });
+  } catch (e) { console.error('Error cargando municipios:', e); }
+  sel.value = actual ? String(actual) : '';
+}
+
+function orgCardHead(o) {
+  const head = el('div', 'proy-card-h');
+  head.append(el('h3', '', (o.codigo ? o.codigo + ' · ' : '') + (o.nombre || '—')));
+  head.append(orgEstadoBadge(o.estado));
+  return head;
+}
+
+function orgRenderView(card, o) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.remove('proy-card-edit');
+  const actions = el('div', 'proy-actions');
+  const verLocBtn = el('button', 'btn btn-line-dark btn-sm', orgLocAbiertos[o.id] ? t.admOrgOcultarLocalidades : t.admOrgVerLocalidades); verLocBtn.type = 'button';
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
+  actions.append(verLocBtn, modBtn, delBtn);
+
+  card.append(orgCardHead(o));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admOrgRepresentante, el('span', '', o.representante || '—')),
+    labeledCell(t.admOrgTelefonos, el('span', '', o.telefonos || '—')),
+    labeledCell(t.admOrgCorreos, el('span', '', o.correos || '—')),
+    labeledCell(t.admOrgDireccion, el('span', '', o.direccion || '—')),
+    labeledCell(t.admOrgDepartamento, el('span', '', o.depto_nombre || '—')),
+    labeledCell(t.admOrgMunicipio, el('span', '', o.mun_nombre || '—'))
+  );
+  card.append(grid, actions);
+
+  const locWrap = el('div', 'geo-mun-wrap');
+  locWrap.hidden = !orgLocAbiertos[o.id];
+  card.append(locWrap);
+  if (orgLocAbiertos[o.id]) pintarOrgLocalidades(locWrap, o);
+
+  verLocBtn.addEventListener('click', async () => {
+    orgLocAbiertos[o.id] = !orgLocAbiertos[o.id];
+    verLocBtn.textContent = orgLocAbiertos[o.id] ? t.admOrgOcultarLocalidades : t.admOrgVerLocalidades;
+    locWrap.hidden = !orgLocAbiertos[o.id];
+    if (orgLocAbiertos[o.id]) await pintarOrgLocalidades(locWrap, o);
+  });
+  modBtn.addEventListener('click', () => orgRenderEdit(card, o, false));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm(t.admOrgConfirmEliminarOrg)) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('organizaciones').delete().eq('id', o.id);
+      if (error) throw error;
+      adminOrgData = adminOrgData.filter((x) => x.id !== o.id);
+      card.remove();
+      if (!$('#adminOrgList').children.length) pintarAdminOrgList();
+    } catch (e) {
+      console.error('Error eliminando la organización:', e);
+      alert(t.admOrgErrorEliminar);
+      delBtn.disabled = false;
+    }
+  });
+}
+
+async function orgRenderEdit(card, o, isNew) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.add('proy-card-edit');
+
+  const codInput = document.createElement('input');
+  codInput.type = 'text'; codInput.maxLength = 10; codInput.value = o.codigo || '';
+  const nomInput = document.createElement('input');
+  nomInput.type = 'text'; nomInput.value = o.nombre || '';
+  const repInput = document.createElement('input');
+  repInput.type = 'text'; repInput.value = o.representante || '';
+  const telInput = document.createElement('input');
+  telInput.type = 'text'; telInput.value = o.telefonos || '';
+  const correoInput = document.createElement('input');
+  correoInput.type = 'text'; correoInput.value = o.correos || '';
+  const dirInput = document.createElement('input');
+  dirInput.type = 'text'; dirInput.value = o.direccion || '';
+
+  const deptoSel = document.createElement('select');
+  const munSel = document.createElement('select');
+  await poblarGeoDeptoSelect(deptoSel, o.departamento_id);
+  await poblarGeoMunSelect(munSel, o.departamento_id, o.municipio_id);
+  deptoSel.addEventListener('change', () => poblarGeoMunSelect(munSel, deptoSel.value, ''));
+
+  const estadoSel = document.createElement('select');
+  getEstadosOrg().forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v; opt.textContent = e.l;
+    estadoSel.appendChild(opt);
+  });
+  estadoSel.value = o.estado || 'activo';
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+
+  card.append(orgCardHead(o));
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admOrgCodigo, codInput),
+    labeledCell(t.admOrgNombre, nomInput),
+    labeledCell(t.admOrgRepresentante, repInput),
+    labeledCell(t.admOrgTelefonos, telInput),
+    labeledCell(t.admOrgCorreos, correoInput),
+    labeledCell(t.admOrgDireccion, dirInput),
+    labeledCell(t.admOrgDepartamento, deptoSel),
+    labeledCell(t.admOrgMunicipio, munSel),
+    labeledCell(t.admOrgEstado, estadoSel)
+  );
+  card.append(grid, actions);
+
+  cancelBtn.addEventListener('click', () => {
+    if (isNew) { card.remove(); if (!$('#adminOrgList').children.length) pintarAdminOrgList(); }
+    else orgRenderView(card, o);
+  });
+  saveBtn.addEventListener('click', async () => {
+    const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
+    if (!nombre || !codigo) { alert(t.admOrgErrorGuardar); return; }
+    saveBtn.disabled = true;
+    const payload = {
+      codigo, nombre,
+      representante: repInput.value.trim() || null,
+      telefonos: telInput.value.trim() || null,
+      correos: correoInput.value.trim() || null,
+      direccion: dirInput.value.trim() || null,
+      departamento_id: deptoSel.value || null,
+      municipio_id: munSel.value || null,
+      estado: estadoSel.value || 'activo',
+      modificado_por: localStorage.getItem(LOGIN_STORE) || null,
+      modificado_en: new Date().toISOString()
+    };
+    if (isNew) { payload.creado_por = localStorage.getItem(LOGIN_STORE) || null; }
+    try {
+      const deptoTxt = deptoSel.options[deptoSel.selectedIndex]?.textContent || '';
+      const munTxt = munSel.options[munSel.selectedIndex]?.textContent || '';
+      if (isNew) {
+        const { data, error } = await supabaseClient.from('organizaciones').insert(payload).select().single();
+        if (error) throw error;
+        data.depto_nombre = deptoTxt !== '—' ? deptoTxt : '';
+        data.mun_nombre = munTxt !== '—' ? munTxt : '';
+        adminOrgData.unshift(data);
+        orgRenderView(card, data);
+      } else {
+        const { error } = await supabaseClient.from('organizaciones').update(payload).eq('id', o.id);
+        if (error) throw error;
+        Object.assign(o, payload);
+        o.depto_nombre = deptoTxt !== '—' ? deptoTxt : '';
+        o.mun_nombre = munTxt !== '—' ? munTxt : '';
+        orgRenderView(card, o);
+      }
+    } catch (e) {
+      console.error('Error guardando la organización:', e);
+      alert(t.admOrgErrorGuardar);
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+async function pintarOrgLocalidades(wrap, o) {
+  const t = T[lang];
+  wrap.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
+  let locs = orgLocCache[o.id];
+  if (!locs) {
+    try {
+      const { data, error } = await supabaseClient.from('org_localidades').select('*, municipio:geo_municipios(nombre)').eq('organizacion_id', o.id).order('codigo', { ascending: true });
+      if (error) throw error;
+      locs = (data || []).map((r) => Object.assign({}, r, { mun_nombre: r.municipio ? r.municipio.nombre : '' }));
+      orgLocCache[o.id] = locs;
+    } catch (e) {
+      console.error('Error cargando las localidades:', e);
+      wrap.innerHTML = '<p class="proy-empty">' + t.admOrgErrorCargar + '</p>';
+      return;
+    }
+  }
+  renderOrgLocList(wrap, o, locs);
+}
+
+function renderOrgLocList(wrap, o, locs) {
+  const t = T[lang];
+  wrap.innerHTML = '';
+  const head = el('div', 'proy-pane-head');
+  head.append(el('h4', '', t.admOrgLocalidades));
+  const nuevoBtn = el('button', 'btn btn-gold btn-sm', t.admOrgAgregarLocalidad); nuevoBtn.type = 'button';
+  head.append(nuevoBtn);
+  wrap.append(head);
+
+  const list = el('div', 'proy-list proy-list-nested');
+  wrap.append(list);
+  if (!locs.length) list.innerHTML = '<p class="proy-empty">' + t.admOrgNoHayLocalidades + '</p>';
+  locs.forEach((loc) => {
+    const card = el('div', 'proy-card proy-card-sm');
+    locRenderView(card, o, loc, list);
+    list.appendChild(card);
+  });
+
+  nuevoBtn.addEventListener('click', () => {
+    if (list.querySelector('.proy-card-edit')) return;
+    const emptyMsg = list.querySelector('.proy-empty');
+    if (emptyMsg) emptyMsg.remove();
+    const card = el('div', 'proy-card proy-card-sm');
+    list.prepend(card);
+    locRenderEdit(card, o, {}, true, list);
+  });
+}
+
+function locRenderView(card, org, loc, list) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.remove('proy-card-edit');
+  const actions = el('div', 'proy-actions');
+  const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
+  const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
+  actions.append(modBtn, delBtn);
+
+  const head = el('div', 'proy-card-h');
+  head.append(el('h3', '', (org.codigo || '') + '-' + String(loc.codigo || '').padStart(2, '0') + ' · ' + (loc.nombre_comercial || '—')));
+  head.append(orgEstadoBadge(loc.estado));
+  card.append(head);
+
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admOrgLocRazonSocial, el('span', '', loc.razon_social || '—')),
+    labeledCell(t.admOrgLocNit, el('span', '', loc.nit || '—')),
+    labeledCell(t.admOrgMunicipio, el('span', '', loc.mun_nombre || '—'))
+  );
+  card.append(grid, actions);
+
+  modBtn.addEventListener('click', () => locRenderEdit(card, org, loc, false, list));
+  delBtn.addEventListener('click', async () => {
+    if (!confirm(t.admOrgConfirmEliminarLoc)) return;
+    delBtn.disabled = true;
+    try {
+      const { error } = await supabaseClient.from('org_localidades').delete().eq('id', loc.id);
+      if (error) throw error;
+      orgLocCache[org.id] = (orgLocCache[org.id] || []).filter((x) => x.id !== loc.id);
+      card.remove();
+      if (!list.children.length) list.innerHTML = '<p class="proy-empty">' + t.admOrgNoHayLocalidades + '</p>';
+    } catch (e) {
+      console.error('Error eliminando la localidad:', e);
+      alert(t.admOrgErrorEliminar);
+      delBtn.disabled = false;
+    }
+  });
+}
+
+async function locRenderEdit(card, org, loc, isNew, list) {
+  const t = T[lang];
+  card.innerHTML = '';
+  card.classList.add('proy-card-edit');
+
+  const codInput = document.createElement('input');
+  codInput.type = 'text'; codInput.maxLength = 10; codInput.value = loc.codigo || '';
+  const nomInput = document.createElement('input');
+  nomInput.type = 'text'; nomInput.value = loc.nombre_comercial || '';
+  const razonInput = document.createElement('input');
+  razonInput.type = 'text'; razonInput.value = loc.razon_social || '';
+  const nitInput = document.createElement('input');
+  nitInput.type = 'text'; nitInput.value = loc.nit || '';
+
+  const deptoSel = document.createElement('select');
+  const munSel = document.createElement('select');
+  await poblarGeoDeptoSelect(deptoSel, loc.departamento_id || org.departamento_id);
+  await poblarGeoMunSelect(munSel, deptoSel.value, loc.municipio_id);
+  deptoSel.addEventListener('change', () => poblarGeoMunSelect(munSel, deptoSel.value, ''));
+
+  const estadoSel = document.createElement('select');
+  getEstadosOrg().forEach((e) => {
+    const opt = document.createElement('option');
+    opt.value = e.v; opt.textContent = e.l;
+    estadoSel.appendChild(opt);
+  });
+  estadoSel.value = loc.estado || 'activo';
+
+  const actions = el('div', 'proy-actions');
+  const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
+  const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
+  actions.append(saveBtn, cancelBtn);
+
+  const head = el('div', 'proy-card-h');
+  head.append(el('h3', '', isNew ? t.admOrgAgregarLocalidad : (org.codigo + '-' + String(loc.codigo || '').padStart(2, '0'))));
+  card.append(head);
+
+  const grid = el('div', 'proy-grid');
+  grid.append(
+    labeledCell(t.admOrgCodigo, codInput),
+    labeledCell(t.admOrgLocNombreComercial, nomInput),
+    labeledCell(t.admOrgLocRazonSocial, razonInput),
+    labeledCell(t.admOrgLocNit, nitInput),
+    labeledCell(t.admOrgDepartamento, deptoSel),
+    labeledCell(t.admOrgMunicipio, munSel),
+    labeledCell(t.admOrgEstado, estadoSel)
+  );
+  card.append(grid, actions);
+
+  cancelBtn.addEventListener('click', () => {
+    if (isNew) { card.remove(); if (!list.children.length) list.innerHTML = '<p class="proy-empty">' + t.admOrgNoHayLocalidades + '</p>'; }
+    else locRenderView(card, org, loc, list);
+  });
+  saveBtn.addEventListener('click', async () => {
+    const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
+    if (!nombre || !codigo) { alert(t.admOrgErrorGuardar); return; }
+    saveBtn.disabled = true;
+    const payload = {
+      organizacion_id: org.id, codigo,
+      nombre_comercial: nombre,
+      razon_social: razonInput.value.trim() || null,
+      nit: nitInput.value.trim() || null,
+      departamento_id: deptoSel.value || null,
+      municipio_id: munSel.value || null,
+      estado: estadoSel.value || 'activo',
+      modificado_por: localStorage.getItem(LOGIN_STORE) || null,
+      modificado_en: new Date().toISOString()
+    };
+    if (isNew) { payload.creado_por = localStorage.getItem(LOGIN_STORE) || null; }
+    try {
+      const munTxt = munSel.options[munSel.selectedIndex]?.textContent || '';
+      if (isNew) {
+        const { data, error } = await supabaseClient.from('org_localidades').insert(payload).select().single();
+        if (error) throw error;
+        data.mun_nombre = munTxt !== '—' ? munTxt : '';
+        orgLocCache[org.id] = (orgLocCache[org.id] || []);
+        orgLocCache[org.id].unshift(data);
+        locRenderView(card, org, data, list);
+      } else {
+        const { error } = await supabaseClient.from('org_localidades').update(payload).eq('id', loc.id);
+        if (error) throw error;
+        Object.assign(loc, payload);
+        loc.mun_nombre = munTxt !== '—' ? munTxt : '';
+        locRenderView(card, org, loc, list);
+      }
+    } catch (e) {
+      console.error('Error guardando la localidad:', e);
+      alert(t.admOrgErrorGuardar);
+      saveBtn.disabled = false;
+    }
+  });
+}
+
+function pintarAdminOrgList() {
+  const list = $('#adminOrgList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!adminOrgData.length) { list.innerHTML = '<p class="proy-empty">' + T[lang].admOrgNoHayOrgs + '</p>'; return; }
+  adminOrgData.forEach((o) => {
+    const card = el('div', 'proy-card');
+    orgRenderView(card, o);
+    list.appendChild(card);
+  });
+}
+
+async function cargarAdminOrgData(filtroNombre) {
+  const list = $('#adminOrgList');
+  if (list) list.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
+  try {
+    let query = supabaseClient.from('organizaciones').select('*, depto:geo_departamentos(nombre), mun:geo_municipios(nombre)').order('codigo', { ascending: true });
+    if (filtroNombre) query = query.ilike('nombre', '%' + filtroNombre + '%');
+    const { data: rows, error } = await query;
+    if (error) throw error;
+    adminOrgData = (rows || []).map((r) => Object.assign({}, r, {
+      depto_nombre: r.depto ? r.depto.nombre : '',
+      mun_nombre: r.mun ? r.mun.nombre : ''
+    }));
+  } catch (e) {
+    console.error('Error cargando las organizaciones:', e);
+    adminOrgData = [];
+  }
+  pintarAdminOrgList();
+}
+
+$('#adminOrgMostrarBtn')?.addEventListener('click', () => {
+  cargarAdminOrgData(($('#adminOrgBuscarInput')?.value || '').trim());
+});
+$('#adminOrgBuscarInput')?.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); $('#adminOrgMostrarBtn')?.click(); }
+});
+$('#adminOrgNuevoBtn')?.addEventListener('click', () => {
+  const list = $('#adminOrgList');
+  if (!list) return;
+  if (list.querySelector('.proy-card-edit')) return;
+  const emptyMsg = list.querySelector('.proy-empty');
+  if (emptyMsg) emptyMsg.remove();
+  const card = el('div', 'proy-card');
+  list.prepend(card);
+  orgRenderEdit(card, {}, true);
+});
+
+const adminOrganizacionesModal = $('#adminOrganizacionesModal');
+function abrirAdminOrganizacionesModal() {
+  if (!adminOrganizacionesModal) return;
+  if ($('#adminOrgBuscarInput')) $('#adminOrgBuscarInput').value = '';
+  adminOrganizacionesModal.hidden = false;
+  cargarAdminOrgData();
+}
+function cerrarAdminOrganizacionesModal() { if (adminOrganizacionesModal) adminOrganizacionesModal.hidden = true; }
+$('#navAdminOrganizacionesBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminOrganizacionesModal();
+});
+$('#adminOrganizacionesClose')?.addEventListener('click', cerrarAdminOrganizacionesModal);
+$('#adminOrganizacionesScrim')?.addEventListener('click', cerrarAdminOrganizacionesModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminOrganizacionesModal && !adminOrganizacionesModal.hidden) cerrarAdminOrganizacionesModal(); });
+
 
 /* "Comisiones Ventas" dentro del menú Administración: resumen de
    comisiones por vendedor, a partir de una fecha inicial, y por tipo
