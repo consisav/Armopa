@@ -547,6 +547,19 @@ const T = {
     admUsrEstadoActivo: 'Activo', admUsrEstadoInactivo: 'Inactivo', admUsrEstadoBaja: 'Baja',
     admOrgLocEtiqueta: 'Organización: {org} · Localidad: {loc}',
     admUsrColOrgLoc: 'Organización / Localidad',
+    adminMenuGenerarUsuario: 'Generar Usuario',
+    admGenUsrTituloModal: 'Generar Usuario', admGenUsrSubtituloModal: 'Crea el usuario y la clave de acceso al sistema para un cliente existente.',
+    admGenUsrClienteLabel: 'Cliente', admGenUsrClienteCargando: 'Cargando clientes…', admGenUsrClienteVacio: 'No hay clientes registrados todavía.',
+    admGenUsrClienteYaTiene: 'Este cliente ya tiene usuario asignado: {usuario}. Puedes generar uno nuevo si lo deseas.',
+    admGenUsrUsuarioLabel: 'Usuario', admGenUsrBtnGenerarUsuario: 'Generar usuario',
+    admGenUsrUsuarioHintAuto: 'Generado automáticamente a partir del nombre del cliente.',
+    admGenUsrUsuarioHintOcupado: 'Ese usuario ya existía; se ajustó automáticamente para que sea único.',
+    admGenUsrClaveLabel: 'Clave', admGenUsrBtnGenerarClave: 'Generar clave',
+    admGenUsrClaveHint: 'Clave generada aleatoriamente. Compártela con el cliente; no queda guardada en texto plano.',
+    admGenUsrBtnCrear: 'Crear usuario y clave del sistema',
+    admGenUsrErrorUsuarioVacio: 'El usuario no puede quedar vacío.',
+    admGenUsrErrorGuardar: 'No se pudo crear el usuario. Intenta de nuevo.',
+    admGenUsrOkCreado: 'Usuario "{usuario}" creado correctamente para {cliente}.',
     admEstadoActivo: 'Activo', admEstadoInactivo: 'Inactivo',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -949,6 +962,19 @@ const T = {
     admUsrEstadoActivo: 'Active', admUsrEstadoInactivo: 'Inactive', admUsrEstadoBaja: 'Discharged',
     admOrgLocEtiqueta: 'Organization: {org} · Location: {loc}',
     admUsrColOrgLoc: 'Organization / Location',
+    adminMenuGenerarUsuario: 'Generate User',
+    admGenUsrTituloModal: 'Generate User', admGenUsrSubtituloModal: 'Create the system username and password for an existing client.',
+    admGenUsrClienteLabel: 'Client', admGenUsrClienteCargando: 'Loading clients…', admGenUsrClienteVacio: 'No clients registered yet.',
+    admGenUsrClienteYaTiene: 'This client already has a username: {usuario}. You can generate a new one if you want.',
+    admGenUsrUsuarioLabel: 'Username', admGenUsrBtnGenerarUsuario: 'Generate username',
+    admGenUsrUsuarioHintAuto: "Automatically generated from the client's name.",
+    admGenUsrUsuarioHintOcupado: 'That username already existed; it was adjusted automatically to be unique.',
+    admGenUsrClaveLabel: 'Password', admGenUsrBtnGenerarClave: 'Generate password',
+    admGenUsrClaveHint: 'Randomly generated password. Share it with the client; it is not stored in plain text.',
+    admGenUsrBtnCrear: 'Create system username and password',
+    admGenUsrErrorUsuarioVacio: 'Username cannot be empty.',
+    admGenUsrErrorGuardar: 'Could not create the user. Please try again.',
+    admGenUsrOkCreado: 'User "{usuario}" created successfully for {cliente}.',
     admEstadoActivo: 'Active', admEstadoInactivo: 'Inactive',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -7904,6 +7930,204 @@ function pintarAdminUsrTbody() {
   }
   lista.forEach((u) => { tbody.appendChild(adminUsrEditUsuario === u.usuario ? usrFilaEdit(u) : usrFilaVista(u)); });
 }
+
+/* ---- Generar Usuario: alta de cuenta del sistema para un cliente ----
+   Crea el registro en la tabla usuarios (vía la misma RPC conectar_usuario
+   que usa el login público, tipo "usuario_general") y guarda el nombre de
+   usuario en clientes.usuario para que quede visible en el catálogo de
+   Clientes. El nombre de usuario se autogenera a partir del nombre del
+   cliente: todas las palabras menos la última se reducen a su inicial en
+   mayúscula, y la última palabra (el apellido) se usa completa con su
+   primera letra en mayúscula — p. ej. "Oliver Asturias" -> "Oasturias",
+   "Juan Carlos Tut" -> "JCTut". Si ese usuario ya existe, se le agrega un
+   número al final hasta encontrar uno libre. La clave es aleatoria y se
+   deja visible en el campo para que el administrador la copie y se la dé
+   al cliente; no se guarda en texto plano, solo su hash. */
+const adminGenerarUsuarioModal = $('#adminGenerarUsuarioModal');
+let genUsrClientes = [];
+
+function genUsrGenerarUsuarioDesdeNombre(nombre) {
+  const palabras = (nombre || '').trim().split(/\s+/).filter(Boolean);
+  if (!palabras.length) return '';
+  const limpiar = (s) => s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+  if (palabras.length === 1) {
+    const p = limpiar(palabras[0]);
+    return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
+  }
+  const iniciales = palabras.slice(0, -1).map((p) => limpiar(p).charAt(0).toUpperCase()).join('');
+  const apellido = limpiar(palabras[palabras.length - 1]);
+  return iniciales + apellido.charAt(0).toUpperCase() + apellido.slice(1).toLowerCase();
+}
+
+function genUsrGenerarClaveAleatoria() {
+  const alfabeto = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+  const bytes = new Uint8Array(10);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map((b) => alfabeto[b % alfabeto.length]).join('');
+}
+
+/* Comprueba si un nombre de usuario ya existe en la tabla usuarios,
+   intentando "conectar" con una clave inventada: si el usuario no existe,
+   la RPC (con p_crear:false) responde 'no_existe'; si existe, responde
+   'error' (clave incorrecta) sin crear ni modificar nada. No requiere
+   permisos de administrador. */
+async function genUsrUsuarioExiste(usuario) {
+  try {
+    const { data, error } = await supabaseClient.rpc('conectar_usuario', {
+      p_usuario: usuario, p_hash: 'chequeo-no-crear', p_crear: false
+    });
+    if (error) throw error;
+    return !(data && data.status === 'no_existe');
+  } catch (e) {
+    console.error('Error comprobando disponibilidad de usuario:', e);
+    return false;
+  }
+}
+
+async function genUsrUsuarioDisponible(base) {
+  let candidato = base;
+  let n = 2;
+  while (await genUsrUsuarioExiste(candidato)) {
+    candidato = base + n;
+    n++;
+  }
+  return candidato;
+}
+
+async function genUsrPoblarClienteSelect() {
+  const sel = $('#adminGenUsrClienteSel');
+  const t = T[lang];
+  if (!sel) return;
+  sel.innerHTML = '<option value="">' + t.admGenUsrClienteCargando + '</option>';
+  try {
+    const { data, error } = await supabaseClient.from('clientes').select('id,nombre,usuario,codigo').order('nombre', { ascending: true });
+    if (error) throw error;
+    genUsrClientes = data || [];
+    if (!genUsrClientes.length) {
+      sel.innerHTML = '<option value="">' + t.admGenUsrClienteVacio + '</option>';
+      return;
+    }
+    sel.innerHTML = '<option value="">—</option>';
+    genUsrClientes.forEach((c) => {
+      const opt = document.createElement('option');
+      opt.value = String(c.id);
+      opt.textContent = (c.nombre || '—') + (c.usuario ? ' · ' + c.usuario : '');
+      sel.appendChild(opt);
+    });
+  } catch (e) {
+    console.error('Error cargando clientes para Generar Usuario:', e);
+    sel.innerHTML = '<option value="">' + t.admGenUsrClienteVacio + '</option>';
+  }
+}
+
+async function genUsrPrepararBloque(cliente) {
+  const t = T[lang];
+  const hint = $('#adminGenUsrClienteHint');
+  if (cliente.usuario) {
+    hint.textContent = t.admGenUsrClienteYaTiene.replace('{usuario}', cliente.usuario);
+    hint.hidden = false;
+  } else {
+    hint.hidden = true;
+  }
+  $('#adminGenUsrBloque').hidden = false;
+  $('#adminGenUsrError').hidden = true;
+  $('#adminGenUsrOk').hidden = true;
+  const usuarioHint = $('#adminGenUsrUsuarioHint');
+  usuarioHint.textContent = t.admGenUsrUsuarioHintAuto;
+  const claveHint = $('#adminGenUsrClaveHint');
+  claveHint.textContent = t.admGenUsrClaveHint;
+  const base = genUsrGenerarUsuarioDesdeNombre(cliente.nombre);
+  $('#adminGenUsrUsuarioInput').value = '…';
+  const disponible = await genUsrUsuarioDisponible(base);
+  $('#adminGenUsrUsuarioInput').value = disponible;
+  if (disponible !== base) usuarioHint.textContent = t.admGenUsrUsuarioHintOcupado;
+  $('#adminGenUsrClaveInput').value = genUsrGenerarClaveAleatoria();
+}
+
+function abrirAdminGenerarUsuarioModal() {
+  if (!adminGenerarUsuarioModal) return;
+  adminGenerarUsuarioModal.hidden = false;
+  $('#adminGenUsrBloque').hidden = true;
+  $('#adminGenUsrClienteSel').value = '';
+  genUsrPoblarClienteSelect();
+}
+function cerrarAdminGenerarUsuarioModal() { if (adminGenerarUsuarioModal) adminGenerarUsuarioModal.hidden = true; }
+$('#navAdminGenerarUsuarioBtn')?.addEventListener('click', () => {
+  cerrarNavAdminMenu();
+  navwrap.classList.remove('open');
+  abrirAdminGenerarUsuarioModal();
+});
+$('#adminGenerarUsuarioClose')?.addEventListener('click', cerrarAdminGenerarUsuarioModal);
+$('#adminGenerarUsuarioScrim')?.addEventListener('click', cerrarAdminGenerarUsuarioModal);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminGenerarUsuarioModal && !adminGenerarUsuarioModal.hidden) cerrarAdminGenerarUsuarioModal(); });
+
+$('#adminGenUsrClienteSel')?.addEventListener('change', async () => {
+  const id = $('#adminGenUsrClienteSel').value;
+  if (!id) { $('#adminGenUsrBloque').hidden = true; return; }
+  const cliente = genUsrClientes.find((c) => String(c.id) === id);
+  if (!cliente) return;
+  await genUsrPrepararBloque(cliente);
+});
+
+$('#adminGenUsrRegenUsuarioBtn')?.addEventListener('click', async () => {
+  const id = $('#adminGenUsrClienteSel').value;
+  const cliente = genUsrClientes.find((c) => String(c.id) === id);
+  if (!cliente) return;
+  const t = T[lang];
+  const base = genUsrGenerarUsuarioDesdeNombre(cliente.nombre);
+  const disponible = await genUsrUsuarioDisponible(base);
+  $('#adminGenUsrUsuarioInput').value = disponible;
+  $('#adminGenUsrUsuarioHint').textContent = disponible !== base ? t.admGenUsrUsuarioHintOcupado : t.admGenUsrUsuarioHintAuto;
+});
+
+$('#adminGenUsrRegenClaveBtn')?.addEventListener('click', () => {
+  $('#adminGenUsrClaveInput').value = genUsrGenerarClaveAleatoria();
+});
+
+$('#adminGenUsrGuardarBtn')?.addEventListener('click', async () => {
+  const t = T[lang];
+  const errorEl = $('#adminGenUsrError');
+  const okEl = $('#adminGenUsrOk');
+  errorEl.hidden = true;
+  okEl.hidden = true;
+  const id = $('#adminGenUsrClienteSel').value;
+  const cliente = genUsrClientes.find((c) => String(c.id) === id);
+  if (!cliente) return;
+  const usuario = $('#adminGenUsrUsuarioInput').value.trim();
+  const clave = $('#adminGenUsrClaveInput').value;
+  if (!usuario) {
+    errorEl.textContent = t.admGenUsrErrorUsuarioVacio;
+    errorEl.hidden = false;
+    return;
+  }
+  const btn = $('#adminGenUsrGuardarBtn');
+  btn.disabled = true;
+  try {
+    const hash = await csHashClave(clave);
+    const { data, error } = await supabaseClient.rpc('conectar_usuario', {
+      p_usuario: usuario, p_hash: hash, p_tipo_usuario: 'usuario_general', p_crear: true
+    });
+    if (error) throw error;
+    if (!(data && (data.status === 'creado' || data.status === 'ok'))) {
+      errorEl.textContent = t.admGenUsrErrorGuardar;
+      errorEl.hidden = false;
+      return;
+    }
+    const { error: errorCli } = await supabaseClient.from('clientes').update({ usuario }).eq('id', cliente.id);
+    if (errorCli) console.error('Error guardando el usuario en el cliente:', errorCli);
+    cliente.usuario = usuario;
+    okEl.textContent = t.admGenUsrOkCreado.replace('{usuario}', usuario).replace('{cliente}', cliente.nombre || '');
+    okEl.hidden = false;
+    const selOpt = $('#adminGenUsrClienteSel').selectedOptions[0];
+    if (selOpt) selOpt.textContent = (cliente.nombre || '—') + ' · ' + usuario;
+  } catch (e) {
+    console.error('Error creando el usuario del cliente:', e);
+    errorEl.textContent = t.admGenUsrErrorGuardar;
+    errorEl.hidden = false;
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 $('#loginSubmitBtn')?.addEventListener('click', async () => {
   const usuario = $('#login-usuario')?.value.trim();

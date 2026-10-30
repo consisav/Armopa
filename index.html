@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261030l">
+<link rel="stylesheet" href="styles.css?v=20261030m">
 </head>
 <body>
 
@@ -54,7 +54,9 @@
                 <div class="nav-admin-sep" role="separator"></div>
                 <button type="button" id="navAdminGeografiaBtn" data-i18n="adminMenuGeografia"></button>
                 <button type="button" id="navAdminOrganizacionesBtn" data-i18n="adminMenuOrganizaciones"></button>
+                <div class="nav-admin-sep" role="separator"></div>
                 <button type="button" id="navAdminUsuariosCatalogoBtn" data-i18n="adminMenuUsuariosCatalogo"></button>
+                <button type="button" id="navAdminGenerarUsuarioBtn" data-i18n="adminMenuGenerarUsuario"></button>
               </div>
             </div>
             <div class="nav-admin-group" data-grp="negocios">
@@ -2193,6 +2195,48 @@
   </div>
 </div>
 
+<div class="modal" id="adminGenerarUsuarioModal" hidden>
+  <button class="scrim" type="button" id="adminGenerarUsuarioScrim" data-i18n-label="close"></button>
+  <div class="pcard" id="adminGenerarUsuarioCard" role="dialog" aria-modal="true" aria-labelledby="adminGenerarUsuarioTitle">
+    <button class="mx" type="button" id="adminGenerarUsuarioClose" data-i18n-label="close">×</button>
+    <div class="ph"><h2 id="adminGenerarUsuarioTitle" data-i18n="admGenUsrTituloModal"></h2><p class="ph-sub" data-i18n="admGenUsrSubtituloModal"></p></div>
+
+    <div class="fld">
+      <label for="adminGenUsrClienteSel" data-i18n="admGenUsrClienteLabel"></label>
+      <select id="adminGenUsrClienteSel"></select>
+      <p class="hint" id="adminGenUsrClienteHint" hidden></p>
+    </div>
+
+    <div id="adminGenUsrBloque" hidden>
+      <div class="genusr-step">
+        <div class="genusr-step-n">1</div>
+        <div class="genusr-step-body">
+          <label for="adminGenUsrUsuarioInput" data-i18n="admGenUsrUsuarioLabel"></label>
+          <div class="geo-buscar-fields">
+            <input type="text" id="adminGenUsrUsuarioInput" class="cq-input">
+            <button class="btn btn-line-dark btn-sm" type="button" id="adminGenUsrRegenUsuarioBtn" data-i18n="admGenUsrBtnGenerarUsuario"></button>
+          </div>
+          <p class="hint" id="adminGenUsrUsuarioHint"></p>
+        </div>
+      </div>
+      <div class="genusr-step">
+        <div class="genusr-step-n">2</div>
+        <div class="genusr-step-body">
+          <label for="adminGenUsrClaveInput" data-i18n="admGenUsrClaveLabel"></label>
+          <div class="geo-buscar-fields">
+            <input type="text" id="adminGenUsrClaveInput" class="cq-input" readonly>
+            <button class="btn btn-line-dark btn-sm" type="button" id="adminGenUsrRegenClaveBtn" data-i18n="admGenUsrBtnGenerarClave"></button>
+          </div>
+          <p class="hint" id="adminGenUsrClaveHint"></p>
+        </div>
+      </div>
+      <button class="btn btn-dark" type="button" id="adminGenUsrGuardarBtn" data-i18n="admGenUsrBtnCrear"></button>
+      <p class="hint hint-err" id="adminGenUsrError" hidden></p>
+      <p class="hint" id="adminGenUsrOk" hidden></p>
+    </div>
+  </div>
+</div>
+
 <div class="modal" id="adminTiposComisionModal" hidden>
   <button class="scrim" type="button" id="adminTiposComisionScrim" data-i18n-label="close"></button>
   <div class="pcard" id="adminTiposComisionCard" role="dialog" aria-modal="true" aria-labelledby="adminTiposComisionTitle">
@@ -2325,6 +2369,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261030-1529"></script>
+<script src="script.js?v=20261030-1611"></script>
 </body>
 </html>
