@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261030d">
+<link rel="stylesheet" href="styles.css?v=20261030e">
 </head>
 <body>
 
@@ -2063,12 +2063,61 @@
   <div class="pcard pcard-wide" id="adminOrganizacionesCard" role="dialog" aria-modal="true" aria-labelledby="adminOrganizacionesTitle">
     <button class="mx" type="button" id="adminOrganizacionesClose" data-i18n-label="close">×</button>
     <div class="ph"><h2 id="adminOrganizacionesTitle" data-i18n="admOrgTituloModal"></h2><p class="ph-sub" data-i18n="admOrgSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:18px">
-      <input type="text" id="adminOrgBuscarInput" class="cq-input" data-i18n-ph="admOrgBuscarPh">
-      <button class="btn btn-dark btn-sm" type="button" id="adminOrgMostrarBtn" data-i18n="btnMostrar"></button>
-      <button class="btn btn-gold btn-sm" type="button" id="adminOrgNuevoBtn" data-i18n="admOrgAgregar"></button>
-    </div>
-    <div id="adminOrgList" class="proy-list"></div>
+
+    <section class="geo-tbl-sec">
+      <div class="geo-tbl-head">
+        <h3 data-i18n="admOrgSeccionOrgs"></h3>
+        <div class="geo-tbl-head-actions">
+          <button class="btn btn-gold btn-sm" type="button" id="adminOrgNuevoBtn" data-i18n="admOrgAgregar"></button>
+        </div>
+      </div>
+      <div class="geo-buscar-fields">
+        <input type="text" id="adminOrgBuscarInput" class="cq-input" data-i18n-ph="admOrgBuscarPh">
+      </div>
+      <div class="geo-tbl-wrap">
+        <table class="geo-tbl">
+          <thead>
+            <tr>
+              <th data-i18n="admOrgColCodigo"></th>
+              <th data-i18n="admOrgColNombre"></th>
+              <th data-i18n="admOrgColRepresentante"></th>
+              <th data-i18n="admOrgColTelefonos"></th>
+              <th data-i18n="admOrgColUbicacion"></th>
+              <th data-i18n="admOrgColEstado"></th>
+              <th class="geo-tbl-th-edit"></th>
+            </tr>
+          </thead>
+          <tbody id="adminOrgTbody"></tbody>
+        </table>
+      </div>
+      <div id="adminOrgDetalle" class="org-detalle" hidden></div>
+    </section>
+
+    <section class="geo-tbl-sec" id="adminOrgLocSeccion" hidden>
+      <div class="geo-tbl-head">
+        <h3 id="adminOrgLocSeccionTitulo" data-i18n="admOrgLocalidades"></h3>
+        <div class="geo-tbl-head-actions">
+          <button class="btn btn-gold btn-sm" type="button" id="adminOrgLocNuevoBtn" data-i18n="admOrgAgregarLocalidad"></button>
+        </div>
+      </div>
+      <div class="geo-tbl-wrap">
+        <table class="geo-tbl">
+          <thead>
+            <tr>
+              <th data-i18n="admOrgColCodigo"></th>
+              <th data-i18n="admOrgLocNombreComercial"></th>
+              <th data-i18n="admOrgLocRazonSocial"></th>
+              <th data-i18n="admOrgLocNit"></th>
+              <th data-i18n="admOrgMunicipio"></th>
+              <th data-i18n="admOrgColEstado"></th>
+              <th class="geo-tbl-th-edit"></th>
+            </tr>
+          </thead>
+          <tbody id="adminOrgLocTbody"></tbody>
+        </table>
+      </div>
+      <div id="adminOrgLocDetalle" class="org-detalle" hidden></div>
+    </section>
   </div>
 </div>
 
@@ -2204,6 +2253,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261030-0500"></script>
+<script src="script.js?v=20261030-0600"></script>
 </body>
 </html>

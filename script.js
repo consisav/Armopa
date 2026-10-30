@@ -530,6 +530,8 @@ const T = {
     admOrgNoHayLocalidades: 'Esta organización aún no tiene localidades registradas.', admOrgLocNombreComercial: 'Nombre comercial', admOrgLocRazonSocial: 'Razón social', admOrgLocNit: 'NIT',
     admOrgConfirmEliminarOrg: '¿Eliminar esta organización? También se eliminarán sus localidades.', admOrgConfirmEliminarLoc: '¿Eliminar esta localidad?',
     admOrgErrorEliminar: 'No se pudo eliminar. Intenta de nuevo.', admOrgErrorGuardar: 'No se pudo guardar. Revisa los datos e intenta de nuevo.', admOrgErrorCargar: 'No se pudo cargar la información.',
+    admOrgSeccionOrgs: 'ORGANIZACIÓN', admOrgColCodigo: 'Cód.', admOrgColNombre: 'Organización', admOrgColRepresentante: 'Representante Legal', admOrgColTelefonos: 'Teléfonos', admOrgColUbicacion: 'Ubicación', admOrgColEstado: 'Estado',
+    admOrgGrabadoPor: 'Grabado por', admOrgModificadoPor: 'Última modificación por', admOrgSelecOrgPrimero: 'Selecciona una organización arriba para ver sus localidades.',
     admEstadoActivo: 'Activo', admEstadoInactivo: 'Inactivo',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -915,6 +917,8 @@ const T = {
     admOrgNoHayLocalidades: 'This organization has no locations registered yet.', admOrgLocNombreComercial: 'Trade name', admOrgLocRazonSocial: 'Legal name', admOrgLocNit: 'Tax ID',
     admOrgConfirmEliminarOrg: 'Delete this organization? Its locations will be deleted too.', admOrgConfirmEliminarLoc: 'Delete this location?',
     admOrgErrorEliminar: 'Could not delete. Please try again.', admOrgErrorGuardar: 'Could not save. Check the data and try again.', admOrgErrorCargar: 'Could not load the information.',
+    admOrgSeccionOrgs: 'ORGANIZATION', admOrgColCodigo: 'Code', admOrgColNombre: 'Organization', admOrgColRepresentante: 'Legal Representative', admOrgColTelefonos: 'Phones', admOrgColUbicacion: 'Location', admOrgColEstado: 'Status',
+    admOrgGrabadoPor: 'Saved by', admOrgModificadoPor: 'Last modified by', admOrgSelecOrgPrimero: 'Select an organization above to see its locations.',
     admEstadoActivo: 'Active', admEstadoInactivo: 'Inactive',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -4680,15 +4684,20 @@ $('#adminGeografiaScrim')?.addEventListener('click', cerrarAdminGeografiaModal);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && adminGeografiaModal && !adminGeografiaModal.hidden) cerrarAdminGeografiaModal(); });
 
 
-/* ===== Organizaciones y Localidades (catálogo maestro-detalle) =====
-   Organizaciones (grupos corporativos): código, nombre, representante
-   legal, teléfonos, correos, dirección, departamento/municipio, estado.
-   Dentro de cada tarjeta, un acordeón con sus localidades (empresas o
-   sedes): código, nombre comercial, razón social, NIT, municipio, estado.
-   Mismo patrón que Geografía (tarjetas .proy-card con acordeón anidado). */
+/* ===== Organizaciones y Localidades (formato tabular + panel de detalle) =====
+   Tabla ORGANIZACIÓN (maestro) arriba, con selección de fila que muestra
+   un panel de detalle (todos los campos + metadatos de auditoría) debajo,
+   y la tabla LOCALIDADES de esa organización a continuación, con su
+   propio panel de detalle al seleccionar una localidad. Igual patrón que
+   Geografía, agregando el panel de detalle expandido. */
 let adminOrgData = [];
-const orgLocCache = {};  // organizacion_id -> array de localidades
-const orgLocAbiertos = {}; // organizacion_id -> bool
+let adminOrgSeleccionada = null;  // id de la organización seleccionada (fila activa)
+let adminOrgEditId = null;        // id (o 'new') de la organización en edición (fila de tabla)
+let adminOrgDetalleEditando = false; // true si el panel de detalle está en modo edición
+let adminOrgLocData = [];
+let adminOrgLocSeleccionada = null;
+let adminOrgLocEditId = null;
+let adminOrgLocDetalleEditando = false;
 
 function getEstadosOrg() {
   const t = T[lang] || T.es;
@@ -4697,8 +4706,7 @@ function getEstadosOrg() {
 const estadoOrgLabel = (v) => (getEstadosOrg().find((e) => e.v === v) || {}).l || '—';
 
 function orgEstadoBadge(v) {
-  const span = el('span', 'cli-badge ' + (v === 'inactivo' ? 'cli-badge-inactivo' : 'cli-badge-activo'), estadoOrgLabel(v || 'activo'));
-  return span;
+  return el('span', 'cli-badge ' + (v === 'inactivo' ? 'cli-badge-inactivo' : 'cli-badge-activo'), estadoOrgLabel(v || 'activo'));
 }
 
 async function siguienteCodigoOrganizacion() {
@@ -4706,10 +4714,7 @@ async function siguienteCodigoOrganizacion() {
     const { data, error } = await supabaseClient.from('organizaciones').select('codigo');
     if (error) throw error;
     let max = 0;
-    (data || []).forEach((r) => {
-      const n = parseInt(r.codigo, 10);
-      if (!isNaN(n) && n > max) max = n;
-    });
+    (data || []).forEach((r) => { const n = parseInt(r.codigo, 10); if (!isNaN(n) && n > max) max = n; });
     return String(max + 1);
   } catch (e) {
     console.error('Error calculando el siguiente código de organización:', e);
@@ -4722,10 +4727,7 @@ async function siguienteCodigoLocalidad(organizacionId) {
     const { data, error } = await supabaseClient.from('org_localidades').select('codigo').eq('organizacion_id', organizacionId);
     if (error) throw error;
     let max = 0;
-    (data || []).forEach((r) => {
-      const n = parseInt(r.codigo, 10);
-      if (!isNaN(n) && n > max) max = n;
-    });
+    (data || []).forEach((r) => { const n = parseInt(r.codigo, 10); if (!isNaN(n) && n > max) max = n; });
     return String(max + 1).padStart(2, '0');
   } catch (e) {
     console.error('Error calculando el siguiente código de localidad:', e);
@@ -4739,11 +4741,7 @@ async function poblarGeoDeptoSelect(sel, actual) {
   try {
     const { data, error } = await supabaseClient.from('geo_departamentos').select('id,nombre').order('nombre', { ascending: true });
     if (error) throw error;
-    (data || []).forEach((d) => {
-      const opt = document.createElement('option');
-      opt.value = d.id; opt.textContent = d.nombre;
-      sel.appendChild(opt);
-    });
+    (data || []).forEach((d) => { const opt = document.createElement('option'); opt.value = d.id; opt.textContent = d.nombre; sel.appendChild(opt); });
   } catch (e) { console.error('Error cargando departamentos:', e); }
   sel.value = actual ? String(actual) : '';
 }
@@ -4755,56 +4753,195 @@ async function poblarGeoMunSelect(sel, deptoId, actual) {
   try {
     const { data, error } = await supabaseClient.from('geo_municipios').select('id,nombre').eq('departamento_id', deptoId).order('nombre', { ascending: true });
     if (error) throw error;
-    (data || []).forEach((m) => {
-      const opt = document.createElement('option');
-      opt.value = m.id; opt.textContent = m.nombre;
-      sel.appendChild(opt);
-    });
+    (data || []).forEach((m) => { const opt = document.createElement('option'); opt.value = m.id; opt.textContent = m.nombre; sel.appendChild(opt); });
   } catch (e) { console.error('Error cargando municipios:', e); }
   sel.value = actual ? String(actual) : '';
 }
 
-function orgCardHead(o) {
-  const head = el('div', 'proy-card-h');
-  head.append(el('h3', '', (o.codigo ? o.codigo + ' · ' : '') + (o.nombre || '—')));
-  head.append(orgEstadoBadge(o.estado));
-  return head;
+/* ---- Tabla de organizaciones (maestro) ---- */
+
+function orgFilaVista(o) {
+  const t = T[lang];
+  const tr = document.createElement('tr');
+  tr.dataset.id = o.id;
+  if (adminOrgSeleccionada === o.id) tr.classList.add('geo-row-sel');
+  const ubicacion = [o.depto_nombre, o.mun_nombre].filter(Boolean).join(', ') || '—';
+  tr.innerHTML =
+    '<td>' + (o.codigo || '—') + '</td>' +
+    '<td class="geo-td-strong">' + (o.nombre || '—') + '</td>' +
+    '<td>' + (o.representante || '—') + '</td>' +
+    '<td>' + (o.telefonos || '—') + '</td>' +
+    '<td>' + ubicacion + '</td>' +
+    '<td class="geo-td-badge"></td>' +
+    '<td class="geo-td-edit"></td>';
+  tr.children[5].appendChild(orgEstadoBadge(o.estado));
+  const editTd = tr.lastElementChild;
+  const editBtn = document.createElement('button');
+  editBtn.type = 'button'; editBtn.className = 'geo-edit-btn'; editBtn.setAttribute('aria-label', t.btnModificar); editBtn.textContent = '✎';
+  editTd.appendChild(editBtn);
+
+  tr.addEventListener('click', (e) => {
+    if (e.target === editBtn) return;
+    if (adminOrgEditId) return;
+    adminOrgSeleccionada = (adminOrgSeleccionada === o.id) ? null : o.id;
+    adminOrgDetalleEditando = false;
+    adminOrgLocSeleccionada = null;
+    pintarAdminOrgTbody();
+    pintarOrgDetalle();
+    cargarAdminOrgLocData();
+    pintarAdminOrgLocSeccion();
+  });
+  editBtn.addEventListener('click', (e) => { e.stopPropagation(); adminOrgEditId = o.id; pintarAdminOrgTbody(); });
+
+  return tr;
 }
 
-function orgRenderView(card, o) {
+function orgFilaEdit(o, isNew) {
   const t = T[lang];
-  card.innerHTML = '';
-  card.classList.remove('proy-card-edit');
-  const actions = el('div', 'proy-actions');
-  const verLocBtn = el('button', 'btn btn-line-dark btn-sm', orgLocAbiertos[o.id] ? t.admOrgOcultarLocalidades : t.admOrgVerLocalidades); verLocBtn.type = 'button';
+  const tr = document.createElement('tr');
+  tr.classList.add('geo-row-edit');
+  if (o.id) tr.dataset.id = o.id;
+
+  const codInput = document.createElement('input'); codInput.type = 'text'; codInput.readOnly = true; codInput.tabIndex = -1; codInput.classList.add('cod-auto');
+  codInput.value = o.codigo || (isNew ? t.adminCargandoPuntos : '');
+  if (isNew) siguienteCodigoOrganizacion().then((c) => { codInput.value = c; });
+
+  const nomInput = document.createElement('input'); nomInput.type = 'text'; nomInput.value = o.nombre || '';
+  const repInput = document.createElement('input'); repInput.type = 'text'; repInput.value = o.representante || '';
+  const telInput = document.createElement('input'); telInput.type = 'text'; telInput.value = o.telefonos || '';
+
+  const tdCod = document.createElement('td'); tdCod.appendChild(codInput);
+  const tdNom = document.createElement('td'); tdNom.appendChild(nomInput);
+  const tdRep = document.createElement('td'); tdRep.appendChild(repInput);
+  const tdTel = document.createElement('td'); tdTel.appendChild(telInput);
+  const tdUbic = document.createElement('td'); tdUbic.textContent = t.admOrgSelecOrgPrimero ? '—' : '—';
+  const tdEstado = document.createElement('td');
+  const estadoSel = document.createElement('select');
+  getEstadosOrg().forEach((e) => { const opt = document.createElement('option'); opt.value = e.v; opt.textContent = e.l; estadoSel.appendChild(opt); });
+  estadoSel.value = o.estado || 'activo';
+  tdEstado.appendChild(estadoSel);
+  const tdActions = document.createElement('td'); tdActions.className = 'geo-td-edit-actions';
+
+  const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'geo-row-btn geo-row-btn-save'; saveBtn.setAttribute('aria-label', t.btnGuardar); saveBtn.textContent = '✓';
+  const cancelBtn = document.createElement('button'); cancelBtn.type = 'button'; cancelBtn.className = 'geo-row-btn geo-row-btn-cancel'; cancelBtn.setAttribute('aria-label', t.btnCancelar); cancelBtn.textContent = '×';
+  tdActions.append(saveBtn, cancelBtn);
+
+  tr.append(tdCod, tdNom, tdRep, tdTel, tdUbic, tdEstado, tdActions);
+
+  cancelBtn.addEventListener('click', () => { adminOrgEditId = null; pintarAdminOrgTbody(); });
+  saveBtn.addEventListener('click', async () => {
+    const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
+    if (!nombre || !codigo || codigo === t.adminCargandoPuntos) { alert(t.admOrgErrorGuardar); return; }
+    saveBtn.disabled = true;
+    const payload = {
+      nombre, representante: repInput.value.trim() || null, telefonos: telInput.value.trim() || null,
+      estado: estadoSel.value || 'activo', modificado_por: localStorage.getItem(LOGIN_STORE) || null, modificado_en: new Date().toISOString()
+    };
+    try {
+      if (isNew) {
+        payload.codigo = codigo;
+        payload.creado_por = localStorage.getItem(LOGIN_STORE) || null;
+        const { data, error } = await supabaseClient.from('organizaciones').insert(payload).select().single();
+        if (error) throw error;
+        adminOrgData.unshift(data);
+      } else {
+        const { error } = await supabaseClient.from('organizaciones').update(payload).eq('id', o.id);
+        if (error) throw error;
+        Object.assign(o, payload);
+      }
+      adminOrgEditId = null;
+      pintarAdminOrgTbody();
+    } catch (e) {
+      console.error('Error guardando la organización:', e);
+      alert(t.admOrgErrorGuardar);
+      saveBtn.disabled = false;
+    }
+  });
+
+  return tr;
+}
+
+function pintarAdminOrgTbody() {
+  const tbody = $('#adminOrgTbody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  if (adminOrgEditId === 'new') tbody.appendChild(orgFilaEdit({}, true));
+  if (!adminOrgData.length && adminOrgEditId !== 'new') {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td'); td.colSpan = 7; td.className = 'geo-td-empty'; td.textContent = T[lang].admOrgNoHayOrgs;
+    tr.appendChild(td); tbody.appendChild(tr);
+    return;
+  }
+  adminOrgData.forEach((o) => { tbody.appendChild(adminOrgEditId === o.id ? orgFilaEdit(o, false) : orgFilaVista(o)); });
+}
+
+async function cargarAdminOrgData(filtroNombre) {
+  const tbody = $('#adminOrgTbody');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="geo-td-empty">' + T[lang].adminCargandoPuntos + '</td></tr>';
+  try {
+    let query = supabaseClient.from('organizaciones').select('*, depto:geo_departamentos(nombre), mun:geo_municipios(nombre)').order('codigo', { ascending: true });
+    if (filtroNombre) query = query.ilike('nombre', '%' + filtroNombre + '%');
+    const { data: rows, error } = await query;
+    if (error) throw error;
+    adminOrgData = (rows || []).map((r) => Object.assign({}, r, { depto_nombre: r.depto ? r.depto.nombre : '', mun_nombre: r.mun ? r.mun.nombre : '' }));
+  } catch (e) {
+    console.error('Error cargando las organizaciones:', e);
+    adminOrgData = [];
+  }
+  pintarAdminOrgTbody();
+}
+
+/* ---- Panel de detalle de la organización seleccionada ---- */
+
+function formatFechaHora(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    return d.toLocaleDateString('es-GT') + ', ' + d.toLocaleTimeString('es-GT', { hour12: false });
+  } catch (e) { return iso; }
+}
+
+function pintarOrgDetalle() {
+  const box = $('#adminOrgDetalle');
+  if (!box) return;
+  const o = adminOrgData.find((x) => x.id === adminOrgSeleccionada);
+  if (!o) { box.hidden = true; box.innerHTML = ''; return; }
+  box.hidden = false;
+
+  if (adminOrgDetalleEditando) { pintarOrgDetalleEdit(box, o); return; }
+
+  const t = T[lang];
+  box.innerHTML = '';
+  const bar = el('div', 'org-detalle-bar');
+  bar.append(orgEstadoBadge(o.estado));
+  const meta = el('span', 'org-detalle-meta');
+  let metaTxt = t.admOrgGrabadoPor + ' ' + (o.creado_por || '—') + (o.creado_en ? ' el ' + formatFechaHora(o.creado_en) : '');
+  if (o.modificado_por && o.modificado_en && o.modificado_en !== o.creado_en) {
+    metaTxt += '  ·  ' + t.admOrgModificadoPor + ' ' + o.modificado_por + ' el ' + formatFechaHora(o.modificado_en);
+  }
+  meta.textContent = metaTxt;
+  bar.append(meta);
+  const barActions = el('div', 'org-detalle-bar-actions');
   const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
   const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
-  actions.append(verLocBtn, modBtn, delBtn);
+  barActions.append(modBtn, delBtn);
+  bar.append(barActions);
+  box.append(bar);
 
-  card.append(orgCardHead(o));
-  const grid = el('div', 'proy-grid');
+  const grid = el('div', 'proy-grid org-detalle-grid');
   grid.append(
+    labeledCell(t.admOrgNombre, el('strong', '', o.nombre || '—')),
     labeledCell(t.admOrgRepresentante, el('span', '', o.representante || '—')),
     labeledCell(t.admOrgTelefonos, el('span', '', o.telefonos || '—')),
     labeledCell(t.admOrgCorreos, el('span', '', o.correos || '—')),
     labeledCell(t.admOrgDireccion, el('span', '', o.direccion || '—')),
+    labeledCell('País', el('span', '', o.pais || 'Guatemala')),
     labeledCell(t.admOrgDepartamento, el('span', '', o.depto_nombre || '—')),
     labeledCell(t.admOrgMunicipio, el('span', '', o.mun_nombre || '—'))
   );
-  card.append(grid, actions);
+  box.append(grid);
 
-  const locWrap = el('div', 'geo-mun-wrap');
-  locWrap.hidden = !orgLocAbiertos[o.id];
-  card.append(locWrap);
-  if (orgLocAbiertos[o.id]) pintarOrgLocalidades(locWrap, o);
-
-  verLocBtn.addEventListener('click', async () => {
-    orgLocAbiertos[o.id] = !orgLocAbiertos[o.id];
-    verLocBtn.textContent = orgLocAbiertos[o.id] ? t.admOrgOcultarLocalidades : t.admOrgVerLocalidades;
-    locWrap.hidden = !orgLocAbiertos[o.id];
-    if (orgLocAbiertos[o.id]) await pintarOrgLocalidades(locWrap, o);
-  });
-  modBtn.addEventListener('click', () => orgRenderEdit(card, o, false));
+  modBtn.addEventListener('click', () => { adminOrgDetalleEditando = true; pintarOrgDetalle(); });
   delBtn.addEventListener('click', async () => {
     if (!confirm(t.admOrgConfirmEliminarOrg)) return;
     delBtn.disabled = true;
@@ -4812,8 +4949,10 @@ function orgRenderView(card, o) {
       const { error } = await supabaseClient.from('organizaciones').delete().eq('id', o.id);
       if (error) throw error;
       adminOrgData = adminOrgData.filter((x) => x.id !== o.id);
-      card.remove();
-      if (!$('#adminOrgList').children.length) pintarAdminOrgList();
+      adminOrgSeleccionada = null;
+      pintarAdminOrgTbody();
+      pintarOrgDetalle();
+      pintarAdminOrgLocSeccion();
     } catch (e) {
       console.error('Error eliminando la organización:', e);
       alert(t.admOrgErrorEliminar);
@@ -4822,99 +4961,65 @@ function orgRenderView(card, o) {
   });
 }
 
-async function orgRenderEdit(card, o, isNew) {
+async function pintarOrgDetalleEdit(box, o) {
   const t = T[lang];
-  card.innerHTML = '';
-  card.classList.add('proy-card-edit');
+  box.innerHTML = '';
 
-  const codInput = document.createElement('input');
-  codInput.type = 'text'; codInput.maxLength = 10; codInput.value = o.codigo || '';
-  codInput.readOnly = true; codInput.tabIndex = -1; codInput.classList.add('cod-auto');
-  if (isNew) { codInput.value = T[lang].adminCargandoPuntos; siguienteCodigoOrganizacion().then((c) => { codInput.value = c; }); }
-  const nomInput = document.createElement('input');
-  nomInput.type = 'text'; nomInput.value = o.nombre || '';
-  const repInput = document.createElement('input');
-  repInput.type = 'text'; repInput.value = o.representante || '';
-  const telInput = document.createElement('input');
-  telInput.type = 'text'; telInput.value = o.telefonos || '';
-  const correoInput = document.createElement('input');
-  correoInput.type = 'text'; correoInput.value = o.correos || '';
-  const dirInput = document.createElement('input');
-  dirInput.type = 'text'; dirInput.value = o.direccion || '';
-
+  const nomInput = document.createElement('input'); nomInput.type = 'text'; nomInput.value = o.nombre || '';
+  const repInput = document.createElement('input'); repInput.type = 'text'; repInput.value = o.representante || '';
+  const telInput = document.createElement('input'); telInput.type = 'text'; telInput.value = o.telefonos || '';
+  const correoInput = document.createElement('input'); correoInput.type = 'text'; correoInput.value = o.correos || '';
+  const dirInput = document.createElement('input'); dirInput.type = 'text'; dirInput.value = o.direccion || '';
+  const paisInput = document.createElement('input'); paisInput.type = 'text'; paisInput.value = o.pais || 'Guatemala';
   const deptoSel = document.createElement('select');
   const munSel = document.createElement('select');
   await poblarGeoDeptoSelect(deptoSel, o.departamento_id);
   await poblarGeoMunSelect(munSel, o.departamento_id, o.municipio_id);
   deptoSel.addEventListener('change', () => poblarGeoMunSelect(munSel, deptoSel.value, ''));
 
-  const estadoSel = document.createElement('select');
-  getEstadosOrg().forEach((e) => {
-    const opt = document.createElement('option');
-    opt.value = e.v; opt.textContent = e.l;
-    estadoSel.appendChild(opt);
-  });
-  estadoSel.value = o.estado || 'activo';
-
-  const actions = el('div', 'proy-actions');
+  const bar = el('div', 'org-detalle-bar');
+  const barActions = el('div', 'org-detalle-bar-actions');
   const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
   const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
-  actions.append(saveBtn, cancelBtn);
+  barActions.append(saveBtn, cancelBtn);
+  bar.append(el('span', '', ''), barActions);
+  box.append(bar);
 
-  card.append(orgCardHead(o));
-  const grid = el('div', 'proy-grid');
+  const grid = el('div', 'proy-grid org-detalle-grid');
   grid.append(
-    labeledCell(t.admOrgCodigo, codInput),
     labeledCell(t.admOrgNombre, nomInput),
     labeledCell(t.admOrgRepresentante, repInput),
     labeledCell(t.admOrgTelefonos, telInput),
     labeledCell(t.admOrgCorreos, correoInput),
     labeledCell(t.admOrgDireccion, dirInput),
+    labeledCell('País', paisInput),
     labeledCell(t.admOrgDepartamento, deptoSel),
-    labeledCell(t.admOrgMunicipio, munSel),
-    labeledCell(t.admOrgEstado, estadoSel)
+    labeledCell(t.admOrgMunicipio, munSel)
   );
-  card.append(grid, actions);
+  box.append(grid);
 
-  cancelBtn.addEventListener('click', () => {
-    if (isNew) { card.remove(); if (!$('#adminOrgList').children.length) pintarAdminOrgList(); }
-    else orgRenderView(card, o);
-  });
+  cancelBtn.addEventListener('click', () => { adminOrgDetalleEditando = false; pintarOrgDetalle(); });
   saveBtn.addEventListener('click', async () => {
-    const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
-    if (!nombre || !codigo || codigo === t.adminCargandoPuntos) { alert(t.admOrgErrorGuardar); return; }
+    const nombre = nomInput.value.trim();
+    if (!nombre) { alert(t.admOrgErrorGuardar); return; }
     saveBtn.disabled = true;
+    const deptoTxt = deptoSel.options[deptoSel.selectedIndex]?.textContent || '';
+    const munTxt = munSel.options[munSel.selectedIndex]?.textContent || '';
     const payload = {
-      codigo, nombre,
-      representante: repInput.value.trim() || null,
-      telefonos: telInput.value.trim() || null,
-      correos: correoInput.value.trim() || null,
-      direccion: dirInput.value.trim() || null,
-      departamento_id: deptoSel.value || null,
-      municipio_id: munSel.value || null,
-      estado: estadoSel.value || 'activo',
-      modificado_por: localStorage.getItem(LOGIN_STORE) || null,
-      modificado_en: new Date().toISOString()
+      nombre, representante: repInput.value.trim() || null, telefonos: telInput.value.trim() || null,
+      correos: correoInput.value.trim() || null, direccion: dirInput.value.trim() || null, pais: paisInput.value.trim() || 'Guatemala',
+      departamento_id: deptoSel.value || null, municipio_id: munSel.value || null,
+      modificado_por: localStorage.getItem(LOGIN_STORE) || null, modificado_en: new Date().toISOString()
     };
-    if (isNew) { payload.creado_por = localStorage.getItem(LOGIN_STORE) || null; }
     try {
-      const deptoTxt = deptoSel.options[deptoSel.selectedIndex]?.textContent || '';
-      const munTxt = munSel.options[munSel.selectedIndex]?.textContent || '';
-      if (isNew) {
-        const { data, error } = await supabaseClient.from('organizaciones').insert(payload).select().single();
-        if (error) throw error;
-        data.depto_nombre = deptoTxt !== '—' ? deptoTxt : '';
-        data.mun_nombre = munTxt !== '—' ? munTxt : '';
-        adminOrgData.unshift(data);
-        orgRenderView(card, data);
-      } else {
-        const { error } = await supabaseClient.from('organizaciones').update(payload).eq('id', o.id);
-        if (error) throw error;
-        Object.assign(o, payload);
-        o.depto_nombre = deptoTxt !== '—' ? deptoTxt : '';
-        o.mun_nombre = munTxt !== '—' ? munTxt : '';
-        orgRenderView(card, o);
-      }
+      const { error } = await supabaseClient.from('organizaciones').update(payload).eq('id', o.id);
+      if (error) throw error;
+      Object.assign(o, payload);
+      o.depto_nombre = deptoTxt !== '—' ? deptoTxt : '';
+      o.mun_nombre = munTxt !== '—' ? munTxt : '';
+      adminOrgDetalleEditando = false;
+      pintarAdminOrgTbody();
+      pintarOrgDetalle();
     } catch (e) {
       console.error('Error guardando la organización:', e);
       alert(t.admOrgErrorGuardar);
@@ -4923,85 +5028,205 @@ async function orgRenderEdit(card, o, isNew) {
   });
 }
 
-async function pintarOrgLocalidades(wrap, o) {
+/* ---- Tabla de localidades (detalle de la organización seleccionada) ---- */
+
+function pintarAdminOrgLocSeccion() {
+  const sec = $('#adminOrgLocSeccion');
+  const titulo = $('#adminOrgLocSeccionTitulo');
+  if (!sec) return;
+  const o = adminOrgData.find((x) => x.id === adminOrgSeleccionada);
+  sec.hidden = !o;
+  if (titulo) titulo.textContent = o ? (T[lang].admOrgLocalidades + ' de ' + (o.codigo || '') + ' · ' + (o.nombre || '')) : T[lang].admOrgLocalidades;
+  pintarAdminOrgLocTbody();
+  pintarOrgLocDetalle();
+}
+
+function orgLocFilaVista(org, loc) {
   const t = T[lang];
-  wrap.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
-  let locs = orgLocCache[o.id];
-  if (!locs) {
+  const tr = document.createElement('tr');
+  tr.dataset.id = loc.id;
+  if (adminOrgLocSeleccionada === loc.id) tr.classList.add('geo-row-sel');
+  tr.innerHTML =
+    '<td class="geo-td-strong">' + (org.codigo || '') + '-' + String(loc.codigo || '').padStart(2, '0') + '</td>' +
+    '<td>' + (loc.nombre_comercial || '—') + '</td>' +
+    '<td>' + (loc.razon_social || '—') + '</td>' +
+    '<td>' + (loc.nit || '—') + '</td>' +
+    '<td>' + (loc.mun_nombre || '—') + '</td>' +
+    '<td class="geo-td-badge"></td>' +
+    '<td class="geo-td-edit"></td>';
+  tr.children[5].appendChild(orgEstadoBadge(loc.estado));
+  const editTd = tr.lastElementChild;
+  const editBtn = document.createElement('button');
+  editBtn.type = 'button'; editBtn.className = 'geo-edit-btn'; editBtn.setAttribute('aria-label', t.btnModificar); editBtn.textContent = '✎';
+  editTd.appendChild(editBtn);
+
+  tr.addEventListener('click', (e) => {
+    if (e.target === editBtn) return;
+    if (adminOrgLocEditId) return;
+    adminOrgLocSeleccionada = (adminOrgLocSeleccionada === loc.id) ? null : loc.id;
+    adminOrgLocDetalleEditando = false;
+    pintarAdminOrgLocTbody();
+    pintarOrgLocDetalle();
+  });
+  editBtn.addEventListener('click', (e) => { e.stopPropagation(); adminOrgLocEditId = loc.id; pintarAdminOrgLocTbody(); });
+
+  return tr;
+}
+
+function orgLocFilaEdit(org, loc, isNew) {
+  const t = T[lang];
+  const tr = document.createElement('tr');
+  tr.classList.add('geo-row-edit');
+  if (loc.id) tr.dataset.id = loc.id;
+
+  const codInput = document.createElement('input'); codInput.type = 'text'; codInput.readOnly = true; codInput.tabIndex = -1; codInput.classList.add('cod-auto');
+  codInput.value = loc.codigo || (isNew ? t.adminCargandoPuntos : '');
+  if (isNew) siguienteCodigoLocalidad(org.id).then((c) => { codInput.value = c; });
+
+  const nomInput = document.createElement('input'); nomInput.type = 'text'; nomInput.value = loc.nombre_comercial || '';
+  const razonInput = document.createElement('input'); razonInput.type = 'text'; razonInput.value = loc.razon_social || '';
+  const nitInput = document.createElement('input'); nitInput.type = 'text'; nitInput.value = loc.nit || '';
+  const munSel = document.createElement('select');
+  poblarGeoMunSelect(munSel, loc.departamento_id || org.departamento_id, loc.municipio_id);
+
+  const tdCod = document.createElement('td'); tdCod.appendChild(codInput);
+  const tdNom = document.createElement('td'); tdNom.appendChild(nomInput);
+  const tdRazon = document.createElement('td'); tdRazon.appendChild(razonInput);
+  const tdNit = document.createElement('td'); tdNit.appendChild(nitInput);
+  const tdMun = document.createElement('td'); tdMun.appendChild(munSel);
+  const tdEstado = document.createElement('td');
+  const estadoSel = document.createElement('select');
+  getEstadosOrg().forEach((e) => { const opt = document.createElement('option'); opt.value = e.v; opt.textContent = e.l; estadoSel.appendChild(opt); });
+  estadoSel.value = loc.estado || 'activo';
+  tdEstado.appendChild(estadoSel);
+  const tdActions = document.createElement('td'); tdActions.className = 'geo-td-edit-actions';
+
+  const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'geo-row-btn geo-row-btn-save'; saveBtn.setAttribute('aria-label', t.btnGuardar); saveBtn.textContent = '✓';
+  const cancelBtn = document.createElement('button'); cancelBtn.type = 'button'; cancelBtn.className = 'geo-row-btn geo-row-btn-cancel'; cancelBtn.setAttribute('aria-label', t.btnCancelar); cancelBtn.textContent = '×';
+  tdActions.append(saveBtn, cancelBtn);
+
+  tr.append(tdCod, tdNom, tdRazon, tdNit, tdMun, tdEstado, tdActions);
+
+  cancelBtn.addEventListener('click', () => { adminOrgLocEditId = null; pintarAdminOrgLocTbody(); });
+  saveBtn.addEventListener('click', async () => {
+    const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
+    if (!nombre || !codigo || codigo === t.adminCargandoPuntos) { alert(t.admOrgErrorGuardar); return; }
+    saveBtn.disabled = true;
+    const munTxt = munSel.options[munSel.selectedIndex]?.textContent || '';
+    const payload = {
+      nombre_comercial: nombre, razon_social: razonInput.value.trim() || null, nit: nitInput.value.trim() || null,
+      municipio_id: munSel.value || null, departamento_id: org.departamento_id || null,
+      estado: estadoSel.value || 'activo', modificado_por: localStorage.getItem(LOGIN_STORE) || null, modificado_en: new Date().toISOString()
+    };
     try {
-      const { data, error } = await supabaseClient.from('org_localidades').select('*, municipio:geo_municipios(nombre)').eq('organizacion_id', o.id).order('codigo', { ascending: true });
-      if (error) throw error;
-      locs = (data || []).map((r) => Object.assign({}, r, { mun_nombre: r.municipio ? r.municipio.nombre : '' }));
-      orgLocCache[o.id] = locs;
+      if (isNew) {
+        payload.codigo = codigo;
+        payload.organizacion_id = org.id;
+        payload.creado_por = localStorage.getItem(LOGIN_STORE) || null;
+        const { data, error } = await supabaseClient.from('org_localidades').insert(payload).select().single();
+        if (error) throw error;
+        data.mun_nombre = munTxt !== '—' ? munTxt : '';
+        adminOrgLocData.unshift(data);
+      } else {
+        const { error } = await supabaseClient.from('org_localidades').update(payload).eq('id', loc.id);
+        if (error) throw error;
+        Object.assign(loc, payload);
+        loc.mun_nombre = munTxt !== '—' ? munTxt : '';
+      }
+      adminOrgLocEditId = null;
+      pintarAdminOrgLocTbody();
     } catch (e) {
-      console.error('Error cargando las localidades:', e);
-      wrap.innerHTML = '<p class="proy-empty">' + t.admOrgErrorCargar + '</p>';
-      return;
+      console.error('Error guardando la localidad:', e);
+      alert(t.admOrgErrorGuardar);
+      saveBtn.disabled = false;
     }
+  });
+
+  return tr;
+}
+
+function pintarAdminOrgLocTbody() {
+  const tbody = $('#adminOrgLocTbody');
+  if (!tbody) return;
+  const org = adminOrgData.find((x) => x.id === adminOrgSeleccionada);
+  tbody.innerHTML = '';
+  if (!org) return;
+  if (adminOrgLocEditId === 'new') tbody.appendChild(orgLocFilaEdit(org, {}, true));
+  if (!adminOrgLocData.length && adminOrgLocEditId !== 'new') {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td'); td.colSpan = 7; td.className = 'geo-td-empty'; td.textContent = T[lang].admOrgNoHayLocalidades;
+    tr.appendChild(td); tbody.appendChild(tr);
+    return;
   }
-  renderOrgLocList(wrap, o, locs);
+  adminOrgLocData.forEach((loc) => { tbody.appendChild(adminOrgLocEditId === loc.id ? orgLocFilaEdit(org, loc, false) : orgLocFilaVista(org, loc)); });
 }
 
-function renderOrgLocList(wrap, o, locs) {
-  const t = T[lang];
-  wrap.innerHTML = '';
-  const head = el('div', 'proy-pane-head');
-  head.append(el('h4', '', t.admOrgLocalidades));
-  const nuevoBtn = el('button', 'btn btn-gold btn-sm', t.admOrgAgregarLocalidad); nuevoBtn.type = 'button';
-  head.append(nuevoBtn);
-  wrap.append(head);
-
-  const list = el('div', 'proy-list proy-list-nested');
-  wrap.append(list);
-  if (!locs.length) list.innerHTML = '<p class="proy-empty">' + t.admOrgNoHayLocalidades + '</p>';
-  locs.forEach((loc) => {
-    const card = el('div', 'proy-card proy-card-sm');
-    locRenderView(card, o, loc, list);
-    list.appendChild(card);
-  });
-
-  nuevoBtn.addEventListener('click', () => {
-    if (list.querySelector('.proy-card-edit')) return;
-    const emptyMsg = list.querySelector('.proy-empty');
-    if (emptyMsg) emptyMsg.remove();
-    const card = el('div', 'proy-card proy-card-sm');
-    list.prepend(card);
-    locRenderEdit(card, o, {}, true, list);
-  });
+async function cargarAdminOrgLocData() {
+  const tbody = $('#adminOrgLocTbody');
+  if (!adminOrgSeleccionada) { adminOrgLocData = []; if (tbody) tbody.innerHTML = ''; return; }
+  if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="geo-td-empty">' + T[lang].adminCargandoPuntos + '</td></tr>';
+  try {
+    const { data, error } = await supabaseClient.from('org_localidades').select('*, municipio:geo_municipios(nombre)').eq('organizacion_id', adminOrgSeleccionada).order('codigo', { ascending: true });
+    if (error) throw error;
+    adminOrgLocData = (data || []).map((r) => Object.assign({}, r, { mun_nombre: r.municipio ? r.municipio.nombre : '' }));
+  } catch (e) {
+    console.error('Error cargando las localidades:', e);
+    adminOrgLocData = [];
+  }
+  pintarAdminOrgLocTbody();
 }
 
-function locRenderView(card, org, loc, list) {
+/* ---- Panel de detalle de la localidad seleccionada ---- */
+
+function pintarOrgLocDetalle() {
+  const box = $('#adminOrgLocDetalle');
+  if (!box) return;
+  const org = adminOrgData.find((x) => x.id === adminOrgSeleccionada);
+  const loc = adminOrgLocData.find((x) => x.id === adminOrgLocSeleccionada);
+  if (!org || !loc) { box.hidden = true; box.innerHTML = ''; return; }
+  box.hidden = false;
+
+  if (adminOrgLocDetalleEditando) { pintarOrgLocDetalleEdit(box, org, loc); return; }
+
   const t = T[lang];
-  card.innerHTML = '';
-  card.classList.remove('proy-card-edit');
-  const actions = el('div', 'proy-actions');
+  box.innerHTML = '';
+  const bar = el('div', 'org-detalle-bar');
+  bar.append(orgEstadoBadge(loc.estado));
+  const meta = el('span', 'org-detalle-meta');
+  let metaTxt = t.admOrgGrabadoPor + ' ' + (loc.creado_por || '—') + (loc.creado_en ? ' el ' + formatFechaHora(loc.creado_en) : '');
+  if (loc.modificado_por && loc.modificado_en && loc.modificado_en !== loc.creado_en) {
+    metaTxt += '  ·  ' + t.admOrgModificadoPor + ' ' + loc.modificado_por + ' el ' + formatFechaHora(loc.modificado_en);
+  }
+  meta.textContent = metaTxt;
+  bar.append(meta);
+  const barActions = el('div', 'org-detalle-bar-actions');
   const modBtn = el('button', 'btn btn-line-dark btn-sm', t.btnModificar); modBtn.type = 'button';
   const delBtn = el('button', 'btn btn-line-dark btn-sm sol-del', t.btnEliminar); delBtn.type = 'button';
-  actions.append(modBtn, delBtn);
+  barActions.append(modBtn, delBtn);
+  bar.append(barActions);
+  box.append(bar);
 
-  const head = el('div', 'proy-card-h');
-  head.append(el('h3', '', (org.codigo || '') + '-' + String(loc.codigo || '').padStart(2, '0') + ' · ' + (loc.nombre_comercial || '—')));
-  head.append(orgEstadoBadge(loc.estado));
-  card.append(head);
-
-  const grid = el('div', 'proy-grid');
+  const grid = el('div', 'proy-grid org-detalle-grid');
   grid.append(
+    labeledCell(t.admOrgCodigo, el('strong', '', (org.codigo || '') + '-' + String(loc.codigo || '').padStart(2, '0'))),
+    labeledCell(t.admOrgLocNombreComercial, el('span', '', loc.nombre_comercial || '—')),
     labeledCell(t.admOrgLocRazonSocial, el('span', '', loc.razon_social || '—')),
     labeledCell(t.admOrgLocNit, el('span', '', loc.nit || '—')),
     labeledCell(t.admOrgMunicipio, el('span', '', loc.mun_nombre || '—'))
   );
-  card.append(grid, actions);
+  box.append(grid);
 
-  modBtn.addEventListener('click', () => locRenderEdit(card, org, loc, false, list));
+  modBtn.addEventListener('click', () => { adminOrgLocDetalleEditando = true; pintarOrgLocDetalle(); });
   delBtn.addEventListener('click', async () => {
     if (!confirm(t.admOrgConfirmEliminarLoc)) return;
     delBtn.disabled = true;
     try {
       const { error } = await supabaseClient.from('org_localidades').delete().eq('id', loc.id);
       if (error) throw error;
-      orgLocCache[org.id] = (orgLocCache[org.id] || []).filter((x) => x.id !== loc.id);
-      card.remove();
-      if (!list.children.length) list.innerHTML = '<p class="proy-empty">' + t.admOrgNoHayLocalidades + '</p>';
+      adminOrgLocData = adminOrgLocData.filter((x) => x.id !== loc.id);
+      adminOrgLocSeleccionada = null;
+      pintarAdminOrgLocTbody();
+      pintarOrgLocDetalle();
     } catch (e) {
       console.error('Error eliminando la localidad:', e);
       alert(t.admOrgErrorEliminar);
@@ -5010,93 +5235,51 @@ function locRenderView(card, org, loc, list) {
   });
 }
 
-async function locRenderEdit(card, org, loc, isNew, list) {
+async function pintarOrgLocDetalleEdit(box, org, loc) {
   const t = T[lang];
-  card.innerHTML = '';
-  card.classList.add('proy-card-edit');
+  box.innerHTML = '';
 
-  const codInput = document.createElement('input');
-  codInput.type = 'text'; codInput.maxLength = 10; codInput.value = loc.codigo || '';
-  codInput.readOnly = true; codInput.tabIndex = -1; codInput.classList.add('cod-auto');
-  if (isNew) { codInput.value = T[lang].adminCargandoPuntos; siguienteCodigoLocalidad(org.id).then((c) => { codInput.value = c; }); }
-  const nomInput = document.createElement('input');
-  nomInput.type = 'text'; nomInput.value = loc.nombre_comercial || '';
-  const razonInput = document.createElement('input');
-  razonInput.type = 'text'; razonInput.value = loc.razon_social || '';
-  const nitInput = document.createElement('input');
-  nitInput.type = 'text'; nitInput.value = loc.nit || '';
-
-  const deptoSel = document.createElement('select');
+  const nomInput = document.createElement('input'); nomInput.type = 'text'; nomInput.value = loc.nombre_comercial || '';
+  const razonInput = document.createElement('input'); razonInput.type = 'text'; razonInput.value = loc.razon_social || '';
+  const nitInput = document.createElement('input'); nitInput.type = 'text'; nitInput.value = loc.nit || '';
   const munSel = document.createElement('select');
-  await poblarGeoDeptoSelect(deptoSel, loc.departamento_id || org.departamento_id);
-  await poblarGeoMunSelect(munSel, deptoSel.value, loc.municipio_id);
-  deptoSel.addEventListener('change', () => poblarGeoMunSelect(munSel, deptoSel.value, ''));
+  await poblarGeoMunSelect(munSel, loc.departamento_id || org.departamento_id, loc.municipio_id);
 
-  const estadoSel = document.createElement('select');
-  getEstadosOrg().forEach((e) => {
-    const opt = document.createElement('option');
-    opt.value = e.v; opt.textContent = e.l;
-    estadoSel.appendChild(opt);
-  });
-  estadoSel.value = loc.estado || 'activo';
-
-  const actions = el('div', 'proy-actions');
+  const bar = el('div', 'org-detalle-bar');
+  const barActions = el('div', 'org-detalle-bar-actions');
   const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
   const cancelBtn = el('button', 'btn btn-line-dark btn-sm', t.btnCancelar); cancelBtn.type = 'button';
-  actions.append(saveBtn, cancelBtn);
+  barActions.append(saveBtn, cancelBtn);
+  bar.append(el('span', '', ''), barActions);
+  box.append(bar);
 
-  const head = el('div', 'proy-card-h');
-  head.append(el('h3', '', isNew ? t.admOrgAgregarLocalidad : (org.codigo + '-' + String(loc.codigo || '').padStart(2, '0'))));
-  card.append(head);
-
-  const grid = el('div', 'proy-grid');
+  const grid = el('div', 'proy-grid org-detalle-grid');
   grid.append(
-    labeledCell(t.admOrgCodigo, codInput),
     labeledCell(t.admOrgLocNombreComercial, nomInput),
     labeledCell(t.admOrgLocRazonSocial, razonInput),
     labeledCell(t.admOrgLocNit, nitInput),
-    labeledCell(t.admOrgDepartamento, deptoSel),
-    labeledCell(t.admOrgMunicipio, munSel),
-    labeledCell(t.admOrgEstado, estadoSel)
+    labeledCell(t.admOrgMunicipio, munSel)
   );
-  card.append(grid, actions);
+  box.append(grid);
 
-  cancelBtn.addEventListener('click', () => {
-    if (isNew) { card.remove(); if (!list.children.length) list.innerHTML = '<p class="proy-empty">' + t.admOrgNoHayLocalidades + '</p>'; }
-    else locRenderView(card, org, loc, list);
-  });
+  cancelBtn.addEventListener('click', () => { adminOrgLocDetalleEditando = false; pintarOrgLocDetalle(); });
   saveBtn.addEventListener('click', async () => {
-    const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
-    if (!nombre || !codigo || codigo === t.adminCargandoPuntos) { alert(t.admOrgErrorGuardar); return; }
+    const nombre = nomInput.value.trim();
+    if (!nombre) { alert(t.admOrgErrorGuardar); return; }
     saveBtn.disabled = true;
+    const munTxt = munSel.options[munSel.selectedIndex]?.textContent || '';
     const payload = {
-      organizacion_id: org.id, codigo,
-      nombre_comercial: nombre,
-      razon_social: razonInput.value.trim() || null,
-      nit: nitInput.value.trim() || null,
-      departamento_id: deptoSel.value || null,
-      municipio_id: munSel.value || null,
-      estado: estadoSel.value || 'activo',
-      modificado_por: localStorage.getItem(LOGIN_STORE) || null,
-      modificado_en: new Date().toISOString()
+      nombre_comercial: nombre, razon_social: razonInput.value.trim() || null, nit: nitInput.value.trim() || null,
+      municipio_id: munSel.value || null, modificado_por: localStorage.getItem(LOGIN_STORE) || null, modificado_en: new Date().toISOString()
     };
-    if (isNew) { payload.creado_por = localStorage.getItem(LOGIN_STORE) || null; }
     try {
-      const munTxt = munSel.options[munSel.selectedIndex]?.textContent || '';
-      if (isNew) {
-        const { data, error } = await supabaseClient.from('org_localidades').insert(payload).select().single();
-        if (error) throw error;
-        data.mun_nombre = munTxt !== '—' ? munTxt : '';
-        orgLocCache[org.id] = (orgLocCache[org.id] || []);
-        orgLocCache[org.id].unshift(data);
-        locRenderView(card, org, data, list);
-      } else {
-        const { error } = await supabaseClient.from('org_localidades').update(payload).eq('id', loc.id);
-        if (error) throw error;
-        Object.assign(loc, payload);
-        loc.mun_nombre = munTxt !== '—' ? munTxt : '';
-        locRenderView(card, org, loc, list);
-      }
+      const { error } = await supabaseClient.from('org_localidades').update(payload).eq('id', loc.id);
+      if (error) throw error;
+      Object.assign(loc, payload);
+      loc.mun_nombre = munTxt !== '—' ? munTxt : '';
+      adminOrgLocDetalleEditando = false;
+      pintarAdminOrgLocTbody();
+      pintarOrgLocDetalle();
     } catch (e) {
       console.error('Error guardando la localidad:', e);
       alert(t.admOrgErrorGuardar);
@@ -5105,60 +5288,35 @@ async function locRenderEdit(card, org, loc, isNew, list) {
   });
 }
 
-function pintarAdminOrgList() {
-  const list = $('#adminOrgList');
-  if (!list) return;
-  list.innerHTML = '';
-  if (!adminOrgData.length) { list.innerHTML = '<p class="proy-empty">' + T[lang].admOrgNoHayOrgs + '</p>'; return; }
-  adminOrgData.forEach((o) => {
-    const card = el('div', 'proy-card');
-    orgRenderView(card, o);
-    list.appendChild(card);
-  });
-}
+/* ---- Listeners generales ---- */
 
-async function cargarAdminOrgData(filtroNombre) {
-  const list = $('#adminOrgList');
-  if (list) list.innerHTML = '<p class="proy-empty">' + T[lang].adminCargandoPuntos + '</p>';
-  try {
-    let query = supabaseClient.from('organizaciones').select('*, depto:geo_departamentos(nombre), mun:geo_municipios(nombre)').order('codigo', { ascending: true });
-    if (filtroNombre) query = query.ilike('nombre', '%' + filtroNombre + '%');
-    const { data: rows, error } = await query;
-    if (error) throw error;
-    adminOrgData = (rows || []).map((r) => Object.assign({}, r, {
-      depto_nombre: r.depto ? r.depto.nombre : '',
-      mun_nombre: r.mun ? r.mun.nombre : ''
-    }));
-  } catch (e) {
-    console.error('Error cargando las organizaciones:', e);
-    adminOrgData = [];
-  }
-  pintarAdminOrgList();
-}
-
-$('#adminOrgMostrarBtn')?.addEventListener('click', () => {
-  cargarAdminOrgData(($('#adminOrgBuscarInput')?.value || '').trim());
+let adminOrgBuscarTimer = null;
+$('#adminOrgBuscarInput')?.addEventListener('input', () => {
+  clearTimeout(adminOrgBuscarTimer);
+  adminOrgBuscarTimer = setTimeout(() => { cargarAdminOrgData(($('#adminOrgBuscarInput')?.value || '').trim()); }, 250);
 });
-$('#adminOrgBuscarInput')?.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); $('#adminOrgMostrarBtn')?.click(); }
-});
-$('#adminOrgNuevoBtn')?.addEventListener('click', () => {
-  const list = $('#adminOrgList');
-  if (!list) return;
-  if (list.querySelector('.proy-card-edit')) return;
-  const emptyMsg = list.querySelector('.proy-empty');
-  if (emptyMsg) emptyMsg.remove();
-  const card = el('div', 'proy-card');
-  list.prepend(card);
-  orgRenderEdit(card, {}, true);
+$('#adminOrgNuevoBtn')?.addEventListener('click', () => { adminOrgEditId = 'new'; pintarAdminOrgTbody(); });
+$('#adminOrgLocNuevoBtn')?.addEventListener('click', () => {
+  if (!adminOrgSeleccionada) { alert(T[lang].admOrgSelecOrgPrimero); return; }
+  adminOrgLocEditId = 'new';
+  pintarAdminOrgLocTbody();
 });
 
 const adminOrganizacionesModal = $('#adminOrganizacionesModal');
 function abrirAdminOrganizacionesModal() {
   if (!adminOrganizacionesModal) return;
   if ($('#adminOrgBuscarInput')) $('#adminOrgBuscarInput').value = '';
+  adminOrgSeleccionada = null;
+  adminOrgEditId = null;
+  adminOrgDetalleEditando = false;
+  adminOrgLocData = [];
+  adminOrgLocSeleccionada = null;
+  adminOrgLocEditId = null;
+  adminOrgLocDetalleEditando = false;
   adminOrganizacionesModal.hidden = false;
   cargarAdminOrgData();
+  pintarOrgDetalle();
+  pintarAdminOrgLocSeccion();
 }
 function cerrarAdminOrganizacionesModal() { if (adminOrganizacionesModal) adminOrganizacionesModal.hidden = true; }
 $('#navAdminOrganizacionesBtn')?.addEventListener('click', () => {
