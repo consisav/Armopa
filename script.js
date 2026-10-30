@@ -546,6 +546,7 @@ const T = {
     admUsrColEstado: 'Estado', admUsrColFechaCreacion: 'Fecha de creación', admUsrColFechaActualizacion: 'Última actualización',
     admUsrEstadoActivo: 'Activo', admUsrEstadoInactivo: 'Inactivo', admUsrEstadoBaja: 'Baja',
     admOrgLocEtiqueta: 'Organización: {org} · Localidad: {loc}',
+    admUsrColOrgLoc: 'Organización / Localidad',
     admEstadoActivo: 'Activo', admEstadoInactivo: 'Inactivo',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -947,6 +948,7 @@ const T = {
     admUsrColEstado: 'Status', admUsrColFechaCreacion: 'Creation date', admUsrColFechaActualizacion: 'Last update',
     admUsrEstadoActivo: 'Active', admUsrEstadoInactivo: 'Inactive', admUsrEstadoBaja: 'Discharged',
     admOrgLocEtiqueta: 'Organization: {org} · Location: {loc}',
+    admUsrColOrgLoc: 'Organization / Location',
     admEstadoActivo: 'Active', admEstadoInactivo: 'Inactive',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -7718,7 +7720,7 @@ async function cargarAdminUsrData() {
   const tbody = $('#adminUsrTbody');
   const t = T[lang];
   const miUsuario = localStorage.getItem(LOGIN_STORE);
-  if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="geo-td-empty">' + t.adminCargandoPuntos + '</td></tr>';
+  if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="geo-td-empty">' + t.adminCargandoPuntos + '</td></tr>';
   try {
     const { data, error } = await supabaseClient.rpc('admin_listar_usuarios', { p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado });
     if (error) throw error;
@@ -7733,7 +7735,7 @@ async function cargarAdminUsrData() {
     pintarAdminUsrTbody();
   } catch (e) {
     console.error('Error cargando usuarios:', e);
-    if (tbody) tbody.innerHTML = '<tr><td colspan="9" class="geo-td-empty">' + t.admUsrErrorCargar + '</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="geo-td-empty">' + t.admUsrErrorCargar + '</td></tr>';
   }
 }
 
@@ -7752,6 +7754,20 @@ function usrEstadoBadge(v) {
   const label = (getEstadosUsr().find((e) => e.v === estado) || {}).l || estado;
   return el('span', 'cli-badge ' + usrEstadoBadgeClase(estado), label);
 }
+/* Badge compacto de color para el tipo de usuario, en vez del texto largo
+   "Super administrador" sin estilo — mismo lenguaje visual que los demás
+   badges del catálogo (.cli-badge), para que la fila quepa en una línea. */
+const TIPOS_USUARIO_BADGE_CLASE = { super_administrador: 'cli-badge-propietario', administrador: 'cli-badge-inquilino', usuario_general: 'cli-badge-inactivo' };
+function usrTipoBadge(tipo) {
+  const label = TIPOS_USUARIO_LABEL[tipo] || tipo || '—';
+  return el('span', 'cli-badge ' + (TIPOS_USUARIO_BADGE_CLASE[tipo] || 'cli-badge-inactivo'), label);
+}
+/* Fecha corta (solo día) para que las columnas de auditoría no obliguen a
+   dos líneas; la hora completa queda disponible al pasar el mouse. */
+function formatFechaCorta(iso) {
+  if (!iso) return '—';
+  try { return new Date(iso).toLocaleDateString('es-GT'); } catch (e) { return '—'; }
+}
 
 function usrFilaVista(u) {
   const t = T[lang];
@@ -7760,29 +7776,30 @@ function usrFilaVista(u) {
   tr.innerHTML =
     '<td class="geo-td-strong">' + (u.codigo_usuario != null ? u.codigo_usuario : '—') + '</td>' +
     '<td>' + (u.usuario || '—') + '</td>' +
-    '<td>' + (TIPOS_USUARIO_LABEL[u.tipo_usuario] || u.tipo_usuario || '—') + '</td>' +
-    '<td>' + orgTxt + '</td>' +
-    '<td>—</td>' +
     '<td class="geo-td-badge"></td>' +
-    '<td>' + (u.created_at ? formatFechaHora(u.created_at) : '—') + '</td>' +
-    '<td>' + (u.actualizado_en ? formatFechaHora(u.actualizado_en) : '—') + '</td>' +
+    '<td class="usr-td-orgloc">' + orgTxt + '</td>' +
+    '<td class="geo-td-badge"></td>' +
+    '<td class="usr-td-fecha" title="' + (u.created_at ? formatFechaHora(u.created_at) : '') + '">' + formatFechaCorta(u.created_at) + '</td>' +
+    '<td class="usr-td-fecha" title="' + (u.actualizado_en ? formatFechaHora(u.actualizado_en) : '') + '">' + formatFechaCorta(u.actualizado_en) + '</td>' +
     '<td class="geo-td-edit"></td>';
-  tr.children[5].appendChild(usrEstadoBadge(u.estado));
+  tr.children[2].appendChild(usrTipoBadge(u.tipo_usuario));
+  tr.children[4].appendChild(usrEstadoBadge(u.estado));
   const editTd = tr.lastElementChild;
   const editBtn = document.createElement('button');
   editBtn.type = 'button'; editBtn.className = 'geo-edit-btn'; editBtn.setAttribute('aria-label', t.btnModificar); editBtn.textContent = '✎';
   editTd.appendChild(editBtn);
   editBtn.addEventListener('click', () => { adminUsrEditUsuario = u.usuario; pintarAdminUsrTbody(); });
 
-  const locTd = tr.children[4];
+  const orgLocTd = tr.children[3];
   // Resuelve el nombre de la localidad de forma asíncrona (no está en el cache de organizaciones)
+  // y lo fusiona con la organización en una sola celda compacta.
   if (u.organizacion_id && u.localidad_id) {
     supabaseClient.from('org_localidades').select('id,codigo,nombre_comercial').eq('id', u.localidad_id).then(({ data }) => {
       const loc = data && data[0];
-      locTd.textContent = loc ? ((loc.codigo ? loc.codigo + ' · ' : '') + (loc.nombre_comercial || '')) : '—';
+      const locTxt = loc ? (loc.nombre_comercial || '') : '';
+      orgLocTd.textContent = locTxt ? (orgTxt + ' — ' + locTxt) : orgTxt;
+      orgLocTd.title = orgLocTd.textContent;
     });
-  } else {
-    locTd.textContent = '—';
   }
 
   return tr;
@@ -7795,24 +7812,23 @@ function usrFilaEdit(u) {
 
   const tdCod = document.createElement('td'); tdCod.className = 'geo-td-strong'; tdCod.textContent = u.codigo_usuario != null ? u.codigo_usuario : '—';
   const tdUsr = document.createElement('td'); tdUsr.textContent = u.usuario || '—';
-  const tdTipo = document.createElement('td'); tdTipo.textContent = TIPOS_USUARIO_LABEL[u.tipo_usuario] || u.tipo_usuario || '—';
+  const tdTipo = document.createElement('td'); tdTipo.appendChild(usrTipoBadge(u.tipo_usuario));
   const orgSel = document.createElement('select');
   const locSel = document.createElement('select');
-  const tdOrg = document.createElement('td'); tdOrg.appendChild(orgSel);
-  const tdLoc = document.createElement('td'); tdLoc.appendChild(locSel);
+  const tdOrgLoc = document.createElement('td'); tdOrgLoc.className = 'usr-td-orgloc-edit'; tdOrgLoc.append(orgSel, locSel);
   const estadoSel = document.createElement('select');
   getEstadosUsr().forEach((e) => { const opt = document.createElement('option'); opt.value = e.v; opt.textContent = e.l; estadoSel.appendChild(opt); });
   estadoSel.value = u.estado || 'activo';
   const tdEstado = document.createElement('td'); tdEstado.appendChild(estadoSel);
-  const tdCreado = document.createElement('td'); tdCreado.textContent = u.created_at ? formatFechaHora(u.created_at) : '—';
-  const tdActualizado = document.createElement('td'); tdActualizado.textContent = u.actualizado_en ? formatFechaHora(u.actualizado_en) : '—';
+  const tdCreado = document.createElement('td'); tdCreado.className = 'usr-td-fecha'; tdCreado.title = u.created_at ? formatFechaHora(u.created_at) : ''; tdCreado.textContent = formatFechaCorta(u.created_at);
+  const tdActualizado = document.createElement('td'); tdActualizado.className = 'usr-td-fecha'; tdActualizado.title = u.actualizado_en ? formatFechaHora(u.actualizado_en) : ''; tdActualizado.textContent = formatFechaCorta(u.actualizado_en);
   const tdActions = document.createElement('td'); tdActions.className = 'geo-td-edit-actions';
 
   const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'geo-row-btn geo-row-btn-save'; saveBtn.setAttribute('aria-label', t.btnGuardar); saveBtn.textContent = '✓';
   const cancelBtn = document.createElement('button'); cancelBtn.type = 'button'; cancelBtn.className = 'geo-row-btn geo-row-btn-cancel'; cancelBtn.setAttribute('aria-label', t.btnCancelar); cancelBtn.textContent = '×';
   tdActions.append(saveBtn, cancelBtn);
 
-  tr.append(tdCod, tdUsr, tdTipo, tdOrg, tdLoc, tdEstado, tdCreado, tdActualizado, tdActions);
+  tr.append(tdCod, tdUsr, tdTipo, tdOrgLoc, tdEstado, tdCreado, tdActualizado, tdActions);
 
   poblarOrgLocSelectsGenerico(orgSel, locSel, u.organizacion_id, u.localidad_id);
 
@@ -7882,7 +7898,7 @@ function pintarAdminUsrTbody() {
   tbody.innerHTML = '';
   if (!lista.length) {
     const tr = document.createElement('tr');
-    const td = document.createElement('td'); td.colSpan = 9; td.className = 'geo-td-empty'; td.textContent = t.admUsrNoHayUsuarios;
+    const td = document.createElement('td'); td.colSpan = 8; td.className = 'geo-td-empty'; td.textContent = t.admUsrNoHayUsuarios;
     tr.appendChild(td); tbody.appendChild(tr);
     return;
   }

@@ -983,6 +983,22 @@ tr.geo-row-edit input:focus{outline:2px solid var(--gold);outline-offset:1px;bor
 .geo-region-block p{font-size:13.5px;color:var(--ink);margin:0;line-height:1.5}
 table.geo-tbl .geo-td-badge{white-space:nowrap}
 
+/* Catálogo de Usuarios: todas las columnas visibles en una sola línea,
+   sin scroll horizontal — organización/localidad fusionadas en una celda,
+   tipo y estado como badges compactos, fechas cortas con hora completa
+   disponible al pasar el mouse (title). */
+.geo-tbl-usuarios{min-width:0;table-layout:fixed;width:100%}
+.geo-tbl-usuarios thead th,
+.geo-tbl-usuarios tbody td{padding:8px 10px;white-space:nowrap;font-size:13px;overflow:hidden}
+.geo-tbl-usuarios .usr-td-orgloc{overflow:hidden;text-overflow:ellipsis}
+.geo-tbl-usuarios .usr-td-fecha{color:var(--muted);font-size:12.5px}
+.geo-tbl-usuarios .usr-td-orgloc-edit{display:block;white-space:normal;padding:6px 8px;overflow:visible}
+.geo-tbl-usuarios .usr-td-orgloc-edit select{display:block;box-sizing:border-box;width:100%;min-width:0;text-overflow:ellipsis}
+.geo-tbl-usuarios .usr-td-orgloc-edit select+select{margin-top:3px}
+.geo-tbl-usuarios tr.geo-row-edit select{min-height:26px;border:1px solid #bfc8d4;border-radius:6px;padding:2px 4px;font-size:11px;color:var(--ink);background:#fff;font-family:inherit}
+.geo-tbl-usuarios .cli-badge{padding:3px 9px;font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#adminUsuariosCatalogoCard .geo-tbl-wrap{overflow-x:visible}
+
 /* ===== Organizaciones: panel de detalle bajo la tabla ===== */
 .org-detalle{margin-top:14px;padding:20px 22px;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
 .org-detalle-bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:14px;margin-bottom:18px;border-bottom:1px dashed var(--line)}
