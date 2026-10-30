@@ -4699,6 +4699,38 @@ function orgEstadoBadge(v) {
   return span;
 }
 
+async function siguienteCodigoOrganizacion() {
+  try {
+    const { data, error } = await supabaseClient.from('organizaciones').select('codigo');
+    if (error) throw error;
+    let max = 0;
+    (data || []).forEach((r) => {
+      const n = parseInt(r.codigo, 10);
+      if (!isNaN(n) && n > max) max = n;
+    });
+    return String(max + 1);
+  } catch (e) {
+    console.error('Error calculando el siguiente código de organización:', e);
+    return '1';
+  }
+}
+
+async function siguienteCodigoLocalidad(organizacionId) {
+  try {
+    const { data, error } = await supabaseClient.from('org_localidades').select('codigo').eq('organizacion_id', organizacionId);
+    if (error) throw error;
+    let max = 0;
+    (data || []).forEach((r) => {
+      const n = parseInt(r.codigo, 10);
+      if (!isNaN(n) && n > max) max = n;
+    });
+    return String(max + 1).padStart(2, '0');
+  } catch (e) {
+    console.error('Error calculando el siguiente código de localidad:', e);
+    return '01';
+  }
+}
+
 async function poblarGeoDeptoSelect(sel, actual) {
   if (!sel) return;
   sel.innerHTML = '<option value="">—</option>';
@@ -4795,6 +4827,8 @@ async function orgRenderEdit(card, o, isNew) {
 
   const codInput = document.createElement('input');
   codInput.type = 'text'; codInput.maxLength = 10; codInput.value = o.codigo || '';
+  codInput.readOnly = true; codInput.tabIndex = -1; codInput.classList.add('cod-auto');
+  if (isNew) { codInput.value = T[lang].adminCargandoPuntos; siguienteCodigoOrganizacion().then((c) => { codInput.value = c; }); }
   const nomInput = document.createElement('input');
   nomInput.type = 'text'; nomInput.value = o.nombre || '';
   const repInput = document.createElement('input');
@@ -4846,7 +4880,7 @@ async function orgRenderEdit(card, o, isNew) {
   });
   saveBtn.addEventListener('click', async () => {
     const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
-    if (!nombre || !codigo) { alert(t.admOrgErrorGuardar); return; }
+    if (!nombre || !codigo || codigo === t.adminCargandoPuntos) { alert(t.admOrgErrorGuardar); return; }
     saveBtn.disabled = true;
     const payload = {
       codigo, nombre,
@@ -4981,6 +5015,8 @@ async function locRenderEdit(card, org, loc, isNew, list) {
 
   const codInput = document.createElement('input');
   codInput.type = 'text'; codInput.maxLength = 10; codInput.value = loc.codigo || '';
+  codInput.readOnly = true; codInput.tabIndex = -1; codInput.classList.add('cod-auto');
+  if (isNew) { codInput.value = T[lang].adminCargandoPuntos; siguienteCodigoLocalidad(org.id).then((c) => { codInput.value = c; }); }
   const nomInput = document.createElement('input');
   nomInput.type = 'text'; nomInput.value = loc.nombre_comercial || '';
   const razonInput = document.createElement('input');
@@ -5029,7 +5065,7 @@ async function locRenderEdit(card, org, loc, isNew, list) {
   });
   saveBtn.addEventListener('click', async () => {
     const nombre = nomInput.value.trim(), codigo = codInput.value.trim();
-    if (!nombre || !codigo) { alert(t.admOrgErrorGuardar); return; }
+    if (!nombre || !codigo || codigo === t.adminCargandoPuntos) { alert(t.admOrgErrorGuardar); return; }
     saveBtn.disabled = true;
     const payload = {
       organizacion_id: org.id, codigo,

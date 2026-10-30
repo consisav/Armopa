@@ -509,6 +509,8 @@ section[id]{scroll-margin-top:148px}
 .proy-valor{color:var(--goldtx);font-weight:700}
 .proy-grid input,.proy-grid select{width:100%;min-height:40px;border:1px solid #bfc8d4;border-radius:9px;padding:8px 12px;font-size:14px;color:var(--ink);background:#fff;font-family:inherit}
 .proy-grid input:focus,.proy-grid select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.proy-grid input.cod-auto{background:var(--paper);color:var(--muted);cursor:not-allowed}
+.proy-grid input.cod-auto:focus{outline:none;border-color:#bfc8d4}
 .proy-actions{display:flex;gap:10px;justify-content:flex-end;padding-top:2px}
 .proy-empty{color:var(--muted);padding:26px;text-align:center;border:1px dashed var(--line);border-radius:12px}
 @media (min-width:640px){
