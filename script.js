@@ -545,6 +545,7 @@ const T = {
     admUsrNoAutorizado: 'Tu sesión de Super Administrador no pudo validarse. Vuelve a confirmar tu clave.',
     admUsrColEstado: 'Estado', admUsrColFechaCreacion: 'Fecha de creación', admUsrColFechaActualizacion: 'Última actualización',
     admUsrEstadoActivo: 'Activo', admUsrEstadoInactivo: 'Inactivo', admUsrEstadoBaja: 'Baja',
+    admOrgLocEtiqueta: 'Organización: {org} · Localidad: {loc}',
     admEstadoActivo: 'Activo', admEstadoInactivo: 'Inactivo',
     admFechaInicioServicioLabel: 'Fecha inicial del servicio', admFechaFinServicioLabel: 'Fecha final del servicio', admListaRegistrosLabel: 'Lista de registros',
     admSinFotosUbicacion: 'Todavía no hay fotos de esta ubicación.', admDescripcionPropiedad: 'Descripción Propiedad',
@@ -945,6 +946,7 @@ const T = {
     admUsrNoAutorizado: 'Your Super Administrator session could not be validated. Please confirm your password again.',
     admUsrColEstado: 'Status', admUsrColFechaCreacion: 'Creation date', admUsrColFechaActualizacion: 'Last update',
     admUsrEstadoActivo: 'Active', admUsrEstadoInactivo: 'Inactive', admUsrEstadoBaja: 'Discharged',
+    admOrgLocEtiqueta: 'Organization: {org} · Location: {loc}',
     admEstadoActivo: 'Active', admEstadoInactivo: 'Inactive',
     admFechaInicioServicioLabel: 'Service start date', admFechaFinServicioLabel: 'Service end date', admListaRegistrosLabel: 'Record list',
     admSinFotosUbicacion: 'This location has no photos yet.', admDescripcionPropiedad: 'Property Description',
@@ -2940,7 +2942,26 @@ function cliRenderView(card, c) {
   );
   secAdmin.append(gridAdmin);
 
-  card.append(secContacto, secUbicacion, secAdmin, actions);
+  card.append(secContacto, secUbicacion, secAdmin);
+
+  if (esSuperAdmin()) {
+    const secOrgView = el('div', 'cli-sec');
+    secOrgView.append(el('div', 'cli-sec-h', t.admOrgLocSeccion));
+    const gridOrgView = el('div', 'cli-grid');
+    const orgNombre = c.organizacion_id ? (orgGenericaCache?.find((o) => o.id === c.organizacion_id)?.nombre || ('#' + c.organizacion_id)) : '—';
+    const locSpan = el('span', '', '—');
+    gridOrgView.append(labeledCell(t.admOrgNombre, el('span', '', orgNombre)), labeledCell(t.admOrgLocalidades, locSpan));
+    secOrgView.append(gridOrgView);
+    card.append(secOrgView);
+    if (c.organizacion_id && c.localidad_id) {
+      supabaseClient.from('org_localidades').select('id,codigo,nombre_comercial').eq('id', c.localidad_id).then(({ data }) => {
+        const loc = data && data[0];
+        locSpan.textContent = loc ? ((loc.codigo ? loc.codigo + ' · ' : '') + (loc.nombre_comercial || '')) : '—';
+      });
+    }
+  }
+
+  card.append(actions);
 
   modBtn.addEventListener('click', () => cliRenderEdit(card, c, false));
   delBtn.addEventListener('click', async () => {
@@ -3289,6 +3310,7 @@ function abrirAdminClientesModal() {
   if ($('#adminCliBuscarInput')) $('#adminCliBuscarInput').value = '';
   adminClientesModal.hidden = false;
   if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
+  if (esSuperAdmin()) cargarOrgGenericaCache();
   cargarAdminCliData();
 }
 function cerrarAdminClientesModal() { if (adminClientesModal) adminClientesModal.hidden = true; }
@@ -3728,11 +3750,36 @@ async function segCargarYPintar() {
   }
 }
 
+/* Pinta "Organización: X · Localidad: Y" para el cliente dado en el <p>
+   indicado, visible solo para super administrador (mismo criterio que el
+   resto de la app). El nombre de la organización sale del cache ya
+   cargado (cargarOrgGenericaCache); el de la localidad se resuelve aparte
+   porque no hay un cache equivalente para localidades de todas las
+   organizaciones. */
+async function pintarOrgLocClienteEnSub(elId, cliente) {
+  const elp = $(elId);
+  if (!elp) return;
+  if (!esSuperAdmin() || !cliente || !cliente.organizacion_id) { elp.hidden = true; elp.textContent = ''; return; }
+  await cargarOrgGenericaCache();
+  const orgNombre = orgGenericaCache.find((o) => o.id === cliente.organizacion_id)?.nombre || ('#' + cliente.organizacion_id);
+  let locTxt = '—';
+  if (cliente.localidad_id) {
+    try {
+      const { data } = await supabaseClient.from('org_localidades').select('id,codigo,nombre_comercial').eq('id', cliente.localidad_id);
+      const loc = data && data[0];
+      locTxt = loc ? ((loc.codigo ? loc.codigo + ' · ' : '') + (loc.nombre_comercial || '')) : '—';
+    } catch (e) { console.error('Error cargando la localidad del cliente:', e); }
+  }
+  elp.textContent = T[lang].admOrgLocEtiqueta.replace('{org}', orgNombre).replace('{loc}', locTxt);
+  elp.hidden = false;
+}
+
 const segModal = $('#segModal');
 function abrirSegModal(cliente) {
   if (!segModal) return;
   segClienteActual = cliente;
   $('#segSub').textContent = T[lang].segSubtituloModal + ' ' + (cliente.nombre || '');
+  pintarOrgLocClienteEnSub('#segOrgLoc', cliente);
   segModal.hidden = false;
   if (!vendedoresCatalogoCargado) { vendedoresCatalogoCargado = true; cargarVendedoresCatalogo(); }
   segCargarYPintar();
@@ -3826,6 +3873,7 @@ const actModal = $('#actModal');
 function abrirActModal(cliente) {
   if (!actModal) return;
   $('#actSub').textContent = T[lang].actSubtituloModal + ' ' + (cliente.nombre || '');
+  pintarOrgLocClienteEnSub('#actOrgLoc', cliente);
   actModal.hidden = false;
   actCargarYPintar(cliente);
 }
