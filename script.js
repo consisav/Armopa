@@ -7480,12 +7480,13 @@ function pintarEstadoUsuario() {
     $('#userBadgeName').textContent = 'Hola, ' + usuario + extra;
     badge.hidden = false;
     loginBtn.hidden = true;
-    if (adminBtn) adminBtn.hidden = tipo !== 'super_administrador';
+    const esAdminOrg = tipo === 'administrador' || tipo === 'super_administrador';
+    if (adminBtn) adminBtn.hidden = !esAdminOrg;
     if (serviciosSec) serviciosSec.hidden = tipo !== 'super_administrador';
     if (aboutRBlock) aboutRBlock.hidden = false;
-    if (navAdmin) navAdmin.hidden = tipo !== 'super_administrador';
+    if (navAdmin) navAdmin.hidden = !esAdminOrg;
     if (navAdmin && navAdmin.hidden) cerrarNavAdminMenu();
-    if (openClientBtn) openClientBtn.hidden = tipo !== 'super_administrador';
+    if (openClientBtn) openClientBtn.hidden = !esAdminOrg;
     actualizarVisibilidadSolicitudes();
     actualizarVisibilidadSolServicio();
     actualizarVisibilidadAccionesCotizacion();
@@ -7691,6 +7692,9 @@ $('#adminConfirmarBtn')?.addEventListener('click', async () => {
       $('#adminTools').hidden = false;
       noteEl.textContent = 'Identidad confirmada.';
       noteEl.hidden = false;
+    } else if (data && data.status === 'ok') {
+      errorEl.textContent = 'Esta opción es solo para el Super Administrador.';
+      errorEl.hidden = false;
     } else {
       errorEl.textContent = 'Clave incorrecta. No se pudo confirmar tu identidad.';
       errorEl.hidden = false;
@@ -7910,6 +7914,9 @@ $('#adminUsrConfirmarBtn')?.addEventListener('click', async () => {
       $('#adminUsrConfirmBox').hidden = true;
       $('#adminUsrListaSec').hidden = false;
       cargarAdminUsrData();
+    } else if (data && data.status === 'ok') {
+      errorEl.textContent = 'Esta opción es solo para el Super Administrador.';
+      errorEl.hidden = false;
     } else {
       errorEl.textContent = t.admUsrConfirmErrorClave;
       errorEl.hidden = false;
@@ -9722,7 +9729,11 @@ function marketEstimate(reg, inp, lang) {
 const STORE = 'armopaProps_v3';
 const BASE = [1, 2, 3, 4, 5].map((n) => 'assets/propiedad-' + n + '.jpg');
 let data = {};
-try { data = (JSON.parse(localStorage.getItem(STORE) || 'null') || {}).data || {}; } catch (e) {}
+try {
+  // La copia local solo se usa si es de la misma organización activa (evita mostrar propiedades de otra)
+  const cache = JSON.parse(localStorage.getItem(STORE) || 'null') || {};
+  data = (cache.org === orgActivaId() && cache.data) || {};
+} catch (e) {}
 let cur = null;           // nombre de la ciudad activa (texto), o null si no hay ninguna elegida
 let panelView = 'cities'; // 'cities' = viendo ciudades | 'locs' = viendo ubicaciones de una ciudad
 let mode = 'edit', sel = -1, vi = 0, confirmDel = false;
@@ -9738,7 +9749,7 @@ const pModal = $('#propModal');
 const cityNames = () => Object.keys(data).sort((a, b) => a.localeCompare(b, 'es', { sensitivity: 'base' }));
 const list = () => { if (cur === null) return []; data[cur] = data[cur] || []; return data[cur]; };
 function persistLocalOnly() {
-  try { localStorage.setItem(STORE, JSON.stringify({ data })); return true; } catch (e) { return false; }
+  try { localStorage.setItem(STORE, JSON.stringify({ data, org: orgActivaId() })); return true; } catch (e) { return false; }
 }
 function persist() {
   const c = list()[sel];
