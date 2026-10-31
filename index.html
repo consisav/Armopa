@@ -9,33 +9,25 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261031h">
+<link rel="stylesheet" href="styles.css?v=20261031j">
 </head>
 <body>
 
 <header class="hdr">
-  <div class="wrap nav">
-    <a class="brand" href="#inicio" aria-label="ARMOPA Administración Inmobiliaria"><img id="brandLogo" src="assets/logo.webp" alt="ARMOPA Administración Inmobiliaria"></a>
-    <button class="burger" type="button" id="burger" data-i18n-label="menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
-    <div class="navwrap" id="navwrap">
-      <nav class="links" data-i18n-label="menu">
-        <a href="#inicio" data-i18n="nInicio"></a>
-        <a href="#nosotros" data-i18n="nNosotros"></a>
-        <a href="#propiedades" data-i18n="nPropiedades"></a>
-        <a href="#proyectos" data-i18n="nServicios"></a>
-        <a href="#servicios" data-i18n="nProyectos"></a>
-        <a href="#contacto" data-i18n="nContacto"></a>
-      </nav>
+  <div class="hdr-top">
+    <div class="wrap hdr-top-in">
+      <div class="lang-switch" role="group" aria-label="Idioma / Language">
+          <button class="lg on" type="button" data-lang="es" aria-label="Español (Guatemala)" title="Español · Guatemala"><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#4997D0"/><rect x="8" width="8" height="16" fill="#fff"/><circle cx="12" cy="8" r="2.6" fill="#6f9f4a"/><circle cx="12" cy="8" r="1.1" fill="#e3b93f"/></svg><span>ES</span></button>
+          <button class="lg" type="button" data-lang="en" aria-label="English (United States)" title="English · United States"><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#fff"/><rect y="0.00" width="24" height="1.23" fill="#b22234"/><rect y="2.46" width="24" height="1.23" fill="#b22234"/><rect y="4.92" width="24" height="1.23" fill="#b22234"/><rect y="7.38" width="24" height="1.23" fill="#b22234"/><rect y="9.85" width="24" height="1.23" fill="#b22234"/><rect y="12.31" width="24" height="1.23" fill="#b22234"/><rect y="14.77" width="24" height="1.23" fill="#b22234"/><rect width="10.5" height="8.6" fill="#3c3b6e"/><circle cx="1.7" cy="1.5" r=".5" fill="#fff"/><circle cx="4.6" cy="1.5" r=".5" fill="#fff"/><circle cx="7.5" cy="1.5" r=".5" fill="#fff"/><circle cx="1.7" cy="3.9" r=".5" fill="#fff"/><circle cx="4.6" cy="3.9" r=".5" fill="#fff"/><circle cx="7.5" cy="3.9" r=".5" fill="#fff"/><circle cx="1.7" cy="6.3" r=".5" fill="#fff"/><circle cx="4.6" cy="6.3" r=".5" fill="#fff"/><circle cx="7.5" cy="6.3" r=".5" fill="#fff"/></svg><span>EN</span></button>
+      </div>
       <div class="tools">
-        <button class="lg on" type="button" data-lang="es">ES</button>
-        <button class="lg" type="button" data-lang="en">EN</button>
         <span id="userBadge" hidden style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink)">
           <span id="userBadgeName"></span>
           <button class="btn btn-line btn-sm" type="button" id="adminUsuariosBtn" data-i18n="adminUsersBtn" hidden></button>
           <button class="btn btn-line btn-sm" type="button" id="logoutBtn" data-i18n="logoutBtn"></button>
         </span>
-        <button class="btn btn-line" type="button" id="openLoginBtn" data-i18n="connectBtn"></button>
-        <button class="btn btn-line" type="button" id="openClient" data-i18n="client" hidden></button>
+        <button class="btn btn-line btn-sm" type="button" id="openLoginBtn" data-i18n="connectBtn"></button>
+        <button class="btn btn-line btn-sm" type="button" id="openClient" data-i18n="client" hidden></button>
         <div class="nav-admin-drop" id="navAdminDrop" hidden>
           <button class="btn btn-line btn-sm nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false"><span data-i18n="adminMenuBtn"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
           <div class="nav-admin-menu" id="navAdminMenu" hidden>
@@ -87,6 +79,20 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="wrap nav">
+    <a class="brand" href="#inicio" aria-label="ARMOPA Administración Inmobiliaria"><img id="brandLogo" src="assets/logo.webp" alt="ARMOPA Administración Inmobiliaria"></a>
+    <button class="burger" type="button" id="burger" data-i18n-label="menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+    <div class="navwrap" id="navwrap">
+      <nav class="links" data-i18n-label="menu">
+        <a href="#inicio" data-i18n="nInicio"></a>
+        <a href="#nosotros" data-i18n="nNosotros"></a>
+        <a href="#propiedades" data-i18n="nPropiedades"></a>
+        <a href="#proyectos" data-i18n="nServicios"></a>
+        <a href="#servicios" data-i18n="nProyectos"></a>
+        <a href="#contacto" data-i18n="nContacto"></a>
+      </nav>
     </div>
   </div>
 </header>
