@@ -6709,29 +6709,81 @@ async function mostrarRepPropiedades() {
   }
 }
 
-/* Imprime el contenido actualmente mostrado de un reporte (el div de
-   resultados ya renderizado) en una ventana aparte, con un encabezado
-   propio: logo a la izquierda, fecha/hora exacta y usuario conectado a
-   la derecha -ni los filtros ni el resto del sitio se imprimen-. */
-function imprimirReporte(tituloReporte, resultSelector) {
-  const result = $(resultSelector);
-  if (!result || !result.innerHTML.trim()) { alert(T[lang].repNoDataImprimir); return; }
-  const usuario = localStorage.getItem(LOGIN_STORE) || '—';
+/* ===== Encabezado estándar de todos los reportes impresos =====
+   A. Encabezado: logo de la organización (por defecto la 2) a la izquierda,
+      nombre del reporte al centro; a la derecha fecha y hora (con segundos),
+      debajo las fechas inicial/final si el reporte las usa y, al final, el
+      usuario que imprime.
+   B. Línea horizontal y, debajo, toda la información del reporte. */
+function repEsc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/* Logo de la organización del usuario conectado (o la 2 por defecto), como URL absoluta. */
+async function repLogoOrganizacionUrl() {
+  const absoluta = (u) => { try { return new URL(u, document.baseURI).href; } catch (e) { return u; } };
+  const orgId = (estaConectado() && Number(localStorage.getItem(LOGIN_ORG_STORE))) || ORG_POR_DEFECTO;
+  const buscar = async (id) => {
+    const { data, error } = await supabaseClient.from('organizaciones').select('id,logo_url').eq('id', id);
+    if (error) throw error;
+    return data && data[0] && data[0].logo_url ? data[0].logo_url : null;
+  };
+  try {
+    let url = await buscar(orgId);
+    if (!url && orgId !== ORG_POR_DEFECTO) url = await buscar(ORG_POR_DEFECTO);
+    if (url) return absoluta(url);
+  } catch (e) { /* se usa el logo ya mostrado en la página */ }
+  const img = document.getElementById('brandLogo');
+  return absoluta((img && img.getAttribute('src')) || LOGO_POR_DEFECTO);
+}
+
+const REP_ENCABEZADO_CSS =
+  '.rep-print-head{display:grid;grid-template-columns:1fr 2fr 1fr;align-items:center;gap:16px}' +
+  '.rep-print-logo img{height:64px;max-width:100%;object-fit:contain;display:block}' +
+  '.rep-print-title{text-align:center;font-size:19px;font-weight:700;margin:0;color:#10243c}' +
+  '.rep-print-meta{text-align:right;font-size:12.5px;color:#56667a;line-height:1.5}' +
+  '.rep-print-rule{border:0;border-top:2px solid #c9962d;margin:12px 0 18px}';
+
+function repFechaIso(v) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v || '');
+  return m ? m[3] + '/' + m[2] + '/' + m[1] : '';
+}
+
+/* Devuelve el HTML del encabezado (A) seguido de la línea horizontal (B).
+   opts: { logoUrl, desde, hasta } con fechas en formato AAAA-MM-DD. */
+function repEncabezadoHTML(tituloReporte, opts) {
+  const o = opts || {};
   const ahora = new Date();
   const fechaTxt = ahora.toLocaleDateString('es-GT', { year: 'numeric', month: '2-digit', day: '2-digit' });
   const horaTxt = ahora.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-  const win = window.open('', '_blank');
+  const usuario = localStorage.getItem(LOGIN_STORE) || '—';
+  const d = repFechaIso(o.desde), h = repFechaIso(o.hasta);
+  let rango = '';
+  if (d) rango += '<div>' + repEsc(T[lang].repLblFechaInicial) + ': ' + d + '</div>';
+  if (h) rango += '<div>' + repEsc(T[lang].repLblFechaFinal) + ': ' + h + '</div>';
+  return '<div class="rep-print-head">' +
+    '<div class="rep-print-logo"><img src="' + repEsc(o.logoUrl || '') + '" alt=""></div>' +
+    '<h1 class="rep-print-title">' + repEsc(tituloReporte) + '</h1>' +
+    '<div class="rep-print-meta"><div>' + fechaTxt + ' · ' + horaTxt + '</div>' + rango +
+    '<div>' + repEsc(T[lang].repUsuarioLbl + usuario) + '</div></div>' +
+    '</div><hr class="rep-print-rule">';
+}
+
+/* Imprime el contenido actualmente mostrado de un reporte (el div de
+   resultados ya renderizado) en una ventana aparte, con el encabezado estándar.
+   opts: { desde, hasta } (AAAA-MM-DD) cuando el reporte tiene fechas inicial/final. */
+async function imprimirReporte(tituloReporte, resultSelector, opts) {
+  const result = $(resultSelector);
+  if (!result || !result.innerHTML.trim()) { alert(T[lang].repNoDataImprimir); return; }
+  const win = window.open('', '_blank'); // se abre de inmediato para que no lo bloquee el navegador
   if (!win) { alert(T[lang].repVentanaBloqueada); return; }
-  const logoUrl = new URL('assets/logo.webp', document.baseURI).href;
+  const logoUrl = await repLogoOrganizacionUrl();
   win.document.write(
     '<!doctype html><html lang="' + lang + '"><head><meta charset="utf-8">' +
-    '<title>' + tituloReporte + '</title>' +
+    '<title>' + repEsc(tituloReporte) + '</title>' +
     '<style>' +
     "body{font-family:'Figtree',system-ui,sans-serif;color:#10243c;margin:24px}" +
-    '.rep-print-head{display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #c9962d;padding-bottom:12px;margin-bottom:18px}' +
-    '.rep-print-head img{height:56px}' +
-    '.rep-print-meta{text-align:right;font-size:13px;color:#56667a;line-height:1.5}' +
-    'h1{font-size:19px;margin:0 0 18px}' +
+    REP_ENCABEZADO_CSS +
     '.com-group-title{font-size:15px;margin:18px 0 8px;border-bottom:1px solid #d5dbe4;padding-bottom:4px}' +
     '.com-count{color:#56667a;font-weight:400;margin-left:6px}' +
     '.proy-list{display:flex;flex-direction:column;gap:10px}' +
@@ -6752,17 +6804,17 @@ function imprimirReporte(tituloReporte, resultSelector) {
     '.rep-row-serv>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
     '@media print{ @page{margin:14mm} .rep-row{break-inside:avoid} }' +
     '</style></head><body>' +
-    '<div class="rep-print-head">' +
-    '<img src="' + logoUrl + '" alt="ARMOPA">' +
-    '<div class="rep-print-meta"><div>' + fechaTxt + ' · ' + horaTxt + '</div><div>' + T[lang].repUsuarioLbl + usuario + '</div></div>' +
-    '</div>' +
-    '<h1>' + tituloReporte + '</h1>' +
-    result.innerHTML +
+    repEncabezadoHTML(tituloReporte, { logoUrl, desde: opts && opts.desde, hasta: opts && opts.hasta }) +
+    '<div class="rep-print-body">' + result.innerHTML + '</div>' +
     '</body></html>'
   );
   win.document.close();
   win.focus();
-  win.addEventListener('load', () => { win.print(); });
+  // Esperar a que cargue el logo antes de imprimir
+  const imprimir = () => { win.focus(); win.print(); };
+  const img = win.document.querySelector('.rep-print-logo img');
+  if (img && !img.complete) { img.addEventListener('load', imprimir); img.addEventListener('error', imprimir); }
+  else setTimeout(imprimir, 100);
 }
 
 $('#repPropMostrarBtn')?.addEventListener('click', () => mostrarRepPropiedades());
@@ -6920,7 +6972,7 @@ async function mostrarRepServicios() {
 }
 
 $('#repServMostrarBtn')?.addEventListener('click', () => mostrarRepServicios());
-$('#repServImprimirBtn')?.addEventListener('click', () => imprimirReporte(T[lang].repTituloReporteServicios, '#repServiciosResult'));
+$('#repServImprimirBtn')?.addEventListener('click', () => imprimirReporte(T[lang].repTituloReporteServicios, '#repServiciosResult', { desde: $('#repServFechaDesde')?.value || '', hasta: $('#repServFechaHasta')?.value || '' }));
 
 const repServiciosModal = $('#repServiciosModal');
 function abrirRepServiciosModal() {
@@ -8475,11 +8527,9 @@ function fpEsc(s) {
 function fpBox(checked) {
   return '<span class="fp-chk">' + (checked ? '☑' : '☐') + '</span>';
 }
-function buildAuthReportHTML() {
+function buildAuthReportHTML(logoUrl) {
   const v = (id) => fpEsc($(id)?.value.trim() || '');
   const c = (id) => !!$(id)?.checked;
-  const logoUrl = new URL('assets/logo-reporte.png', window.location.href).href;
-
   return `<!doctype html>
 <html lang="es">
 <head>
@@ -8490,10 +8540,8 @@ function buildAuthReportHTML() {
   * { box-sizing: border-box; }
   html, body { height: 100%; }
   body { font-family: Arial, Helvetica, sans-serif; font-size: 12px; color: #111; margin: 0; }
-  .fp-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 3px solid #071a2f; padding-bottom: 8px; margin: 0 0 12px; }
-  .fp-head img { height: 58px; }
-  .fp-head h1 { flex: 1; text-align: center; font-size: 19px; margin: 0; color: #10243c; }
-  .fp-contact { border: 1px solid #333; padding: 6px 12px; font-size: 11px; text-align: center; line-height: 1.4; white-space: nowrap; }
+  ${REP_ENCABEZADO_CSS}
+  .fp-contact { font-size: 11px; text-align: right; line-height: 1.4; margin: -8px 0 6px; color: #333; }
   .fp-sec-h { background: #071a2f; color: #fff; font-weight: bold; font-size: 12.5px; padding: 5px 10px; margin: 16px 0 0; }
   table.fp-tab { width: 100%; border-collapse: collapse; margin-bottom: 0; }
   table.fp-tab td { border: 1px solid #999; background: #f2f2f2; padding: 6px 12px; font-size: 11.5px; vertical-align: top; line-height: 1.5; }
@@ -8514,11 +8562,8 @@ function buildAuthReportHTML() {
 </style>
 </head>
 <body>
-  <div class="fp-head">
-    <img src="${logoUrl}" alt="ARMOPA">
-    <h1>Formulario de Autorización de Promoción y Venta</h1>
-    <div class="fp-contact">Información y Ventas<br>(502) 4918 3411<br>(502) 5801 0723</div>
-  </div>
+  ${repEncabezadoHTML('Formulario de Autorización de Promoción y Venta', { logoUrl })}
+  <div class="fp-contact">Información y Ventas · (502) 4918 3411 · (502) 5801 0723</div>
 
   <div class="fp-sec-h">Datos del Propietario</div>
   <table class="fp-tab">
@@ -8617,16 +8662,20 @@ function buildAuthReportHTML() {
 </html>`;
 }
 
-$('#fpPrint')?.addEventListener('click', () => {
+$('#fpPrint')?.addEventListener('click', async () => {
   const w = window.open('', '_blank');
   if (!w) {
     alert('Tu navegador bloqueó la ventana de impresión. Permite ventanas emergentes para este sitio e intenta de nuevo.');
     return;
   }
+  const logoUrl = await repLogoOrganizacionUrl();
   w.document.open();
-  w.document.write(buildAuthReportHTML());
+  w.document.write(buildAuthReportHTML(logoUrl));
   w.document.close();
-  w.onload = () => { w.focus(); w.print(); };
+  const imprimir = () => { w.focus(); w.print(); };
+  const img = w.document.querySelector('.rep-print-logo img');
+  if (img && !img.complete) { img.addEventListener('load', imprimir); img.addEventListener('error', imprimir); }
+  else setTimeout(imprimir, 100);
 });
 
 /* Requisitos para vender una propiedad (guía generada con IA) + subida de PDF por requisito */
