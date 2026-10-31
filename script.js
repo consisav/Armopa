@@ -7334,9 +7334,45 @@ const LOGIN_TIPO_STORE = 'armopaUsuarioTipo';
 const LOGIN_CODIGO_STORE = 'armopaUsuarioCodigo';
 const TIPOS_USUARIO_LABEL = { super_administrador: 'Super administrador', administrador: 'Administrador', usuario_general: 'Usuario general' };
 
+const LOGIN_ORG_STORE = 'armopaUsuarioOrg';
+const ORG_LOGO_CACHE = 'armopaLogoCache'; // JSON { org, url } para evitar parpadeo
+const ORG_POR_DEFECTO = 2;
+const LOGO_POR_DEFECTO = 'assets/logo.webp';
+
 function estaConectado() {
   return !!localStorage.getItem(LOGIN_STORE);
 }
+
+/* Logo dinámico de la página principal: corresponde al logo de la organización
+   del usuario conectado; sin sesión (o sin organización) usa la organización 2. */
+let marcaLogoSeq = 0;
+async function aplicarLogoMarca() {
+  const img = document.getElementById('brandLogo');
+  if (!img) return;
+  const orgId = (estaConectado() && Number(localStorage.getItem(LOGIN_ORG_STORE))) || ORG_POR_DEFECTO;
+  const poner = (url) => {
+    const destino = url || LOGO_POR_DEFECTO;
+    if (img.getAttribute('src') !== destino) img.src = destino;
+  };
+  try {
+    const c = JSON.parse(localStorage.getItem(ORG_LOGO_CACHE) || 'null');
+    if (c && c.org === orgId && c.url) poner(c.url);
+  } catch (e) { /* sin caché */ }
+  const mi = ++marcaLogoSeq;
+  try {
+    const { data, error } = await supabaseClient.from('organizaciones').select('id,logo_url').eq('id', orgId);
+    if (mi !== marcaLogoSeq) return;
+    if (error) throw error;
+    const url = data && data[0] && data[0].logo_url ? data[0].logo_url : null;
+    poner(url);
+    try { localStorage.setItem(ORG_LOGO_CACHE, JSON.stringify({ org: orgId, url })); } catch (e) { /* ignorar */ }
+  } catch (e) {
+    if (mi === marcaLogoSeq) poner(null);
+  }
+}
+document.getElementById('brandLogo')?.addEventListener('error', (ev) => {
+  if (ev.target.getAttribute('src') !== LOGO_POR_DEFECTO) ev.target.src = LOGO_POR_DEFECTO;
+});
 
 /* Solicitudes de servicio: clave ya confirmada en esta sesión (Administrador o
    Super administrador). Declarada aquí arriba porque pintarEstadoUsuario() la usa. */
@@ -7361,6 +7397,7 @@ async function csHashClave(texto) {
 }
 
 function pintarEstadoUsuario() {
+  aplicarLogoMarca();
   const usuario = localStorage.getItem(LOGIN_STORE);
   const tipo = localStorage.getItem(LOGIN_TIPO_STORE);
   const codigo = localStorage.getItem(LOGIN_CODIGO_STORE);
@@ -7744,6 +7781,7 @@ $('#logoutBtn')?.addEventListener('click', () => {
   localStorage.removeItem(LOGIN_STORE);
   localStorage.removeItem(LOGIN_TIPO_STORE);
   localStorage.removeItem(LOGIN_CODIGO_STORE);
+  localStorage.removeItem(LOGIN_ORG_STORE);
   pintarEstadoUsuario();
 });
 
@@ -8241,9 +8279,15 @@ $('#loginSubmitBtn')?.addEventListener('click', async () => {
     const status = data && data.status;
     const tipoResuelto = data && data.tipo_usuario;
     const codigoResuelto = data && data.codigo_usuario;
+    const orgResuelta = data && data.organizacion_id;
+    const guardarOrg = () => {
+      if (orgResuelta != null) localStorage.setItem(LOGIN_ORG_STORE, String(orgResuelta));
+      else localStorage.removeItem(LOGIN_ORG_STORE);
+    };
 
     if (status === 'creado') {
       loginIntentosFallidos = 0;
+      guardarOrg();
       localStorage.setItem(LOGIN_STORE, usuario);
       if (tipoResuelto) localStorage.setItem(LOGIN_TIPO_STORE, tipoResuelto);
       if (codigoResuelto != null) localStorage.setItem(LOGIN_CODIGO_STORE, String(codigoResuelto));
@@ -8254,6 +8298,7 @@ $('#loginSubmitBtn')?.addEventListener('click', async () => {
       setTimeout(closeLoginModal, 1800);
     } else if (status === 'ok') {
       loginIntentosFallidos = 0;
+      guardarOrg();
       localStorage.setItem(LOGIN_STORE, usuario);
       if (tipoResuelto) localStorage.setItem(LOGIN_TIPO_STORE, tipoResuelto);
       if (codigoResuelto != null) localStorage.setItem(LOGIN_CODIGO_STORE, String(codigoResuelto));
@@ -8264,6 +8309,7 @@ $('#loginSubmitBtn')?.addEventListener('click', async () => {
         localStorage.removeItem(LOGIN_STORE);
         localStorage.removeItem(LOGIN_TIPO_STORE);
         localStorage.removeItem(LOGIN_CODIGO_STORE);
+        localStorage.removeItem(LOGIN_ORG_STORE);
         pintarEstadoUsuario();
       } else {
         noteEl.textContent = 'Conectado correctamente.';
