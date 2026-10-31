@@ -28,11 +28,12 @@ section[id]{scroll-margin-top:148px}
 .brand{display:block;flex:none;line-height:0;margin-right:16px}
 .brand img.brand-fondo{background:#fff;border-radius:12px;padding:6px 8px;box-shadow:0 1px 6px rgba(0,0,0,.25)}
 .brand img{height:auto;width:auto;max-height:128px;max-width:340px;min-height:72px;display:block;object-fit:contain;object-position:left center}
-.navwrap{display:flex;align-items:center;gap:32px;margin-left:auto}
+.navwrap{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:8px 32px;margin-left:auto;flex:1;min-width:0}
 .links{display:flex;gap:28px}
 .links a{color:#fff;font-size:15px;font-weight:500;padding:10px 0;border-bottom:2px solid transparent}
 .links a:hover{color:var(--gold2);border-bottom-color:var(--gold2)}
-.tools{display:flex;align-items:center;gap:4px}
+.tools{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:4px}
+#userBadgeName{color:#dbe3ee}
 .lg{background:none;border:0;color:#b7c3d1;font-size:14px;font-weight:600;min-width:44px;min-height:44px;cursor:pointer}
 .lg.on{color:var(--gold2)}
 .lg:hover{color:#fff}
