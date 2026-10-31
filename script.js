@@ -438,7 +438,7 @@ const T = {
     admServicioSinEspecificar: 'Servicio sin especificar', admSinPropiedadAsignada: 'Sin propiedad asignada',
     /* ===== Admin: Vendedores ===== */
     admFoto: 'Foto', admCodigoVendedor: 'Código de vendedor', admNombre: 'Nombre', admTelefono: 'Teléfono', admDireccion: 'Dirección', admFechaInicio: 'Fecha inicio', admFechaGrabacion: 'Fecha de grabación', admUsuario: 'Usuario',
-    admBancoDePago: 'Banco de pago', admNumeroCuentaBancaria: 'Número de cuenta bancaria', admTipoCuenta: 'Tipo de cuenta', admPctComisionVentas: '% Comisión por ventas',
+    admBancoDePago: 'Banco de pago', admNumeroCuentaBancaria: 'Número de cuenta bancaria', admTipoCuenta: 'Tipo de cuenta', admPctComisionVentas: '% Comisión por ventas', admPctComisionServicios: '% Comisión por servicios',
     admVendedorSinNombre: 'Vendedor sin nombre', admCodigoSeAsigna: 'Se asigna al guardar', admCodigoSeAsignaAutomatico: 'Se asigna automáticamente al guardar',
     admSeAsignaAutomaticoFecha: 'Se asigna automáticamente al guardar (', admUsuarioActualFallback: 'usuario actual', admSeGrabaAutomaticamente: 'Se graba automáticamente (',
     admSubirFoto: 'Subir foto', admSubiendoFoto: 'Subiendo…', admQuitarFoto: 'Quitar foto', admPlaceholderNombreVendedor: 'Nombre del vendedor', admPlaceholderDireccion: 'Dirección',
@@ -854,7 +854,7 @@ const T = {
     admServicioSinEspecificar: 'Unspecified service', admSinPropiedadAsignada: 'No property assigned',
     /* ===== Admin: Vendors ===== */
     admFoto: 'Photo', admCodigoVendedor: 'Seller code', admNombre: 'Name', admTelefono: 'Phone', admDireccion: 'Address', admFechaInicio: 'Start date', admFechaGrabacion: 'Record date', admUsuario: 'User',
-    admBancoDePago: 'Payment bank', admNumeroCuentaBancaria: 'Bank account number', admTipoCuenta: 'Account type', admPctComisionVentas: '% Sales commission',
+    admBancoDePago: 'Payment bank', admNumeroCuentaBancaria: 'Bank account number', admTipoCuenta: 'Account type', admPctComisionVentas: '% Sales commission', admPctComisionServicios: '% Services commission',
     admVendedorSinNombre: 'Seller with no name', admCodigoSeAsigna: 'Assigned on save', admCodigoSeAsignaAutomatico: 'Assigned automatically on save',
     admSeAsignaAutomaticoFecha: 'Assigned automatically on save (', admUsuarioActualFallback: 'current user', admSeGrabaAutomaticamente: 'Recorded automatically (',
     admSubirFoto: 'Upload photo', admSubiendoFoto: 'Uploading…', admQuitarFoto: 'Remove photo', admPlaceholderNombreVendedor: 'Seller name', admPlaceholderDireccion: 'Address',
@@ -2671,6 +2671,7 @@ function vendRenderView(card, v) {
   // candado, pero se repite aquí por si ese candado cambia más adelante).
   if (esSuperAdmin()) {
     grid.appendChild(labeledCell(t.admPctComisionVentas, el('span', '', v.comision_porcentaje != null && v.comision_porcentaje !== '' ? (v.comision_porcentaje + '%') : '—')));
+    grid.appendChild(labeledCell(t.admPctComisionServicios, el('span', '', v.comision_servicios_porcentaje != null && v.comision_servicios_porcentaje !== '' ? (v.comision_servicios_porcentaje + '%') : '—')));
   }
   card.append(grid, actions);
 
@@ -2788,6 +2789,9 @@ function vendRenderEdit(card, v, isNew) {
   const comisionInput = document.createElement('input');
   comisionInput.type = 'number'; comisionInput.min = '0'; comisionInput.max = '100'; comisionInput.step = '0.1';
   comisionInput.value = v.comision_porcentaje != null ? v.comision_porcentaje : ''; comisionInput.placeholder = '%';
+  const comisionServInput = document.createElement('input');
+  comisionServInput.type = 'number'; comisionServInput.min = '0'; comisionServInput.max = '100'; comisionServInput.step = '0.1';
+  comisionServInput.value = v.comision_servicios_porcentaje != null ? v.comision_servicios_porcentaje : ''; comisionServInput.placeholder = '%';
 
   const actions = el('div', 'proy-actions');
   const saveBtn = el('button', 'btn btn-dark btn-sm', t.btnGuardar); saveBtn.type = 'button';
@@ -2812,6 +2816,7 @@ function vendRenderEdit(card, v, isNew) {
   let orgSel = null, orgLocSel = null;
   if (esSuperAdmin()) {
     grid.appendChild(labeledCell(t.admPctComisionVentas, comisionInput));
+    grid.appendChild(labeledCell(t.admPctComisionServicios, comisionServInput));
     orgSel = document.createElement('select');
     orgLocSel = document.createElement('select');
     grid.appendChild(labeledCell(t.admOrgNombre, orgSel));
@@ -2847,6 +2852,7 @@ function vendRenderEdit(card, v, isNew) {
     };
     if (esSuperAdmin()) {
       payload.comision_porcentaje = comisionInput.value !== '' ? comisionInput.value : null;
+      payload.comision_servicios_porcentaje = comisionServInput.value !== '' ? comisionServInput.value : null;
       if (orgSel) { payload.organizacion_id = orgSel.value || null; payload.localidad_id = orgLocSel.value || null; }
     }
     if (isNew && !payload.organizacion_id) { payload.organizacion_id = 2; payload.localidad_id = 1; }
