@@ -996,6 +996,14 @@ table.geo-tbl .geo-td-badge{white-space:nowrap}
 .geo-tbl-usuarios .usr-td-orgloc-edit select{display:block;box-sizing:border-box;width:100%;min-width:0;text-overflow:ellipsis}
 .geo-tbl-usuarios .usr-td-orgloc-edit select+select{margin-top:3px}
 .geo-tbl-usuarios tr.geo-row-edit select{min-height:26px;border:1px solid #bfc8d4;border-radius:6px;padding:2px 4px;font-size:11px;color:var(--ink);background:#fff;font-family:inherit}
+.geo-tbl-usuarios .geo-td-edit,.geo-tbl-usuarios .geo-td-edit-actions{width:104px}
+.geo-tbl-usuarios .usr-btn-mod{padding:5px 12px;font-size:12px;min-height:0;line-height:1.2}
+.geo-tbl-usuarios .geo-td-edit-actions{display:table-cell;white-space:normal;padding:6px 8px;text-align:center}
+.geo-tbl-usuarios .geo-td-edit-actions .usr-btn-mod{display:block;width:100%}
+.geo-tbl-usuarios .geo-td-edit-actions .usr-btn-mod+.usr-btn-mod{margin-top:4px}
+.geo-tbl-usuarios .usr-td-tipo-edit{white-space:normal;overflow:visible;padding:6px 8px}
+.geo-tbl-usuarios .usr-td-tipo-edit select,.geo-tbl-usuarios .usr-td-tipo-edit input{display:block;box-sizing:border-box;width:100%;min-width:0}
+.geo-tbl-usuarios .usr-td-tipo-edit input{margin-top:3px;min-height:26px;border:1px solid #bfc8d4;border-radius:6px;padding:2px 6px;font-size:11px;font-family:inherit;color:var(--ink);background:#fff}
 .geo-tbl-usuarios .cli-badge{padding:3px 9px;font-size:10px;max-width:100%;overflow:hidden;text-overflow:ellipsis}
 #adminUsuariosCatalogoCard .geo-tbl-wrap{overflow-x:visible}
 

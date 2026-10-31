@@ -542,7 +542,7 @@ const T = {
     admUsrSeccionLista: 'USUARIOS', admUsrBuscarPh: 'Buscar usuario…',
     admUsrColCodigo: 'Código', admUsrColUsuario: 'Usuario', admUsrColTipo: 'Tipo',
     admUsrNoHayUsuarios: 'No hay usuarios que coincidan con la búsqueda.',
-    admUsrErrorCargar: 'No se pudo cargar la lista de usuarios.', admUsrErrorGuardar: 'No se pudo guardar. Intenta de nuevo.',
+    admUsrErrorCargar: 'No se pudo cargar la lista de usuarios.', admUsrNuevaClavePh: 'Nueva clave (opcional)', admUsrErrorGuardar: 'No se pudo guardar. Intenta de nuevo.',
     admUsrNoAutorizado: 'Tu sesión de Super Administrador no pudo validarse. Vuelve a confirmar tu clave.',
     admUsrColEstado: 'Estado', admUsrColFechaCreacion: 'Fecha de creación', admUsrColFechaActualizacion: 'Última actualización',
     admUsrEstadoActivo: 'Activo', admUsrEstadoInactivo: 'Inactivo', admUsrEstadoBaja: 'Baja',
@@ -958,7 +958,7 @@ const T = {
     admUsrSeccionLista: 'USERS', admUsrBuscarPh: 'Search user…',
     admUsrColCodigo: 'Code', admUsrColUsuario: 'User', admUsrColTipo: 'Type',
     admUsrNoHayUsuarios: 'No users match your search.',
-    admUsrErrorCargar: 'Could not load the user list.', admUsrErrorGuardar: 'Could not save. Please try again.',
+    admUsrErrorCargar: 'Could not load the user list.', admUsrNuevaClavePh: 'New password (optional)', admUsrErrorGuardar: 'Could not save. Please try again.',
     admUsrNoAutorizado: 'Your Super Administrator session could not be validated. Please confirm your password again.',
     admUsrColEstado: 'Status', admUsrColFechaCreacion: 'Creation date', admUsrColFechaActualizacion: 'Last update',
     admUsrEstadoActivo: 'Active', admUsrEstadoInactivo: 'Inactive', admUsrEstadoBaja: 'Discharged',
@@ -7984,7 +7984,7 @@ function usrFilaVista(u) {
   tr.children[4].appendChild(usrEstadoBadge(u.estado));
   const editTd = tr.lastElementChild;
   const editBtn = document.createElement('button');
-  editBtn.type = 'button'; editBtn.className = 'geo-edit-btn'; editBtn.setAttribute('aria-label', t.btnModificar); editBtn.textContent = '✎';
+  editBtn.type = 'button'; editBtn.className = 'btn btn-line-dark btn-sm usr-btn-mod'; editBtn.textContent = t.btnModificar;
   editTd.appendChild(editBtn);
   editBtn.addEventListener('click', () => { adminUsrEditUsuario = u.usuario; pintarAdminUsrTbody(); });
 
@@ -8010,7 +8010,12 @@ function usrFilaEdit(u) {
 
   const tdCod = document.createElement('td'); tdCod.className = 'geo-td-strong'; tdCod.textContent = u.codigo_usuario != null ? u.codigo_usuario : '—';
   const tdUsr = document.createElement('td'); tdUsr.textContent = u.usuario || '—';
-  const tdTipo = document.createElement('td'); tdTipo.appendChild(usrTipoBadge(u.tipo_usuario));
+  const tipoSel = document.createElement('select');
+  Object.keys(TIPOS_USUARIO_LABEL).forEach((k) => { const opt = document.createElement('option'); opt.value = k; opt.textContent = TIPOS_USUARIO_LABEL[k]; tipoSel.appendChild(opt); });
+  tipoSel.value = u.tipo_usuario || 'usuario_general';
+  const claveInput = document.createElement('input');
+  claveInput.type = 'password'; claveInput.autocomplete = 'new-password'; claveInput.placeholder = t.admUsrNuevaClavePh || 'Nueva clave (opcional)'; claveInput.className = 'usr-clave-input';
+  const tdTipo = document.createElement('td'); tdTipo.className = 'usr-td-tipo-edit'; tdTipo.append(tipoSel, claveInput);
   const orgSel = document.createElement('select');
   const locSel = document.createElement('select');
   const tdOrgLoc = document.createElement('td'); tdOrgLoc.className = 'usr-td-orgloc-edit'; tdOrgLoc.append(orgSel, locSel);
@@ -8022,8 +8027,8 @@ function usrFilaEdit(u) {
   const tdActualizado = document.createElement('td'); tdActualizado.className = 'usr-td-fecha'; tdActualizado.title = u.actualizado_en ? formatFechaHora(u.actualizado_en) : ''; tdActualizado.textContent = formatFechaCorta(u.actualizado_en);
   const tdActions = document.createElement('td'); tdActions.className = 'geo-td-edit-actions';
 
-  const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'geo-row-btn geo-row-btn-save'; saveBtn.setAttribute('aria-label', t.btnGuardar); saveBtn.textContent = '✓';
-  const cancelBtn = document.createElement('button'); cancelBtn.type = 'button'; cancelBtn.className = 'geo-row-btn geo-row-btn-cancel'; cancelBtn.setAttribute('aria-label', t.btnCancelar); cancelBtn.textContent = '×';
+  const saveBtn = document.createElement('button'); saveBtn.type = 'button'; saveBtn.className = 'btn btn-dark btn-sm usr-btn-mod'; saveBtn.textContent = t.btnGuardar;
+  const cancelBtn = document.createElement('button'); cancelBtn.type = 'button'; cancelBtn.className = 'btn btn-line-dark btn-sm usr-btn-mod'; cancelBtn.textContent = t.btnCancelar;
   tdActions.append(saveBtn, cancelBtn);
 
   tr.append(tdCod, tdUsr, tdTipo, tdOrgLoc, tdEstado, tdCreado, tdActualizado, tdActions);
@@ -8037,42 +8042,46 @@ function usrFilaEdit(u) {
     try {
       const nuevoEstado = estadoSel.value;
       const estadoCambio = nuevoEstado !== (u.estado || 'activo');
-      const { data, error } = await supabaseClient.rpc('admin_actualizar_org_loc_usuario', {
-        p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado, p_usuario_objetivo: u.usuario,
-        p_organizacion_id: orgSel.value || null, p_localidad_id: locSel.value || null
-      });
-      if (error) throw error;
-      if (!(data && data.status === 'ok')) {
-        if (data && data.status === 'no_autorizado') {
-          adminHashConfirmado = null;
-          $('#adminUsrListaSec').hidden = true;
-          $('#adminUsrConfirmBox').hidden = false;
-          return;
-        }
-        alert(t.admUsrErrorGuardar);
-        saveBtn.disabled = false;
-        return;
-      }
+      const nuevoTipo = tipoSel.value;
+      const tipoCambio = nuevoTipo !== (u.tipo_usuario || 'usuario_general');
+      const nuevaClave = claveInput.value;
+      const base = { p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado, p_usuario_objetivo: u.usuario };
+      // Llama a una RPC de administración y devuelve 'ok' | 'no_autorizado' | 'error'
+      const llamar = async (fn, extra) => {
+        const { data, error } = await supabaseClient.rpc(fn, { ...base, ...extra });
+        if (error) throw error;
+        return (data && data.status) || 'error';
+      };
+      const sesionExpirada = () => {
+        adminHashConfirmado = null;
+        $('#adminUsrListaSec').hidden = true;
+        $('#adminUsrConfirmBox').hidden = false;
+      };
+      const fallo = () => { alert(t.admUsrErrorGuardar); saveBtn.disabled = false; };
+
+      let st = await llamar('admin_actualizar_org_loc_usuario', { p_organizacion_id: orgSel.value || null, p_localidad_id: locSel.value || null });
+      if (st === 'no_autorizado') { sesionExpirada(); return; }
+      if (st !== 'ok') { fallo(); return; }
       u.organizacion_id = orgSel.value ? Number(orgSel.value) : null;
       u.localidad_id = locSel.value ? Number(locSel.value) : null;
 
       if (estadoCambio) {
-        const resp = await supabaseClient.rpc('admin_actualizar_estado_usuario', {
-          p_admin_usuario: miUsuario, p_admin_hash: adminHashConfirmado, p_usuario_objetivo: u.usuario, p_nuevo_estado: nuevoEstado
-        });
-        if (resp.error) throw resp.error;
-        if (resp.data && resp.data.status === 'ok') {
-          u.estado = nuevoEstado;
-        } else if (resp.data && resp.data.status === 'no_autorizado') {
-          adminHashConfirmado = null;
-          $('#adminUsrListaSec').hidden = true;
-          $('#adminUsrConfirmBox').hidden = false;
-          return;
-        } else {
-          alert(t.admUsrErrorGuardar);
-          saveBtn.disabled = false;
-          return;
-        }
+        st = await llamar('admin_actualizar_estado_usuario', { p_nuevo_estado: nuevoEstado });
+        if (st === 'no_autorizado') { sesionExpirada(); return; }
+        if (st !== 'ok') { fallo(); return; }
+        u.estado = nuevoEstado;
+      }
+      if (tipoCambio) {
+        st = await llamar('admin_actualizar_tipo', { p_nuevo_tipo: nuevoTipo });
+        if (st === 'no_autorizado') { sesionExpirada(); return; }
+        if (st !== 'ok') { fallo(); return; }
+        u.tipo_usuario = nuevoTipo;
+        if (u.usuario === miUsuario) { localStorage.setItem(LOGIN_TIPO_STORE, nuevoTipo); pintarEstadoUsuario(); }
+      }
+      if (nuevaClave) {
+        st = await llamar('admin_actualizar_clave', { p_nuevo_hash: await csHashClave(nuevaClave) });
+        if (st === 'no_autorizado') { sesionExpirada(); return; }
+        if (st !== 'ok') { fallo(); return; }
       }
       u.actualizado_en = new Date().toISOString();
       adminUsrEditUsuario = null;
