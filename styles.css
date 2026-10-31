@@ -1023,6 +1023,16 @@ table.geo-tbl .geo-td-badge{white-space:nowrap}
    blanca con etiqueta arriba y valor abajo, igual de nítido que la
    tabla superior. En modo edición (inputs/selects) se mantiene el
    mismo grid pero sin el fondo de tarjeta por campo. */
+/* Marca de la organización: logo + slogan */
+.org-marca{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-bottom:16px;padding:14px 16px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.org-marca-logo{flex:none;width:96px;height:96px;border-radius:12px;border:1px solid var(--line);background:#fafbfc;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.org-marca-logo img{max-width:100%;max-height:100%;object-fit:contain}
+.org-marca-logo.vacio{border-style:dashed;font-size:11px;color:var(--muted);text-align:center;padding:6px}
+.org-marca-txt{flex:1;min-width:200px}
+.org-marca-txt .lbl{display:block;font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.org-marca-slogan{font-family:'Marcellus',Georgia,serif;font-size:17px;font-style:italic;color:var(--goldtx);line-height:1.4;overflow-wrap:anywhere}
+.org-marca-acts{display:flex;flex-direction:column;gap:8px}
+.org-marca-edit input[type=text]{width:100%;min-height:42px;border:1px solid #bfc8d4;border-radius:9px;padding:8px 12px;font-size:14px;color:var(--ink);background:#fff;font-family:inherit}
 .org-detalle-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px;padding-top:0;border-top:none}
 @media(min-width:640px){
   .org-detalle-grid{grid-template-columns:repeat(3,minmax(0,1fr))}

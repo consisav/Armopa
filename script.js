@@ -524,6 +524,7 @@ const T = {
     admGeoModalRegionesTitulo: 'Regiones de Guatemala', admGeoModalRegionesSub: 'Las 8 regiones administrativas y sus departamentos.',
     admOrgTituloModal: 'Organizaciones y Localidades — Catálogo', admOrgSubtituloModal: 'Organizaciones (grupos corporativos) y, dentro de cada una, sus localidades o empresas.',
     admOrgBuscarPh: 'Buscar organización…', admOrgAgregar: '+ Agregar organización', admOrgNoHayOrgs: 'No hay organizaciones que coincidan con la búsqueda.',
+    admOrgLogo: 'Logo', admOrgSlogan: 'Slogan', admOrgSubirLogo: 'Subir logo', admOrgQuitarLogo: 'Quitar logo', admOrgSubiendoLogo: 'Subiendo…', admOrgErrorSubirLogo: 'No se pudo subir el logo.', admOrgSinLogo: 'Sin logo', admOrgSloganPh: 'Frase o lema de la organización',
     admOrgCodigo: 'Código', admOrgNombre: 'Organización', admOrgRepresentante: 'Representante legal', admOrgTelefonos: 'Teléfonos', admOrgCorreos: 'Correos',
     admOrgDireccion: 'Dirección', admOrgDepartamento: 'Departamento', admOrgMunicipio: 'Municipio', admOrgEstado: 'Estado',
     admOrgVerLocalidades: 'Ver localidades', admOrgOcultarLocalidades: 'Ocultar localidades', admOrgLocalidades: 'Localidades', admOrgAgregarLocalidad: '+ Agregar localidad',
@@ -939,6 +940,7 @@ const T = {
     admGeoErrorEliminar: 'Could not delete. Please try again.', admGeoErrorGuardar: 'Could not save. Check the data and try again.', admGeoErrorCargar: 'Could not load the information.',
     admOrgTituloModal: 'Organizations & Locations — Catalog', admOrgSubtituloModal: 'Organizations (corporate groups) and, within each one, their locations or companies.',
     admOrgBuscarPh: 'Search organization…', admOrgAgregar: '+ Add organization', admOrgNoHayOrgs: 'No organizations match your search.',
+    admOrgLogo: 'Logo', admOrgSlogan: 'Slogan', admOrgSubirLogo: 'Upload logo', admOrgQuitarLogo: 'Remove logo', admOrgSubiendoLogo: 'Uploading…', admOrgErrorSubirLogo: 'Could not upload the logo.', admOrgSinLogo: 'No logo', admOrgSloganPh: 'Organization tagline',
     admOrgCodigo: 'Code', admOrgNombre: 'Organization', admOrgRepresentante: 'Legal representative', admOrgTelefonos: 'Phone numbers', admOrgCorreos: 'Emails',
     admOrgDireccion: 'Address', admOrgDepartamento: 'Department', admOrgMunicipio: 'Municipality', admOrgEstado: 'Status',
     admOrgVerLocalidades: 'View locations', admOrgOcultarLocalidades: 'Hide locations', admOrgLocalidades: 'Locations', admOrgAgregarLocalidad: '+ Add location',
@@ -5089,6 +5091,41 @@ function formatFechaHora(iso) {
   } catch (e) { return iso; }
 }
 
+/* Logo de la organización: se sube tal cual (PNG/WebP/SVG conservan su
+   transparencia; no se convierte a JPG como las fotos). Los demás formatos
+   se reducen y comprimen igual que el resto de imágenes del sistema. */
+async function uploadLogoOrganizacion(file) {
+  const bucket = PROPS_BUCKET;
+  const tipo = file.type || '';
+  if (tipo === 'image/svg+xml' || tipo === 'image/png' || tipo === 'image/webp') {
+    if (file.size > 2 * 1024 * 1024) throw new Error('Logo demasiado grande (máx. 2 MB)');
+    const ext = tipo === 'image/svg+xml' ? 'svg' : (tipo === 'image/png' ? 'png' : 'webp');
+    const path = 'logo-org-' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.' + ext;
+    const { error } = await supabaseClient.storage.from(bucket).upload(path, file, { contentType: tipo });
+    if (error) throw error;
+    return supabaseClient.storage.from(bucket).getPublicUrl(path).data.publicUrl;
+  }
+  return uploadPropFile(file, 800);
+}
+
+/* Bloque "marca" de solo lectura: logo + slogan. */
+function orgMarcaVista(o) {
+  const t = T[lang];
+  const wrap = el('div', 'org-marca');
+  const logoBox = el('div', 'org-marca-logo');
+  if (o.logo_url) {
+    const img = el('img'); img.src = o.logo_url; img.alt = t.admOrgLogo;
+    logoBox.appendChild(img);
+  } else {
+    logoBox.classList.add('vacio');
+    logoBox.textContent = t.admOrgSinLogo;
+  }
+  const txt = el('div', 'org-marca-txt');
+  txt.append(el('span', 'lbl', t.admOrgSlogan), el('span', 'org-marca-slogan', o.slogan || '—'));
+  wrap.append(logoBox, txt);
+  return wrap;
+}
+
 function pintarOrgDetalle() {
   const box = $('#adminOrgDetalle');
   if (!box) return;
@@ -5115,6 +5152,8 @@ function pintarOrgDetalle() {
   barActions.append(modBtn, delBtn);
   bar.append(barActions);
   box.append(bar);
+
+  box.append(orgMarcaVista(o));
 
   const grid = el('div', 'proy-grid org-detalle-grid');
   grid.append(
@@ -5173,6 +5212,42 @@ async function pintarOrgDetalleEdit(box, o) {
   bar.append(el('span', '', ''), barActions);
   box.append(bar);
 
+  /* Logo (carga de imagen) y slogan */
+  let logoUrl = o.logo_url || '';
+  const sloganInput = document.createElement('input'); sloganInput.type = 'text'; sloganInput.value = o.slogan || ''; sloganInput.placeholder = t.admOrgSloganPh;
+  const marca = el('div', 'org-marca org-marca-edit');
+  const logoBox = el('div', 'org-marca-logo');
+  const logoFile = document.createElement('input');
+  logoFile.type = 'file'; logoFile.accept = 'image/png,image/jpeg,image/webp,image/svg+xml'; logoFile.className = 'sr';
+  logoFile.id = 'orgLogo-' + o.id + '-' + Date.now();
+  const logoLabel = document.createElement('label');
+  logoLabel.className = 'btn btn-gold btn-sm'; logoLabel.htmlFor = logoFile.id; logoLabel.textContent = t.admOrgSubirLogo;
+  const logoRm = el('button', 'btn btn-danger btn-sm', t.admOrgQuitarLogo); logoRm.type = 'button';
+  function refreshLogo() {
+    logoBox.innerHTML = '';
+    logoBox.classList.toggle('vacio', !logoUrl);
+    if (logoUrl) { const img = el('img'); img.src = logoUrl; img.alt = t.admOrgLogo; logoBox.appendChild(img); }
+    else logoBox.textContent = t.admOrgSinLogo;
+    logoRm.hidden = !logoUrl;
+  }
+  refreshLogo();
+  logoFile.addEventListener('change', async () => {
+    const f = logoFile.files && logoFile.files[0];
+    if (!f) return;
+    const prev = logoLabel.textContent;
+    logoLabel.textContent = t.admOrgSubiendoLogo;
+    try { logoUrl = await uploadLogoOrganizacion(f); refreshLogo(); }
+    catch (e) { console.error('Error subiendo el logo:', e); alert(t.admOrgErrorSubirLogo); }
+    finally { logoLabel.textContent = prev; logoFile.value = ''; }
+  });
+  logoRm.addEventListener('click', () => { logoUrl = ''; refreshLogo(); });
+  const logoActs = el('div', 'org-marca-acts');
+  logoActs.append(logoFile, logoLabel, logoRm);
+  const sloganCol = el('div', 'org-marca-txt');
+  sloganCol.append(el('span', 'lbl', t.admOrgSlogan), sloganInput);
+  marca.append(logoBox, logoActs, sloganCol);
+  box.append(marca);
+
   const grid = el('div', 'proy-grid org-detalle-grid org-detalle-grid-edit');
   grid.append(
     labeledCell(t.admOrgNombre, nomInput),
@@ -5197,6 +5272,7 @@ async function pintarOrgDetalleEdit(box, o) {
       nombre, representante: repInput.value.trim() || null, telefonos: telInput.value.trim() || null,
       correos: correoInput.value.trim() || null, direccion: dirInput.value.trim() || null, pais: paisInput.value.trim() || 'Guatemala',
       departamento_id: deptoSel.value || null, municipio_id: munSel.value || null,
+      logo_url: logoUrl || null, slogan: sloganInput.value.trim() || null,
       modificado_por: localStorage.getItem(LOGIN_STORE) || null, modificado_en: new Date().toISOString()
     };
     try {
