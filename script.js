@@ -2486,7 +2486,7 @@ async function abrirRotVisualModal(ciudadInicial) {
   rotVisualCiudadSel = '';
   rotVisualTipoSel = '';
   try {
-    const { data: rows, error } = await supabaseClient.from('propiedades').select('local_id,nombre,fotos,videos,ciudad,tipo_propiedad,tipo_operacion,valor_renta,valor_venta,direccion,descripcion,vendedor_nombre,vendedor_whatsapp,vendedor_foto').eq('activo', true).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
+    const { data: rows, error } = await supabaseClient.from('propiedades').select('local_id,nombre,fotos,videos,ciudad,tipo_propiedad,tipo_operacion,valor_renta,valor_venta,direccion,descripcion,vendedor_nombre,vendedor_whatsapp,vendedor_foto').eq('activo', true).eq('organizacion_id', orgActivaId()).order('ciudad', { ascending: true }).order('nombre', { ascending: true });
     if (error) throw error;
     rotVisualAllRows = rows || [];
     if (ciudadInicial && rotVisualAllRows.some((r) => r.ciudad === ciudadInicial)) rotVisualCiudadSel = ciudadInicial;
@@ -5931,6 +5931,7 @@ async function mostrarAdminComisiones() {
         .from('propiedades')
         .select('ciudad, local_id, nombre, tipo_operacion, valor_renta, valor_venta, vendedor_asignado, comision_porcentaje, creado_en, comision_pagar, comision_estado')
         .eq('activo', true)
+        .eq('organizacion_id', orgActivaId())
         // Esta pantalla es para GENERAR comisiones: solo se listan las que
         // aún están Pendientes de pago (las ya generadas/pagadas,
         // suspendidas o anuladas no vuelven a aparecer aquí).
@@ -6682,7 +6683,7 @@ async function mostrarRepPropiedades() {
   const estadoVal = $('#repPropEstadoSel')?.value || '';
   result.innerHTML = '<p class="qbr-empty">' + T[lang].cargando + '</p>';
   try {
-    let q = supabaseClient.from('propiedades').select('*').eq('activo', true).order('creado_en', { ascending: true });
+    let q = supabaseClient.from('propiedades').select('*').eq('activo', true).eq('organizacion_id', orgActivaId()).order('creado_en', { ascending: true });
     if (ciudadVal) q = q.eq('ciudad', ciudadVal);
     if (operacionVal) q = q.eq('tipo_operacion', operacionVal);
     if (estadoVal) q = q.eq('estado_ubicacion', estadoVal);
@@ -6728,7 +6729,7 @@ function repEsc(s) {
 /* Logo de la organización del usuario conectado (o la 2 por defecto), como URL absoluta. */
 async function repLogoOrganizacionUrl() {
   const absoluta = (u) => { try { return new URL(u, document.baseURI).href; } catch (e) { return u; } };
-  const orgId = (estaConectado() && Number(localStorage.getItem(LOGIN_ORG_STORE))) || ORG_POR_DEFECTO;
+  const orgId = orgActivaId();
   const buscar = async (id) => {
     const { data, error } = await supabaseClient.from('organizaciones').select('id,logo_url').eq('id', id);
     if (error) throw error;
@@ -6831,7 +6832,7 @@ async function abrirRepPropiedadesModal() {
   if (!repPropiedadesModal) return;
   repPropiedadesModal.hidden = false;
   try {
-    const { data: rows, error } = await supabaseClient.from('propiedades').select('ciudad').eq('activo', true);
+    const { data: rows, error } = await supabaseClient.from('propiedades').select('ciudad').eq('activo', true).eq('organizacion_id', orgActivaId());
     if (error) throw error;
     const ciudades = [...new Set((rows || []).map((r) => r.ciudad).filter(Boolean))].sort();
     poblarRepPropFiltros(ciudades);
@@ -7403,11 +7404,17 @@ function estaConectado() {
 
 /* Logo dinámico de la página principal: corresponde al logo de la organización
    del usuario conectado; sin sesión (o sin organización) usa la organización 2. */
+/* Organización activa: la del usuario conectado, o la 2 por defecto. Define el
+   logo del encabezado y qué propiedades se muestran. */
+function orgActivaId() {
+  return (estaConectado() && Number(localStorage.getItem(LOGIN_ORG_STORE))) || ORG_POR_DEFECTO;
+}
+let propsOrgCargada = null; // organización de la que se cargaron las propiedades mostradas
 let marcaLogoSeq = 0;
 async function aplicarLogoMarca() {
   const img = document.getElementById('brandLogo');
   if (!img) return;
-  const orgId = (estaConectado() && Number(localStorage.getItem(LOGIN_ORG_STORE))) || ORG_POR_DEFECTO;
+  const orgId = orgActivaId();
   const poner = (url) => {
     const destino = url || LOGO_POR_DEFECTO;
     if (img.getAttribute('src') !== destino) img.src = destino;
@@ -7456,6 +7463,8 @@ async function csHashClave(texto) {
 
 function pintarEstadoUsuario() {
   aplicarLogoMarca();
+  // Al conectarse/desconectarse con otra organización se recargan sus propiedades
+  if (propsOrgCargada !== null && propsOrgCargada !== orgActivaId() && typeof cargarPropiedadesArmopa === 'function') cargarPropiedadesArmopa();
   const usuario = localStorage.getItem(LOGIN_STORE);
   const tipo = localStorage.getItem(LOGIN_TIPO_STORE);
   const codigo = localStorage.getItem(LOGIN_CODIGO_STORE);
@@ -11990,7 +11999,7 @@ function toSupaRow(cityName, l) {
     vendedor_asignado: l.vendedorAsignado || null,
     cliente_asignado: l.clienteAsignado || null,
     comision_porcentaje: l.comisionPorcentaje || null,
-    organizacion_id: l.organizacionId || null,
+    organizacion_id: l.organizacionId || orgActivaId(),
     localidad_id: l.localidadId || null,
     activo: true
   };
@@ -12023,14 +12032,17 @@ async function saveLocNow(successMsg) {
 }
 
 async function cargarPropiedadesArmopa() {
+  const orgCarga = orgActivaId();
   try {
     const { data: rows, error } = await supabaseClient
       .from('propiedades')
       .select('*')
       .eq('activo', true)
+      .eq('organizacion_id', orgCarga)
       .order('ciudad', { ascending: true })
       .order('creado_en', { ascending: true });
     if (error) { console.error('Error cargando propiedades:', error); return; }
+    propsOrgCargada = orgCarga;
     const nuevo = {};
     (rows || []).forEach((row) => {
       if (!nuevo[row.ciudad]) nuevo[row.ciudad] = [];
