@@ -7410,6 +7410,34 @@ function orgActivaId() {
   return (estaConectado() && Number(localStorage.getItem(LOGIN_ORG_STORE))) || ORG_POR_DEFECTO;
 }
 let propsOrgCargada = null; // organización de la que se cargaron las propiedades mostradas
+/* El logo se muestra íntegro, con sus colores originales. Si es un PNG/SVG
+   transparente con arte oscuro (que no se vería sobre el encabezado azul
+   oscuro) se le pone un fondo claro elegante; los logos con fondo propio o
+   con arte claro se muestran tal cual. El análisis usa una copia aparte de la
+   imagen: si el navegador no permite leer sus píxeles, el logo queda igual. */
+function ajustarFondoLogo(img, url) {
+  if (!url || url === LOGO_POR_DEFECTO) { img.classList.remove('brand-fondo'); return; }
+  const probe = new Image();
+  probe.crossOrigin = 'anonymous';
+  probe.onload = () => {
+    try {
+      const w = 48, h = Math.max(1, Math.round(48 * (probe.naturalHeight / probe.naturalWidth)) || 48);
+      const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+      const cx = cv.getContext('2d', { willReadFrequently: true });
+      cx.drawImage(probe, 0, 0, w, h);
+      const px = cx.getImageData(0, 0, w, h).data;
+      let opacos = 0, lum = 0, total = w * h;
+      for (let i = 0; i < px.length; i += 4) {
+        const a = px[i + 3] / 255;
+        if (a > 0.1) { opacos += 1; lum += (0.2126 * px[i] + 0.7152 * px[i + 1] + 0.0722 * px[i + 2]) * a; }
+      }
+      const transparente = opacos / total < 0.85; // hay zonas transparentes: el fondo del encabezado se vería detrás
+      const oscuro = opacos > 0 && (lum / opacos) < 120;
+      if (img.getAttribute('src') === url) img.classList.toggle('brand-fondo', transparente && oscuro);
+    } catch (e) { /* sin permiso para leer píxeles: se deja el logo tal cual */ }
+  };
+  probe.src = url;
+}
 let marcaLogoSeq = 0;
 async function aplicarLogoMarca() {
   const img = document.getElementById('brandLogo');
@@ -7417,7 +7445,8 @@ async function aplicarLogoMarca() {
   const orgId = orgActivaId();
   const poner = (url) => {
     const destino = url || LOGO_POR_DEFECTO;
-    if (img.getAttribute('src') !== destino) img.src = destino;
+    if (img.getAttribute('src') !== destino) { img.src = destino; img.classList.remove('brand-fondo'); }
+    ajustarFondoLogo(img, destino);
   };
   try {
     const c = JSON.parse(localStorage.getItem(ORG_LOGO_CACHE) || 'null');

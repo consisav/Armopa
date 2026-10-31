@@ -26,6 +26,7 @@ section[id]{scroll-margin-top:148px}
 .hdr{position:sticky;top:0;z-index:40;background:var(--navy);border-bottom:1px solid rgba(230,189,97,.28)}
 .nav{display:flex;align-items:center;gap:24px;min-height:140px}
 .brand{display:block;flex:none;line-height:0;margin-right:16px}
+.brand img.brand-fondo{background:#fff;border-radius:12px;padding:6px 8px;box-shadow:0 1px 6px rgba(0,0,0,.25)}
 .brand img{height:auto;width:auto;max-height:128px;max-width:340px;min-height:72px;display:block;object-fit:contain;object-position:left center}
 .navwrap{display:flex;align-items:center;gap:32px;margin-left:auto}
 .links{display:flex;gap:28px}
