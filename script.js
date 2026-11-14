@@ -7367,21 +7367,30 @@ function bkRecolectarAplicacion(alcance) {
   return resultado;
 }
 
-/* Arma el contenido del backup según la fuente elegida en "Fuente del
-   backup": solo lo que esta pantalla tiene cargado ahora mismo
-   ("aplicacion"), solo lo guardado de verdad en Supabase ("supabase"), o
-   ambos lado a lado ("total") para poder comparar uno contra otro. */
-async function bkRecolectarSegunFuente(fuente, alcance) {
-  const out = {};
-  if (fuente === 'aplicacion' || fuente === 'total') out.aplicacion = bkRecolectarAplicacion(alcance);
-  if (fuente === 'supabase' || fuente === 'total') out.supabase = await bkRecolectarDatos(alcance);
-  return out;
-}
-
-function bkNombreArchivo() {
+/* Nombre de archivo por fuente: BK_Apl_(fecha y hora) para lo que la
+   pantalla tiene cargado ahora mismo, BK_Datos_(fecha y hora) para lo
+   guardado de verdad en Supabase. Con fuente "total" se generan AMBOS
+   archivos por separado (nunca uno combinado), para no mezclar lo que
+   está en pantalla con lo que realmente quedó en la base de datos. */
+const BK_PREFIJOS = { aplicacion: 'BK_Apl', supabase: 'BK_Datos' };
+function bkNombreArchivo(fuenteIndividual) {
   const d = new Date();
   const p = (n) => String(n).padStart(2, '0');
-  return 'armopa-backup-' + d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + '.json';
+  const sello = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes());
+  return (BK_PREFIJOS[fuenteIndividual] || 'BK_Datos') + '_' + sello + '.json';
+}
+
+/* Genera y guarda un backup de una sola fuente ("aplicacion" o
+   "supabase"): recolecta los datos, arma el archivo con su nombre
+   BK_Apl_/BK_Datos_ y lo registra en "backup_log". Se usa tanto para un
+   backup de una sola fuente como, dos veces, para "total". */
+async function bkGenerarUnArchivo(fuenteIndividual, alcance, tipo) {
+  const datos = fuenteIndividual === 'aplicacion' ? bkRecolectarAplicacion(alcance) : await bkRecolectarDatos(alcance);
+  const nombre = bkNombreArchivo(fuenteIndividual);
+  const contenido = JSON.stringify({ generado_en: new Date().toISOString(), fuente: fuenteIndividual, alcance, datos }, null, 2);
+  await bkGuardarArchivo(nombre, contenido);
+  await supabaseClient.from('backup_log').insert({ tipo: tipo || 'manual', alcance, fuente: fuenteIndividual, nombre_archivo: nombre, estado: 'ok' });
+  return nombre;
 }
 
 async function bkGuardarArchivo(nombre, contenidoTexto) {
@@ -7413,14 +7422,12 @@ async function generarBackupAhora(tipo) {
   const fuente = bkFuente;
   bkMostrarEstado(T[lang].backupGenerando, false);
   try {
-    const datos = await bkRecolectarSegunFuente(fuente, alcance);
-    const nombre = bkNombreArchivo();
-    const contenido = JSON.stringify({ generado_en: new Date().toISOString(), fuente, alcance, datos }, null, 2);
-    await bkGuardarArchivo(nombre, contenido);
-    await supabaseClient.from('backup_log').insert({ tipo: tipo || 'manual', alcance, fuente, nombre_archivo: nombre, estado: 'ok' });
+    const archivos = [];
+    if (fuente === 'aplicacion' || fuente === 'total') archivos.push(await bkGenerarUnArchivo('aplicacion', alcance, tipo));
+    if (fuente === 'supabase' || fuente === 'total') archivos.push(await bkGenerarUnArchivo('supabase', alcance, tipo));
     await guardarConfigBackup({ ultimo_backup: new Date().toISOString(), ultimo_estado: 'ok' });
     const f = new Date().toLocaleString(lang === 'en' ? 'en-US' : 'es-GT');
-    bkMostrarEstado(T[lang].backupUltimoOk + ' ' + f, false);
+    bkMostrarEstado(T[lang].backupUltimoOk + ' ' + f + ' (' + archivos.join(', ') + ')', false);
   } catch (e) {
     console.error('Error generando el backup:', e);
     try {
@@ -7486,11 +7493,8 @@ async function bkRevisarProgramacionAutomatica() {
     backupDirHandle = handle;
     const alcance = data.alcance || {};
     const fuente = data.fuente || 'supabase';
-    const datos = await bkRecolectarSegunFuente(fuente, alcance);
-    const nombre = bkNombreArchivo();
-    const contenido = JSON.stringify({ generado_en: ahora.toISOString(), fuente, alcance, datos }, null, 2);
-    await bkGuardarArchivo(nombre, contenido);
-    await supabaseClient.from('backup_log').insert({ tipo: 'automático', alcance, fuente, nombre_archivo: nombre, estado: 'ok' });
+    if (fuente === 'aplicacion' || fuente === 'total') await bkGenerarUnArchivo('aplicacion', alcance, 'automático');
+    if (fuente === 'supabase' || fuente === 'total') await bkGenerarUnArchivo('supabase', alcance, 'automático');
     await supabaseClient.from('backup_config').upsert({ id: 1, ultimo_backup: ahora.toISOString(), ultimo_estado: 'ok' });
   } catch (e) {
     console.error('Error en la revisión de backup automático:', e);
