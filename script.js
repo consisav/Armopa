@@ -319,9 +319,9 @@ const T = {
     backupAlcPropiedades: 'Ciudades y propiedades', backupAlcClientes: 'Clientes, citas y seguimiento', backupAlcNegocios: 'Servicios, solicitudes y cotizaciones', backupAlcComisiones: 'Vendedores y comisiones', backupAlcPrecalificacion: 'Precalificación bancaria (expedientes)', backupAlcContactos: 'Mensajes de contacto', backupAlcUsuarios: 'Usuarios y organizaciones',
     backupSeccionProgramacion: 'Programación automática', backupAutoLabel: 'Generar backups automáticamente',
     backupFrecuencia: 'Frecuencia', backupFrecDiario: 'Diario', backupFrecSemanal: 'Semanal', backupFrecMensual: 'Mensual', backupHora: 'Hora',
-    backupSeccionDestino: 'Destino', backupHintDestino: 'Carpeta local donde se guardará cada archivo de backup generado.',
-    backupSinCarpeta: 'Sin carpeta elegida', backupCambiarCarpeta: 'Elegir carpeta',
-    backupNoFSApi: 'Tu navegador no permite elegir una carpeta local; cada backup se descargará como archivo normal.',
+    backupSeccionDestino: 'Destino', backupHintDestino: 'Carpeta local donde se guardará cada archivo de backup generado. Puedes elegirla con el botón o escribir la ruta manualmente.',
+    backupCarpetaPh: 'Ej: D:\\PAGINAS WEB\\Armopa\\Backups', backupCambiarCarpeta: 'Elegir carpeta',
+    backupNoFSApi: 'Tu navegador no permite enlazar una carpeta real aquí (pasa, por ejemplo, al abrir el sitio como archivo local en vez de por internet). Escribe el nombre o la ruta de la carpeta como referencia: cada backup se descargará como un archivo normal y tendrás que moverlo tú a esa carpeta.',
     backupGenerarAhora: 'Generar backup ahora', backupGuardarConfig: 'Guardar configuración',
     backupGenerando: 'Generando backup…', backupGuardando: 'Guardando configuración…', backupGuardadoOk: 'Configuración guardada correctamente.',
     backupUltimoOk: 'Último backup generado correctamente:', backupUltimoError: 'El último backup tuvo un error. Revisa la configuración o la carpeta elegida.', backupSinBackups: 'Todavía no se ha generado ningún backup.',
@@ -747,9 +747,9 @@ const T = {
     backupAlcPropiedades: 'Cities and properties', backupAlcClientes: 'Clients, appointments and follow-up', backupAlcNegocios: 'Services, requests and quotes', backupAlcComisiones: 'Vendors and commissions', backupAlcPrecalificacion: 'Bank pre-qualification (case files)', backupAlcContactos: 'Contact messages', backupAlcUsuarios: 'Users and organizations',
     backupSeccionProgramacion: 'Automatic scheduling', backupAutoLabel: 'Generate backups automatically',
     backupFrecuencia: 'Frequency', backupFrecDiario: 'Daily', backupFrecSemanal: 'Weekly', backupFrecMensual: 'Monthly', backupHora: 'Time',
-    backupSeccionDestino: 'Destination', backupHintDestino: 'Local folder where each generated backup file will be saved.',
-    backupSinCarpeta: 'No folder chosen', backupCambiarCarpeta: 'Choose folder',
-    backupNoFSApi: 'Your browser does not support choosing a local folder; each backup will be downloaded as a regular file.',
+    backupSeccionDestino: 'Destination', backupHintDestino: 'Local folder where each generated backup file will be saved. Pick it with the button or type the path manually.',
+    backupCarpetaPh: 'e.g. D:\\MyFolder\\Backups', backupCambiarCarpeta: 'Choose folder',
+    backupNoFSApi: 'Your browser can\'t link a real folder here (this happens, for example, when opening the site as a local file instead of over the internet). Type the folder\'s name or path as a reference: each backup will download as a regular file and you\'ll need to move it there yourself.',
     backupGenerarAhora: 'Generate backup now', backupGuardarConfig: 'Save settings',
     backupGenerando: 'Generating backup…', backupGuardando: 'Saving settings…', backupGuardadoOk: 'Settings saved successfully.',
     backupUltimoOk: 'Last backup generated successfully:', backupUltimoError: 'The last backup had an error. Check the settings or the chosen folder.', backupSinBackups: 'No backup has been generated yet.',
@@ -7259,15 +7259,9 @@ function bkMostrarEstado(texto, esError) {
 }
 
 function bkActualizarNombreCarpeta() {
-  const span = $('#bkCarpetaNombre');
-  if (!span) return;
-  if (backupDirHandle) {
-    span.removeAttribute('data-i18n');
-    span.textContent = backupDirHandle.name;
-  } else if (!span.textContent || span.hasAttribute('data-i18n')) {
-    span.setAttribute('data-i18n', 'backupSinCarpeta');
-    span.textContent = T[lang].backupSinCarpeta;
-  }
+  const input = $('#bkCarpetaInput');
+  if (!input || !backupDirHandle) return;
+  input.value = backupDirHandle.name;
 }
 
 async function cargarConfigBackup() {
@@ -7279,9 +7273,8 @@ async function cargarConfigBackup() {
     if ($('#bkAutoToggle')) $('#bkAutoToggle').checked = !!data.auto_habilitado;
     if ($('#bkFrecuencia')) $('#bkFrecuencia').value = data.frecuencia || 'semanal';
     if ($('#bkHora')) $('#bkHora').value = data.hora || '22:00';
-    if (!backupDirHandle && data.carpeta_nombre && $('#bkCarpetaNombre')) {
-      $('#bkCarpetaNombre').removeAttribute('data-i18n');
-      $('#bkCarpetaNombre').textContent = data.carpeta_nombre;
+    if (!backupDirHandle && data.carpeta_nombre && $('#bkCarpetaInput')) {
+      $('#bkCarpetaInput').value = data.carpeta_nombre;
     }
     if (data.ultimo_backup) {
       const f = new Date(data.ultimo_backup).toLocaleString(lang === 'en' ? 'en-US' : 'es-GT');
@@ -7302,7 +7295,7 @@ async function guardarConfigBackup(extra) {
     auto_habilitado: !!$('#bkAutoToggle')?.checked,
     frecuencia: $('#bkFrecuencia')?.value || 'semanal',
     hora: $('#bkHora')?.value || '22:00',
-    carpeta_nombre: backupDirHandle ? backupDirHandle.name : ($('#bkCarpetaNombre')?.textContent || null),
+    carpeta_nombre: backupDirHandle ? backupDirHandle.name : ($('#bkCarpetaInput')?.value.trim() || null),
   }, extra || {});
   const { error } = await supabaseClient.from('backup_config').upsert(payload);
   if (error) throw error;
@@ -7311,6 +7304,7 @@ async function guardarConfigBackup(extra) {
 $('#bkCarpetaBtn')?.addEventListener('click', async () => {
   if (!window.showDirectoryPicker) {
     if ($('#bkFsApiHint')) $('#bkFsApiHint').hidden = false;
+    $('#bkCarpetaInput')?.focus();
     return;
   }
   try {
@@ -7319,8 +7313,12 @@ $('#bkCarpetaBtn')?.addEventListener('click', async () => {
     await bkGuardarHandle(handle);
     bkActualizarNombreCarpeta();
     await guardarConfigBackup();
+    if ($('#bkFsApiHint')) $('#bkFsApiHint').hidden = true;
   } catch (e) {
-    if (e?.name !== 'AbortError') console.error('No se pudo elegir la carpeta de backups:', e);
+    if (e?.name === 'AbortError') return; // el usuario cerró el selector sin elegir nada
+    console.error('No se pudo elegir la carpeta de backups, se deja como texto editable:', e);
+    if ($('#bkFsApiHint')) $('#bkFsApiHint').hidden = false;
+    $('#bkCarpetaInput')?.focus();
   }
 });
 
@@ -7405,7 +7403,7 @@ async function abrirBackupModal() {
   backupModal.hidden = false;
   if (!backupDirHandle) backupDirHandle = await bkLeerHandle();
   bkActualizarNombreCarpeta();
-  if (!window.showDirectoryPicker && $('#bkFsApiHint')) $('#bkFsApiHint').hidden = false;
+  if ($('#bkFsApiHint')) $('#bkFsApiHint').hidden = !!window.showDirectoryPicker;
   await cargarConfigBackup();
 }
 function cerrarBackupModal() { if (backupModal) backupModal.hidden = true; }
