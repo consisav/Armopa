@@ -315,6 +315,8 @@ const T = {
     adminMenuRepProp: 'Listado de Propiedades', adminMenuRepServ: 'Estado de Servicios', adminMenuRepClientes: 'Seguimiento Clientes',
     adminMenuBackups: 'Backups',
     backupTituloModal: 'Backup de la información', backupSubtituloModal: 'Respalda los datos de ARMOPA almacenados en Supabase.',
+    backupSeccionFuente: 'Fuente del backup', backupHintFuente: 'Elige qué se respalda: lo que esta pantalla tiene cargado ahora mismo, los datos reales guardados en Supabase, o ambos.',
+    backupFuenteApp: 'Aplicación (pantalla actual)', backupFuenteSupabase: 'Supabase (base de datos)', backupFuenteTotal: 'Total (ambas)',
     backupSeccionAlcance: 'Alcance y contenido', backupHintAlcance: 'Elige qué información se incluye en cada backup.',
     backupAlcPropiedades: 'Ciudades y propiedades', backupAlcClientes: 'Clientes, citas y seguimiento', backupAlcNegocios: 'Servicios, solicitudes y cotizaciones', backupAlcComisiones: 'Vendedores y comisiones', backupAlcPrecalificacion: 'Precalificación bancaria (expedientes)', backupAlcContactos: 'Mensajes de contacto', backupAlcUsuarios: 'Usuarios y organizaciones',
     backupSeccionProgramacion: 'Programación automática', backupAutoLabel: 'Generar backups automáticamente',
@@ -743,6 +745,8 @@ const T = {
     adminMenuRepProp: 'Property Listing', adminMenuRepServ: 'Service Status', adminMenuRepClientes: 'Client Follow-up',
     adminMenuBackups: 'Backups',
     backupTituloModal: 'Data backup', backupSubtituloModal: 'Back up the ARMOPA data stored in Supabase.',
+    backupSeccionFuente: 'Backup source', backupHintFuente: 'Choose what gets backed up: what this screen currently has loaded, the real data saved in Supabase, or both.',
+    backupFuenteApp: 'Application (current screen)', backupFuenteSupabase: 'Supabase (database)', backupFuenteTotal: 'Total (both)',
     backupSeccionAlcance: 'Scope and content', backupHintAlcance: 'Choose what information is included in each backup.',
     backupAlcPropiedades: 'Cities and properties', backupAlcClientes: 'Clients, appointments and follow-up', backupAlcNegocios: 'Services, requests and quotes', backupAlcComisiones: 'Vendors and commissions', backupAlcPrecalificacion: 'Bank pre-qualification (case files)', backupAlcContactos: 'Contact messages', backupAlcUsuarios: 'Users and organizations',
     backupSeccionProgramacion: 'Automatic scheduling', backupAutoLabel: 'Generate backups automatically',
@@ -7200,6 +7204,11 @@ const BACKUP_GRUPOS = {
   usuarios: ['usuarios', 'organizaciones', 'org_localidades'],
 };
 let backupDirHandle = null;
+let bkFuente = 'supabase';
+$$('#bkFuenteSeg .seg').forEach((b) => b.addEventListener('click', () => {
+  bkFuente = b.dataset.fuente;
+  $$('#bkFuenteSeg .seg').forEach((x) => x.classList.toggle('on', x === b));
+}));
 
 function bkIdb() {
   return new Promise((resolve, reject) => {
@@ -7270,6 +7279,8 @@ async function cargarConfigBackup() {
     if (error) throw error;
     if (!data) return;
     bkAplicarAlcanceAlForm(data.alcance);
+    bkFuente = data.fuente || 'supabase';
+    $$('#bkFuenteSeg .seg').forEach((b) => b.classList.toggle('on', b.dataset.fuente === bkFuente));
     if ($('#bkAutoToggle')) $('#bkAutoToggle').checked = !!data.auto_habilitado;
     if ($('#bkFrecuencia')) $('#bkFrecuencia').value = data.frecuencia || 'semanal';
     if ($('#bkHora')) $('#bkHora').value = data.hora || '22:00';
@@ -7292,6 +7303,7 @@ async function guardarConfigBackup(extra) {
   const payload = Object.assign({
     id: 1,
     alcance: bkAlcanceDesdeForm(),
+    fuente: bkFuente,
     auto_habilitado: !!$('#bkAutoToggle')?.checked,
     frecuencia: $('#bkFrecuencia')?.value || 'semanal',
     hora: $('#bkHora')?.value || '22:00',
@@ -7333,6 +7345,39 @@ async function bkRecolectarDatos(alcance) {
   return resultado;
 }
 
+/* Fuente "Aplicación (pantalla actual)": NO consulta Supabase, toma tal
+   cual lo que este navegador tiene cargado/escrito en este momento -útil
+   para no perder cambios que todavía no se han guardado-. "propiedades"
+   son las ciudades/ubicaciones ya cargadas en memoria (variable "data" y
+   "cityCovers"); "negocios" son los borradores de "Especialistas para
+   cada necesidad" guardados en este navegador (localStorage, variable
+   "xd") y la cotización que esté abierta en pantalla. */
+function bkRecolectarAplicacion(alcance) {
+  const resultado = {};
+  if (alcance.propiedades) {
+    try { resultado.ciudades_y_propiedades_en_pantalla = JSON.parse(JSON.stringify(typeof data !== 'undefined' ? data : {})); } catch (e) { resultado.ciudades_y_propiedades_en_pantalla = { error: String(e) }; }
+    try { resultado.fotos_portada_ciudades_en_pantalla = JSON.parse(JSON.stringify(typeof cityCovers !== 'undefined' ? cityCovers : {})); } catch (e) { /* noop */ }
+  }
+  if (alcance.negocios) {
+    try { resultado.borradores_servicios_en_pantalla = JSON.parse(JSON.stringify(typeof xd !== 'undefined' ? xd : {})); } catch (e) { resultado.borradores_servicios_en_pantalla = { error: String(e) }; }
+    if (typeof currentCotizacionId !== 'undefined' && currentCotizacionId) resultado.cotizacion_abierta_en_pantalla = { id: currentCotizacionId };
+  }
+  resultado.idioma_en_pantalla = typeof lang !== 'undefined' ? lang : null;
+  resultado.usuario_conectado_en_pantalla = localStorage.getItem(LOGIN_STORE) || null;
+  return resultado;
+}
+
+/* Arma el contenido del backup según la fuente elegida en "Fuente del
+   backup": solo lo que esta pantalla tiene cargado ahora mismo
+   ("aplicacion"), solo lo guardado de verdad en Supabase ("supabase"), o
+   ambos lado a lado ("total") para poder comparar uno contra otro. */
+async function bkRecolectarSegunFuente(fuente, alcance) {
+  const out = {};
+  if (fuente === 'aplicacion' || fuente === 'total') out.aplicacion = bkRecolectarAplicacion(alcance);
+  if (fuente === 'supabase' || fuente === 'total') out.supabase = await bkRecolectarDatos(alcance);
+  return out;
+}
+
 function bkNombreArchivo() {
   const d = new Date();
   const p = (n) => String(n).padStart(2, '0');
@@ -7365,20 +7410,21 @@ async function bkGuardarArchivo(nombre, contenidoTexto) {
 
 async function generarBackupAhora(tipo) {
   const alcance = bkAlcanceDesdeForm();
+  const fuente = bkFuente;
   bkMostrarEstado(T[lang].backupGenerando, false);
   try {
-    const datos = await bkRecolectarDatos(alcance);
+    const datos = await bkRecolectarSegunFuente(fuente, alcance);
     const nombre = bkNombreArchivo();
-    const contenido = JSON.stringify({ generado_en: new Date().toISOString(), alcance, datos }, null, 2);
+    const contenido = JSON.stringify({ generado_en: new Date().toISOString(), fuente, alcance, datos }, null, 2);
     await bkGuardarArchivo(nombre, contenido);
-    await supabaseClient.from('backup_log').insert({ tipo: tipo || 'manual', alcance, nombre_archivo: nombre, estado: 'ok' });
+    await supabaseClient.from('backup_log').insert({ tipo: tipo || 'manual', alcance, fuente, nombre_archivo: nombre, estado: 'ok' });
     await guardarConfigBackup({ ultimo_backup: new Date().toISOString(), ultimo_estado: 'ok' });
     const f = new Date().toLocaleString(lang === 'en' ? 'en-US' : 'es-GT');
     bkMostrarEstado(T[lang].backupUltimoOk + ' ' + f, false);
   } catch (e) {
     console.error('Error generando el backup:', e);
     try {
-      await supabaseClient.from('backup_log').insert({ tipo: tipo || 'manual', alcance, nombre_archivo: '-', estado: 'error', detalle: String(e?.message || e) });
+      await supabaseClient.from('backup_log').insert({ tipo: tipo || 'manual', alcance, fuente, nombre_archivo: '-', estado: 'error', detalle: String(e?.message || e) });
       await guardarConfigBackup({ ultimo_estado: 'error' });
     } catch (e2) { /* no detiene el flujo si tampoco se puede registrar el error */ }
     bkMostrarEstado(T[lang].backupUltimoError, true);
@@ -7439,11 +7485,12 @@ async function bkRevisarProgramacionAutomatica() {
     if (!toca) return;
     backupDirHandle = handle;
     const alcance = data.alcance || {};
-    const datos = await bkRecolectarDatos(alcance);
+    const fuente = data.fuente || 'supabase';
+    const datos = await bkRecolectarSegunFuente(fuente, alcance);
     const nombre = bkNombreArchivo();
-    const contenido = JSON.stringify({ generado_en: ahora.toISOString(), alcance, datos }, null, 2);
+    const contenido = JSON.stringify({ generado_en: ahora.toISOString(), fuente, alcance, datos }, null, 2);
     await bkGuardarArchivo(nombre, contenido);
-    await supabaseClient.from('backup_log').insert({ tipo: 'automático', alcance, nombre_archivo: nombre, estado: 'ok' });
+    await supabaseClient.from('backup_log').insert({ tipo: 'automático', alcance, fuente, nombre_archivo: nombre, estado: 'ok' });
     await supabaseClient.from('backup_config').upsert({ id: 1, ultimo_backup: ahora.toISOString(), ultimo_estado: 'ok' });
   } catch (e) {
     console.error('Error en la revisión de backup automático:', e);
