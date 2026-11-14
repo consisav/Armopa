@@ -9,90 +9,28 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
 <link rel="icon" href="assets/logo.webp">
-<link rel="stylesheet" href="styles.css?v=20261031j">
+<link rel="stylesheet" href="styles.css?v=20260923f">
 </head>
 <body>
 
 <header class="hdr">
-  <div class="hdr-top">
-    <div class="wrap hdr-top-in">
-      <div class="lang-switch" role="group" aria-label="Idioma / Language">
-          <button class="lg on" type="button" data-lang="es" aria-label="Español (Guatemala)" title="Español · Guatemala"><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#4997D0"/><rect x="8" width="8" height="16" fill="#fff"/><circle cx="12" cy="8" r="2.6" fill="#6f9f4a"/><circle cx="12" cy="8" r="1.1" fill="#e3b93f"/></svg><span>ES</span></button>
-          <button class="lg" type="button" data-lang="en" aria-label="English (United States)" title="English · United States"><svg class="flag" viewBox="0 0 24 16" aria-hidden="true"><rect width="24" height="16" fill="#fff"/><rect y="0.00" width="24" height="1.23" fill="#b22234"/><rect y="2.46" width="24" height="1.23" fill="#b22234"/><rect y="4.92" width="24" height="1.23" fill="#b22234"/><rect y="7.38" width="24" height="1.23" fill="#b22234"/><rect y="9.85" width="24" height="1.23" fill="#b22234"/><rect y="12.31" width="24" height="1.23" fill="#b22234"/><rect y="14.77" width="24" height="1.23" fill="#b22234"/><rect width="10.5" height="8.6" fill="#3c3b6e"/><circle cx="1.7" cy="1.5" r=".5" fill="#fff"/><circle cx="4.6" cy="1.5" r=".5" fill="#fff"/><circle cx="7.5" cy="1.5" r=".5" fill="#fff"/><circle cx="1.7" cy="3.9" r=".5" fill="#fff"/><circle cx="4.6" cy="3.9" r=".5" fill="#fff"/><circle cx="7.5" cy="3.9" r=".5" fill="#fff"/><circle cx="1.7" cy="6.3" r=".5" fill="#fff"/><circle cx="4.6" cy="6.3" r=".5" fill="#fff"/><circle cx="7.5" cy="6.3" r=".5" fill="#fff"/></svg><span>EN</span></button>
-      </div>
-      <div class="tools">
-        <span id="userBadge" hidden style="display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink)">
-          <span id="userBadgeName"></span>
-          <button class="btn btn-line btn-sm" type="button" id="adminUsuariosBtn" data-i18n="adminUsersBtn" hidden></button>
-          <button class="btn btn-line btn-sm" type="button" id="logoutBtn" data-i18n="logoutBtn"></button>
-        </span>
-        <button class="btn btn-line btn-sm" type="button" id="openLoginBtn" data-i18n="connectBtn"></button>
-        <button class="btn btn-line btn-sm" type="button" id="openClient" data-i18n="client" hidden></button>
-        <div class="nav-admin-drop" id="navAdminDrop" hidden>
-          <button class="btn btn-line btn-sm nav-admin-btn" type="button" id="navAdminBtn" aria-haspopup="true" aria-expanded="false"><span data-i18n="adminMenuBtn"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
-          <div class="nav-admin-menu" id="navAdminMenu" hidden>
-            <div class="nav-admin-group" data-grp="catalogos">
-              <button type="button" class="nav-admin-group-h" aria-expanded="false"><span data-i18n="adminGrpCatalogos"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
-              <div class="nav-admin-group-items" hidden>
-                <button type="button" id="navAdminIngresoCiudadesBtn" data-i18n="adminMenuIngresoCiudades"></button>
-                <button type="button" id="navAdminIngresoPropiedadesBtn" data-i18n="adminMenuIngresoPropiedades"></button>
-                <div class="nav-admin-sep" role="separator"></div>
-                <button type="button" id="navAdminClientesBtn" data-i18n="adminMenuClientes"></button>
-                <button type="button" id="navAdminCitasBtn" data-i18n="adminMenuCitas"></button>
-                <button type="button" id="navAdminAgendaCitasBtn" data-i18n="adminMenuAgendaCitas"></button>
-                <div class="nav-admin-sep" role="separator"></div>
-                <button type="button" id="navAdminVendedoresBtn" data-i18n="adminMenuVend"></button>
-                <button type="button" id="navAdminTiposComisionBtn" data-i18n="adminMenuTiposComision"></button>
-                <div class="nav-admin-sep" role="separator"></div>
-                <button type="button" id="navAdminGeografiaBtn" data-i18n="adminMenuGeografia"></button>
-                <button type="button" id="navAdminOrganizacionesBtn" data-i18n="adminMenuOrganizaciones"></button>
-                <div class="nav-admin-sep" role="separator"></div>
-                <button type="button" id="navAdminUsuariosCatalogoBtn" data-i18n="adminMenuUsuariosCatalogo"></button>
-                <button type="button" id="navAdminGenerarUsuarioBtn" data-i18n="adminMenuGenerarUsuario"></button>
-              </div>
-            </div>
-            <div class="nav-admin-group" data-grp="negocios">
-              <button type="button" class="nav-admin-group-h" aria-expanded="false"><span data-i18n="adminGrpNegocios"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
-              <div class="nav-admin-group-items" hidden>
-                <button type="button" id="navAdminPropiedadesBtn" data-i18n="adminMenuProp"></button>
-                <button type="button" id="navAdminProyectosBtn" data-i18n="adminMenuProy"></button>
-                <button type="button" id="navAdminServiciosBtn" data-i18n="adminMenuServ"></button>
-                <button type="button" id="navAdminRotacionVisualBtn" data-i18n="adminMenuRotVisual"></button>
-              </div>
-            </div>
-            <div class="nav-admin-group" data-grp="comisiones">
-              <button type="button" class="nav-admin-group-h" aria-expanded="false"><span data-i18n="adminGrpComisiones"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
-              <div class="nav-admin-group-items" hidden>
-                <button type="button" id="navAdminComisionesBtn" data-i18n="adminMenuComisionesVentas"></button>
-                <button type="button" id="navAdminComisionesGeneradasBtn" data-i18n="adminMenuComisionesGeneradas"></button>
-                <button type="button" id="navAdminComisionesPagadasBtn" data-i18n="adminMenuComisionesPagadas"></button>
-              </div>
-            </div>
-            <div class="nav-admin-group" data-grp="reportes">
-              <button type="button" class="nav-admin-group-h" aria-expanded="false"><span data-i18n="adminGrpReportes"></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
-              <div class="nav-admin-group-items" hidden>
-                <button type="button" id="navAdminRepPropiedadesBtn" data-i18n="adminMenuRepProp"></button>
-                <button type="button" id="navAdminRepServiciosBtn" data-i18n="adminMenuRepServ"></button>
-                <button type="button" id="navAdminRepClientesBtn" data-i18n="adminMenuRepClientes"></button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
   <div class="wrap nav">
-    <a class="brand" href="#inicio" aria-label="ARMOPA Administración Inmobiliaria"><img id="brandLogo" src="assets/logo.webp" alt="ARMOPA Administración Inmobiliaria"></a>
+    <a class="brand" href="#inicio" aria-label="ARMOPA Administración Inmobiliaria"><img src="assets/logo.webp" alt="ARMOPA Administración Inmobiliaria"></a>
     <button class="burger" type="button" id="burger" data-i18n-label="menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
     <div class="navwrap" id="navwrap">
       <nav class="links" data-i18n-label="menu">
         <a href="#inicio" data-i18n="nInicio"></a>
         <a href="#nosotros" data-i18n="nNosotros"></a>
         <a href="#propiedades" data-i18n="nPropiedades"></a>
-        <a href="#proyectos" data-i18n="nServicios"></a>
-        <a href="#servicios" data-i18n="nProyectos"></a>
+        <a href="#servicios" data-i18n="nServicios"></a>
+        <a href="#proyectos" data-i18n="nProyectos"></a>
         <a href="#contacto" data-i18n="nContacto"></a>
       </nav>
+      <div class="tools">
+        <button class="lg on" type="button" data-lang="es">ES</button>
+        <button class="lg" type="button" data-lang="en">EN</button>
+        <button class="btn btn-line" type="button" id="openClient" data-i18n="client"></button>
+      </div>
     </div>
   </div>
 </header>
@@ -125,63 +63,12 @@
   <section class="sec about" id="nosotros">
     <div class="wrap about-in">
       <h2><span class="h1l" data-i18n="aboutH1"></span><span class="h2l" data-i18n="aboutH2"></span><span class="h3l" data-i18n="aboutH3"></span></h2>
-
-      <div class="mv-grid">
-        <div class="mv-card">
-          <div class="mv-card-head">
-            <span class="mv-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
-            <div class="mv-card-title"><span data-i18n="visionTitle"></span> <span class="mv-sep">|</span> <span class="mv-brand">ARMOPA GROUP</span></div>
-          </div>
-          <p class="mv-lead" data-i18n="visionLead"></p>
-          <p class="mv-body" data-i18n="visionBody"></p>
-        </div>
-
-        <div class="mv-card">
-          <div class="mv-card-head">
-            <span class="mv-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1"></circle></svg></span>
-            <div class="mv-card-title"><span data-i18n="missionTitle"></span> <span class="mv-sep">|</span> <span class="mv-brand">ARMOPA GROUP</span></div>
-          </div>
-          <p class="mv-lead" data-i18n="missionLead"></p>
-          <p class="mv-body" data-i18n="missionBody"></p>
-        </div>
-      </div>
-
       <div class="about-tx">
-        <article class="tx">
-          <span class="ic-h ic-logo"><img src="assets/logo.webp" alt="ARMOPA"></span>
-          <div class="tx-head" data-i18n-html="txHead1"></div>
-          <ul class="tx-list">
-            <li data-tx1="0"></li>
-            <li data-tx1="1"></li>
-            <li data-tx1="2"></li>
-            <li data-tx1="3"></li>
-            <li data-tx1="4"></li>
-          </ul>
-        </article>
-        <article class="tx">
-          <span class="ic-h ic-img"><img src="assets/ia-badge.jpg" alt="" data-i18n-alt="aiAlt"></span>
-          <div class="tx-head" data-i18n-html="txHead2"></div>
-          <ul class="tx-list">
-            <li data-tx2="0"></li>
-            <li data-tx2="1"></li>
-            <li data-tx2="2"></li>
-            <li data-tx2="3"></li>
-            <li data-tx2="4"></li>
-          </ul>
-        </article>
-        <article class="tx">
-          <span class="ic-h ic-img"><img src="assets/hogar-badge.jpg" alt="" data-i18n-alt="homeAlt"></span>
-          <div class="tx-head" data-i18n-html="txHead3"></div>
-          <ul class="tx-list">
-            <li data-tx3="0"></li>
-            <li data-tx3="1"></li>
-            <li data-tx3="2"></li>
-            <li data-tx3="3"></li>
-            <li data-tx3="4"></li>
-          </ul>
-        </article>
+        <article class="tx"><span class="ic-h ic-logo"><img src="assets/logo.webp" alt="ARMOPA"></span><p data-i18n="aboutT1"></p></article>
+        <article class="tx"><span class="ic-h ic-img"><img src="assets/ia-badge.jpg" alt="" data-i18n-alt="aiAlt"></span><p data-i18n="aboutT2"></p></article>
+        <article class="tx"><span class="ic-h ic-img"><img src="assets/hogar-badge.jpg" alt="" data-i18n-alt="homeAlt"></span><p data-i18n="aboutT3"></p></article>
       </div>
-      <div class="about-r" id="aboutRBlock" hidden>
+      <div class="about-r">
         <div class="sv-out first">
           <div class="sv-sub"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"></path><path d="M9 12l2 2 4-4"></path></svg></span><span data-i18n="invSub"></span></div>
           <ul class="sv-ul">
@@ -214,18 +101,16 @@
     <div class="wrap">
       <div class="sec-h sec-h-tight">
         <h2 data-i18n="propH"></h2>
-      </div>
-      <div class="cq-trigger-row cq-trigger-row-multi cq-trigger-row-line">
-        <p class="car-hint" data-i18n="carHint"></p>
-        <button class="btn btn-dark" type="button" id="abrirBuscarPropBtn" data-i18n-html="catalogHtml"></button>
-        <button class="btn btn-dark" type="button" id="abrirBuscarServBtn" data-i18n-html="btnBuscarServHtml"></button>
-      </div>
-      <div class="car-row">
-        <div class="car car-3d" id="car">
-          <button class="arr" type="button" id="prev" data-i18n-label="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
-          <div class="car-vp car-stage"><div class="car-track" id="carTrack"></div></div>
-          <button class="arr" type="button" id="next" data-i18n-label="next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+        <div class="city-quick-wrap">
+          <button type="button" class="lnk" id="catalogBtn" data-i18n="catalog"></button>
+          <div class="city-quick-menu" id="cityQuickMenu" hidden></div>
         </div>
+<button class="btn btn-dark" type="button" id="addCityBtn" style="margin-left:12px">+ Agregar ciudad</button>
+      </div>
+      <div class="car" id="car" style="--i:0">
+        <button class="arr" type="button" id="prev" data-i18n-label="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
+     <div class="car-vp"><div class="car-track" id="carTrack"></div></div>
+        <button class="arr" type="button" id="next" data-i18n-label="next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
       </div>
       <div class="dots" id="dots"></div>
     </div>
@@ -235,11 +120,11 @@
     <div class="wrap">
       <div class="svc-head"><h2><span class="h1l" data-i18n="servH1"></span><span class="h2l" data-i18n="servH2"></span></h2></div>
       <div class="sv-grid">
-        <article class="sv" id="svRentBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/salon-badge.jpg" alt="" data-i18n-alt="salonAlt"></span><h3 data-i18n="s1"></h3><p data-i18n="s1d"></p></article>
-        <article class="sv" id="svPresupuestoBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/presupuesto-badge.jpg" alt="" data-i18n-alt="budgetAlt"></span><h3 data-i18n="s2"></h3><p data-i18n="s2d"></p></article>
-        <article class="sv" id="svComprarBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/compra-badge.jpg" alt="" data-i18n-alt="buyAlt"></span><h3 data-i18n="s3"></h3><p data-i18n="s3d"></p></article>
-        <article class="sv" id="svRemodelBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/remodela-badge.jpg" alt="" data-i18n-alt="remodelAlt"></span><h3 data-i18n="s4"></h3><p data-i18n="s4d"></p></article>
-        <article class="sv" id="svConstruirBtn" role="button" tabindex="0" aria-haspopup="dialog"><span class="sv-ic sv-ph"><img src="assets/terreno-badge.jpg" alt="" data-i18n-alt="landAlt"></span><h3 data-i18n="s5"></h3><p data-i18n="s5d"></p></article>
+        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/salon-badge.jpg" alt="" data-i18n-alt="salonAlt"></span><h3 data-i18n="s1"></h3><p data-i18n="s1d"></p></article>
+        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/presupuesto-badge.jpg" alt="" data-i18n-alt="budgetAlt"></span><h3 data-i18n="s2"></h3><p data-i18n="s2d"></p></article>
+        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/compra-badge.jpg" alt="" data-i18n-alt="buyAlt"></span><h3 data-i18n="s3"></h3><p data-i18n="s3d"></p></article>
+        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/remodela-badge.jpg" alt="" data-i18n-alt="remodelAlt"></span><h3 data-i18n="s4"></h3><p data-i18n="s4d"></p></article>
+        <article class="sv"><span class="sv-ic sv-ph"><img src="assets/terreno-badge.jpg" alt="" data-i18n-alt="landAlt"></span><h3 data-i18n="s5"></h3><p data-i18n="s5d"></p></article>
         <article class="sv"><span class="sv-ic sv-ph"><img src="assets/proyecto-badge.jpg" alt="" data-i18n-alt="projAlt"></span><h3 data-i18n="s6"></h3><p data-i18n="s6d"></p></article>
       </div>
     </div>
@@ -516,26 +401,26 @@
               <p class="hint" data-i18n="xEstStale"></p>
               <p class="hint x-estnote"></p>
             </div>
-            <button class="btn btn-line-dark btn-sm" type="button" id="preqBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg><span data-i18n="pqBtnLabel"></span></button>
+            <button class="btn btn-line-dark btn-sm" type="button" id="preqBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M8 8h8M8 12h8M8 16h5"></path></svg><span>Datos para precalificar un préstamo</span></button>
             <div class="x-est" id="preqBox" hidden>
-              <div class="x-est-top"><p class="x-est-h" data-i18n="pqTitle"></p><button class="x-est-x" type="button" id="preqHide" data-i18n="pqOcultar"></button></div>
-              <p class="hint" style="margin-top:0" data-i18n="pqIntro"></p>
+              <div class="x-est-top"><p class="x-est-h">Requisitos generales para precalificación bancaria en Guatemala</p><button class="x-est-x" type="button" id="preqHide">Ocultar</button></div>
+              <p class="hint" style="margin-top:0">Elige el tipo de solicitante, completa los datos, adjunta los documentos en PDF que ya tengas y guarda tu expediente. Puedes volver después a actualizarlo o completar los documentos que falten.</p>
 
               <div class="fld" style="margin-top:14px">
-                <span class="lbl" data-i18n="pqTipoSolicitante"></span>
+                <span class="lbl">Tipo de solicitante</span>
                 <div class="seg-g" id="pqTipoSeg">
-                  <button class="seg on" type="button" data-tipo="individual" data-i18n="pqPersonaIndividual"></button>
-                  <button class="seg" type="button" data-tipo="juridica" data-i18n="pqPersonaJuridica"></button>
+                  <button class="seg on" type="button" data-tipo="individual">Persona Individual</button>
+                  <button class="seg" type="button" data-tipo="juridica">Persona Jurídica (Empresa)</button>
                 </div>
               </div>
 
               <!-- ===== Persona Individual ===== -->
               <div id="pq-block-individual">
-                <p class="x-est-h" style="margin-top:18px" data-i18n="pqTusDatos"></p>
+                <p class="x-est-h" style="margin-top:18px">Tus datos</p>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-banco" data-i18n="pqBanco"></label>
-                  <select id="pq-banco" data-pq-bank-select>
-                    <option value="" data-i18n="pqSelecciona"></option>
+                  <div class="fld"><label for="pq-banco">Banco de preferencia</label>
+                  <select id="pq-banco">
+                    <option value="">Selecciona…</option>
                     <option value="Crédito Hipotecario Nacional de Guatemala (CHN)">Crédito Hipotecario Nacional de Guatemala (CHN)</option>
                     <option value="Banco de los Trabajadores (Bantrab)">Banco de los Trabajadores (Bantrab)</option>
                     <option value="Banco Cuscatlán Guatemala">Banco Cuscatlán Guatemala</option>
@@ -555,81 +440,81 @@
                     <option value="Banco Credicorp">Banco Credicorp</option>
                     <option value="Banco Nexa">Banco Nexa</option>
                     <option value="Banco Multimoney">Banco Multimoney</option>
-                    <option value="Otro" data-i18n="pqBancoOtro"></option>
+                    <option value="Otro">Otro</option>
                   </select>
                 </div>
-                  <div class="fld"><label for="pq-monto" data-i18n="pqMontoSolicitado"></label><input id="pq-monto" type="text" inputmode="decimal" data-i18n-ph="pqMontoPh"></div>
+                  <div class="fld"><label for="pq-monto">Monto solicitado (Q)</label><input id="pq-monto" type="text" inputmode="decimal" placeholder="Ej. 250,000"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-destino" data-i18n="pqDestinoCredito"></label>
+                  <div class="fld"><label for="pq-destino">Destino del crédito</label>
                     <select id="pq-destino">
-                      <option value="" data-i18n="pqSelecciona"></option>
-                      <option value="Vivienda" data-i18n="pqDestVivienda"></option>
-                      <option value="Vehículo" data-i18n="pqDestVehiculo"></option>
-                      <option value="Consumo Personal" data-i18n="pqDestConsumo"></option>
+                      <option value="">Selecciona…</option>
+                      <option value="Vivienda">Vivienda</option>
+                      <option value="Vehículo">Vehículo</option>
+                      <option value="Consumo Personal">Consumo Personal</option>
                     </select>
                   </div>
-                  <div class="fld"><label for="pq-perfil" data-i18n="pqTipoPerfil"></label>
+                  <div class="fld"><label for="pq-perfil">Tipo de perfil</label>
                     <select id="pq-perfil">
-                      <option value="" data-i18n="pqSelecciona"></option>
-                      <option value="asalariado" data-i18n="pqPerfilAsalariado"></option>
-                      <option value="independiente" data-i18n="pqPerfilIndependiente"></option>
+                      <option value="">Selecciona…</option>
+                      <option value="asalariado">Asalariado</option>
+                      <option value="independiente">Independiente</option>
                     </select>
                   </div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-dpi" data-i18n="pqDpi"></label><input id="pq-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
-                  <div class="fld"><label for="pq-nit" data-i18n="pqNit"></label><input id="pq-nit" type="text" data-i18n-ph="pqNitPh"></div>
+                  <div class="fld"><label for="pq-dpi">DPI (13 dígitos)</label><input id="pq-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
+                  <div class="fld"><label for="pq-nit">NIT</label><input id="pq-nit" type="text" placeholder="Ej. 1234567-8"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-tel" data-i18n="pqTelefono"></label><input id="pq-tel" type="tel" placeholder="+502 0000 0000"></div>
-                  <div class="fld"><label for="pq-correo" data-i18n="pqCorreo"></label><input id="pq-correo" type="email" placeholder="nombre@correo.com"></div>
+                  <div class="fld"><label for="pq-tel">Teléfono celular</label><input id="pq-tel" type="tel" placeholder="+502 0000 0000"></div>
+                  <div class="fld"><label for="pq-correo">Correo electrónico</label><input id="pq-correo" type="email" placeholder="nombre@correo.com"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pq-escolaridad" data-i18n="pqEscolaridad"></label>
+                  <div class="fld"><label for="pq-escolaridad">Grado de escolaridad</label>
                     <select id="pq-escolaridad">
-                      <option value="" data-i18n="pqSelecciona"></option>
-                      <option value="Sin estudios" data-i18n="pqEscSin"></option>
-                      <option value="Primaria" data-i18n="pqEscPrimaria"></option>
-                      <option value="Básicos" data-i18n="pqEscBasicos"></option>
-                      <option value="Diversificado" data-i18n="pqEscDiversificado"></option>
-                      <option value="Técnico" data-i18n="pqEscTecnico"></option>
-                      <option value="Universitario" data-i18n="pqEscUniversitario"></option>
-                      <option value="Postgrado" data-i18n="pqEscPostgrado"></option>
-                      <option value="Otro" data-i18n="pqEscOtro"></option>
+                      <option value="">Selecciona…</option>
+                      <option value="Sin estudios">Sin estudios</option>
+                      <option value="Primaria">Primaria</option>
+                      <option value="Básicos">Básicos</option>
+                      <option value="Diversificado">Diversificado</option>
+                      <option value="Técnico">Técnico</option>
+                      <option value="Universitario">Universitario</option>
+                      <option value="Postgrado">Postgrado (Maestría / Doctorado)</option>
+                      <option value="Otro">Otro</option>
                     </select>
                   </div>
-                  <div class="fld"><label for="pq-profesion" data-i18n="pqProfesion"></label><input id="pq-profesion" type="text" data-i18n-ph="pqProfesionPh"></div>
+                  <div class="fld"><label for="pq-profesion">Profesión / Ocupación</label><input id="pq-profesion" type="text" placeholder="Ej. Maestro, comerciante, ingeniero…"></div>
                 </div>
 
-                <p class="x-est-h" style="margin-top:18px" data-i18n="pqIdentidad"></p>
+                <p class="x-est-h" style="margin-top:18px">Identidad</p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-dpi"><span data-i18n="pqDocDpi"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-dpi" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-nit"><span data-i18n="pqDocNit"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nit"><label class="btn btn-line-dark btn-sm" for="pqf-req-nit" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-nit" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-dpi"><span>DPI (Documento Personal de Identificación) vigente</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi">📎 Subir PDF</label><span class="pq-status" id="pqs-req-dpi">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-nit"><span>Número de NIT</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nit"><label class="btn btn-line-dark btn-sm" for="pqf-req-nit">📎 Subir PDF</label><span class="pq-status" id="pqs-req-nit">Sin guardar aún</span></span></li>
                 </ul>
 
-                <p class="x-est-h" style="margin-top:14px" data-i18n="pqIngresos"></p>
+                <p class="x-est-h" style="margin-top:14px">Ingresos</p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-boletas"><span data-i18n="pqDocBoletas"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-boletas"><label class="btn btn-line-dark btn-sm" for="pqf-req-boletas" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-boletas" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-estados-cuenta"><span data-i18n="pqDocEstadosCuenta"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-cuenta"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-cuenta" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-estados-cuenta" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-patente-isr"><span data-i18n="pqDocPatenteIsr"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-isr"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-isr" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-patente-isr" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-boletas"><span>Si eres asalariado: boletas o constancia de salario de los últimos 3 meses</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-boletas"><label class="btn btn-line-dark btn-sm" for="pqf-req-boletas">📎 Subir PDF</label><span class="pq-status" id="pqs-req-boletas">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-estados-cuenta"><span>Estados de cuenta bancarios recientes (usualmente los últimos 3 a 6 meses)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-cuenta"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-cuenta">📎 Subir PDF</label><span class="pq-status" id="pqs-req-estados-cuenta">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-patente-isr"><span>Si eres independiente: patente de comercio y declaraciones de ISR</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-isr"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-isr">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-isr">Sin guardar aún</span></span></li>
                 </ul>
 
-                <p class="x-est-h" style="margin-top:14px" data-i18n="pqEstabilidadLaboral"></p>
+                <p class="x-est-h" style="margin-top:14px">Estabilidad laboral</p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-carta-trabajo"><span data-i18n="pqDocCartaTrabajo"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-carta-trabajo"><label class="btn btn-line-dark btn-sm" for="pqf-req-carta-trabajo" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-carta-trabajo" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-antiguedad"><span data-i18n="pqDocAntiguedad"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-antiguedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-antiguedad" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-antiguedad" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-historial"><span data-i18n="pqDocHistorial"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-historial"><label class="btn btn-line-dark btn-sm" for="pqf-req-historial" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-historial" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-carta-trabajo"><span>Carta de trabajo que indique el tiempo laborado en la empresa</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-carta-trabajo"><label class="btn btn-line-dark btn-sm" for="pqf-req-carta-trabajo">📎 Subir PDF</label><span class="pq-status" id="pqs-req-carta-trabajo">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-antiguedad"><span>Antigüedad laboral (muchos bancos piden al menos 1 año en el empleo actual)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-antiguedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-antiguedad">📎 Subir PDF</label><span class="pq-status" id="pqs-req-antiguedad">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-historial"><span>Historial crediticio favorable (consulta en buró de crédito)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-historial"><label class="btn btn-line-dark btn-sm" for="pqf-req-historial">📎 Subir PDF</label><span class="pq-status" id="pqs-req-historial">Sin guardar aún</span></span></li>
                 </ul>
               </div>
 
               <!-- ===== Persona Jurídica (Empresa) ===== -->
               <div id="pq-block-juridica" hidden>
-                <p class="x-est-h" style="margin-top:18px" data-i18n="pqDatosEmpresa"></p>
+                <p class="x-est-h" style="margin-top:18px">Datos de la empresa</p>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-banco" data-i18n="pqBanco"></label>
-                  <select id="pqj-banco" data-pq-bank-select>
-                    <option value="" data-i18n="pqSelecciona"></option>
+                  <div class="fld"><label for="pqj-banco">Banco de preferencia</label>
+                  <select id="pqj-banco">
+                    <option value="">Selecciona…</option>
                     <option value="Crédito Hipotecario Nacional de Guatemala (CHN)">Crédito Hipotecario Nacional de Guatemala (CHN)</option>
                     <option value="Banco de los Trabajadores (Bantrab)">Banco de los Trabajadores (Bantrab)</option>
                     <option value="Banco Cuscatlán Guatemala">Banco Cuscatlán Guatemala</option>
@@ -649,60 +534,60 @@
                     <option value="Banco Credicorp">Banco Credicorp</option>
                     <option value="Banco Nexa">Banco Nexa</option>
                     <option value="Banco Multimoney">Banco Multimoney</option>
-                    <option value="Otro" data-i18n="pqBancoOtro"></option>
+                    <option value="Otro">Otro</option>
                   </select>
                 </div>
-                  <div class="fld"><label for="pqj-monto" data-i18n="pqMontoSolicitado"></label><input id="pqj-monto" type="text" inputmode="decimal" data-i18n-ph="pqMontoPhJ"></div>
+                  <div class="fld"><label for="pqj-monto">Monto solicitado (Q)</label><input id="pqj-monto" type="text" inputmode="decimal" placeholder="Ej. 500,000"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-destino" data-i18n="pqDestinoCredito"></label>
+                  <div class="fld"><label for="pqj-destino">Destino del crédito</label>
                     <select id="pqj-destino">
-                      <option value="" data-i18n="pqSelecciona"></option>
-                      <option value="Capital de trabajo" data-i18n="pqDestCapitalTrabajo"></option>
-                      <option value="Compra de equipo" data-i18n="pqDestCompraEquipo"></option>
-                      <option value="Expansión del negocio" data-i18n="pqDestExpansion"></option>
-                      <option value="Vivienda" data-i18n="pqDestVivienda"></option>
-                      <option value="Vehículo" data-i18n="pqDestVehiculo"></option>
+                      <option value="">Selecciona…</option>
+                      <option value="Capital de trabajo">Capital de trabajo</option>
+                      <option value="Compra de equipo">Compra de equipo</option>
+                      <option value="Expansión del negocio">Expansión del negocio</option>
+                      <option value="Vivienda">Vivienda</option>
+                      <option value="Vehículo">Vehículo</option>
                     </select>
                   </div>
-                  <div class="fld"><label for="pqj-razon" data-i18n="pqRazonSocial"></label><input id="pqj-razon" type="text" data-i18n-ph="pqRazonSocialPh"></div>
+                  <div class="fld"><label for="pqj-razon">Razón social / Nombre de la empresa</label><input id="pqj-razon" type="text" placeholder="Ej. Inversiones ABC, S.A."></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-nit" data-i18n="pqNitEmpresa"></label><input id="pqj-nit" type="text" data-i18n-ph="pqNitPh"></div>
-                  <div class="fld"><label for="pqj-rep-nombre" data-i18n="pqRepNombre"></label><input id="pqj-rep-nombre" type="text" data-i18n-ph="pqNombreCompletoPh"></div>
+                  <div class="fld"><label for="pqj-nit">NIT de la empresa</label><input id="pqj-nit" type="text" placeholder="Ej. 1234567-8"></div>
+                  <div class="fld"><label for="pqj-rep-nombre">Nombre del representante legal</label><input id="pqj-rep-nombre" type="text" placeholder="Nombre completo"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-rep-dpi" data-i18n="pqRepDpi"></label><input id="pqj-rep-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
-                  <div class="fld"><label for="pqj-tel" data-i18n="pqTelefono"></label><input id="pqj-tel" type="tel" placeholder="+502 0000 0000"></div>
+                  <div class="fld"><label for="pqj-rep-dpi">DPI del representante legal (13 dígitos)</label><input id="pqj-rep-dpi" type="text" maxlength="13" placeholder="0000000000000"></div>
+                  <div class="fld"><label for="pqj-tel">Teléfono celular</label><input id="pqj-tel" type="tel" placeholder="+502 0000 0000"></div>
                 </div>
                 <div class="x-row">
-                  <div class="fld"><label for="pqj-correo" data-i18n="pqCorreo"></label><input id="pqj-correo" type="email" data-i18n-ph="pqCorreoPhEmpresa"></div>
+                  <div class="fld"><label for="pqj-correo">Correo electrónico</label><input id="pqj-correo" type="email" placeholder="nombre@empresa.com"></div>
                 </div>
 
-                <p class="x-est-h" style="margin-top:18px" data-i18n="pqDocLegalesEmpresa"></p>
+                <p class="x-est-h" style="margin-top:18px">Documentos legales de la empresa</p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-patente-comercio-empresa"><span data-i18n="pqDocPatenteComercioEmpresa"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-empresa"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-empresa" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-patente-comercio-empresa" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-patente-sociedad"><span data-i18n="pqDocPatenteSociedad"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-sociedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-sociedad" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-patente-sociedad" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-escritura-constitucion"><span data-i18n="pqDocEscrituraConstitucion"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-escritura-constitucion"><label class="btn btn-line-dark btn-sm" for="pqf-req-escritura-constitucion" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-escritura-constitucion" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-rtu"><span data-i18n="pqDocRtu"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-rtu"><label class="btn btn-line-dark btn-sm" for="pqf-req-rtu" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-rtu" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-patente-comercio-empresa"><span>Patente de Comercio de Empresa</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-empresa"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-empresa">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-comercio-empresa">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-patente-sociedad"><span>Patente de Comercio de Sociedad (si aplica)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-sociedad"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-sociedad">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-sociedad">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-escritura-constitucion"><span>Escritura de Constitución de la Sociedad</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-escritura-constitucion"><label class="btn btn-line-dark btn-sm" for="pqf-req-escritura-constitucion">📎 Subir PDF</label><span class="pq-status" id="pqs-req-escritura-constitucion">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-rtu"><span>RTU (Registro Tributario Unificado) de la empresa</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-rtu"><label class="btn btn-line-dark btn-sm" for="pqf-req-rtu">📎 Subir PDF</label><span class="pq-status" id="pqs-req-rtu">Sin guardar aún</span></span></li>
                 </ul>
 
-                <p class="x-est-h" style="margin-top:14px" data-i18n="pqRepLegalFinanzas"></p>
+                <p class="x-est-h" style="margin-top:14px">Representante legal y finanzas</p>
                 <ul class="x-est-l">
-                  <li class="pq-item" data-doc="req-dpi-representante"><span data-i18n="pqDocDpiRepresentante"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi-representante" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-dpi-representante" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-nombramiento-representante"><span data-i18n="pqDocNombramientoRepresentante"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nombramiento-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-nombramiento-representante" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-nombramiento-representante" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-patente-comercio-sociedad-rep"><span data-i18n="pqDocPatenteComercioSociedadRep"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-sociedad-rep"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-sociedad-rep" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-patente-comercio-sociedad-rep" data-i18n="pqSinGuardar"></span></span></li>
-                  <li class="pq-item" data-doc="req-estados-financieros"><span data-i18n="pqDocEstadosFinancieros"></span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-financieros"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-financieros" data-i18n-html="pqSubirPdfHtml"></label><span class="pq-status" id="pqs-req-estados-financieros" data-i18n="pqSinGuardar"></span></span></li>
+                  <li class="pq-item" data-doc="req-dpi-representante"><span>DPI del Representante Legal vigente</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-dpi-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-dpi-representante">📎 Subir PDF</label><span class="pq-status" id="pqs-req-dpi-representante">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-nombramiento-representante"><span>Nombramiento del Representante Legal (vigente)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-nombramiento-representante"><label class="btn btn-line-dark btn-sm" for="pqf-req-nombramiento-representante">📎 Subir PDF</label><span class="pq-status" id="pqs-req-nombramiento-representante">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-patente-comercio-sociedad-rep"><span>Patente de Comercio y Sociedad</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-patente-comercio-sociedad-rep"><label class="btn btn-line-dark btn-sm" for="pqf-req-patente-comercio-sociedad-rep">📎 Subir PDF</label><span class="pq-status" id="pqs-req-patente-comercio-sociedad-rep">Sin guardar aún</span></span></li>
+                  <li class="pq-item" data-doc="req-estados-financieros"><span>Estados Financieros de la empresa (último periodo)</span><span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="pqf-req-estados-financieros"><label class="btn btn-line-dark btn-sm" for="pqf-req-estados-financieros">📎 Subir PDF</label><span class="pq-status" id="pqs-req-estados-financieros">Sin guardar aún</span></span></li>
                 </ul>
               </div>
 
-              <p class="hint" style="margin-top:14px" data-i18n="pqAviso"></p>
+              <p class="hint" style="margin-top:14px">Esta información es de carácter general y orientativo; no sustituye la evaluación oficial de cada banco. Con gusto te ayudamos a reunir y organizar estos documentos.</p>
 
               <div class="acts" style="margin-top:16px">
-                <button class="btn btn-dark" type="button" id="pqSave" data-i18n-html="pqGuardarHtml"></button>
-                <button class="btn btn-line-dark" type="button" id="pqUpdate" data-i18n-html="pqActualizarHtml"></button>
-                <button class="btn btn-danger" type="button" id="pqDelete" data-i18n-html="pqEliminarHtml"></button>
-                <button class="btn btn-line-dark" type="button" id="pqDownloadPdf" style="margin-left:auto;gap:10px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg><span data-i18n="pqDescargarPdf"></span></button>
+                <button class="btn btn-dark" type="button" id="pqSave">💾 Guardar</button>
+                <button class="btn btn-line-dark" type="button" id="pqUpdate">🔄 Actualizar</button>
+                <button class="btn btn-danger" type="button" id="pqDelete">🗑️ Eliminar</button>
+                <button class="btn btn-line-dark" type="button" id="pqDownloadPdf" style="margin-left:auto;gap:10px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"></path><path d="M7 10l5 5 5-5"></path><path d="M4 19h16"></path></svg><span>Descargar documentos en PDF</span></button>
               </div>
               <p class="hint" id="pqMsg" style="margin-top:8px"></p>
             </div>
@@ -746,66 +631,10 @@
             </div>
           </div>
         </div>
-        <div class="ex-c">
-          <button class="ex-i" type="button" aria-expanded="false" data-xbtn="8"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1"></rect><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"></path><path d="M10 21v-4h4v4"></path></svg></span><span class="ex-t" data-ext="8"></span><span class="ex-dot" hidden></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
-          <div class="ex-p" hidden>
-            <div class="fld"><label for="xa-8" data-i18n="xAddr"></label><input id="xa-8" type="text" data-i18n-ph="xAddrPh"></div>
-            <div class="fld"><label for="xn-8" data-i18n="xNeed"></label><textarea id="xn-8" rows="3" data-i18n-ph="xNeedPh"></textarea></div>
-            <div class="x-row">
-              <div class="fld"><label for="xt-8" data-i18n="xTime"></label><input id="xt-8" type="text" data-i18n-ph="xTimePh"></div>
-              <div class="fld"><label for="xs-8" data-i18n="xStart"></label><input id="xs-8" class="xs" type="date"></div>
-            </div>
-            <div class="fld">
-              <span class="lbl" data-i18n="xPrio"></span>
-              <div class="seg-g">
-                <button class="seg p-alta" type="button" data-prio="alta" aria-pressed="false" data-i18n="xPrioAlta"></button>
-                <button class="seg p-media" type="button" data-prio="media" aria-pressed="false" data-i18n="xPrioMedia"></button>
-                <button class="seg p-baja" type="button" data-prio="baja" aria-pressed="false" data-i18n="xPrioBaja"></button>
-              </div>
-            </div>
-            <div class="up2">
-              <span class="lbl" data-i18n="xImgs"></span>
-              <div class="up-row">
-                <input id="xf-8" class="sr" type="file" accept="image/*" multiple>
-                <label class="btn btn-gold btn-sm" for="xf-8" data-i18n="upload"></label>
-                <button class="btn btn-dark btn-sm x-estbtn" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="2" width="16" height="20" rx="3"></rect><path d="M4 17h16"></path><circle cx="12" cy="19.3" r="0.9"></circle><rect x="7" y="5.5" width="2" height="2" rx="0.4"></rect><path d="M11.5 6.5h5"></path><rect x="7" y="9.5" width="2" height="2" rx="0.4"></rect><path d="M11.5 10.5h5"></path><rect x="7" y="13.5" width="2" height="2" rx="0.4"></rect><path d="M11.5 14.5h3.5"></path></svg><span></span></button>
-                <button class="btn btn-line-dark btn-sm" type="button" id="xqGoto-8" data-i18n="xQuoteGoto"></button>
-              </div>
-              <span class="hint" data-i18n="xHint"></span>
-            </div>
-            <div class="x-prev" hidden><img class="x-main" alt=""><div class="x-thumbs"></div></div>
-            <div class="x-est" hidden>
-              <div class="x-est-top"><p class="x-est-h" data-i18n="xEstTitle"></p><button class="x-est-x" type="button" data-i18n="xEstHide"></button></div>
-              <p class="amt"></p>
-              <ul class="x-est-l"></ul>
-              <p class="assum" hidden></p>
-              <p class="hint" data-i18n="xEstStale"></p>
-              <p class="hint x-estnote"></p>
-            </div>
-          </div>
-        </div>
       </div>
       <div class="quote" id="quote">
         <div class="quote-h"><span class="ic-h"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="13" height="16" rx="1.5"></rect><rect x="7" y="7" width="13" height="16" rx="1.5"></rect><rect class="a" x="9" y="10" width="8" height="2.2" rx="0.5"></rect><path d="M9.5 15h8M9.5 18h5"></path></svg></span><h3 data-i18n="quoteH"></h3></div>
-
-        <div id="qSolServicioBlock" hidden style="margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line)">
-          <h4 style="font-size:15px;margin:0 0 10px">Solicitudes de servicio de esta cotización</h4>
-          <div class="ex-sol-gate" id="qSolServicioGate">
-            <p class="hint">Confirma tu clave para ver y administrar estas solicitudes.</p>
-            <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
-              <input type="password" id="qSolServicioClave" placeholder="Tu clave" autocomplete="current-password">
-              <button class="btn btn-line-dark btn-sm" type="button" id="qSolServicioGateBtn">Confirmar</button>
-            </div>
-            <p class="hint" id="qSolServicioGateErr" hidden style="color:#b42318"></p>
-          </div>
-
-          <div id="qSolServicioDatos" hidden>
-            <div id="qSolServicioList"></div>
-          </div>
-        </div>
-
         <p class="quote-sub" data-i18n="quoteSub"></p>
-
         <div class="q-grid">
           <div class="fld"><label for="q-name" data-i18n="qName"></label><input id="q-name" type="text" autocomplete="name" data-i18n-ph="qNamePh"></div>
           <div class="fld"><label for="q-phone" data-i18n="qPhone"></label><input id="q-phone" type="tel" autocomplete="tel" data-i18n-ph="qPhonePh"></div>
@@ -813,122 +642,38 @@
           <div class="fld"><label for="q-date" data-i18n="qDate"></label><input id="q-date" type="date"></div>
           <div class="fld full"><label for="q-addr" data-i18n="qAddr"></label><input id="q-addr" type="text" autocomplete="street-address" data-i18n-ph="qAddrPh"></div>
           <div class="fld"><label for="q-budget" data-i18n="qBudget"></label><input id="q-budget" type="text" inputmode="decimal" data-i18n-ph="qBudgetPh"></div>
-          <div class="fld" id="qPromotorField" hidden><label for="q-promotor" data-i18n="qPromotor"></label><select id="q-promotor"></select></div>
+        </div>
+        <div class="q-act">
+          <a class="btn btn-wa" id="qBtn" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="qBtn"></span></a>
+          <a class="btn btn-line-dark" id="qMail" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3.5 7l8.5 6 8.5-6"></path></svg><span data-i18n="qBtnMail"></span></a>
+          <span class="q-err" id="qErr" data-i18n="qErr" hidden></span>
+        </div>
+        <div class="fld" style="margin-top:20px">
+          <span class="lbl" data-i18n="xQuote"></span>
+          <div class="x-row">
+            <div class="fld">
+              <span class="hint" data-i18n="xQuoteDate" style="margin:0"></span>
+              <input id="qCotDate" type="date" style="width:100%" data-i18n-label="xQuoteDate">
+            </div>
+            <div class="fld">
+              <span class="hint" data-i18n="xQuoteBtnLbl" style="margin:0"></span>
+              <input id="qCotFile" class="sr" type="file" accept="application/pdf">
+              <label class="btn btn-line-dark btn-sm" for="qCotFile" data-i18n="xQuoteBtn" style="width:100%"></label>
+              <span class="pq-status" id="qCotStatus" data-i18n="xQuoteNone" style="display:block;margin-top:4px"></span>
+            </div>
+          </div>
         </div>
         <div class="q-summary" id="qSummary">
           <div><span data-i18n="qSvcType"></span><strong id="qSvcTypeVal">—</strong></div>
+          <div><span data-i18n="qNum"></span><strong id="qNumVal">—</strong></div>
           <div><span data-i18n="qQuoteDate"></span><strong id="qQuoteDateVal">—</strong></div>
-
-          <section id="qSolBlock" hidden>
-            <p class="hint" style="margin:0"><strong>Solicitud de servicio</strong><span style="display:block;font-size:12px;color:var(--muted)">Solo Administrador / Super administrador · No. de solicitud, cliente y estado</span></p>
-
-            <div class="ex-sol-gate" id="qSolGate">
-              <p class="hint">Confirma tu clave para registrar esta cotización como solicitud(es) de servicio.</p>
-              <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
-                <input type="password" id="qSolGateClave" placeholder="Tu clave" autocomplete="current-password">
-                <button class="btn btn-line-dark btn-sm" type="button" id="qSolGateBtn">Confirmar</button>
-              </div>
-              <p class="hint" id="qSolGateErr" hidden style="color:#b42318"></p>
-            </div>
-
-            <div id="qSolFields" hidden>
-              <div class="fld">
-                <label for="qSol-cliente-usuario">Cliente (usuario registrado)</label>
-                <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
-                  <input id="qSol-cliente-usuario" type="text" placeholder="Nombre de usuario del cliente">
-                  <button class="btn btn-dark btn-sm" type="button" id="qSolBuscarClienteBtn">Buscar</button>
-                </div>
-                <p class="hint" id="qSolClienteInfo" hidden></p>
-              </div>
-              <div class="fld">
-                <label for="qSol-estado">Estado</label>
-                <select id="qSol-estado">
-                  <option value="solicitado">Solicitado</option>
-                  <option value="presupuesto_enviado">Enviado presupuesto</option>
-                  <option value="aprobado">Aprobado</option>
-                  <option value="en_proceso">En proceso</option>
-                  <option value="ejecutado">Ejecutado</option>
-                  <option value="anulado">Anulado</option>
-                </select>
-              </div>
-              <div class="ex-sol-list" id="qSolList" hidden></div>
-            </div>
-          </section>
         </div>
-
         <div class="acts" style="margin-top:16px">
-          <button class="btn btn-dark" type="button" id="qSaveBtn" data-i18n-html="qSaveBtnHtml"></button>
-          <button class="btn btn-line-dark" type="button" id="qModifyBtn" data-i18n-html="qModifyBtnHtml"></button>
-          <button class="btn btn-danger" type="button" id="qDeleteBtn" data-i18n-html="qDeleteBtnHtml"></button>
+          <button class="btn btn-dark" type="button" id="qSaveBtn">💾 Guardar</button>
+          <button class="btn btn-line-dark" type="button" id="qModifyBtn">🔄 Modificar</button>
+          <button class="btn btn-danger" type="button" id="qDeleteBtn">🗑️ Eliminar</button>
         </div>
         <p class="hint" id="qSaveMsg" style="margin-top:8px"></p>
-
-        <div id="qAccionesAdminBlock" hidden>
-          <div class="q-act" style="margin-top:18px;padding-top:16px;border-top:1px dashed var(--line)">
-            <a class="btn btn-wa" id="qBtn" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="qBtn"></span></a>
-            <a class="btn btn-line-dark" id="qMail" href="#"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3.5 7l8.5 6 8.5-6"></path></svg><span data-i18n="qBtnMail"></span></a>
-            <span class="q-err" id="qErr" data-i18n="qErr" hidden></span>
-          </div>
-          <div class="fld" style="margin-top:20px">
-            <span class="lbl" data-i18n="xQuote"></span>
-            <div class="x-row">
-              <div class="fld">
-                <span class="hint" data-i18n="xQuoteDate" style="margin:0"></span>
-                <input id="qCotDate" type="date" style="width:100%" data-i18n-label="xQuoteDate">
-              </div>
-              <div class="fld">
-                <span class="hint" data-i18n="xQuoteBtnLbl" style="margin:0"></span>
-                <input id="qCotFile" class="sr" type="file" accept="application/pdf">
-                <label class="btn btn-line-dark btn-sm" for="qCotFile" data-i18n="xQuoteBtn" style="width:100%"></label>
-                <span class="pq-status" id="qCotStatus" data-i18n="xQuoteNone" style="display:block;margin-top:4px"></span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="ex-sol" id="solPanel" hidden>
-        <div class="ex-sol-head">
-          <div>
-            <h4>Solicitudes de servicio<span class="sub">Solo Administrador / Super administrador</span></h4>
-          </div>
-          <button class="btn btn-dark btn-sm" type="button" id="solSeguimientoBtn">📋 Seguimiento de cotización</button>
-        </div>
-
-        <div class="fld" id="solServicioFld">
-          <label for="sol-servicio-sel">Servicio</label>
-          <select id="sol-servicio-sel">
-            <option value="0">Alquiler de maquinaria pesada</option>
-            <option value="1">Renta de camiones para extracción</option>
-            <option value="2">Renta de apartamentos y edificios</option>
-            <option value="3">Mantenimiento de edificios</option>
-            <option value="4">Plomería y electricidad</option>
-            <option value="5">Asesoría jurídica</option>
-            <option value="6">Gestión de Préstamos Bancarios</option>
-            <option value="7">Movimiento de tierra</option>
-            <option value="8">Administración de Bienes Inmuebles</option>
-          </select>
-        </div>
-
-        <div class="ex-sol-gate" id="solGate">
-          <p class="hint">Confirma tu clave para ver y gestionar las solicitudes de servicio.</p>
-          <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
-            <input type="password" id="solGateClave" placeholder="Tu clave" autocomplete="current-password">
-            <button class="btn btn-line-dark btn-sm" type="button" id="solGateBtn">Confirmar</button>
-          </div>
-          <p class="hint" id="solGateErr" hidden style="color:#b42318"></p>
-        </div>
-
-        <div class="ex-sol-list" id="solList" hidden></div>
-
-        <div id="solSeguimientoPanel" hidden>
-          <div class="ex-sol-head" style="margin-top:4px">
-            <div><h4 style="font-size:15px;margin:0">Seguimiento de cotización</h4></div>
-            <button class="btn btn-line-dark btn-sm" type="button" id="solSeguimientoActualizarBtn">🔄 Actualizar</button>
-          </div>
-          <div id="solSeguimientoList"></div>
-        </div>
       </div>
     </div>
   </section>
@@ -965,17 +710,17 @@
     </div>
   </section>
 </main>
-<section id="serviciosDinamicos" class="servicios" hidden>
-  <h2 data-i18n="nuestrosServicios"></h2>
+<section id="servicios" class="servicios">
+  <h2>Nuestros servicios</h2>
   <div id="servicios-contenedor">
-    <p class="servicios-estado" data-i18n="cargandoServicios"></p>
+    <p class="servicios-estado">Cargando servicios...</p>
   </div>
 </section>
 <footer class="ftr">
   <div class="wrap">
     <div class="ftr-grid">
       <img src="assets/logo.webp" alt="ARMOPA">
-      <div><strong>ARMOPA</strong><span data-i18n="ftrTagline"></span><span>Guatemala</span></div>
+      <div><strong>ARMOPA</strong><span>Administración Inmobiliaria</span><span>Guatemala</span></div>
       <div><strong data-i18n="fAtt"></strong><span>+502 4918-3411</span><span>servicios@armopa.com</span></div>
       <div><strong data-i18n="fFollow"></strong><span>Facebook</span><span>Instagram</span><span>YouTube</span></div>
     </div>
@@ -998,72 +743,6 @@
 </div>
 
 
-<div class="modal" id="buscarPropModal" hidden>
-  <button class="scrim" type="button" id="buscarPropScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="buscarPropCard" role="dialog" aria-modal="true" aria-labelledby="buscarPropTitle">
-    <button class="mx" type="button" id="buscarPropClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="buscarPropTitle" data-i18n="buscarPropTitulo"></h2><p class="ph-sub" data-i18n="buscarPropSub"></p></div>
-    <div class="cq-bar" id="cityQuickMenu"></div>
-  </div>
-</div>
-
-<div class="modal" id="buscarServModal" hidden>
-  <button class="scrim" type="button" id="buscarServScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="buscarServCard" role="dialog" aria-modal="true" aria-labelledby="buscarServTitle">
-    <button class="mx" type="button" id="buscarServClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="buscarServTitle" data-i18n="btnBuscarServ"></h2><p class="ph-sub" data-i18n="buscarServSub"></p></div>
-    <div class="cq-bar">
-      <div class="cq-row">
-        <div class="cq-field cq-field-city">
-          <span class="cq-label">Servicio</span>
-          <select class="cq-select" id="servSelect"><option value="" data-i18n="cargandoServicios"></option></select>
-        </div>
-        <button class="btn btn-dark cq-search-btn" type="button" id="servSearchBtn" data-i18n="btnBuscar"></button>
-      </div>
-      <div class="cq-results" id="servSearchMsg"></div>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="solModal" hidden>
-  <button class="scrim" type="button" id="solScrim" data-i18n-label="close"></button>
-  <div class="mcard" id="solCard" role="dialog" aria-modal="true" aria-labelledby="solTitle">
-    <button class="mx" type="button" id="solClose" data-i18n-label="close">×</button>
-    <h2 id="solTitle">Nueva solicitud de servicio</h2>
-    <p class="hint" id="solServicioNombre"></p>
-
-    <div class="fld">
-      <span class="lbl">No. de solicitud</span>
-      <p class="hint" id="solNumeroPreview" data-i18n="solNumeroPreview"></p>
-    </div>
-
-    <div class="fld">
-      <label for="sol-cliente-usuario">Cliente (usuario registrado)</label>
-      <div class="x-row" style="grid-template-columns:1fr auto;align-items:center">
-        <input id="sol-cliente-usuario" type="text" placeholder="Nombre de usuario del cliente">
-        <button class="btn btn-dark btn-sm" type="button" id="solBuscarClienteBtn">Buscar</button>
-      </div>
-      <p class="hint" id="solClienteInfo" hidden></p>
-    </div>
-
-    <div class="fld">
-      <label for="sol-estado">Estado</label>
-      <select id="sol-estado">
-        <option value="solicitado">Solicitado</option>
-        <option value="presupuesto_enviado">Enviado presupuesto</option>
-        <option value="aprobado">Aprobado</option>
-        <option value="en_proceso">En proceso</option>
-        <option value="ejecutado">Ejecutado</option>
-        <option value="anulado">Anulado</option>
-      </select>
-    </div>
-
-    <button class="btn btn-dark" type="button" id="solGuardarBtn" style="width:100%;margin-top:4px">Guardar solicitud</button>
-    <p class="hint" id="solError" hidden style="color:#b42318"></p>
-    <p class="hint" id="solNote" hidden></p>
-  </div>
-</div>
-
 <div class="modal" id="propModal" hidden>
   <button class="scrim" type="button" id="pScrim" data-i18n-label="close"></button>
   <div class="pcard" id="pCard" role="dialog" aria-modal="true" aria-labelledby="pTitle">
@@ -1073,192 +752,77 @@
     <div class="ed" id="pEdit">
       <div class="ll" id="pList"></div>
       <div class="ee">
-
-        <div id="pLocPanel" hidden>
-          <div class="loc-filter-banner" id="pLocFilterBar" hidden></div>
-          <div class="loc-tabs-wrap"><div class="loc-tabs" id="pLocTabs"></div></div>
-
-          <div id="pEmpty" hidden><h3 data-i18n="emptyH"></h3><p class="hint" data-i18n="emptyP"></p></div>
-
-          <div id="pPhotosTop" hidden>
-            <h3 data-i18n="photosH"></h3>
-            <div class="loc-hero-wrap" id="pHeroWrap" hidden>
-              <button class="loc-hero" type="button" id="pHeroBtn" aria-label="Ver todas las fotos">
-                <img id="pHeroImg" src="" alt="">
-                <span class="loc-hero-count" id="pHeroCount"></span>
-              </button>
-              <button class="arr loc-hero-arr loc-hero-arr-l" type="button" id="pHeroPrev" aria-label="Foto anterior"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
-              <button class="arr loc-hero-arr loc-hero-arr-r" type="button" id="pHeroNext" aria-label="Foto siguiente"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
+        <div id="pEmpty" hidden><h3 data-i18n="emptyH"></h3><p class="hint" data-i18n="emptyP"></p></div>
+        <div id="pForm" hidden>
+          <div class="fld"><span class="lbl" data-i18n="opL"></span>
+            <div class="seg-g" id="pOps">
+              <button class="seg" type="button" data-op="renta" data-i18n="opRent"></button>
+              <button class="seg" type="button" data-op="venta" data-i18n="opSale"></button>
+              <button class="seg" type="button" data-op="ambos" data-i18n="opBoth"></button>
             </div>
-            <p class="hint" id="pHeroEmpty" hidden data-i18n="admSinFotosUbicacion"></p>
           </div>
-
-          <button class="desc-toggle" type="button" id="pDescToggle" aria-expanded="true" hidden>
-            <span class="desc-toggle-main">
-              <span class="desc-toggle-value" id="pDescValue" hidden></span>
-              <span class="desc-toggle-label" data-i18n="admDescripcionPropiedad"></span>
-              <span class="desc-toggle-summary" id="pDescSummary" hidden></span>
-            </span>
-            <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
-          </button>
-
-          <div id="pForm" hidden>
-            <div class="x-row">
-              <div class="fld"><label for="p-tipo" data-i18n="admTipoPropiedadLbl"></label><input id="p-tipo" class="fld-list" type="text" list="pTipoList" data-i18n-ph="pTipoPh"><datalist id="pTipoList"></datalist></div>
-              <div class="fld"><span class="lbl" data-i18n="opL"></span>
-                <div class="seg-g" id="pOps">
-                  <button class="seg" type="button" data-op="renta" data-i18n="opRent"></button>
-                  <button class="seg" type="button" data-op="venta" data-i18n="opSale"></button>
-                  <button class="seg" type="button" data-op="ambos" data-i18n="opBoth"></button>
-                </div>
-              </div>
+          <div class="fld" style="margin-top:16px"><label for="p-name" data-i18n="nameL"></label><input id="p-name" type="text"></div>
+          <div class="fld" style="margin-top:16px"><label for="p-desc" data-i18n="descL"></label><textarea id="p-desc" rows="5" data-i18n-ph="descPh"></textarea></div>
+          <p class="hint" id="opHint" data-i18n="opHint" style="margin-top:12px" hidden></p>
+          <div class="pr-row" id="pPrices" style="margin-top:16px" hidden>
+            <div class="fld" id="fRent"><label for="p-rent" data-i18n="rentL"></label><input id="p-rent" type="text" data-i18n-ph="rentPh"></div>
+            <div class="fld" id="fSale"><label for="p-sale" data-i18n="saleL"></label><input id="p-sale" type="text" data-i18n-ph="salePh"></div>
+          </div>
+          <div class="x-row" style="margin-top:16px">
+            <div class="fld"><label for="p-sector">Sector</label><input id="p-sector" type="text" placeholder="Ej. Cayalá, Vista Hermosa…"></div>
+            <div class="fld"><label for="p-zona">Zona</label><input id="p-zona" type="text" placeholder="Ej. Zona 10, Zona 4…"></div>
+          </div>
+          <div class="fld" style="margin-top:16px"><label for="p-addr" data-i18n="addrL"></label><input id="p-addr" type="text"></div>
+          <div class="up" style="margin-top:20px">
+            <h3 data-i18n="photosH"></h3>
+            <div class="acts">
+              <button class="btn btn-gold" type="button" id="pView" data-i18n="view"></button>
+              <input id="p-files" class="sr" type="file" accept="image/*" multiple>
+              <label class="btn btn-gold" for="p-files" data-i18n="upload"></label>
+              <button class="btn btn-dark mk-btn" type="button" id="pMkBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V6M16 20v-8"></path><path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8z"></path></svg><span data-i18n="mkBtn"></span></button>
             </div>
-            <div class="fld" style="margin-top:16px"><label for="p-name" data-i18n="nameL"></label><input id="p-name" type="text"></div>
-            <div class="fld" style="margin-top:16px"><label for="p-desc" data-i18n="descL"></label><textarea id="p-desc" rows="5" data-i18n-ph="descPh"></textarea></div>
-            <p class="hint" id="opHint" data-i18n="opHint" style="margin-top:12px" hidden></p>
-            <div class="pr-row" id="pPrices" style="margin-top:16px" hidden>
-              <div class="fld" id="fRent"><label for="p-rent" data-i18n="rentL"></label><input id="p-rent" type="text" data-i18n-ph="rentPh"></div>
-              <div class="fld" id="fSale"><label for="p-sale" data-i18n="saleL"></label><input id="p-sale" type="text" data-i18n-ph="salePh"></div>
-            </div>
-            <div class="x-row" style="margin-top:16px">
-              <div class="fld"><label for="p-sector" data-i18n="admSectorLbl"></label><input id="p-sector" class="fld-list" type="text" list="pSectorList" data-i18n-ph="pSectorPh"><datalist id="pSectorList"></datalist></div>
-              <div class="fld"><label for="p-zona" data-i18n="admZonaLbl"></label><input id="p-zona" class="fld-list" type="text" list="pZonaList" data-i18n-ph="pZonaPh"><datalist id="pZonaList"></datalist></div>
-            </div>
-            <div class="fld" style="margin-top:16px"><label for="p-addr" data-i18n="addrL"></label><input id="p-addr" type="text"></div>
-            <div class="up" style="margin-top:20px">
+            <p class="hint" data-i18n="uploadHint"></p>
+          </div>
+          <div class="x-est mk-card" id="pMk" hidden>
+            <div class="x-est-top"><p class="x-est-h" data-i18n="mkTitle"></p><button class="x-est-x" type="button" id="pMkHide" data-i18n="mkHide"></button></div>
+            <div id="pMkBlocks"></div>
+            <ul class="x-est-l" id="pMkLines"></ul>
+            <p class="x-est-h" id="pMkSimH" data-i18n="mkSimilar"></p>
+            <ul class="x-est-l" id="pMkSim"></ul>
+            <p class="x-est-h" id="pMkAroH" data-i18n="mkAround"></p>
+            <ul class="x-est-l" id="pMkAro"></ul>
+            <p class="assum" id="pMkConf"></p>
+            <div class="acts" id="pMkUseRow"><button class="btn btn-gold btn-sm" type="button" id="pMkUse" data-i18n="mkUse"></button></div>
+            <p class="hint" id="pMkNotes"></p>
+          </div>
+          <div class="tg" id="pGrid" style="margin-top:16px"></div>
+          <div class="seller" style="margin-top:20px">
+            <h3 data-i18n="sellerH"></h3>
+            <div class="srow">
+              <button class="av-btn" type="button" id="sAvBtn" data-i18n-label="zoom" hidden><img class="avatar" id="sAvatar" alt=""></button>
+              <div class="avatar ph" id="sAvatarPh"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg></div>
               <div class="acts">
-                <button class="btn btn-dark mk-btn" type="button" id="pMkBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V6M16 20v-8"></path><path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8z"></path></svg><span data-i18n="mkBtn"></span></button>
-                <button class="btn btn-gold" type="button" id="pView" data-i18n="view"></button>
-                <input id="p-files" class="sr" type="file" accept="image/*" multiple>
-                <label class="btn btn-gold" for="p-files" data-i18n="upload"></label>
-                <input id="p-videofiles" class="sr" type="file" accept="video/*" multiple>
-                <label class="btn btn-gold" for="p-videofiles" data-i18n="uploadVideos"></label>
-              </div>
-              <p class="hint" data-i18n="uploadHint"></p>
-              <p class="hint" data-i18n="uploadVideosHint"></p>
-              <button class="grid-toggle" type="button" id="pGridToggle" aria-expanded="false" hidden>
-                <span id="pGridToggleLabel"></span>
-                <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
-              </button>
-              <div class="tg" id="pGrid" style="margin-top:16px" hidden></div>
-              <button class="grid-toggle" type="button" id="pVideoGridToggle" aria-expanded="false" hidden>
-                <span id="pVideoGridToggleLabel"></span>
-                <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
-              </button>
-              <div class="tg" id="pVideoGrid" style="margin-top:16px" hidden></div>
-            </div>
-
-            <div class="loc-admin" id="pLocAdminBlock" hidden>
-              <div class="loc-admin-h">
-                <h3 data-i18n="admGestionInterna"></h3>
-                <span class="loc-estado-badge" id="pEstadoBadge"></span>
-              </div>
-
-              <div class="cli-sec loc-admin-sec">
-                <div class="cli-sec-h" data-i18n="admLocSeccionAsignacion"></div>
-                <div class="cli-grid loc-admin-grid-3">
-                  <div class="fld">
-                    <label for="p-estado" data-i18n="admEstadoUbicacion"></label>
-                    <select id="p-estado">
-                      <option value="activa" data-i18n="ubicEstActiva"></option>
-                      <option value="arrendada" data-i18n="ubicEstArrendada"></option>
-                      <option value="vendida" data-i18n="ubicEstVendida"></option>
-                      <option value="suspendida" data-i18n="ubicEstSuspendida"></option>
-                      <option value="baja" data-i18n="ubicEstBaja"></option>
-                    </select>
-                  </div>
-                  <div class="fld">
-                    <label for="p-sname" data-i18n="sellerName"></label>
-                    <select id="p-sname"></select>
-                  </div>
-                  <div class="fld">
-                    <label for="p-cliente-asignado" data-i18n="admClienteAsignado"></label>
-                    <select id="p-cliente-asignado"></select>
-                  </div>
-                </div>
-                <div class="loc-admin-vend-row">
-                  <div class="loc-admin-vend-photo">
-                    <button class="av-btn" type="button" id="sAvBtn" data-i18n-label="zoom" hidden><img class="avatar" id="sAvatar" alt=""></button>
-                    <div class="avatar ph" id="sAvatarPh"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.6"></circle><path d="M5 20c.6-3.6 3.5-5.6 7-5.6s6.4 2 7 5.6"></path></svg></div>
-                  </div>
-                  <div class="loc-admin-vend-fields">
-                    <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"></div>
-                    <p class="hint" id="sellerFotoHint" data-i18n="sellerFotoHint"></p>
-                    <p class="hint" data-i18n="waHint"></p>
-                    <p class="hint" id="sellerSuperAdminHint" data-i18n="sellerSuperAdminHint" hidden></p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="cli-sec loc-admin-sec">
-                <div class="cli-sec-h" data-i18n="admLocSeccionComision"></div>
-                <div class="cli-grid loc-admin-grid-2">
-                  <div class="fld">
-                    <label for="p-comision" data-i18n="admPctComision"></label>
-                    <input id="p-comision" type="number" min="0" max="100" step="0.1" placeholder="Ej. 5">
-                  </div>
-                  <div class="loc-admin-comvalor">
-                    <span class="lbl" data-i18n="admValorComisionLbl"></span>
-                    <p class="loc-admin-comvalor-num" id="pComisionValor">—</p>
-                  </div>
-                </div>
-              </div>
-
-              <div class="cli-sec loc-admin-sec" id="pOrgSec" hidden>
-                <div class="cli-sec-h" data-i18n="admOrgLocSeccion"></div>
-                <div class="cli-grid loc-admin-grid-2">
-                  <div class="fld">
-                    <label for="p-org" data-i18n="admOrgNombre"></label>
-                    <select id="p-org"></select>
-                  </div>
-                  <div class="fld">
-                    <label for="p-org-loc" data-i18n="admOrgLocalidades"></label>
-                    <select id="p-org-loc"></select>
-                  </div>
-                </div>
-              </div>
-
-              <div class="loc-admin-meta">
-                <span><span data-i18n="admFechaCambioEstadoLbl"></span> <strong id="pEstadoFecha">—</strong></span>
-                <span><span data-i18n="admUsuarioCambiaEstadoLbl"></span> <strong id="pEstadoUsuario">—</strong></span>
-              </div>
-              <div class="acts">
-                <button class="btn btn-line-dark btn-sm" type="button" id="pLocAdminUpdate" data-i18n-html="btnActualizarHtml"></button>
+                <input id="p-sphoto" class="sr" type="file" accept="image/*">
+                <label class="btn btn-gold btn-sm" for="p-sphoto" data-i18n="sellerUp"></label>
+                <button class="btn btn-danger btn-sm" type="button" id="sRm" data-i18n="sellerRm" hidden></button>
               </div>
             </div>
-
-            <div class="x-est mk-card" id="pMk" hidden>
-              <div class="x-est-top"><p class="x-est-h" data-i18n="mkTitle"></p><button class="x-est-x" type="button" id="pMkHide" data-i18n="mkHide"></button></div>
-              <div id="pMkBlocks"></div>
-              <ul class="x-est-l" id="pMkLines"></ul>
-              <p class="x-est-h" id="pMkSimH" data-i18n="mkSimilar"></p>
-              <ul class="x-est-l" id="pMkSim"></ul>
-              <p class="x-est-h" id="pMkAroH" data-i18n="mkAround"></p>
-              <ul class="x-est-l" id="pMkAro"></ul>
-              <p class="assum" id="pMkConf"></p>
-              <div class="acts" id="pMkUseRow"><button class="btn btn-gold btn-sm" type="button" id="pMkUse" data-i18n="mkUse"></button></div>
-              <p class="hint" id="pMkNotes"></p>
-            </div>
-            <div class="acts" style="margin-top:20px">
-              <button class="btn btn-dark" type="button" id="pSaveTop" data-i18n-html="qSaveBtnHtml"></button>
-              <button class="btn btn-line-dark" type="button" id="pUpdateTop" data-i18n-html="btnActualizarHtml"></button>
-              <a class="btn btn-line-dark" id="pMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
-              <button class="btn btn-danger" type="button" id="pDel"></button>
-            </div>
+            <div class="fld"><label for="p-sname" data-i18n="sellerName"></label><input id="p-sname" type="text"></div>
+            <div class="fld"><label for="p-swa" data-i18n="sellerWa"></label><input id="p-swa" type="tel" placeholder="+502 0000 0000"><p class="hint" data-i18n="waHint"></p></div>
+          </div>
+          <div class="acts" style="margin-top:20px">
+            <button class="btn btn-dark" type="button" id="pSaveTop">💾 Guardar</button>
+            <button class="btn btn-line-dark" type="button" id="pUpdateTop">🔄 Actualizar</button>
+            <a class="btn btn-line-dark" id="pMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
+            <button class="btn btn-danger" type="button" id="pDel"></button>
           </div>
         </div>
-
         <p class="note" id="pMsg" hidden></p>
         <p class="hint" data-i18n="storeNote"></p>
       </div>
     </div>
 
     <div id="pViewBox" hidden>
-      <div class="chips-row">
-        <button class="arr chips-arr" type="button" id="vChipsPrev" data-i18n-label="prev"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
-        <div class="chips chips-top" id="vChips"></div>
-        <button class="arr chips-arr" type="button" id="vChipsNext" data-i18n-label="next"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></button>
-      </div>
       <div class="vw-stage">
         <img class="vw-img" id="vImg" alt="">
         <button class="arr vw-prev" type="button" id="vPrev" data-i18n-label="prevImg"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"></path></svg></button>
@@ -1271,19 +835,7 @@
         <div><span class="vw-op" id="vOp" hidden></span><h3 class="vw-name" id="vName"></h3><p class="vw-addr" id="vAddr"></p></div>
         <div class="acts">
           <a class="btn btn-gold" id="vMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
-          <button class="btn btn-dark mk-btn" type="button" id="vMkBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V6M16 20v-8"></path><path d="M19 3l.8 2.2L22 6l-2.2.8L19 9l-.8-2.2L16 6l2.2-.8z"></path></svg><span data-i18n="mkBtn"></span></button>
           <button class="btn btn-line" type="button" id="vEdit" data-i18n="edit"></button>
-        </div>
-        <div class="x-est mk-card vw-mk" id="vMk" hidden>
-          <div class="x-est-top"><p class="x-est-h" data-i18n="mkTitle"></p><button class="x-est-x" type="button" id="vMkHide" data-i18n="mkHide"></button></div>
-          <div id="vMkBlocks"></div>
-          <ul class="x-est-l" id="vMkLines"></ul>
-          <p class="x-est-h" id="vMkSimH" data-i18n="mkSimilar"></p>
-          <ul class="x-est-l" id="vMkSim"></ul>
-          <p class="x-est-h" id="vMkAroH" data-i18n="mkAround"></p>
-          <ul class="x-est-l" id="vMkAro"></ul>
-          <p class="assum" id="vMkConf"></p>
-          <p class="hint" id="vMkNotes"></p>
         </div>
       </div>
       <div class="vw-prices" id="vPrices" hidden>
@@ -1296,1073 +848,8 @@
         <div class="vw-sinfo"><p class="vw-slabel" data-i18n="sellerLabel"></p><p class="vw-sname" id="vsName"></p><p class="vw-snum" id="vsNum"></p></div>
         <a class="btn btn-wa" id="vsWa" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="waBtn"></span></a>
       </div>
+      <div class="chips" id="vChips"></div>
     </div>
-  </div>
-</div>
-
-<div class="modal" id="authModal" hidden>
-  <button class="scrim" type="button" id="authScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="authCard" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-    <button class="mx" type="button" id="authClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="authTitle" data-i18n="authTitle"></h2><p class="ph-sub" data-i18n="authSub"></p></div>
-
-    <h3 class="x-est-h" style="margin-top:6px" data-i18n="fpDatosPropietario"></h3>
-    <div class="x-row">
-      <div class="fld"><label for="fp-nombre" data-i18n="fpNombreCompleto"></label><input id="fp-nombre" type="text"></div>
-      <div class="fld"><label for="fp-nacimiento" data-i18n="fpFechaNacimiento"></label><input id="fp-nacimiento" type="date"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-dpi" data-i18n="fpDpi"></label><input id="fp-dpi" type="text"></div>
-      <div class="fld"><label for="fp-repleg" data-i18n="fpRepLegal"></label><input id="fp-repleg" type="text"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-razon" data-i18n="fpRazonSocial"></label><input id="fp-razon" type="text"></div>
-      <div class="fld"><label for="fp-nit" data-i18n="fpNit"></label><input id="fp-nit" type="text"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-tel" data-i18n="fpTelMovil"></label><input id="fp-tel" type="tel"></div>
-      <div class="fld"><label for="fp-correo" data-i18n="fpCorreo"></label><input id="fp-correo" type="email"></div>
-    </div>
-    <div class="fld" style="margin-top:16px"><label for="fp-domicilio" data-i18n="fpDomicilio"></label><input id="fp-domicilio" type="text"></div>
-
-    <h3 class="x-est-h" style="margin-top:22px" data-i18n="fpDescripcionProp"></h3>
-    <div class="x-row">
-      <div class="fld"><label for="fp-tipo" data-i18n="fpTipo"></label><input id="fp-tipo" type="text" data-i18n-ph="fpTipoPh"></div>
-      <div class="fld"><label for="fp-dirprop" data-i18n="fpDireccion"></label><input id="fp-dirprop" type="text"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-numero" data-i18n="fpNumero"></label><input id="fp-numero" type="text"></div>
-      <div class="fld"><label for="fp-finca" data-i18n="fpFinca"></label><input id="fp-finca" type="text"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-folio" data-i18n="fpFolio"></label><input id="fp-folio" type="text"></div>
-      <div class="fld"><label for="fp-libro" data-i18n="fpLibro"></label><input id="fp-libro" type="text"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-gravamen" data-i18n="fpGravamen"></label><input id="fp-gravamen" type="text"></div>
-      <div class="fld"><label for="fp-institucion" data-i18n="fpInstitucion"></label><input id="fp-institucion" type="text"></div>
-    </div>
-    <div class="fld" style="margin-top:16px"><label for="fp-monto" data-i18n="fpMonto"></label><input id="fp-monto" type="text"></div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-mfrente" data-i18n="fpMFrente"></label><input id="fp-mfrente" type="text"></div>
-      <div class="fld"><label for="fp-mfondo" data-i18n="fpMFondo"></label><input id="fp-mfondo" type="text"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-mconst" data-i18n="fpMConst"></label><input id="fp-mconst" type="text"></div>
-      <div class="fld"><label for="fp-terreno" data-i18n="fpTerrenoVrs2"></label><input id="fp-terreno" type="text"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-mts2" data-i18n="fpMts2"></label><input id="fp-mts2" type="text"></div>
-      <div class="fld"><label for="fp-niveles" data-i18n="fpNiveles"></label><input id="fp-niveles" type="text"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fp-estac" data-i18n="fpEstacionamientos"></label><input id="fp-estac" type="text"></div>
-      <div class="fld"><label for="fp-habitaciones" data-i18n="fpHabitaciones"></label><input id="fp-habitaciones" type="text"></div>
-    </div>
-    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-banos" data-i18n="fpBanos"></label><input id="fp-banos" type="text"></div>
-
-    <div class="chk-grid" style="margin-top:16px">
-      <label class="chk-it"><input type="checkbox" id="fp-lavanderia"> <span data-i18n="fpLavanderia"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-linea-blanca"> <span data-i18n="fpLineaBlanca"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-hab-servicio"> <span data-i18n="fpHabServicio"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-bodega"> <span data-i18n="fpBodega"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-amueblado"> <span data-i18n="fpAmueblado"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-balcon"> <span data-i18n="fpBalcon"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-mascota"> <span data-i18n="fpMascota"></span></label>
-    </div>
-
-    <h3 class="x-est-h" style="margin-top:22px" data-i18n="fpAmenidades"></h3>
-    <div class="chk-grid">
-      <label class="chk-it"><input type="checkbox" id="fp-am-motorlobby"> <span data-i18n="fpAmMotorLobby"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-piscina"> <span data-i18n="fpAmPiscina"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-sauna"> <span data-i18n="fpAmSauna"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-juegos"> <span data-i18n="fpAmJuegos"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-areaverde"> <span data-i18n="fpAmAreaVerde"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-salon"> <span data-i18n="fpAmSalon"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-gimnasio"> <span data-i18n="fpAmGimnasio"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-business"> <span data-i18n="fpAmBusiness"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-canchas"> <span data-i18n="fpAmCanchas"></span></label>
-      <label class="chk-it"><input type="checkbox" id="fp-am-cisterna"> <span data-i18n="fpAmCisterna"></span></label>
-    </div>
-    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-am-parqueos" data-i18n="fpAmParqueos"></label><input id="fp-am-parqueos" type="number" min="0"></div>
-
-    <h3 class="x-est-h" style="margin-top:22px" data-i18n="fpPrecioVenta"></h3>
-    <div class="x-row">
-      <div class="fld"><label for="fp-precio-venta" data-i18n="fpPrecioVenta"></label><input id="fp-precio-venta" type="text"></div>
-      <div class="fld"><label for="fp-valor-registro" data-i18n="fpValorRegistro"></label><input id="fp-valor-registro" type="text"></div>
-    </div>
-    <div class="fld" style="margin-top:16px;max-width:280px"><label for="fp-iusi" data-i18n="fpIusi"></label><input id="fp-iusi" type="text"></div>
-
-    <h3 class="x-est-h" style="margin-top:22px" data-i18n="fpPrecioAlquiler"></h3>
-    <div class="x-row">
-      <div class="fld"><label for="fp-precio-alquiler" data-i18n="fpPrecioAlquiler"></label><input id="fp-precio-alquiler" type="text"></div>
-      <div class="fld"><label for="fp-mantenimiento" data-i18n="fpMantenimiento"></label><input id="fp-mantenimiento" type="text"></div>
-    </div>
-    <div class="fld" style="margin-top:16px"><label for="fp-incluye-mant" data-i18n="fpIncluyeMant"></label><textarea id="fp-incluye-mant" rows="2"></textarea></div>
-
-    <div class="fld" style="margin-top:16px"><label for="fp-obs" data-i18n="fpObservaciones"></label><textarea id="fp-obs" rows="3"></textarea></div>
-
-    <div class="acts" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="fpSave" data-i18n-html="fpSaveBtnHtml"></button>
-      <button class="btn btn-line-dark" type="button" id="fpPrint">🖨️ Imprimir reporte</button>
-    </div>
-    <p class="note" id="fpNote" hidden data-i18n="fpNoteSaved"></p>
-  </div>
-</div>
-
-<div class="modal" id="citaModal" hidden>
-  <button class="scrim" type="button" id="citaScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="citaCard" role="dialog" aria-modal="true" aria-labelledby="citaTitle">
-    <button class="mx" type="button" id="citaClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="citaTitle" data-i18n="citaTitle"></h2><p class="ph-sub" data-i18n="citaSub"></p></div>
-
-    <div class="x-row">
-      <div class="fld"><label for="cita-nombre" data-i18n="citaNombreCliente"></label><input id="cita-nombre" type="text"></div>
-      <div class="fld"><label for="cita-tel" data-i18n="citaTelefono"></label><input id="cita-tel" type="tel" placeholder="+502 0000 0000"></div>
-    </div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld">
-        <label for="cita-fecha" data-i18n="citaFecha"></label>
-        <input id="cita-fecha" type="date">
-        <span class="cita-fecha-dia" id="citaFechaDia"></span>
-      </div>
-      <div class="fld"><label for="cita-hora" data-i18n="citaHora"></label><select id="cita-hora"></select></div>
-    </div>
-    <div class="fld" style="margin-top:16px"><label for="cita-ciudad" data-i18n="citaCiudad"></label><input id="cita-ciudad" type="text" list="citaCiudadList" data-i18n-ph="citaCiudadPh"><datalist id="citaCiudadList"></datalist></div>
-    <div class="fld" style="margin-top:16px"><label for="cita-ubicacion" data-i18n="citaUbicacion"></label><input id="cita-ubicacion" type="text" data-i18n-ph="citaUbicacionPh"></div>
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld">
-        <label for="cita-vendedor" data-i18n="citaAsesor"></label>
-        <select id="cita-vendedor"><option value="" data-i18n="citaSinVendedor"></option></select>
-      </div>
-      <div class="fld">
-        <label data-i18n="citaEtiqueta"></label>
-        <select id="cita-etiqueta" class="cita-etiqueta-sel">
-          <option value="cliente" class="cita-etq-opt cita-etq-cliente" data-i18n="citaEtqCliente"></option>
-          <option value="muy_interesado" class="cita-etq-opt cita-etq-muy" data-i18n="citaEtqMuyInteresado"></option>
-          <option value="interesado" class="cita-etq-opt cita-etq-interesado" data-i18n="citaEtqInteresado"></option>
-          <option value="poco_interesado" class="cita-etq-opt cita-etq-poco" data-i18n="citaEtqPocoInteresado"></option>
-        </select>
-      </div>
-    </div>
-    <div class="fld" style="margin-top:16px"><label for="cita-accion" data-i18n="citaAccion"></label><textarea id="cita-accion" rows="3" data-i18n-ph="citaAccionPh"></textarea></div>
-    <div class="x-row" id="citaOrgRow" style="margin-top:16px" hidden>
-      <div class="fld"><label for="cita-org" data-i18n="admOrgNombre"></label><select id="cita-org"></select></div>
-      <div class="fld"><label for="cita-org-loc" data-i18n="admOrgLocalidades"></label><select id="cita-org-loc"></select></div>
-    </div>
-    <div class="fld" style="margin-top:16px">
-      <label for="cita-estado" data-i18n="citaEstado"></label>
-      <select id="cita-estado">
-        <option value="agendado" data-i18n="citaEstAgendado"></option>
-        <option value="efectuado" data-i18n="citaEstEfectuado"></option>
-        <option value="reagendado" data-i18n="citaEstReagendado"></option>
-        <option value="no_asistio" data-i18n="citaEstNoAsistio"></option>
-      </select>
-    </div>
-
-    <div class="acts" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="citaSaveBtn" data-i18n-html="citaSaveBtnHtml"></button>
-      <button class="btn btn-line" type="button" id="citaModBtn" data-i18n="btnModificar" hidden></button>
-      <a class="btn btn-wa" id="citaWaBtn" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="citaWaBtn"></span></a>
-    </div>
-    <p class="hint" id="citaMsg" style="margin-top:8px"></p>
-  </div>
-</div>
-
-<div class="modal" id="reqModal" hidden>
-  <button class="scrim" type="button" id="reqScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="reqCard" role="dialog" aria-modal="true" aria-labelledby="reqTitle">
-    <button class="mx" type="button" id="reqClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="reqTitle" data-i18n="reqTitle"></h2><p class="ph-sub" data-i18n="reqSub"></p></div>
-
-    <ul class="x-est-l" id="reqList">
-      <li class="pq-item" data-doc="dpi">
-        <span><b data-i18n="reqDpiTitulo"></b><br><small data-i18n="reqDpiDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-dpi"><label class="btn btn-line-dark btn-sm" for="reqf-dpi" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-dpi" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="nit">
-        <span><b data-i18n="reqNitTitulo"></b><br><small data-i18n="reqNitDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-nit"><label class="btn btn-line-dark btn-sm" for="reqf-nit" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-nit" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="escritura">
-        <span><b data-i18n="reqEscrituraTitulo"></b><br><small data-i18n="reqEscrituraDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-escritura"><label class="btn btn-line-dark btn-sm" for="reqf-escritura" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-escritura" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="certificacion-rgp">
-        <span><b data-i18n="reqRgpTitulo"></b><br><small data-i18n="reqRgpDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-certificacion-rgp"><label class="btn btn-line-dark btn-sm" for="reqf-certificacion-rgp" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-certificacion-rgp" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="gravamenes">
-        <span><b data-i18n="reqGravamenesTitulo"></b><br><small data-i18n="reqGravamenesDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-gravamenes"><label class="btn btn-line-dark btn-sm" for="reqf-gravamenes" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-gravamenes" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="iusi">
-        <span><b data-i18n="reqIusiTitulo"></b><br><small data-i18n="reqIusiDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-iusi"><label class="btn btn-line-dark btn-sm" for="reqf-iusi" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-iusi" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="solvencia-municipal">
-        <span><b data-i18n="reqSolvMunTitulo"></b><br><small data-i18n="reqSolvMunDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-solvencia-municipal"><label class="btn btn-line-dark btn-sm" for="reqf-solvencia-municipal" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-solvencia-municipal" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="catastro">
-        <span><b data-i18n="reqCatastroTitulo"></b><br><small data-i18n="reqCatastroDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-catastro"><label class="btn btn-line-dark btn-sm" for="reqf-catastro" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-catastro" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="planos">
-        <span><b data-i18n="reqPlanosTitulo"></b><br><small data-i18n="reqPlanosDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-planos"><label class="btn btn-line-dark btn-sm" for="reqf-planos" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-planos" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="empresa">
-        <span><b data-i18n="reqEmpresaTitulo"></b><br><small data-i18n="reqEmpresaDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-empresa"><label class="btn btn-line-dark btn-sm" for="reqf-empresa" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-empresa" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="poder">
-        <span><b data-i18n="reqPoderTitulo"></b><br><small data-i18n="reqPoderDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-poder"><label class="btn btn-line-dark btn-sm" for="reqf-poder" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-poder" data-i18n="reqSinSubir"></span></span>
-      </li>
-      <li class="pq-item" data-doc="avaluo">
-        <span><b data-i18n="reqAvaluoTitulo"></b><br><small data-i18n="reqAvaluoDesc"></small></span>
-        <span class="pq-upl"><input type="file" accept="application/pdf" class="sr" id="reqf-avaluo"><label class="btn btn-line-dark btn-sm" for="reqf-avaluo" data-i18n-html="reqSubirPdfHtml"></label><span class="pq-status" id="reqs-avaluo" data-i18n="reqSinSubir"></span></span>
-      </li>
-    </ul>
-    <p class="hint" style="margin-top:8px" data-i18n="reqNota"></p>
-  </div>
-</div>
-
-<div class="modal" id="remodelModal" hidden>
-  <button class="scrim" type="button" id="remodelScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="remodelCard" role="dialog" aria-modal="true" aria-labelledby="remodelTitle">
-    <button class="mx" type="button" id="remodelClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="remodelTitle" data-i18n="frTitulo"></h2><p class="ph-sub" data-i18n="frSubtitulo"></p></div>
-
-    <div class="fld" style="margin-top:6px"><label for="fr-nombre" data-i18n="frNombreCliente"></label><input id="fr-nombre" type="text"></div>
-
-    <div class="fld" style="margin-top:16px"><label for="fr-detalles" data-i18n="frDetalles"></label><textarea id="fr-detalles" rows="4" data-i18n-ph="frDetallesPh"></textarea></div>
-
-    <div class="fld" style="margin-top:16px">
-      <label data-i18n="frFotosActuales"></label>
-      <div class="up">
-        <div class="acts">
-          <input id="fr-files1" class="sr" type="file" accept="image/*" multiple>
-          <label class="btn btn-gold btn-sm" for="fr-files1" data-i18n-html="xSubirFotosHtml"></label>
-        </div>
-        <div class="tg" id="frGrid1"></div>
-      </div>
-    </div>
-
-    <div class="fld" style="margin-top:16px">
-      <label data-i18n="frFotosReferencia"></label>
-      <div class="up">
-        <div class="acts">
-          <input id="fr-files2" class="sr" type="file" accept="image/*" multiple>
-          <label class="btn btn-gold btn-sm" for="fr-files2" data-i18n-html="xSubirFotosHtml"></label>
-        </div>
-        <div class="tg" id="frGrid2"></div>
-      </div>
-    </div>
-
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="fr-tiempo" data-i18n="frTiempoEstimado"></label>
-        <select id="fr-tiempo">
-          <option value="" data-i18n="frSelecciona"></option>
-          <option value="1-2 semanas" data-i18n="frT12sem"></option>
-          <option value="3-4 semanas" data-i18n="frT34sem"></option>
-          <option value="1-2 meses" data-i18n="frT12mes"></option>
-          <option value="3-6 meses" data-i18n="frT36mes"></option>
-          <option value="Más de 6 meses" data-i18n="frTMas6mes"></option>
-          <option value="No estoy seguro" data-i18n="frTNoSeguro"></option>
-        </select>
-      </div>
-      <div class="fld"><label for="fr-presupuesto" data-i18n="frPresupuestoEstimado"></label><input id="fr-presupuesto" type="text" placeholder="Ej. 50,000"></div>
-    </div>
-
-    <div class="fld" id="frPromotorField" hidden style="margin-top:16px"><label for="fr-promotor" data-i18n="admPromotorNegocios"></label><select id="fr-promotor"></select></div>
-
-    <div class="acts" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="frSend" data-i18n="send"></button>
-    </div>
-    <p class="note" id="frNote" hidden data-i18n="frEnviadaOk"></p>
-  </div>
-</div>
-
-<div class="modal" id="presupuestoModal" hidden>
-  <button class="scrim" type="button" id="presupuestoScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="presupuestoCard" role="dialog" aria-modal="true" aria-labelledby="presupuestoTitle">
-    <button class="mx" type="button" id="presupuestoClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="presupuestoTitle" data-i18n="s2"></h2><p class="ph-sub" data-i18n="ppSubtitulo"></p></div>
-
-    <h3 style="font-size:30px;color:#10243c;margin:14px 0 4px" data-i18n="ppPresupuestoH"></h3>
-
-    <div class="fld" style="margin-top:6px"><label for="pp-valor" data-i18n="ppValorPresupuesto"></label><input id="pp-valor" type="text" placeholder="Ej. 50,000"></div>
-
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="pp-nombre" data-i18n="ppNombreCliente"></label><input id="pp-nombre" type="text"></div>
-      <div class="fld"><label for="pp-telefono" data-i18n="phoneL"></label><input id="pp-telefono" type="tel" placeholder="Ej. 5555-1234"></div>
-    </div>
-
-    <div class="fld" style="margin-top:16px"><label for="pp-fecha" data-i18n="ppFecha"></label><input id="pp-fecha" type="text" readonly></div>
-
-    <div class="fld" id="ppPromotorField" hidden style="margin-top:16px"><label for="pp-promotor" data-i18n="admPromotorNegocios"></label><select id="pp-promotor"></select></div>
-
-    <div class="fld" style="margin-top:16px">
-      <span class="lbl" data-i18n="ppQueDeseasRealizar"></span>
-      <div class="seg-g" id="ppOpciones">
-        <button class="seg" type="button" data-op="comprar" data-i18n="ppOpComprar"></button>
-        <button class="seg" type="button" data-op="rentar" data-i18n="ppOpRentar"></button>
-        <button class="seg" type="button" data-op="remodelar" data-i18n="ppOpRemodelar"></button>
-        <button class="seg" type="button" data-op="servicios-especiales" id="ppServiciosBtn" data-i18n="ppOpServiciosEspeciales"></button>
-        <button class="seg" type="button" data-op="emprendimiento" data-i18n="ppOpEmprendimiento"></button>
-      </div>
-    </div>
-
-    <div class="fld" style="margin-top:16px"><label for="pp-descripcion" data-i18n="ppDescribeRealizar"></label><textarea id="pp-descripcion" rows="4" data-i18n-ph="ppDescribeRealizarPh"></textarea></div>
-
-    <div class="fld" style="margin-top:16px">
-      <label data-i18n="ppAdjuntarPdf"></label>
-      <div class="pq-upl">
-        <input type="file" accept="application/pdf" class="sr" id="pp-file">
-        <label class="btn btn-line-dark btn-sm" for="pp-file" data-i18n-html="xQuoteBtn"></label>
-        <span class="pq-status" id="pp-file-status" data-i18n="xQuoteNone"></span>
-      </div>
-    </div>
-
-    <div class="acts" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="ppSend" data-i18n="send"></button>
-    </div>
-    <p class="note" id="ppNote" hidden data-i18n="frEnviadaOk"></p>
-  </div>
-</div>
-
-<div class="modal" id="loginModal" hidden>
-  <button class="scrim" type="button" id="loginScrim" data-i18n-label="close"></button>
-  <div class="mcard" id="loginCard" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-    <button class="mx" type="button" id="loginClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="loginTitle">Conectarse</h2><p class="ph-sub" id="loginSub">Escribe tu usuario y clave para conectarte.</p></div>
-
-    <div class="seg-g" id="loginModeSeg" style="margin-top:4px">
-      <button class="seg on" type="button" id="loginModeConectar" data-mode="conectar">Conectarse</button>
-      <button class="seg" type="button" id="loginModeCrear" data-mode="crear">Crear usuario</button>
-    </div>
-
-    <div class="fld" style="margin-top:16px"><label for="login-usuario">Usuario</label><input id="login-usuario" type="text" autocomplete="username"></div>
-
-    <div class="fld" style="margin-top:16px">
-      <label for="login-clave">Clave</label>
-      <div class="pw-wrap">
-        <input id="login-clave" type="password" autocomplete="current-password">
-        <button class="pw-eye" type="button" id="loginClaveEye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-      </div>
-    </div>
-
-    <div class="fld" id="loginConfirmWrap" style="margin-top:16px" hidden>
-      <label for="login-clave2">Confirmar clave</label>
-      <div class="pw-wrap">
-        <input id="login-clave2" type="password" autocomplete="new-password">
-        <button class="pw-eye" type="button" id="loginClave2Eye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-      </div>
-    </div>
-
-    <div class="fld" id="loginTipoWrap" style="margin-top:16px" hidden>
-      <label for="login-tipo">Tipo de usuario</label>
-      <select id="login-tipo">
-        <option value="super_administrador">Super administrador</option>
-        <option value="administrador">Administrador</option>
-        <option value="usuario_general" selected>Usuario general</option>
-      </select>
-    </div>
-
-    <div class="acts" id="loginSubmitWrap" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="loginSubmitBtn">Conectar</button>
-    </div>
-
-    <div id="adminPanel" hidden>
-      <div class="fld" id="adminConfirmBox" style="margin-top:6px">
-        <label for="admin-clave-propia">Confirma tu clave de Super Administrador</label>
-        <div class="pw-wrap">
-          <input id="admin-clave-propia" type="password" autocomplete="current-password">
-          <button class="pw-eye" type="button" id="adminClavePropiaEye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-        </div>
-        <div class="acts" style="margin-top:14px"><button class="btn btn-dark" type="button" id="adminConfirmarBtn">Confirmar</button></div>
-      </div>
-
-      <div id="adminTools" hidden>
-        <div class="fld" style="margin-top:6px"><label for="admin-usuario-obj">Usuario a administrar</label><input id="admin-usuario-obj" type="text" autocomplete="off"></div>
-        <div class="acts" style="margin-top:14px"><button class="btn btn-line-dark btn-sm" type="button" id="adminBuscarBtn">🔍 Buscar</button></div>
-        <div class="note" id="adminInfoBox" hidden style="margin-top:10px"></div>
-
-        <div class="fld" id="adminTipoWrap" style="margin-top:16px" hidden>
-          <label for="admin-tipo-obj">Tipo de usuario</label>
-          <select id="admin-tipo-obj">
-            <option value="super_administrador">Super administrador</option>
-            <option value="administrador">Administrador</option>
-            <option value="usuario_general">Usuario general</option>
-          </select>
-          <div class="acts" style="margin-top:14px"><button class="btn btn-line-dark btn-sm" type="button" id="adminActualizarTipoBtn">Actualizar tipo de usuario</button></div>
-        </div>
-
-        <div class="fld" style="margin-top:20px">
-          <label for="admin-clave-nueva">Nueva clave para ese usuario</label>
-          <div class="pw-wrap">
-            <input id="admin-clave-nueva" type="password" autocomplete="new-password">
-            <button class="pw-eye" type="button" id="adminClaveNuevaEye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-          </div>
-        </div>
-        <div class="fld" style="margin-top:16px">
-          <label for="admin-clave-nueva2">Confirmar nueva clave</label>
-          <div class="pw-wrap">
-            <input id="admin-clave-nueva2" type="password" autocomplete="new-password">
-            <button class="pw-eye" type="button" id="adminClaveNueva2Eye" aria-label="Mostrar clave" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
-          </div>
-        </div>
-        <div class="acts" style="margin-top:20px"><button class="btn btn-dark" type="button" id="adminActualizarBtn">Actualizar clave</button></div>
-      </div>
-    </div>
-
-    <p class="note" id="loginNote" hidden></p>
-    <p class="hint" id="loginError" hidden style="color:#b23"></p>
-  </div>
-</div>
-
-<div class="modal" id="construirModal" hidden>
-  <button class="scrim" type="button" id="construirScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="construirCard" role="dialog" aria-modal="true" aria-labelledby="construirTitle">
-    <button class="mx" type="button" id="construirClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="construirTitle" data-i18n="s5"></h2><p class="ph-sub" data-i18n="csSubtitulo"></p></div>
-
-    <div class="fld" style="margin-top:6px"><label for="cs-valor" data-i18n="csValorPresupuesto"></label><input id="cs-valor" type="text" placeholder="Ej. 350,000"></div>
-
-    <div class="x-row" style="margin-top:16px">
-      <div class="fld"><label for="cs-nombre" data-i18n="csNombreCompleto"></label><input id="cs-nombre" type="text"></div>
-      <div class="fld"><label for="cs-fecha-inicio" data-i18n="csFechaInicioEstimada"></label><input id="cs-fecha-inicio" type="date"></div>
-    </div>
-
-    <div class="fld" id="csPromotorField" hidden style="margin-top:16px"><label for="cs-promotor" data-i18n="admPromotorNegocios"></label><select id="cs-promotor"></select></div>
-
-    <div class="fld" style="margin-top:16px"><label for="cs-que-hacer" data-i18n="csQueDeseasHacer"></label><textarea id="cs-que-hacer" rows="3" data-i18n-ph="csQueDeseasHacerPh"></textarea></div>
-
-    <div class="fld" style="margin-top:16px"><label for="cs-m2" data-i18n="csMetrosCuadrados"></label><input id="cs-m2" type="number" min="0" step="1" placeholder="Ej. 200"></div>
-
-    <div class="fld" style="margin-top:16px"><label for="cs-descripcion-diseno" data-i18n="csDescribeConstruir"></label><textarea id="cs-descripcion-diseno" rows="4" data-i18n-ph="csDescribeConstruirPh"></textarea></div>
-
-    <div id="csPlanoBox" hidden style="margin-top:14px"></div>
-
-    <div id="csDisenoBox" style="margin-top:14px">
-      <p class="pq-status" id="csDisenoStatus"></p>
-      <img id="csDisenoImg" data-i18n-alt="csVistaIaAlt" hidden style="width:100%;border-radius:12px;border:1px solid var(--line);margin-top:8px">
-    </div>
-
-    <div class="fld" style="margin-top:16px">
-      <label data-i18n="csFotosTerreno"></label>
-      <div class="up">
-        <div class="acts">
-          <input id="cs-files" class="sr" type="file" accept="image/*,application/pdf" multiple>
-          <label class="btn btn-gold btn-sm" for="cs-files" data-i18n-html="csSubirFotosPdfHtml"></label>
-        </div>
-        <div class="tg" id="csGrid"></div>
-      </div>
-    </div>
-
-    <div class="acts" style="margin-top:20px">
-      <button class="btn btn-dark" type="button" id="csSend" data-i18n="send"></button>
-      <button class="btn btn-line-dark" type="button" id="csReqBtn" aria-expanded="false" aria-controls="csReqBlock" data-i18n-html="csReqBtnHtml"></button>
-      <button class="btn btn-line-dark" type="button" id="csGenerarDisenoBtn" data-i18n-html="csGenerarDisenoHtml"></button>
-    </div>
-    <p class="note" id="csNote" hidden data-i18n="frEnviadaOk"></p>
-
-    <div id="csReqBlock" hidden style="margin-top:22px;border-top:1px solid var(--line);padding-top:18px">
-      <h3 style="font-size:20px;color:#10243c;margin:0 0 4px" data-i18n="csPasosTitulo"></h3>
-      <p class="ph-sub" style="margin:0 0 14px" data-i18n="csPasosSubtitulo"></p>
-      <ol class="stp-list" id="csReqList">
-        <li data-i18n-html="csPaso1"></li>
-        <li data-i18n-html="csPaso2"></li>
-        <li data-i18n-html="csPaso3"></li>
-        <li data-i18n-html="csPaso4"></li>
-        <li data-i18n-html="csPaso5"></li>
-        <li data-i18n-html="csPaso6"></li>
-        <li data-i18n-html="csPaso7"></li>
-        <li data-i18n-html="csPaso8"></li>
-        <li data-i18n-html="csPaso9"></li>
-        <li data-i18n-html="csPaso10"></li>
-      </ol>
-      <p class="hint" style="margin-top:8px" data-i18n="csPasosHint"></p>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="adminProyectosModal" hidden>
-  <button class="scrim" type="button" id="adminProyectosScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminProyectosCard" role="dialog" aria-modal="true" aria-labelledby="adminProyectosTitle">
-    <button class="mx" type="button" id="adminProyectosClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminProyectosTitle" data-i18n="admPropTituloModal"></h2><p class="ph-sub" data-i18n="admPropSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:18px">
-      <select id="adminPropCiudadSel" data-i18n-label="admCiudades"></select>
-      <select id="adminPropUbicacionSel" data-i18n-label="admTodasLasUbicaciones"></select>
-      <select id="adminPropEstadoSel" data-i18n-label="admEstado"></select>
-      <select id="adminPropVendedorSel" data-i18n-label="admVendedorAsignado"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminPropMostrarBtn" data-i18n="btnMostrar"></button>
-    </div>
-    <div id="adminProyectosList" class="proy-list"></div>
-  </div>
-</div>
-
-<div class="modal" id="rotVisualModal" hidden>
-  <button class="scrim" type="button" id="rotVisualScrim" data-i18n-label="close"></button>
-  <div class="pcard rotv-card" id="rotVisualCard" role="dialog" aria-modal="true" aria-labelledby="rotVisualTitle">
-    <button class="mx" type="button" id="rotVisualClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="rotVisualTitle" data-i18n="rotVisualTitle"></h2></div>
-    <div class="rotv-filtros">
-      <div class="rotv-filtro-fila">
-        <span class="rotv-filtro-label" data-i18n="rotVisualCiudad"></span>
-        <div id="rotVisualCiudadTabs" class="loc-tabs-grid"></div>
-      </div>
-      <div class="rotv-filtro-fila">
-        <span class="rotv-filtro-label" data-i18n="rotVisualTipo"></span>
-        <div id="rotVisualTipoTabs" class="loc-tabs-grid"></div>
-      </div>
-    </div>
-    <div class="rotv-topbar">
-      <div class="rotv-topbar-row">
-        <span class="rotv-op rotv-op-top" id="rotVisualDetOp" hidden></span>
-        <p class="car-hint rotv-hint" data-i18n="rotVisualHint"></p>
-        <button class="btn btn-gold btn-sm rotv-cita-topbtn" type="button" id="rotVisualAgendarCitaBtn" data-i18n-html="citaBtnHtml" hidden></button>
-        <button class="btn btn-line-dark btn-sm rotv-cita-topbtn" type="button" id="rotVisualVerVideosBtn" data-i18n="verVideosBtn" hidden></button>
-      </div>
-      <button type="button" id="rotVisualVolverBtn" class="btn btn-line btn-sm rotv-volver" data-i18n="rotVisualVolver" hidden></button>
-      <button type="button" id="rotVisualVolverCiudadesBtn" class="btn btn-line btn-sm rotv-volver" data-i18n="rotVisualVolverCiudades"></button>
-    </div>
-    <div id="rotVisualStage" class="rotv-stage">
-      <div id="rotVisualTrack" class="rotv-track"></div>
-    </div>
-    <p id="rotVisualEmpty" class="qbr-empty" data-i18n="rotVisualEmpty" hidden></p>
-    <div class="rotv-info" id="rotVisualDetalle" hidden>
-      <h3 class="rotv-dname" id="rotVisualDetName"></h3>
-      <p class="rotv-daddr" id="rotVisualDetAddr"></p>
-      <a class="btn btn-gold" id="rotVisualDetMap" target="_blank" rel="noopener" data-i18n="mapOpen"></a>
-    </div>
-    <div class="rotv-prices" id="rotVisualDetPrices" hidden>
-      <div class="rotv-price" id="rotVisualDetRentBox" hidden><span data-i18n="rotVisualRenta"></span><strong id="rotVisualDetRent"></strong></div>
-      <div class="rotv-price" id="rotVisualDetSaleBox" hidden><span data-i18n="rotVisualPrecioVenta"></span><strong id="rotVisualDetSale"></strong></div>
-    </div>
-    <div class="rotv-desc" id="rotVisualDetDescBox" hidden><h4 data-i18n="rotVisualDescripcion"></h4><p id="rotVisualDetDesc"></p></div>
-    <div class="rotv-seller" id="rotVisualDetSeller" hidden>
-      <button class="av-btn" type="button" id="rotVisualDetSBtn" hidden><img class="rotv-savatar" id="rotVisualDetSImg" alt=""></button>
-      <div class="rotv-sinfo"><p class="rotv-slabel" data-i18n="rotVisualContactoVendedor"></p><p class="rotv-sname" id="rotVisualDetSName"></p><p class="rotv-snum" id="rotVisualDetSNum"></p></div>
-      <a class="btn btn-wa" id="rotVisualDetSWa" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 0 1-11.8 7L4 20l1.1-4A8 8 0 1 1 20 12z"></path><path d="M9.2 9c.3 2.4 2.4 4.5 4.8 4.8l1-1.2-1.8-.9-.7.6a3.6 3.6 0 0 1-1.7-1.7l.6-.7-.9-1.8z"></path></svg><span data-i18n="rotVisualWa"></span></a>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="verVideosModal" hidden>
-  <button class="scrim" type="button" id="verVideosScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="verVideosCard" role="dialog" aria-modal="true" aria-labelledby="verVideosTitle">
-    <button class="mx" type="button" id="verVideosClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="verVideosTitle" data-i18n="verVideosBtn"></h2></div>
-    <div id="verVideosList" class="vv-list"></div>
-  </div>
-</div>
-
-<div class="modal" id="adminSolicitudesModal" hidden>
-  <button class="scrim" type="button" id="adminSolicitudesScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminSolicitudesCard" role="dialog" aria-modal="true" aria-labelledby="adminSolicitudesTitle">
-    <button class="mx" type="button" id="adminSolicitudesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminSolicitudesTitle" data-i18n="admProyTituloModal"></h2><p class="ph-sub" data-i18n="admProySubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:18px">
-      <select id="adminSolProyectoSel" data-i18n-label="admTodosLosProyectos"></select>
-      <select id="adminSolEstadoSel" data-i18n-label="admEstado"></select>
-      <select id="adminSolVendedorSel" data-i18n-label="admVendedorAsignado"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminSolMostrarBtn" data-i18n="btnMostrar"></button>
-    </div>
-    <div id="adminSolicitudesList" class="proy-list"></div>
-  </div>
-</div>
-
-<div class="modal" id="adminServiciosModal" hidden>
-  <button class="scrim" type="button" id="adminServiciosScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminServiciosCard" role="dialog" aria-modal="true" aria-labelledby="adminServiciosTitle">
-    <button class="mx" type="button" id="adminServiciosClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminServiciosTitle" data-i18n="admServTituloModal"></h2><p class="ph-sub" data-i18n="admServSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="adminSrvTipoSel" data-i18n-label="admTodosLosServicios"></select>
-      <select id="adminSrvEstadoSel" data-i18n-label="admEstado"></select>
-      <select id="adminSrvPromotorSel" data-i18n-label="admTodosLosPromotores"></select>
-      <input type="date" id="adminSrvFechaDesde" data-i18n-label="admFechaInicioServicioLabel">
-      <input type="date" id="adminSrvFechaHasta" data-i18n-label="admFechaFinServicioLabel">
-      <select id="adminSrvListaSel" data-i18n-label="admListaRegistrosLabel"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminSrvMostrarBtn" data-i18n="btnMostrar"></button>
-    </div>
-    <p class="hint" id="adminSrvHint" style="margin-top:2px;margin-bottom:12px"></p>
-    <div id="adminServiciosResult" class="qbuscar-result"></div>
-  </div>
-</div>
-
-<div class="modal" id="adminVendedoresModal" hidden>
-  <button class="scrim" type="button" id="adminVendedoresScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminVendedoresCard" role="dialog" aria-modal="true" aria-labelledby="adminVendedoresTitle">
-    <button class="mx" type="button" id="adminVendedoresClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminVendedoresTitle" data-i18n="admVendTituloModal"></h2><p class="ph-sub" data-i18n="admVendSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:18px">
-      <input type="text" id="adminVendBuscarInput" class="cq-input" data-i18n-ph="admBuscarPorNombrePh">
-      <button class="btn btn-dark btn-sm" type="button" id="adminVendMostrarBtn" data-i18n="btnMostrar"></button>
-      <button class="btn btn-gold btn-sm" type="button" id="adminVendNuevoBtn" data-i18n="admAgregarVendedor"></button>
-    </div>
-    <div id="adminVendedoresList" class="proy-list"></div>
-  </div>
-</div>
-
-<div class="modal" id="adminClientesModal" hidden>
-  <button class="scrim" type="button" id="adminClientesScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminClientesCard" role="dialog" aria-modal="true" aria-labelledby="adminClientesTitle">
-    <button class="mx" type="button" id="adminClientesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminClientesTitle" data-i18n="admCliTituloModal"></h2><p class="ph-sub" data-i18n="admCliSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:18px">
-      <input type="text" id="adminCliBuscarInput" class="cq-input" data-i18n-ph="admBuscarPorNombrePh">
-      <button class="btn btn-dark btn-sm" type="button" id="adminCliMostrarBtn" data-i18n="btnMostrar"></button>
-      <button class="btn btn-line-dark btn-sm" type="button" id="adminCliSegBtn" data-i18n="btnSeguimientos" disabled></button>
-      <button class="btn btn-line-dark btn-sm" type="button" id="adminCliActBtn" data-i18n="btnVerActividades" disabled></button>
-      <button class="btn btn-gold btn-sm" type="button" id="adminCliNuevoBtn" data-i18n="admAgregarCliente"></button>
-    </div>
-    <div id="adminClientesList" class="proy-list"></div>
-  </div>
-</div>
-
-<div class="modal" id="segModal" hidden>
-  <button class="scrim" type="button" id="segScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="segCard" role="dialog" aria-modal="true" aria-labelledby="segTitle">
-    <button class="mx" type="button" id="segClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="segTitle" data-i18n="segTituloModal"></h2><p class="ph-sub" id="segSub"></p><p class="ph-sub" id="segOrgLoc" hidden></p></div>
-    <div class="acts" style="margin-bottom:14px">
-      <button class="btn btn-gold btn-sm" type="button" id="segNuevoBtn" data-i18n="segAgregar"></button>
-    </div>
-    <div id="segList" class="proy-list"></div>
-  </div>
-</div>
-
-<div class="modal" id="actModal" hidden>
-  <button class="scrim" type="button" id="actScrim" data-i18n-label="close"></button>
-  <div class="pcard pcard-wide" id="actCard" role="dialog" aria-modal="true" aria-labelledby="actTitle">
-    <button class="mx" type="button" id="actClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="actTitle" data-i18n="actTituloModal"></h2><p class="ph-sub" id="actSub"></p><p class="ph-sub" id="actOrgLoc" hidden></p></div>
-    <div id="actBody"></div>
-  </div>
-</div>
-
-<div class="modal" id="adminCitasModal" hidden>
-  <button class="scrim" type="button" id="adminCitasScrim" data-i18n-label="close"></button>
-  <div class="pcard pcard-wide" id="adminCitasCard" role="dialog" aria-modal="true" aria-labelledby="adminCitasTitle">
-    <button class="mx" type="button" id="adminCitasClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminCitasTitle" data-i18n="admCitTituloModal"></h2><p class="ph-sub" data-i18n="admCitSubtituloModal"></p></div>
-    <div class="q-buscar-fields cit-filtros">
-      <div class="fld">
-        <label for="adminCitClienteSel" data-i18n="citaNombreCliente"></label>
-        <select id="adminCitClienteSel"><option value="" data-i18n="admCitTodosLosClientes"></option></select>
-      </div>
-      <div class="fld">
-        <label for="adminCitDeptoSel" data-i18n="admDepartamento"></label>
-        <select id="adminCitDeptoSel"><option value="" data-i18n="admCitTodosLosDepartamentos"></option></select>
-      </div>
-      <div class="fld">
-        <label for="adminCitMunSel" data-i18n="admMunicipio"></label>
-        <select id="adminCitMunSel"><option value="" data-i18n="admCitTodosLosMunicipios"></option></select>
-      </div>
-      <div class="fld">
-        <label for="adminCitFechaDesde" data-i18n="admCitFechaInicial"></label>
-        <input type="date" id="adminCitFechaDesde">
-      </div>
-      <div class="fld">
-        <label for="adminCitFechaHasta" data-i18n="admCitFechaFinal"></label>
-        <input type="date" id="adminCitFechaHasta">
-      </div>
-      <button class="btn btn-dark btn-sm" type="button" id="adminCitBuscarBtn" data-i18n="btnMostrar"></button>
-    </div>
-    <div id="adminCitasList" class="proy-list"></div>
-  </div>
-</div>
-
-<div class="modal" id="adminAgendaModal" hidden>
-  <button class="scrim" type="button" id="adminAgendaScrim" data-i18n-label="close"></button>
-  <div class="pcard pcard-wide" id="adminAgendaCard" role="dialog" aria-modal="true" aria-labelledby="adminAgendaTitle">
-    <button class="mx" type="button" id="adminAgendaClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminAgendaTitle" data-i18n="admAgeTituloModal"></h2><p class="ph-sub" data-i18n="admAgeSubtituloModal"></p></div>
-    <div class="age-toolbar">
-      <div class="age-view-tabs" role="tablist">
-        <button type="button" class="age-view-tab" id="ageViewDiaBtn" data-view="dia" data-i18n="admAgeVistaDia"></button>
-        <button type="button" class="age-view-tab" id="ageViewSemanaBtn" data-view="semana" data-i18n="admAgeVistaSemana"></button>
-        <button type="button" class="age-view-tab" id="ageViewMesBtn" data-view="mes" data-i18n="admAgeVistaMes"></button>
-      </div>
-      <div class="age-nav">
-        <button type="button" class="btn btn-line-dark btn-sm" id="agePrevBtn" aria-label="Anterior">‹</button>
-        <button type="button" class="btn btn-line-dark btn-sm" id="ageHoyBtn" data-i18n="admAgeHoy"></button>
-        <button type="button" class="btn btn-line-dark btn-sm" id="ageNextBtn" aria-label="Siguiente">›</button>
-        <span class="age-periodo-label" id="agePeriodoLabel"></span>
-      </div>
-    </div>
-    <div id="ageBody" class="age-body"></div>
-  </div>
-</div>
-
-<div class="modal" id="ageDetalleModal" hidden>
-  <button class="scrim" type="button" id="ageDetalleScrim" data-i18n-label="close"></button>
-  <div class="pcard pcard-sm" id="ageDetalleCard" role="dialog" aria-modal="true" aria-labelledby="ageDetalleTitle">
-    <button class="mx" type="button" id="ageDetalleClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="ageDetalleTitle" data-i18n="admAgeDetalleTitulo"></h2></div>
-    <div class="cli-grid age-det-grid">
-      <div><span class="lbl" data-i18n="citaNombreCliente"></span><strong id="ageDetNombre"></strong></div>
-      <div><span class="lbl" data-i18n="citaTelefono"></span><span id="ageDetTelefono"></span></div>
-      <div><span class="lbl" data-i18n="citaFecha"></span><span id="ageDetFecha"></span></div>
-      <div><span class="lbl" data-i18n="citaHora"></span><span id="ageDetHora"></span></div>
-      <div><span class="lbl" data-i18n="citaCiudad"></span><span id="ageDetCiudad"></span></div>
-      <div><span class="lbl" data-i18n="citaAsesor"></span><span id="ageDetVendedor"></span></div>
-      <div><span class="lbl" data-i18n="citaEtiqueta"></span><span id="ageDetEtiqueta"></span></div>
-      <div><span class="lbl" data-i18n="citaEstado"></span><span id="ageDetEstado"></span></div>
-      <div style="grid-column:1/-1"><span class="lbl" data-i18n="citaUbicacion"></span><span id="ageDetUbicacion"></span></div>
-      <div style="grid-column:1/-1"><span class="lbl" data-i18n="citaAccion"></span><span id="ageDetAccion"></span></div>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="adminGeografiaModal" hidden>
-  <button class="scrim" type="button" id="adminGeografiaScrim" data-i18n-label="close"></button>
-  <div class="pcard pcard-wide" id="adminGeografiaCard" role="dialog" aria-modal="true" aria-labelledby="adminGeografiaTitle">
-    <button class="mx" type="button" id="adminGeografiaClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminGeografiaTitle" data-i18n="admGeoTituloModal"></h2><p class="ph-sub" data-i18n="admGeoSubtituloModal"></p></div>
-
-    <section class="geo-tbl-sec">
-      <div class="geo-tbl-head">
-        <h3 data-i18n="admGeoSeccionDeptos"></h3>
-        <div class="geo-tbl-head-actions">
-          <button class="btn btn-line-dark btn-sm" type="button" id="adminGeoRegionesBtn" data-i18n="admGeoBtnRegiones"></button>
-          <button class="btn btn-gold btn-sm" type="button" id="adminGeoDeptoNuevoBtn" data-i18n="admGeoAgregarDepto"></button>
-        </div>
-      </div>
-      <div class="geo-buscar-fields">
-        <input type="text" id="adminGeoDeptoBuscarInput" class="cq-input" data-i18n-ph="admGeoBuscarDeptoPh">
-      </div>
-      <div class="geo-tbl-wrap">
-        <table class="geo-tbl">
-          <thead>
-            <tr>
-              <th data-i18n="admGeoColCodigo"></th>
-              <th data-i18n="admGeoColDepto"></th>
-              <th data-i18n="admGeoColRegion"></th>
-              <th data-i18n="admGeoColCodTel"></th>
-              <th data-i18n="admGeoColCodPostal"></th>
-              <th data-i18n="admGeoColMunicipios"></th>
-              <th class="geo-tbl-th-edit"></th>
-            </tr>
-          </thead>
-          <tbody id="adminGeoDeptosTbody"></tbody>
-        </table>
-      </div>
-    </section>
-
-    <section class="geo-tbl-sec">
-      <div class="geo-tbl-head">
-        <h3 id="adminGeoMunSeccionTitulo" data-i18n="admGeoSeccionMunicipios"></h3>
-        <div class="geo-tbl-head-actions">
-          <button class="btn btn-gold btn-sm" type="button" id="adminGeoMunNuevoBtn" data-i18n="admGeoAgregarMunicipio"></button>
-        </div>
-      </div>
-      <div class="geo-buscar-fields">
-        <input type="text" id="adminGeoMunBuscarInput" class="cq-input" data-i18n-ph="admGeoBuscarMunPh">
-      </div>
-      <div class="geo-tbl-wrap">
-        <table class="geo-tbl">
-          <thead>
-            <tr>
-              <th data-i18n="admGeoColCodigo"></th>
-              <th data-i18n="admGeoColMunNombre"></th>
-              <th data-i18n="admGeoColPrefijo"></th>
-              <th data-i18n="admGeoColCodTel"></th>
-              <th data-i18n="admGeoColPrefijoCiudad"></th>
-              <th data-i18n="admGeoColCodPostal"></th>
-              <th class="geo-tbl-th-edit"></th>
-            </tr>
-          </thead>
-          <tbody id="adminGeoMunTbody"></tbody>
-        </table>
-      </div>
-    </section>
-  </div>
-</div>
-
-<div class="modal" id="adminOrganizacionesModal" hidden>
-  <button class="scrim" type="button" id="adminOrganizacionesScrim" data-i18n-label="close"></button>
-  <div class="pcard pcard-wide" id="adminOrganizacionesCard" role="dialog" aria-modal="true" aria-labelledby="adminOrganizacionesTitle">
-    <button class="mx" type="button" id="adminOrganizacionesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminOrganizacionesTitle" data-i18n="admOrgTituloModal"></h2><p class="ph-sub" data-i18n="admOrgSubtituloModal"></p></div>
-
-    <section class="geo-tbl-sec">
-      <div class="geo-tbl-head">
-        <h3 data-i18n="admOrgSeccionOrgs"></h3>
-        <div class="geo-tbl-head-actions">
-          <button class="btn btn-gold btn-sm" type="button" id="adminOrgNuevoBtn" data-i18n="admOrgAgregar"></button>
-        </div>
-      </div>
-      <div class="geo-buscar-fields">
-        <input type="text" id="adminOrgBuscarInput" class="cq-input" data-i18n-ph="admOrgBuscarPh">
-      </div>
-      <div class="geo-tbl-wrap">
-        <table class="geo-tbl">
-          <thead>
-            <tr>
-              <th data-i18n="admOrgColCodigo"></th>
-              <th data-i18n="admOrgColNombre"></th>
-              <th data-i18n="admOrgColRepresentante"></th>
-              <th data-i18n="admOrgColTelefonos"></th>
-              <th data-i18n="admOrgColUbicacion"></th>
-              <th data-i18n="admOrgColEstado"></th>
-              <th class="geo-tbl-th-edit"></th>
-            </tr>
-          </thead>
-          <tbody id="adminOrgTbody"></tbody>
-        </table>
-      </div>
-      <div id="adminOrgDetalle" class="org-detalle" hidden></div>
-    </section>
-
-    <section class="geo-tbl-sec" id="adminOrgLocSeccion" hidden>
-      <div class="geo-tbl-head">
-        <h3 id="adminOrgLocSeccionTitulo" data-i18n="admOrgLocalidades"></h3>
-        <div class="geo-tbl-head-actions">
-          <button class="btn btn-gold btn-sm" type="button" id="adminOrgLocNuevoBtn" data-i18n="admOrgAgregarLocalidad"></button>
-        </div>
-      </div>
-      <div class="geo-tbl-wrap">
-        <table class="geo-tbl">
-          <thead>
-            <tr>
-              <th data-i18n="admOrgColCodigo"></th>
-              <th data-i18n="admOrgLocNombreComercial"></th>
-              <th data-i18n="admOrgLocRazonSocial"></th>
-              <th data-i18n="admOrgLocNit"></th>
-              <th data-i18n="admOrgMunicipio"></th>
-              <th data-i18n="admOrgColEstado"></th>
-              <th class="geo-tbl-th-edit"></th>
-            </tr>
-          </thead>
-          <tbody id="adminOrgLocTbody"></tbody>
-        </table>
-      </div>
-      <div id="adminOrgLocDetalle" class="org-detalle" hidden></div>
-    </section>
-  </div>
-</div>
-
-<div class="modal" id="adminUsuariosCatalogoModal" hidden>
-  <button class="scrim" type="button" id="adminUsuariosCatalogoScrim" data-i18n-label="close"></button>
-  <div class="pcard pcard-wide" id="adminUsuariosCatalogoCard" role="dialog" aria-modal="true" aria-labelledby="adminUsuariosCatalogoTitle">
-    <button class="mx" type="button" id="adminUsuariosCatalogoClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminUsuariosCatalogoTitle" data-i18n="admUsrTituloModal"></h2><p class="ph-sub" data-i18n="admUsrSubtituloModal"></p></div>
-
-    <div id="adminUsrConfirmBox">
-      <p class="hint" data-i18n="admUsrConfirmHint"></p>
-      <div class="geo-buscar-fields">
-        <input type="password" id="adminUsrClavePropia" autocomplete="current-password" data-i18n-ph="admUsrClavePropiaPh">
-        <button class="btn btn-dark btn-sm" type="button" id="adminUsrConfirmarBtn" data-i18n="btnConfirmar"></button>
-      </div>
-      <p class="hint hint-err" id="adminUsrConfirmError" hidden></p>
-    </div>
-
-    <section class="geo-tbl-sec" id="adminUsrListaSec" hidden>
-      <div class="geo-tbl-head">
-        <h3 data-i18n="admUsrSeccionLista"></h3>
-      </div>
-      <div class="geo-buscar-fields">
-        <input type="text" id="adminUsrBuscarInput" class="cq-input" data-i18n-ph="admUsrBuscarPh">
-      </div>
-      <div class="geo-tbl-wrap">
-        <table class="geo-tbl geo-tbl-usuarios">
-          <colgroup>
-            <col style="width:6%">
-            <col style="width:10%">
-            <col style="width:17%">
-            <col style="width:18%">
-            <col style="width:9%">
-            <col style="width:12%">
-            <col style="width:15%">
-            <col style="width:104px">
-          </colgroup>
-          <thead>
-            <tr>
-              <th data-i18n="admUsrColCodigo"></th>
-              <th data-i18n="admUsrColUsuario"></th>
-              <th data-i18n="admUsrColTipo"></th>
-              <th data-i18n="admUsrColOrgLoc"></th>
-              <th data-i18n="admUsrColEstado"></th>
-              <th data-i18n="admUsrColFechaCreacion"></th>
-              <th data-i18n="admUsrColFechaActualizacion"></th>
-              <th class="geo-tbl-th-edit"></th>
-            </tr>
-          </thead>
-          <tbody id="adminUsrTbody"></tbody>
-        </table>
-      </div>
-    </section>
-  </div>
-</div>
-
-<div class="modal" id="adminGenerarUsuarioModal" hidden>
-  <button class="scrim" type="button" id="adminGenerarUsuarioScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminGenerarUsuarioCard" role="dialog" aria-modal="true" aria-labelledby="adminGenerarUsuarioTitle">
-    <button class="mx" type="button" id="adminGenerarUsuarioClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminGenerarUsuarioTitle" data-i18n="admGenUsrTituloModal"></h2><p class="ph-sub" data-i18n="admGenUsrSubtituloModal"></p></div>
-
-    <div class="fld">
-      <label for="adminGenUsrClienteSel" data-i18n="admGenUsrClienteLabel"></label>
-      <select id="adminGenUsrClienteSel"></select>
-      <p class="hint" id="adminGenUsrClienteHint" hidden></p>
-    </div>
-
-    <div id="adminGenUsrBloque" hidden>
-      <div class="genusr-step">
-        <div class="genusr-step-n">1</div>
-        <div class="genusr-step-body">
-          <label for="adminGenUsrUsuarioInput" data-i18n="admGenUsrUsuarioLabel"></label>
-          <div class="geo-buscar-fields">
-            <input type="text" id="adminGenUsrUsuarioInput" class="cq-input">
-            <button class="btn btn-line-dark btn-sm" type="button" id="adminGenUsrRegenUsuarioBtn" data-i18n="admGenUsrBtnGenerarUsuario"></button>
-          </div>
-          <p class="hint" id="adminGenUsrUsuarioHint"></p>
-        </div>
-      </div>
-      <div class="genusr-step">
-        <div class="genusr-step-n">2</div>
-        <div class="genusr-step-body">
-          <label for="adminGenUsrClaveInput" data-i18n="admGenUsrClaveLabel"></label>
-          <div class="geo-buscar-fields">
-            <input type="text" id="adminGenUsrClaveInput" class="cq-input" readonly>
-            <button class="btn btn-line-dark btn-sm" type="button" id="adminGenUsrRegenClaveBtn" data-i18n="admGenUsrBtnGenerarClave"></button>
-          </div>
-          <p class="hint" id="adminGenUsrClaveHint"></p>
-        </div>
-      </div>
-      <button class="btn btn-dark" type="button" id="adminGenUsrGuardarBtn" data-i18n="admGenUsrBtnCrear"></button>
-      <p class="hint hint-err" id="adminGenUsrError" hidden></p>
-      <p class="hint" id="adminGenUsrOk" hidden></p>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="adminTiposComisionModal" hidden>
-  <button class="scrim" type="button" id="adminTiposComisionScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminTiposComisionCard" role="dialog" aria-modal="true" aria-labelledby="adminTiposComisionTitle">
-    <button class="mx" type="button" id="adminTiposComisionClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminTiposComisionTitle" data-i18n="admTipoComTituloModal"></h2><p class="ph-sub" data-i18n="admTipoComSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:18px">
-      <select id="adminTipoComNegocioSel" data-i18n-label="admNegocio">
-        <option value="" data-i18n="admTodosLosNegocios"></option>
-        <option value="propiedades" data-i18n="admNegocioPropiedades"></option>
-        <option value="proyectos" data-i18n="admNegocioProyectos"></option>
-        <option value="servicios" data-i18n="admNegocioServicios"></option>
-      </select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminTipoComMostrarBtn" data-i18n="btnMostrar"></button>
-      <button class="btn btn-gold btn-sm" type="button" id="adminTipoComNuevoBtn" data-i18n="admAgregarTipoComision"></button>
-    </div>
-    <div id="adminTiposComisionList" class="proy-list"></div>
-  </div>
-</div>
-
-<div class="modal" id="adminComisionesModal" hidden>
-  <button class="scrim" type="button" id="adminComisionesScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminComisionesCard" role="dialog" aria-modal="true" aria-labelledby="adminComisionesTitle">
-    <button class="mx" type="button" id="adminComisionesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminComisionesTitle" data-i18n="comVentasTituloModal"></h2><p class="ph-sub" data-i18n="comVentasSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="adminComVendedorSel" data-i18n-label="comLblVendedor"></select>
-      <input type="date" id="adminComFechaDesde" data-i18n-label="comLblFechaInicial">
-      <input type="date" id="adminComFechaHasta" data-i18n-label="comLblFechaFinal">
-      <select id="adminComTipoSel" data-i18n-label="comLblTipoComision">
-        <option value="" data-i18n="comTipoTodas"></option>
-        <option value="propiedades" data-i18n="comTipoPropiedades"></option>
-        <option value="proyectos" data-i18n="comTipoProyectos"></option>
-        <option value="servicios" data-i18n="comTipoServicios"></option>
-      </select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminComMostrarBtn" data-i18n="btnMostrar"></button>
-    </div>
-    <div id="adminComisionesResult" class="qbuscar-result"></div>
-  </div>
-</div>
-
-<div class="modal" id="adminComisionesGeneradasModal" hidden>
-  <button class="scrim" type="button" id="adminComisionesGeneradasScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminComisionesGeneradasCard" role="dialog" aria-modal="true" aria-labelledby="adminComisionesGeneradasTitle">
-    <button class="mx" type="button" id="adminComisionesGeneradasClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminComisionesGeneradasTitle" data-i18n="comGenTituloModal"></h2><p class="ph-sub" data-i18n="comGenSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="adminComGenVendedorSel" data-i18n-label="comLblVendedor"></select>
-      <input type="date" id="adminComGenFechaDesde" data-i18n-label="comLblFechaInicial">
-      <input type="date" id="adminComGenFechaHasta" data-i18n-label="comLblFechaFinal">
-      <button class="btn btn-dark btn-sm" type="button" id="adminComGenMostrarBtn" data-i18n="btnMostrar"></button>
-    </div>
-    <div id="adminComisionesGeneradasResult" class="qbuscar-result"></div>
-  </div>
-</div>
-
-<div class="modal" id="adminComisionesPagadasModal" hidden>
-  <button class="scrim" type="button" id="adminComisionesPagadasScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="adminComisionesPagadasCard" role="dialog" aria-modal="true" aria-labelledby="adminComisionesPagadasTitle">
-    <button class="mx" type="button" id="adminComisionesPagadasClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="adminComisionesPagadasTitle" data-i18n="comPagTituloModal"></h2><p class="ph-sub" data-i18n="comPagSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="adminComPagVendedorSel" data-i18n-label="comLblVendedor"></select>
-      <input type="date" id="adminComPagFechaDesde" data-i18n-label="comLblFechaInicial">
-      <input type="date" id="adminComPagFechaHasta" data-i18n-label="comLblFechaFinal">
-      <select id="adminComPagEstadoSel" data-i18n-label="comLblEstado"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="adminComPagMostrarBtn" data-i18n="btnMostrar"></button>
-    </div>
-    <div id="adminComisionesPagadasResult" class="qbuscar-result"></div>
-  </div>
-</div>
-
-<div class="modal" id="repPropiedadesModal" hidden>
-  <button class="scrim" type="button" id="repPropiedadesScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="repPropiedadesCard" role="dialog" aria-modal="true" aria-labelledby="repPropiedadesTitle">
-    <button class="mx" type="button" id="repPropiedadesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="repPropiedadesTitle" data-i18n="repPropTituloModal"></h2><p class="ph-sub" data-i18n="repPropSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="repPropCiudadSel" data-i18n-label="repLblCiudad"></select>
-      <select id="repPropOperacionSel" data-i18n-label="repLblTipoOperacion"></select>
-      <select id="repPropEstadoSel" data-i18n-label="repLblEstado"></select>
-      <button class="btn btn-dark btn-sm" type="button" id="repPropMostrarBtn" data-i18n="btnMostrar"></button>
-      <button class="btn btn-line btn-sm" type="button" id="repPropImprimirBtn" data-i18n-html="repBtnImprimirHtml"></button>
-    </div>
-    <div id="repPropiedadesResult" class="qbuscar-result"></div>
-  </div>
-</div>
-
-<div class="modal" id="repServiciosModal" hidden>
-  <button class="scrim" type="button" id="repServiciosScrim" data-i18n-label="close"></button>
-  <div class="pcard" id="repServiciosCard" role="dialog" aria-modal="true" aria-labelledby="repServiciosTitle">
-    <button class="mx" type="button" id="repServiciosClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="repServiciosTitle" data-i18n="repServTituloModal"></h2><p class="ph-sub" data-i18n="repServSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:10px">
-      <select id="repServEstadoSel" data-i18n-label="repLblEstado"></select>
-      <select id="repServPrioridadSel" data-i18n-label="repLblPrioridad"></select>
-      <input type="date" id="repServFechaDesde" data-i18n-label="repLblFechaInicial">
-      <input type="date" id="repServFechaHasta" data-i18n-label="repLblFechaFinal">
-      <button class="btn btn-dark btn-sm" type="button" id="repServMostrarBtn" data-i18n="btnMostrar"></button>
-      <button class="btn btn-line btn-sm" type="button" id="repServImprimirBtn" data-i18n-html="repBtnImprimirHtml"></button>
-    </div>
-    <div id="repServiciosResult" class="qbuscar-result"></div>
-  </div>
-</div>
-
-<div class="modal" id="repClientesModal" hidden>
-  <button class="scrim" type="button" id="repClientesScrim" data-i18n-label="close"></button>
-  <div class="pcard pcard-wide" id="repClientesCard" role="dialog" aria-modal="true" aria-labelledby="repClientesTitle">
-    <button class="mx" type="button" id="repClientesClose" data-i18n-label="close">×</button>
-    <div class="ph"><h2 id="repClientesTitle" data-i18n="repCliTituloModal"></h2><p class="ph-sub" data-i18n="repCliSubtituloModal"></p></div>
-    <div class="q-buscar-fields" style="margin-bottom:10px">
-      <input type="text" id="repCliBuscar" data-i18n-ph="repBuscarClientePh" data-i18n-label="repBtnBuscarCliente">
-      <select id="repCliEstadoCitaSel">
-        <option value="" data-i18n="repCliTodosLosClientes"></option>
-        <option value="con_citas" data-i18n="repCliConCitas"></option>
-        <option value="sin_citas" data-i18n="repCliSinCitas"></option>
-        <option value="proxima_cita" data-i18n="repCliConProximaCita"></option>
-      </select>
-      <button class="btn btn-dark btn-sm" type="button" id="repCliMostrarBtn" data-i18n="btnMostrar"></button>
-    </div>
-    <div id="repClientesResult" class="qbuscar-result"></div>
   </div>
 </div>
 
@@ -2375,6 +862,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
 <script src="supabase-config.js"></script>
-<script src="script.js?v=20261031-1255"></script>
+<script src="script.js?v=20260923-0008"></script>
 </body>
 </html>
